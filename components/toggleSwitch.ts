@@ -1,14 +1,14 @@
-import { player } from '../main.js';
+import { AreaComp, GameObj } from 'kaplay';
+import { player } from '../main';
 
 /**
  * Object that switches state when clicked.
- * @param {string} [msg="toggle"]
  */
-export function toggleSwitch(msg = "toggle") {
+export function toggleSwitch(msg: string = "toggle") {
     return {
         id: "toggleSwitch",
         require: ["linked", "area"],
-        add() {
+        add(this: GameObj<AreaComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) this.broadcast(msg);
             });

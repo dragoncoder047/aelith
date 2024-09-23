@@ -1,4 +1,6 @@
-export const CONTROLS = {
+import { type ButtonsDef } from 'kaplay';
+
+export const CONTROLS: ButtonsDef = {
     jump: {
         keyboard: ["space"],
         gamepad: ["south"],

@@ -1,10 +1,8 @@
-import { CONVEYOR_SPEED } from '../constants.js';
+import { CONVEYOR_SPEED } from '../constants';
 
-/**
- * @param {string[]} [states=["off", "on"]]
- * @param {"l" | "r" | "lr" | "rl"} mode
- */
-export function conveyor(states = ["off", "on"], mode = "lr") {
+type ConveyorMode = "l" | "r" | "lr" | "rl";
+
+export function conveyor(states: [string, string] = ["off", "on"], mode: ConveyorMode = "lr") {
     var closure__mode = mode;
     return {
         id: "conveyor",
@@ -15,11 +13,13 @@ export function conveyor(states = ["off", "on"], mode = "lr") {
             this._recomputeSpeeds();
         },
         turnSpeed: -CONVEYOR_SPEED,
+        _speeds: [],
+        __lastX: 0,
         add() {
             this._recomputeSpeeds();
         },
         update() {
-            const x = this._speeds[states.indexOf(this.state)];
+            const x = this._speeds[states.indexOf(this.state)]!;
             this.speed = this.turnSpeed * x;
             if (this.__lastX === x) return;
             switch (x) {

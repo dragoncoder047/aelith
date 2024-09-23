@@ -1,5 +1,6 @@
-import K from '../init.js';
-import { player } from '../main.js';
+import { AreaComp, GameObj, OutlineComp } from 'kaplay';
+import K from '../init';
+import { player } from '../main';
 
 /**
  * Makes the object show a white outline on hover.
@@ -7,14 +8,11 @@ import { player } from '../main.js';
  * TODO: this doesn't work (kaplayjs/kaplay#394)
  * @param {number} [blinkFreq=1.5]
  */
-export function hoverOutline(blinkFreq = 1.5) {
+export function hoverOutline(blinkFreq: number = 1.5) {
     return {
         id: "hoverOutline",
         require: ["area", "outline"],
-        /**
-         * @this {import("kaplay").GameObj<import("kaplay").AreaComp | import("kaplay").OutlineComp>}
-         */
-        update() {
+        update(this: GameObj<AreaComp | OutlineComp>) {
             if (this.isHovering() && player.canTouch(this)) {
                 this.outline.width = K.wave(0, 2, K.time() * Math.PI * blinkFreq);
             }

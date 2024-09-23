@@ -1,6 +1,32 @@
 // cSpell: ignore kaplay
 
-import './assets.js';
+import {
+    LayerComp,
+    PosComp,
+    StateComp,
+    Vec2,
+    type AreaComp,
+    type AreaCompOpt,
+    type BodyComp,
+    type Collision,
+    type CompList,
+    type GameObj,
+    type LevelComp,
+    type SpriteComp
+} from 'kaplay';
+import { WORLD_FILE } from './assets';
+import { button } from './components/button';
+import { clicky } from './components/click_noise';
+import { conveyor } from './components/conveyor';
+import { grabbable } from './components/grabbable';
+import { hoverOutline } from './components/hoverOutline';
+import { infFriction } from './components/infFriction';
+import { linked } from './components/linked';
+import { nudge } from './components/nudge';
+import { spriteToggle } from './components/spriteToggle';
+import { thudder } from './components/thudder';
+import { toggler } from './components/toggler';
+import { toggleSwitch } from './components/toggleSwitch';
 import {
     BAP_OPTS,
     FOOTSTEP_INTERVAL,
@@ -11,36 +37,19 @@ import {
     TERMINAL_VELOCITY,
     TILE_SIZE,
     WALK_SPEED
-} from './constants.js';
-import { WORLD_FILE } from './assets.js';
-import K from './init.js';
-import './layers.js';
-import { nudge } from './components/nudge.js';
-import { linked } from './components/linked.js';
-import { toggler } from './components/toggler.js';
-import { spriteToggle } from './components/spriteToggle.js';
-import { clicky } from './components/click_noise.js'; // cSpell: ignore clicky
-import { button } from './components/button.js';
-import { conveyor } from './components/conveyor.js';
-import { thudder } from './components/thudder.js';
-import { hoverOutline } from './components/hoverOutline.js';
-import { toggleSwitch } from './components/toggleSwitch.js';
-import { uiButton } from './components/uiButton.js'
-import { grabbable } from './components/grabbable.js'; // cSpell: ignore grabbable
-import { infFriction } from './components/infFriction.js';
+} from './constants';
+import K from './init';
+import './layers';
 
-/**
- * @type {import("kaplay").GameObj<import("kaplay").LevelComp> | undefined}
- */
-var world;
+var world: GameObj<LevelComp>;
 
 
 /**
  * Create default components for common tile objects.
  */
-function defaults(areaOpts) {
+function defaults(areaOpts?: AreaCompOpt): CompList<any> {
     return [
-        K.area(areaOpts),
+        K.area(areaOpts!),
         K.anchor("center"),
         K.offscreen({ hide: true }),
         K.timer(),
@@ -52,7 +61,7 @@ function defaults(areaOpts) {
 /**
  * Return components for a machine
  */
-function machine(areaOpts) {
+function machine(areaOpts?: AreaCompOpt): CompList<any> {
     return [
         toggler("off", "on", false),
         K.state("off"),
@@ -63,9 +72,8 @@ function machine(areaOpts) {
 
 /**
  * Components for a moveable, grabbable box.
- * @returns {import("kaplay").CompList}
  */
-function box() {
+function box(): CompList<any> {
     return [
         K.sprite("box", { fill: false }),
         "box",
@@ -83,12 +91,9 @@ function box() {
             // TODO: fix this logic
             hittingPlayer: false,
             wasHittingPlayer: false,
-            /**
-             * @this {import("kaplay").GameObj<import("kaplay").SpriteComp | import("kaplay").BodyComp | import("kaplay").AreaComp>}
-             */
-            add() {
+            add(this: GameObj<SpriteComp | BodyComp | AreaComp>) {
                 this.frame = K.randi(this.numFrames());
-                this.onBeforePhysicsResolve(coll => {
+                this.onBeforePhysicsResolve((coll: Collision) => {
                     if (this === player.grabbing) {
                         this.hittingPlayer = true;
                         coll.preventResolution();
@@ -111,21 +116,15 @@ function box() {
 
 /**
  * helper function for MParser
- * @param {string} from
- * @param {string} to
- * @returns {(this: typeof MParser) => void}
  */
-function stackOp(from, to) {
-    if ([].some.call(from, (ch, i) => from.indexOf(ch) !== i))
+function stackOp(from: string, to: string): (this: typeof MParser) => void {
+    if ([].some.call(from, (ch: string, i: number) => from.indexOf(ch) !== i))
         throw new Error("stack op definition error: duplicate input names: " + from);
-    if ([].some.call(to, ch => from.indexOf(ch) === -1))
+    if ([].some.call(to, (ch: string) => from.indexOf(ch) === -1))
         throw new Error("stack op definition error: undefined character in output: " + to);
-    const reversedFrom = [].slice.call(from).reverse();
-    /**
-     * @this {typeof MParser}
-     */
-    return function () {
-        const nameMap = {};
+    const reversedFrom: string[] = [].slice.call(from).reverse();
+    return function (this: typeof MParser) {
+        const nameMap: { [n: string]: any } = {};
         for (var c of reversedFrom) {
             nameMap[c] = this.stack.pop();
         }
@@ -138,10 +137,23 @@ function stackOp(from, to) {
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
-const MParser = {
+const MParser: {
+    spawners: { [x: string]: (this: typeof MParser) => CompList<any> },
+    storedProcedures: { [x: string]: string },
+    commands: { [x: string]: (this: typeof MParser) => void },
+    fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any> },
+    buffer: string | number | null,
+    parenStack: string[],
+    process(cmd: string, pos: Vec2 | null): CompList<any> | undefined,
+    mergeAcross(world: GameObj<LevelComp>): void,
+    cleanBuffer(): void,
+    build(world: GameObj<LevelComp>): void,
+    commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[],
+    stack: any[],
+    uid(): string,
+} = {
     /**
      * Commands that spawn a machine at that particular location.
-     * @type {{[x: string]: () => import("kaplay").CompList}}
      */
     spawners: {
         L: () => [
@@ -179,14 +191,10 @@ const MParser = {
         ],
         X: box,
     },
-    /**
-     * @type {{[x: string]: string}}
-     */
     storedProcedures: {},
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
-     * @type {{[x: string]: () => void}}
      */
     commands: {
         // drop/done command: anything -- nothing
@@ -217,8 +225,8 @@ const MParser = {
             var y = this.stack.pop();
             var x = this.stack.pop();
             var obj = this.stack.pop();
-            obj.use(nudge(x, y));
-            this.stack.push(x);
+            obj.pos = obj.pos.add(K.vec2(x, y));
+            this.stack.push(obj);
         },
         // link command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
         $() {
@@ -239,13 +247,13 @@ const MParser = {
         },
         // define command: value name --
         d() {
-            var pName = this.pop();
-            var pContent = this.pop();
+            var pName = this.stack.pop();
+            var pContent = this.stack.pop();
             this.storedProcedures[pName] = pContent;
         },
         // get command: name -- value
         g() {
-            var pName = this.pop();
+            var pName = this.stack.pop();
             var val = this.storedProcedures[pName];
             if (val === undefined)
                 throw "undefined: " + pName;
@@ -253,7 +261,7 @@ const MParser = {
         },
         // call command: *arguments name -- *values
         c() {
-            var pName = this.pop();
+            var pName = this.stack.pop();
             var proc = this.storedProcedures[pName];
             if (proc === undefined)
                 throw "undefined: " + pName;
@@ -278,7 +286,6 @@ const MParser = {
     },
     /**
      * Commands that spawn a tile type that isn't configurable.
-     * @type {{[x: string]: () => import("kaplay").CompList}}
      */
     fixedTiles: {
         "@": () => [
@@ -308,28 +315,19 @@ const MParser = {
     },
     /**
      * Used to hold intermediate parsing results.
-     * @type {string | number | null}
      */
     buffer: null,
-    /**
-     * @type {string[]}
-     */
     parenStack: [],
-    /**
-     * @param {string} cmd
-     * @param {import("kaplay").Vec2?} pos 
-     * @returns {import("kaplay").CompList}
-     */
-    process(cmd, pos) {
+    process(cmd, pos): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
         }
         if (this.parenStack.length > 0) {
-            const popParen = (p) => {
+            const popParen = (p: string) => {
                 if (!this.parenStack.length) throw "unmatched paren " + p;
                 const oldState = this.parenStack.pop();
-                const expected = { "{": "}", "[": "]", "(": ")" }[oldState];
+                const expected = { "{": "}", "[": "]", "(": ")" }[oldState!];
                 if (p != expected) throw "mismatched parens " + oldState + " " + p;
             };
             if (cmd == "]" || cmd == ")" || cmd == "}") {
@@ -347,7 +345,7 @@ const MParser = {
                             this.buffer = null;
                             const oLen = this.commandQueue.length;
                             for (var i = 0; i < code.length; i++) {
-                                this.process(code[i], null);
+                                this.process(code[i]!, null);
                             }
                             if (this.parenStack.length > 0) throw "oops parens";
                             if (this.commandQueue.length === oLen && code != "") throw "oops nothing";
@@ -379,20 +377,20 @@ const MParser = {
                 this.buffer = 0;
             }
             else
-                this.buffer = 10 * this.buffer + parseInt(cmd);
+                this.buffer = 10 * (this.buffer as number) + parseInt(cmd);
         }
         else {
             // Buffer-ending command
             this.cleanBuffer();
             if (cmd in this.commands) {
-                this.commandQueue.push(this.commands[cmd]);
+                this.commandQueue.push(this.commands[cmd]!);
             }
             else if (pos != null && cmd in this.fixedTiles) {
-                return this.fixedTiles[cmd](pos);
+                return this.fixedTiles[cmd]!.call(this);
             }
             else if (pos != null && cmd in this.spawners) {
                 this.commandQueue.push(pos);
-                var rv = this.spawners[cmd](pos);
+                var rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
                 // (kaplay deduplicates tags automatically)
                 rv.push("machine");
@@ -404,35 +402,35 @@ const MParser = {
     /**
      * Merge blocks across horizontally in the world to ensure the player won't snag
      * on the edges
-     * @param {import("kaplay").GameObj<import("kaplay").LevelComp>} world
      */
     mergeAcross(world) {
-        const tw = world.tileWidth();
         const allowedTags = ["wall"/**, "conveyor"/**/];
         for (var y = 0; y < world.numRows(); y++) {
-            var prevTile = null;
-            var prevTag = null;
+            var prevTile: GameObj<AreaComp | SpriteComp | PosComp> | null = null;
+            var prevTag: string = "";
             for (var x = 0; x < world.numColumns(); x++) {
-                const pos = K.vec2(x, y);
-                const thisTile = world.getAt(pos)[0];
+                const thisTile = world.getAt(K.vec2(x, y))[0]!;
                 if (
                     prevTile != null
                     && thisTile != null
+                    && prevTag != ""
                     && thisTile.is(prevTag)) {
                     // merge across
-                    prevTile.area.offset.x += tw / 2;
+                    prevTile.area.offset.x += world.tileWidth() / 2;
                     prevTile.area.scale.x++;
+                    prevTile.transform = K.Mat4.rotateX(0);
                     thisTile.unuse("area");
                     thisTile.unuse(prevTag);
                 }
                 else {
                     // reset
                     if (thisTile != null && allowedTags.some(t => thisTile.is(t))) {
-                        prevTile = thisTile;
-                        prevTag = allowedTags.find(t => thisTile.is(t));
+                        prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp>;
+                        prevTag = allowedTags.find(t => thisTile.is(t))!;
                     }
                     else {
-                        prevTile = prevTag = null;
+                        prevTile = null;
+                        prevTag = "";
                     }
                 }
             }
@@ -447,7 +445,6 @@ const MParser = {
     },
     /**
      * Execute the stored commands in the queue, to initialize the machines.
-     * @param {import("kaplay").GameObj<import("kaplay").LevelComp>} world 
      */
     build(world) {
         this.cleanBuffer();
@@ -460,6 +457,7 @@ const MParser = {
             else if (typeof cmd === "string" || typeof cmd === "number")
                 this.stack.push(cmd);
             else {
+                // @ts-expect-error
                 K.debug.error("bad command", cmd);
                 throw new Error("bad command: " + cmd);
             }
@@ -468,17 +466,12 @@ const MParser = {
     },
     /**
      * Queue of commands to be executed to initialize the game.
-     * @type {(string | number | import("kaplay").Vec2 | () => void)[]}
      */
     commandQueue: [],
     /**
      * Intermediate stack of objects used during initialization.
-     * @type {(string | number | import("kaplay").GameObj)[]}
      */
     stack: [],
-    /**
-     * @returns {string}
-     */
     uid() {
         return Math.random().toString(16).slice(2, 10);
     }
@@ -494,7 +487,7 @@ K.load((async () => {
         wildcardTile(cmd, pos) {
             try {
                 return MParser.process(cmd, pos);
-            } catch (e) {
+            } catch (e: any) {
                 const at = `line ${pos.y + 1}, col ${pos.x + 1}`;
                 const msg = `Tilemap error at ${at}: ${e.stack || e.toString()}`
                 K.debug.error(msg);
@@ -502,12 +495,12 @@ K.load((async () => {
                 throw new SyntaxError(msg);
             }
         }
-    });
+    }) as GameObj<LevelComp>;
 
     try {
         MParser.build(world);
         MParser.mergeAcross(world);
-    } catch (e) {
+    } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`
         K.debug.error(msg);
         K.debug.paused = true;
@@ -522,7 +515,10 @@ K.load((async () => {
     if (playerPositions.length > 1) {
         console.warn(`Multiple @'s in ${WORLD_FILE} - using the first one`);
     }
-    player.pos = playerPositions[0].worldPos();
+    // @ts-ignore
+    // What, tsc can't read?? This is inside an *async* IIFE!
+    // It is NOT going to be used before being defined!
+    player.pos = playerPositions[0]!.worldPos();
     playerPositions.forEach(K.destroy);
 
 })());
@@ -554,33 +550,29 @@ export const player = K.add([
          * @type {import("kaplay").GameObj<import("kaplay").PosComp>?}
          */
         grabbing: null,
-        update() {
+        update(this: GameObj<PosComp | BodyComp | AreaComp | LayerComp | SpriteComp | StateComp>) {
             // move the grabbing to self
             if (this.grabbing !== null) {
                 if (this.curPlatform() === this.grabbing) this.jump(1); // Reset curPlatform()
                 this.grabbing.vel = K.vec2(0); // Reset velocity
-                this.grabbing.moveTo(this.worldPos().sub(this.grabbing.parent.worldPos()));
+                this.grabbing.moveTo(this.worldPos()!.sub(this.grabbing.parent.worldPos()));
             }
         },
         /**
          * Interaction distance
          */
         intDist: TILE_SIZE * 4,
-        /**
-         * @param {import("kaplay").GameObj<import("kaplay").PosComp>} target
-         * @returns {boolean}
-         */
-        canTouch(target) {
+        canTouch(this: GameObj<PosComp>, target: GameObj<PosComp>): boolean {
             // is a UI button?
             if (target.is("ui-button"))
                 return true;
             // always gonna be too far?
-            const diff = target.worldPos().sub(this.worldPos());
+            const diff = target.worldPos()!.sub(this.worldPos()!);
             if (diff.len() > this.intDist)
                 return false;
             if (!world)
                 return true; // bail if world isn't initialized yet
-            const line = new K.Line(this.worldPos(), target.worldPos());
+            const line = new K.Line(this.worldPos()!, target.worldPos()!);
             for (var object of world.get(["area", "tile"])) {
                 if (object.isObstacle && object !== target && object !== this.grabbing) {
                     const boundingbox = object.worldArea();
@@ -593,30 +585,26 @@ export const player = K.add([
         },
         /**
          * True if overlapping any game object with the tag "type".
-         * @param {string} type Tag to check
-         * @param {import("kaplay").GameObj} [where=world] 
-         * @returns {boolean}
          */
-        intersectingAny(type, where = world) {
-            return where?.get(type).some(obj => this.isColliding(obj));
+        intersectingAny(this: GameObj<AreaComp>, type: string, where: GameObj = world): boolean {
+            return where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
         /**
          * Get the currently hovering object, or null.
-         * @returns {import("kaplay").GameObj?}
          */
-        getTargeted() {
+        getTargeted(): GameObj | undefined {
             if (!world)
                 return;
             /**
              * @type {import("kaplay").GameObj<import("kaplay").LayerComp>[]}
              */
-            const candidates = [];
-            for (var obj of world.get("hoverOutline")) {
+            const candidates: GameObj<LayerComp>[] = [];
+            for (var obj of world.get<AreaComp | LayerComp>("hoverOutline")) {
                 if (obj.isHovering() && this.canTouch(obj))
-                    candidates.push(obj);
+                    candidates.push(obj as GameObj<LayerComp>);
             }
             candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
-            return candidates[0] ?? null;
+            return candidates[0];
         }
     },
 ]);
@@ -626,7 +614,7 @@ K.setGravity(600);
 
 // Keep player centered in window
 const follower = player.onUpdate(() => {
-    K.camPos(player.worldPos());
+    K.camPos(player.worldPos()!);
 });
 
 // Controls
@@ -684,7 +672,7 @@ player.onButtonPress("climb", () => {
 player.onButtonPress("throw", () => {
     const thrown = player.grabbing;
     if (!thrown) return;
-    var direction = cursor.screenPos().sub(player.screenPos()).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
+    var direction = cursor.screenPos()!.sub(player.screenPos()!).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
     const len = direction.len();
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
     player.grabbing = null;
@@ -766,12 +754,12 @@ const cursor = K.add([
     K.area({ scale: 0 }), // single point
     K.fakeMouse(),
     {
-        clampPos() {
+        clampPos(this: GameObj<PosComp>) {
             // make sure cursor doesn't go outside of window (prevent "I lost my mouse!!!"")
             this.pos.x = Math.max(0, Math.min(this.pos.x, K.width()));
             this.pos.y = Math.max(0, Math.min(this.pos.y, K.height()));
         },
-        showInteractable() {
+        showInteractable(this: GameObj<SpriteComp>) {
             // show interaction distance indicator
             const targeted = player.getTargeted();
             if (targeted !== null) {
@@ -798,7 +786,7 @@ cursor.onGamepadStick("right", xy => {
 });
 K.onMouseMove(() => {
     cursor.update();
-    if (cursor.screenPos().x < player.screenPos().x) player.flipX = false;
+    if (cursor.screenPos()!.x < player.screenPos()!.x) player.flipX = false;
     else player.flipX = true;
 });
 K.onButtonPress("click", () => cursor.press());
@@ -809,7 +797,7 @@ K.onButtonRelease("click", () => cursor.release());
 const UI = K.add([K.fixed(), K.layer("ui")]);
 
 const FPSindicator = UI.add([
-    K.text("", { size: 8, font: "unscii", color: K.WHITE }), // cSpell: ignore unscii
+    K.text("", { size: 8, font: "unscii", }), // cSpell: ignore unscii
     K.pos(10, 10),
     K.layer("ui"),
 ])
@@ -818,18 +806,23 @@ K.loop(0.1, () => {
     const fps = 1.0 / K.dt();
     FPSindicator.text = "FPS: " + fps.toFixed(2);
     if (fps < 15) {
+        // @ts-ignore
+        // tsc says these shouldn't work... but they do. What gives?
         FPSindicator.color = K.RED;
     }
     else if (fps < 20) {
+        // @ts-ignore
         FPSindicator.color = K.YELLOW;
     }
     else {
+        // @ts-ignore
         FPSindicator.color = K.GREEN;
     }
 });
 
-// K.debug.paused = true;
+// setTimeout(() => K.debug.paused = true, 100);
 // K.debug.inspect = true;
 // follower.paused = true;
+// K.debug.timeScale = 0.2;
 
-if (!(player.layerIndex < cursor.layerIndex)) K.debug.error("Blooey!");
+if (!(player.layerIndex! < cursor.layerIndex!)) K.debug.error("Blooey!");

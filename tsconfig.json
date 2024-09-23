@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "noEmit": true,
+        "target": "ESNext",
+        "esModuleInterop": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "moduleResolution": "Bundler",
+        "module": "ESNext",
+    },
+    "include": [
+        "./**/*.ts"
+    ],
+}

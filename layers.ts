@@ -1,4 +1,4 @@
-import K from './init.js';
+import K from './init';
 
 K.layers([
     "background",

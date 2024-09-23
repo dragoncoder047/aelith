@@ -1,4 +1,5 @@
-import { player } from '../main.js';
+import { AreaComp, BodyComp, GameObj, PosComp, ZComp } from 'kaplay';
+import { player } from '../main';
 
 /**
  * Component for a grabbable object, i.e. something that
@@ -7,12 +8,12 @@ import { player } from '../main.js';
 export function grabbable() {
     return {
         id: "grabbable",
-        require: ["area", "z", "body"],
+        require: ["area", "z", "body", "pos"],
         /**
          * @type {import("kaplay").KEventController?}
          */
         physicsFoo: null,
-        add() {
+        add(this: GameObj<AreaComp | BodyComp | PosComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) {
                     if (player.grabbing === this) {
@@ -27,7 +28,7 @@ export function grabbable() {
                 if (player.grabbing === this) coll.preventResolution();
             });
         },
-        update() {
+        update(this: GameObj<ZComp>) {
             if (player.grabbing === this) {
                 this.z = Number.MAX_VALUE;
             }
