@@ -2,6 +2,7 @@
 // mostly because uBlock is an idiot and decides to block "clicky.js"
 // even if it's a 1st party script
 
+import { GameObj, StateComp } from 'kaplay';
 import { BAP_OPTS } from '../constants';
 import K from '../init';
 
@@ -13,10 +14,7 @@ export function clicky(states = ["off", "on"]) {
     return {
         id: "clicky",
         require: ["state"],
-        /**
-         * @this {import("kaplay").GameObj<import("kaplay").StateComp>}
-         */
-        add() {
+        add(this: GameObj<StateComp>) {
             states.forEach(state => {
                 this.onStateEnter(state, () => {
                     K.play("bap", BAP_OPTS[state]?.());

@@ -1,11 +1,9 @@
+import { GameObj, StateComp } from "kaplay";
+
 /**
  * Component that implements a machine that toggles state when it receives the "toggle" message.
- * @param {string} [falseState="off"]
- * @param {string} [trueState="on"]
- * @param {boolean} [initialState=false]
- * @param {string} [toggleMsg="toggle"]
  */
-export function toggler(falseState = "off", trueState = "on", initialState = false, toggleMsg = "toggle") {
+export function toggler(falseState: string = "off", trueState: string = "on", initialState: boolean = false, toggleMsg: string = "toggle") {
     var closure__state = initialState;
     return {
         id: "toggler",
@@ -18,10 +16,7 @@ export function toggler(falseState = "off", trueState = "on", initialState = fal
             closure__state = state;
             this._syncState();
         },
-        /**
-         * @this {import("kaplay").GameObj<LinkComp | import("kaplay").StateComp>}
-         */
-        add() {
+        add(this: GameObj<StateComp>) {
             this._syncState();
             this.onMessage(msg => {
                 if (msg == this.toggleMsg) {
@@ -30,10 +25,7 @@ export function toggler(falseState = "off", trueState = "on", initialState = fal
                 }
             });
         },
-        /**
-         * @this {import("kaplay").GameObj<LinkComp | import("kaplay").StateComp>}
-         */
-        _syncState() {
+        _syncState(this: GameObj<StateComp>) {
             var targetState = this.togglerState ? this.trueState : this.falseState;
             if (this.state != targetState) this.enterState(targetState);
         }

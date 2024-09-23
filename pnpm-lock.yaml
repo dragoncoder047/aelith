@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: 4000.0.0-alpha.4
-        version: 4000.0.0-alpha.4
+        specifier: github:kaplayjs/kaplay#fb324db2a5cd4554cfd2901d9621d430c9c6ca95
+        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/fb324db2a5cd4554cfd2901d9621d430c9c6ca95
     devDependencies:
       esbuild:
         specifier: ^0.24.0
@@ -222,8 +222,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  kaplay@4000.0.0-alpha.4:
-    resolution: {integrity: sha512-M0QGmCTiZChzXJliIa8ZAgHExPI4Hg+ua8LQOxBTmDSDc3WFJ8HBf5TZ5HVoyv49iRDty9ac9UhDh3bxAAb9iQ==}
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/fb324db2a5cd4554cfd2901d9621d430c9c6ca95:
+    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/fb324db2a5cd4554cfd2901d9621d430c9c6ca95}
+    version: 4000.0.0-alpha.4
 
   typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
@@ -373,7 +374,7 @@ snapshots:
       '@esbuild/win32-ia32': 0.24.0
       '@esbuild/win32-x64': 0.24.0
 
-  kaplay@4000.0.0-alpha.4:
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/fb324db2a5cd4554cfd2901d9621d430c9c6ca95:
     dependencies:
       '@kaplayjs/dprint-config': 1.1.0
 

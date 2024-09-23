@@ -225,8 +225,8 @@ const MParser: {
             var y = this.stack.pop();
             var x = this.stack.pop();
             var obj = this.stack.pop();
-            obj.use(nudge(x, y));
-            this.stack.push(x);
+            obj.pos = obj.pos.add(K.vec2(x, y));
+            this.stack.push(obj);
         },
         // link command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
         $() {
@@ -404,29 +404,28 @@ const MParser: {
      * on the edges
      */
     mergeAcross(world) {
-        const tw = world.tileWidth();
         const allowedTags = ["wall"/**, "conveyor"/**/];
         for (var y = 0; y < world.numRows(); y++) {
-            var prevTile: GameObj<AreaComp> | null = null;
+            var prevTile: GameObj<AreaComp | SpriteComp | PosComp> | null = null;
             var prevTag: string = "";
             for (var x = 0; x < world.numColumns(); x++) {
-                const pos = K.vec2(x, y);
-                const thisTile = world.getAt(pos)[0];
+                const thisTile = world.getAt(K.vec2(x, y))[0]!;
                 if (
                     prevTile != null
-                    && prevTag != ""
                     && thisTile != null
+                    && prevTag != ""
                     && thisTile.is(prevTag)) {
                     // merge across
-                    prevTile.area.offset.x += tw / 2;
+                    prevTile.area.offset.x += world.tileWidth() / 2;
                     prevTile.area.scale.x++;
+                    prevTile.transform = K.Mat4.rotateX(0);
                     thisTile.unuse("area");
                     thisTile.unuse(prevTag);
                 }
                 else {
                     // reset
                     if (thisTile != null && allowedTags.some(t => thisTile.is(t))) {
-                        prevTile = thisTile as GameObj<AreaComp>;
+                        prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp>;
                         prevTag = allowedTags.find(t => thisTile.is(t))!;
                     }
                     else {
@@ -821,8 +820,9 @@ K.loop(0.1, () => {
     }
 });
 
-K.debug.paused = true;
+// setTimeout(() => K.debug.paused = true, 100);
 // K.debug.inspect = true;
 // follower.paused = true;
+// K.debug.timeScale = 0.2;
 
 if (!(player.layerIndex! < cursor.layerIndex!)) K.debug.error("Blooey!");

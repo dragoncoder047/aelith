@@ -1,15 +1,13 @@
+import { GameObj, SpriteComp, StateComp } from "kaplay";
+
 /**
  * Toggles between frames when states change.
- * @param {string[]} [states=["off", "on"]]
  */
-export function spriteToggle(states = ["off", "on"]) {
+export function spriteToggle(states: [string, string] = ["off", "on"]) {
     return {
         id: "sprite-toggle",
         require: ["state", "sprite"],
-        /**
-         * @this {import("kaplay").GameObj<import("kaplay").StateComp | import("kaplay").SpriteComp | SpriteToggleComp>}
-         */
-        add() {
+        add(this: GameObj<StateComp | SpriteComp>) {
             states.forEach((state, i) => {
                 this.onStateEnter(state, () => {
                     if (this.getCurAnim()) this.stop();
@@ -18,7 +16,7 @@ export function spriteToggle(states = ["off", "on"]) {
             });
         },
         inspect() {
-            return "sprite-toggle: " + states.join(":");
+            return "sprite-toggle: " + states.join(" <-> ");
         }
     };
 }

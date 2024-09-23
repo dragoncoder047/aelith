@@ -1,14 +1,13 @@
+import { GameObj, PosComp, Vec2Args } from 'kaplay';
 import K from '../init';
 
-/**
- * @param  {...any} by
- */
-export function nudge(...by) {
+export function nudge(...by: Vec2Args) {
     return {
         id: "nudge",
         require: ["pos"],
-        add() {
+        add(this: GameObj<PosComp>) {
             const x = K.onUpdate(() => {
+                // @ts-ignore
                 this.moveBy(K.vec2(...by));
                 this.unuse("nudge");
                 x.cancel();

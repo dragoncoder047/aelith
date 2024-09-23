@@ -3,7 +3,7 @@ import { type AudioPlayOpt } from "kaplay";
 /**
  * Pixel size for rendering
  */
-export const SCALE = 1;
+export const SCALE = 3;
 
 /**
  * Tile map grid size

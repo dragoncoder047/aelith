@@ -1,8 +1,10 @@
+import { GameObj, KEventController } from "kaplay";
+
 /**
  * Component that links two game objects by messages
- * @param {string} tag ID of linked objects
+ * @param tag ID of linked objects
  */
-export function linked(tag) {
+export function linked(tag: string) {
     var closure__tag = tag;
     return {
         id: "linked",
@@ -13,17 +15,10 @@ export function linked(tag) {
             closure__tag = newTag;
             this.use(this.idTag);
         },
-        /**
-         * @this {import("kaplay").GameObj<LinkComp>}
-         */
-        add() {
+        add(this: GameObj) {
             this.use(this.idTag);
         },
-        /**
-         * @param {string} msg
-         * @this {import("kaplay").GameObj<LinkComp>}
-         */
-        broadcast(msg) {
+        broadcast(this: GameObj, msg: string) {
             this.query({
                 hierarchy: "siblings",
                 include: this.idTag,
@@ -31,12 +26,7 @@ export function linked(tag) {
                 sibling.trigger("message", msg);
             });
         },
-        /**
-         * @param {(msg: string) => void} cb
-         * @returns {import("kaplay").KEventController}
-         * @this {import("kaplay").GameObj<LinkComp>}
-         */
-        onMessage(cb) {
+        onMessage(this: GameObj, cb: (msg: string) => void): KEventController {
             return this.on("message", cb);
         }
     };

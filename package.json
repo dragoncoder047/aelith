@@ -6,7 +6,9 @@
     "main": "index.js",
     "scripts": {
         "build": "esbuild main.ts --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6",
-        "serve": "./serve",
+        "dev:build": "esbuild main.ts --watch --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6",
+        "dev:serve": "./serve",
+        "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc"
     },
     "license": "GPL-3.0-only",
@@ -16,7 +18,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "4000.0.0-alpha.4"
+        "kaplay": "github:kaplayjs/kaplay#fb324db2a5cd4554cfd2901d9621d430c9c6ca95"
     },
     "type": "module"
 }
