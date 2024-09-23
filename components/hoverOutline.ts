@@ -1,5 +1,5 @@
-import K from '../init.js';
-import { player } from '../main.js';
+import K from '../init';
+import { player } from '../main';
 
 /**
  * Makes the object show a white outline on hover.

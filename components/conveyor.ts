@@ -1,4 +1,4 @@
-import { CONVEYOR_SPEED } from '../constants.js';
+import { CONVEYOR_SPEED } from '../constants';
 
 /**
  * @param {string[]} [states=["off", "on"]]

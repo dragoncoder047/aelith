@@ -1,4 +1,4 @@
-import { player } from '../main.js';
+import { player } from '../main';
 
 /**
  * Object that switches state when clicked.

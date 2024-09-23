@@ -1,4 +1,4 @@
-import K from '../init.js';
+import K from '../init';
 
 /**
  * Component that plays a sound when the object hits the floor.

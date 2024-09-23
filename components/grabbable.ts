@@ -1,4 +1,4 @@
-import { player } from '../main.js';
+import { player } from '../main';
 
 /**
  * Component for a grabbable object, i.e. something that

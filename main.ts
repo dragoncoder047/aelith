@@ -1,6 +1,29 @@
 // cSpell: ignore kaplay
 
-import './assets.js';
+import {
+    Vec2,
+    type AreaComp,
+    type AreaOpt,
+    type BodyComp,
+    type Collision,
+    type CompList,
+    type GameObj,
+    type LevelComp,
+    type SpriteComp
+} from 'kaplay';
+import { WORLD_FILE } from './assets';
+import { button } from './components/button';
+import { clicky } from './components/click_noise';
+import { conveyor } from './components/conveyor';
+import { grabbable } from './components/grabbable';
+import { hoverOutline } from './components/hoverOutline';
+import { infFriction } from './components/infFriction';
+import { linked } from './components/linked';
+import { nudge } from './components/nudge';
+import { spriteToggle } from './components/spriteToggle';
+import { thudder } from './components/thudder';
+import { toggler } from './components/toggler';
+import { toggleSwitch } from './components/toggleSwitch';
 import {
     BAP_OPTS,
     FOOTSTEP_INTERVAL,
@@ -11,34 +34,17 @@ import {
     TERMINAL_VELOCITY,
     TILE_SIZE,
     WALK_SPEED
-} from './constants.js';
-import { WORLD_FILE } from './assets.js';
-import K from './init.js';
-import './layers.js';
-import { nudge } from './components/nudge.js';
-import { linked } from './components/linked.js';
-import { toggler } from './components/toggler.js';
-import { spriteToggle } from './components/spriteToggle.js';
-import { clicky } from './components/click_noise.js'; // cSpell: ignore clicky
-import { button } from './components/button.js';
-import { conveyor } from './components/conveyor.js';
-import { thudder } from './components/thudder.js';
-import { hoverOutline } from './components/hoverOutline.js';
-import { toggleSwitch } from './components/toggleSwitch.js';
-import { uiButton } from './components/uiButton.js'
-import { grabbable } from './components/grabbable.js'; // cSpell: ignore grabbable
-import { infFriction } from './components/infFriction.js';
+} from './constants';
+import K from './init';
+import './layers';
 
-/**
- * @type {import("kaplay").GameObj<import("kaplay").LevelComp> | undefined}
- */
-var world;
+var world: GameObj<LevelComp>;
 
 
 /**
  * Create default components for common tile objects.
  */
-function defaults(areaOpts) {
+function defaults(areaOpts?: AreaOpt): CompList<any> {
     return [
         K.area(areaOpts),
         K.anchor("center"),
@@ -52,7 +58,7 @@ function defaults(areaOpts) {
 /**
  * Return components for a machine
  */
-function machine(areaOpts) {
+function machine(areaOpts?: AreaOpt): CompList<any> {
     return [
         toggler("off", "on", false),
         K.state("off"),
@@ -63,9 +69,8 @@ function machine(areaOpts) {
 
 /**
  * Components for a moveable, grabbable box.
- * @returns {import("kaplay").CompList}
  */
-function box() {
+function box(): CompList<any> {
     return [
         K.sprite("box", { fill: false }),
         "box",
@@ -83,12 +88,9 @@ function box() {
             // TODO: fix this logic
             hittingPlayer: false,
             wasHittingPlayer: false,
-            /**
-             * @this {import("kaplay").GameObj<import("kaplay").SpriteComp | import("kaplay").BodyComp | import("kaplay").AreaComp>}
-             */
-            add() {
+            add(this: GameObj<SpriteComp | BodyComp | AreaComp>) {
                 this.frame = K.randi(this.numFrames());
-                this.onBeforePhysicsResolve(coll => {
+                this.onBeforePhysicsResolve((coll: Collision) => {
                     if (this === player.grabbing) {
                         this.hittingPlayer = true;
                         coll.preventResolution();
@@ -111,20 +113,14 @@ function box() {
 
 /**
  * helper function for MParser
- * @param {string} from
- * @param {string} to
- * @returns {(this: typeof MParser) => void}
  */
-function stackOp(from, to) {
-    if ([].some.call(from, (ch, i) => from.indexOf(ch) !== i))
+function stackOp(from: string, to: string): (this: typeof MParser) => void {
+    if ([].some.call(from, (ch: string, i: number) => from.indexOf(ch) !== i))
         throw new Error("stack op definition error: duplicate input names: " + from);
-    if ([].some.call(to, ch => from.indexOf(ch) === -1))
+    if ([].some.call(to, (ch: string) => from.indexOf(ch) === -1))
         throw new Error("stack op definition error: undefined character in output: " + to);
-    const reversedFrom = [].slice.call(from).reverse();
-    /**
-     * @this {typeof MParser}
-     */
-    return function () {
+    const reversedFrom: number[] = [].slice.call(from).reverse();
+    return function (this: typeof MParser) {
         const nameMap = {};
         for (var c of reversedFrom) {
             nameMap[c] = this.stack.pop();
@@ -138,10 +134,23 @@ function stackOp(from, to) {
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
-const MParser = {
+const MParser: {
+    spawners: { [x: string]: () => CompList<any> },
+    storedProcedures: { [x: string]: string },
+    commands: { [x: string]: (this: typeof MParser) => void },
+    fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any> },
+    buffer: string | number | null,
+    parenStack: string[],
+    process(cmd: string, pos: Vec2): CompList<any>,
+    mergeAcross(world: GameObj<LevelComp>): void,
+    cleanBuffer(): void,
+    build(world: GameObj<LevelComp>): void,
+    commandQueue: (string | number | import("kaplay").Vec2 | (() => void))[],
+    stack: any[],
+    uid(): string,
+} = {
     /**
      * Commands that spawn a machine at that particular location.
-     * @type {{[x: string]: () => import("kaplay").CompList}}
      */
     spawners: {
         L: () => [
@@ -179,14 +188,10 @@ const MParser = {
         ],
         X: box,
     },
-    /**
-     * @type {{[x: string]: string}}
-     */
     storedProcedures: {},
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
-     * @type {{[x: string]: () => void}}
      */
     commands: {
         // drop/done command: anything -- nothing
@@ -278,7 +283,6 @@ const MParser = {
     },
     /**
      * Commands that spawn a tile type that isn't configurable.
-     * @type {{[x: string]: () => import("kaplay").CompList}}
      */
     fixedTiles: {
         "@": () => [
@@ -308,18 +312,9 @@ const MParser = {
     },
     /**
      * Used to hold intermediate parsing results.
-     * @type {string | number | null}
      */
     buffer: null,
-    /**
-     * @type {string[]}
-     */
     parenStack: [],
-    /**
-     * @param {string} cmd
-     * @param {import("kaplay").Vec2?} pos 
-     * @returns {import("kaplay").CompList}
-     */
     process(cmd, pos) {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
@@ -404,7 +399,6 @@ const MParser = {
     /**
      * Merge blocks across horizontally in the world to ensure the player won't snag
      * on the edges
-     * @param {import("kaplay").GameObj<import("kaplay").LevelComp>} world
      */
     mergeAcross(world) {
         const tw = world.tileWidth();
@@ -447,7 +441,6 @@ const MParser = {
     },
     /**
      * Execute the stored commands in the queue, to initialize the machines.
-     * @param {import("kaplay").GameObj<import("kaplay").LevelComp>} world 
      */
     build(world) {
         this.cleanBuffer();
@@ -468,17 +461,12 @@ const MParser = {
     },
     /**
      * Queue of commands to be executed to initialize the game.
-     * @type {(string | number | import("kaplay").Vec2 | () => void)[]}
      */
     commandQueue: [],
     /**
      * Intermediate stack of objects used during initialization.
-     * @type {(string | number | import("kaplay").GameObj)[]}
      */
     stack: [],
-    /**
-     * @returns {string}
-     */
     uid() {
         return Math.random().toString(16).slice(2, 10);
     }
@@ -502,7 +490,7 @@ K.load((async () => {
                 throw new SyntaxError(msg);
             }
         }
-    });
+    }) as GameObj<LevelComp>;
 
     try {
         MParser.build(world);

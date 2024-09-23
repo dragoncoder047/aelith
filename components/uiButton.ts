@@ -1,7 +1,7 @@
 /**
  * Component for a UI button
  */
-export function uiButton(cb) {
+export function uiButton(cb: () => void) {
     return {
         id: "ui-button",
         require: ["area"],

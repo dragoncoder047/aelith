@@ -1,6 +1,8 @@
-import K from '../init.js';
+import K from '../init';
 
-// Helper component
+/**
+ * @param  {...any} by
+ */
 export function nudge(...by) {
     return {
         id: "nudge",
