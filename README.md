@@ -5,7 +5,7 @@
 1. make sure you have pnpm installed
 2. `cd` to this directory
 3. `pnpm install`
-4. `./serve`
+4. `pnpm dev`
 5. open <http://localhost:8000> in Chrome (NOT Safari, see kaplayjs/kaplay#289)
 
 ## Dev notes follow
