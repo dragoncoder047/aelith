@@ -1,6 +1,9 @@
 // cSpell: ignore kaplay
 
 import {
+    LayerComp,
+    PosComp,
+    StateComp,
     Vec2,
     type AreaComp,
     type AreaCompOpt,
@@ -119,9 +122,9 @@ function stackOp(from: string, to: string): (this: typeof MParser) => void {
         throw new Error("stack op definition error: duplicate input names: " + from);
     if ([].some.call(to, (ch: string) => from.indexOf(ch) === -1))
         throw new Error("stack op definition error: undefined character in output: " + to);
-    const reversedFrom: number[] = [].slice.call(from).reverse();
+    const reversedFrom: string[] = [].slice.call(from).reverse();
     return function (this: typeof MParser) {
-        const nameMap = {};
+        const nameMap: { [n: string]: any } = {};
         for (var c of reversedFrom) {
             nameMap[c] = this.stack.pop();
         }
@@ -135,17 +138,17 @@ function stackOp(from: string, to: string): (this: typeof MParser) => void {
  * Main parser handler for level map data (in WORLD_FILE).
  */
 const MParser: {
-    spawners: { [x: string]: () => CompList<any> },
+    spawners: { [x: string]: (this: typeof MParser) => CompList<any> },
     storedProcedures: { [x: string]: string },
     commands: { [x: string]: (this: typeof MParser) => void },
     fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any> },
     buffer: string | number | null,
     parenStack: string[],
-    process(cmd: string, pos: Vec2): CompList<any>,
+    process(cmd: string, pos: Vec2 | null): CompList<any> | undefined,
     mergeAcross(world: GameObj<LevelComp>): void,
     cleanBuffer(): void,
     build(world: GameObj<LevelComp>): void,
-    commandQueue: (string | number | import("kaplay").Vec2 | (() => void))[],
+    commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[],
     stack: any[],
     uid(): string,
 } = {
@@ -244,13 +247,13 @@ const MParser: {
         },
         // define command: value name --
         d() {
-            var pName = this.pop();
-            var pContent = this.pop();
+            var pName = this.stack.pop();
+            var pContent = this.stack.pop();
             this.storedProcedures[pName] = pContent;
         },
         // get command: name -- value
         g() {
-            var pName = this.pop();
+            var pName = this.stack.pop();
             var val = this.storedProcedures[pName];
             if (val === undefined)
                 throw "undefined: " + pName;
@@ -258,7 +261,7 @@ const MParser: {
         },
         // call command: *arguments name -- *values
         c() {
-            var pName = this.pop();
+            var pName = this.stack.pop();
             var proc = this.storedProcedures[pName];
             if (proc === undefined)
                 throw "undefined: " + pName;
@@ -315,16 +318,16 @@ const MParser: {
      */
     buffer: null,
     parenStack: [],
-    process(cmd, pos) {
+    process(cmd, pos): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
         }
         if (this.parenStack.length > 0) {
-            const popParen = (p) => {
+            const popParen = (p: string) => {
                 if (!this.parenStack.length) throw "unmatched paren " + p;
                 const oldState = this.parenStack.pop();
-                const expected = { "{": "}", "[": "]", "(": ")" }[oldState];
+                const expected = { "{": "}", "[": "]", "(": ")" }[oldState!];
                 if (p != expected) throw "mismatched parens " + oldState + " " + p;
             };
             if (cmd == "]" || cmd == ")" || cmd == "}") {
@@ -342,7 +345,7 @@ const MParser: {
                             this.buffer = null;
                             const oLen = this.commandQueue.length;
                             for (var i = 0; i < code.length; i++) {
-                                this.process(code[i], null);
+                                this.process(code[i]!, null);
                             }
                             if (this.parenStack.length > 0) throw "oops parens";
                             if (this.commandQueue.length === oLen && code != "") throw "oops nothing";
@@ -374,20 +377,20 @@ const MParser: {
                 this.buffer = 0;
             }
             else
-                this.buffer = 10 * this.buffer + parseInt(cmd);
+                this.buffer = 10 * (this.buffer as number) + parseInt(cmd);
         }
         else {
             // Buffer-ending command
             this.cleanBuffer();
             if (cmd in this.commands) {
-                this.commandQueue.push(this.commands[cmd]);
+                this.commandQueue.push(this.commands[cmd]!);
             }
             else if (pos != null && cmd in this.fixedTiles) {
-                return this.fixedTiles[cmd](pos);
+                return this.fixedTiles[cmd]!.call(this);
             }
             else if (pos != null && cmd in this.spawners) {
                 this.commandQueue.push(pos);
-                var rv = this.spawners[cmd](pos);
+                var rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
                 // (kaplay deduplicates tags automatically)
                 rv.push("machine");
@@ -404,13 +407,14 @@ const MParser: {
         const tw = world.tileWidth();
         const allowedTags = ["wall"/**, "conveyor"/**/];
         for (var y = 0; y < world.numRows(); y++) {
-            var prevTile = null;
-            var prevTag = null;
+            var prevTile: GameObj<AreaComp> | null = null;
+            var prevTag: string = "";
             for (var x = 0; x < world.numColumns(); x++) {
                 const pos = K.vec2(x, y);
                 const thisTile = world.getAt(pos)[0];
                 if (
                     prevTile != null
+                    && prevTag != ""
                     && thisTile != null
                     && thisTile.is(prevTag)) {
                     // merge across
@@ -422,11 +426,12 @@ const MParser: {
                 else {
                     // reset
                     if (thisTile != null && allowedTags.some(t => thisTile.is(t))) {
-                        prevTile = thisTile;
-                        prevTag = allowedTags.find(t => thisTile.is(t));
+                        prevTile = thisTile as GameObj<AreaComp>;
+                        prevTag = allowedTags.find(t => thisTile.is(t))!;
                     }
                     else {
-                        prevTile = prevTag = null;
+                        prevTile = null;
+                        prevTag = "";
                     }
                 }
             }
@@ -453,6 +458,7 @@ const MParser: {
             else if (typeof cmd === "string" || typeof cmd === "number")
                 this.stack.push(cmd);
             else {
+                // @ts-expect-error
                 K.debug.error("bad command", cmd);
                 throw new Error("bad command: " + cmd);
             }
@@ -482,7 +488,7 @@ K.load((async () => {
         wildcardTile(cmd, pos) {
             try {
                 return MParser.process(cmd, pos);
-            } catch (e) {
+            } catch (e: any) {
                 const at = `line ${pos.y + 1}, col ${pos.x + 1}`;
                 const msg = `Tilemap error at ${at}: ${e.stack || e.toString()}`
                 K.debug.error(msg);
@@ -495,7 +501,7 @@ K.load((async () => {
     try {
         MParser.build(world);
         MParser.mergeAcross(world);
-    } catch (e) {
+    } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`
         K.debug.error(msg);
         K.debug.paused = true;
@@ -510,7 +516,10 @@ K.load((async () => {
     if (playerPositions.length > 1) {
         console.warn(`Multiple @'s in ${WORLD_FILE} - using the first one`);
     }
-    player.pos = playerPositions[0].worldPos();
+    // @ts-ignore
+    // What, tsc can't read?? This is inside an *async* IIFE!
+    // It is NOT going to be used before being defined!
+    player.pos = playerPositions[0]!.worldPos();
     playerPositions.forEach(K.destroy);
 
 })());
@@ -542,33 +551,29 @@ export const player = K.add([
          * @type {import("kaplay").GameObj<import("kaplay").PosComp>?}
          */
         grabbing: null,
-        update() {
+        update(this: GameObj<PosComp | BodyComp | AreaComp | LayerComp | SpriteComp | StateComp>) {
             // move the grabbing to self
             if (this.grabbing !== null) {
                 if (this.curPlatform() === this.grabbing) this.jump(1); // Reset curPlatform()
                 this.grabbing.vel = K.vec2(0); // Reset velocity
-                this.grabbing.moveTo(this.worldPos().sub(this.grabbing.parent.worldPos()));
+                this.grabbing.moveTo(this.worldPos()!.sub(this.grabbing.parent.worldPos()));
             }
         },
         /**
          * Interaction distance
          */
         intDist: TILE_SIZE * 4,
-        /**
-         * @param {import("kaplay").GameObj<import("kaplay").PosComp>} target
-         * @returns {boolean}
-         */
-        canTouch(target) {
+        canTouch(this: GameObj<PosComp>, target: GameObj<PosComp>): boolean {
             // is a UI button?
             if (target.is("ui-button"))
                 return true;
             // always gonna be too far?
-            const diff = target.worldPos().sub(this.worldPos());
+            const diff = target.worldPos()!.sub(this.worldPos()!);
             if (diff.len() > this.intDist)
                 return false;
             if (!world)
                 return true; // bail if world isn't initialized yet
-            const line = new K.Line(this.worldPos(), target.worldPos());
+            const line = new K.Line(this.worldPos()!, target.worldPos()!);
             for (var object of world.get(["area", "tile"])) {
                 if (object.isObstacle && object !== target && object !== this.grabbing) {
                     const boundingbox = object.worldArea();
@@ -581,30 +586,26 @@ export const player = K.add([
         },
         /**
          * True if overlapping any game object with the tag "type".
-         * @param {string} type Tag to check
-         * @param {import("kaplay").GameObj} [where=world] 
-         * @returns {boolean}
          */
-        intersectingAny(type, where = world) {
-            return where?.get(type).some(obj => this.isColliding(obj));
+        intersectingAny(this: GameObj<AreaComp>, type: string, where: GameObj = world): boolean {
+            return where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
         /**
          * Get the currently hovering object, or null.
-         * @returns {import("kaplay").GameObj?}
          */
-        getTargeted() {
+        getTargeted(): GameObj | undefined {
             if (!world)
                 return;
             /**
              * @type {import("kaplay").GameObj<import("kaplay").LayerComp>[]}
              */
-            const candidates = [];
-            for (var obj of world.get("hoverOutline")) {
+            const candidates: GameObj<LayerComp>[] = [];
+            for (var obj of world.get<AreaComp | LayerComp>("hoverOutline")) {
                 if (obj.isHovering() && this.canTouch(obj))
-                    candidates.push(obj);
+                    candidates.push(obj as GameObj<LayerComp>);
             }
             candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
-            return candidates[0] ?? null;
+            return candidates[0];
         }
     },
 ]);
@@ -614,7 +615,7 @@ K.setGravity(600);
 
 // Keep player centered in window
 const follower = player.onUpdate(() => {
-    K.camPos(player.worldPos());
+    K.camPos(player.worldPos()!);
 });
 
 // Controls
@@ -672,7 +673,7 @@ player.onButtonPress("climb", () => {
 player.onButtonPress("throw", () => {
     const thrown = player.grabbing;
     if (!thrown) return;
-    var direction = cursor.screenPos().sub(player.screenPos()).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
+    var direction = cursor.screenPos()!.sub(player.screenPos()!).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
     const len = direction.len();
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
     player.grabbing = null;
@@ -754,12 +755,12 @@ const cursor = K.add([
     K.area({ scale: 0 }), // single point
     K.fakeMouse(),
     {
-        clampPos() {
+        clampPos(this: GameObj<PosComp>) {
             // make sure cursor doesn't go outside of window (prevent "I lost my mouse!!!"")
             this.pos.x = Math.max(0, Math.min(this.pos.x, K.width()));
             this.pos.y = Math.max(0, Math.min(this.pos.y, K.height()));
         },
-        showInteractable() {
+        showInteractable(this: GameObj<SpriteComp>) {
             // show interaction distance indicator
             const targeted = player.getTargeted();
             if (targeted !== null) {
@@ -786,7 +787,7 @@ cursor.onGamepadStick("right", xy => {
 });
 K.onMouseMove(() => {
     cursor.update();
-    if (cursor.screenPos().x < player.screenPos().x) player.flipX = false;
+    if (cursor.screenPos()!.x < player.screenPos()!.x) player.flipX = false;
     else player.flipX = true;
 });
 K.onButtonPress("click", () => cursor.press());
@@ -797,7 +798,7 @@ K.onButtonRelease("click", () => cursor.release());
 const UI = K.add([K.fixed(), K.layer("ui")]);
 
 const FPSindicator = UI.add([
-    K.text("", { size: 8, font: "unscii", color: K.WHITE }), // cSpell: ignore unscii
+    K.text("", { size: 8, font: "unscii", }), // cSpell: ignore unscii
     K.pos(10, 10),
     K.layer("ui"),
 ])
@@ -806,18 +807,22 @@ K.loop(0.1, () => {
     const fps = 1.0 / K.dt();
     FPSindicator.text = "FPS: " + fps.toFixed(2);
     if (fps < 15) {
+        // @ts-ignore
+        // tsc says these shouldn't work... but they do. What gives?
         FPSindicator.color = K.RED;
     }
     else if (fps < 20) {
+        // @ts-ignore
         FPSindicator.color = K.YELLOW;
     }
     else {
+        // @ts-ignore
         FPSindicator.color = K.GREEN;
     }
 });
 
-// K.debug.paused = true;
+K.debug.paused = true;
 // K.debug.inspect = true;
 // follower.paused = true;
 
-if (!(player.layerIndex < cursor.layerIndex)) K.debug.error("Blooey!");
+if (!(player.layerIndex! < cursor.layerIndex!)) K.debug.error("Blooey!");

@@ -1,3 +1,5 @@
+import { type AudioPlayOpt } from "kaplay";
+
 /**
  * Pixel size for rendering
  */
@@ -49,7 +51,7 @@ export const JUMP_FORCE = 300;
  * Options for playing the "bap" sound
  * to make it sound different.
  */
-export const BAP_OPTS = {
+export const BAP_OPTS: { [state: string]: () => AudioPlayOpt } = {
     normal: () => ({ detune: -300 + 200 * Math.random(), volume: 0.5 + Math.random() / 2 }),
     climbing: () => ({ detune: Math.random() * 700, volume: 0.5 + Math.random() / 2 }),
     on: () => ({ detune: 1400 }),
