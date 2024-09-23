@@ -1,0 +1,63 @@
+/**
+ * Enables the object to turn on and off when it is stomped
+ * @param {number} [onDelay=0] delay to turn on when initially stomped
+ * @param {number | "toggle"} [offDelay=0] delay to turn off when unstomped
+ * * "toggle" means it is a bistable toggle (stomp on, stomp off)
+ * * negative delay means that it will automatically turn off after delay even if the stomping object is still on it
+ * @param {string} [switchMessage="toggle"] message used to toggle state
+ */
+export function button(onDelay = 0, offDelay = 0, switchMessage = "toggle") {
+    var stompedTimer;
+    var unstompedTimer;
+    // cSpell: ignore unstomped
+    return {
+        id: "button",
+        require: ["linked", "state", "timer", "body", "area"],
+        onDelay,
+        offDelay,
+        switchMessage,
+        stompedBy: new Set(),
+        /**
+         * @this {import("kaplay").GameObj<import("kaplay").StateComp | LinkComp | import("kaplay").TimerComp | import("kaplay").AreaComp | import("kaplay").BodyComp | ButtonComp>}
+         */
+        add() {
+            this.onPhysicsResolve(coll => {
+                if (!coll.isTop()) return;
+                const obj = coll.target;
+                if (this.stompedBy.has(obj)) return;
+                if (unstompedTimer) {
+                    unstompedTimer.cancel();
+                    unstompedTimer = null;
+                }
+                else {
+                    if (stompedTimer) stompedTimer.cancel();
+                    const shouldSwitch = this.stompedBy.size === 0;
+                    this.stompedBy.add(obj);
+                    stompedTimer = this.wait(this.onDelay, () => {
+                        stompedTimer = null;
+                        if (shouldSwitch) this.broadcast(this.switchMessage);
+                        if (typeof this.offDelay === "number" && this.offDelay < 0)
+                            this.trigger("collideEnd", obj);
+                    });
+                }
+            });
+            this.onCollideEnd(obj => {
+                if (!this.stompedBy.has(obj)) return;
+                if (stompedTimer) {
+                    stompedTimer.cancel();
+                    stompedTimer = null;
+                }
+                else {
+                    if (unstompedTimer) unstompedTimer.cancel();
+                    this.stompedBy.delete(obj);
+                    const shouldSwitch = this.stompedBy.size === 0;
+                    if (this.offDelay === "toggle") return;
+                    unstompedTimer = this.wait(Math.abs(this.offDelay), () => {
+                        unstompedTimer = null;
+                        if (shouldSwitch) this.broadcast(this.switchMessage);
+                    });
+                }
+            });
+        }
+    };
+}

@@ -1,0 +1,105 @@
+{
+    "player": {
+        "x": 0,
+        "y": 0,
+        "width": 248,
+        "height": 189,
+        "sliceX": 8,
+        "sliceY": 3,
+        "anims": {
+            "idle": {
+                "from": 0,
+                "to": 7,
+                "loop": true,
+                "speed": 5
+            },
+            "walking": {
+                "from": 8,
+                "to": 15,
+                "loop": true,
+                "speed": 32
+            },
+            "jump": {
+                "from": 16,
+                "to": 19,
+                "pingpong": true,
+                "speed": 80
+            },
+            "climbing": {
+                "from": 20,
+                "to": 23,
+                "loop": true,
+                "speed": 20
+            }
+        }
+    },
+    "cursor": {
+        "x": 248,
+        "y": 0,
+        "width": 18,
+        "height": 9,
+        "sliceX": 2
+    },
+    "steel": {
+        "x": 0,
+        "y": 190,
+        "width": 32,
+        "height": 32
+    },
+    "ladder": {
+        "x": 32,
+        "y": 190,
+        "width": 32,
+        "height": 32
+    },
+    "box": {
+        "x": 64,
+        "y": 190,
+        "width": 96,
+        "height": 32,
+        "sliceX": 3
+    },
+    "button": {
+        "x": 0,
+        "y": 222,
+        "width": 32,
+        "height": 16,
+        "sliceY": 2
+    },
+    "light": {
+        "x": 32,
+        "y": 222,
+        "width": 32,
+        "height": 16,
+        "sliceX": 2
+    },
+    "switch": {
+        "x": 64,
+        "y": 222,
+        "width": 32,
+        "height": 16,
+        "sliceX": 2
+    },
+    "conveyor": {
+        "x": 96,
+        "y": 222,
+        "width": 128,
+        "height": 32,
+        "sliceX": 4,
+        "sliceY": 2,
+        "anims": {
+            "forward": {
+                "from": 0,
+                "to": 3,
+                "loop": true,
+                "speed": 16
+            },
+            "backward": {
+                "from": 4,
+                "to": 7,
+                "loop": true,
+                "speed": 16
+            }
+        }
+    }
+}
