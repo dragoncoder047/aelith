@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "/dev/null",
+        "noEmit": true,
         "target": "ESNext",
         "esModuleInterop": true,
         "strict": true,
