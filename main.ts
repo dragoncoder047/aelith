@@ -3,7 +3,7 @@
 import {
     Vec2,
     type AreaComp,
-    type AreaOpt,
+    type AreaCompOpt,
     type BodyComp,
     type Collision,
     type CompList,
@@ -44,9 +44,9 @@ var world: GameObj<LevelComp>;
 /**
  * Create default components for common tile objects.
  */
-function defaults(areaOpts?: AreaOpt): CompList<any> {
+function defaults(areaOpts?: AreaCompOpt): CompList<any> {
     return [
-        K.area(areaOpts),
+        K.area(areaOpts!),
         K.anchor("center"),
         K.offscreen({ hide: true }),
         K.timer(),
@@ -58,7 +58,7 @@ function defaults(areaOpts?: AreaOpt): CompList<any> {
 /**
  * Return components for a machine
  */
-function machine(areaOpts?: AreaOpt): CompList<any> {
+function machine(areaOpts?: AreaCompOpt): CompList<any> {
     return [
         toggler("off", "on", false),
         K.state("off"),

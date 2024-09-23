@@ -1,20 +1,22 @@
 {
-  "name": "kont",
-  "description": "",
-  "keywords": [],
-  "author": "dragoncoder047",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "serve": "./serve"
-  },
-  "license": "GPL-3.0-only",
-  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c",
-  "devDependencies": {
-    "typescript": "^5.6.2"
-  },
-  "dependencies": {
-    "kaplay": "4000.0.0-alpha.4"
-  },
-  "type": "module"
+    "name": "kont",
+    "description": "",
+    "keywords": [],
+    "author": "dragoncoder047",
+    "main": "index.js",
+    "scripts": {
+        "build": "esbuild main.ts --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6",
+        "serve": "./serve",
+        "lint": "tsc"
+    },
+    "license": "GPL-3.0-only",
+    "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c",
+    "devDependencies": {
+        "esbuild": "^0.24.0",
+        "typescript": "^5.6.2"
+    },
+    "dependencies": {
+        "kaplay": "4000.0.0-alpha.4"
+    },
+    "type": "module"
 }

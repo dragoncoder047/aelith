@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
-        "outDir": "./build",
+        "outDir": "/dev/null",
         "target": "ESNext",
-        "moduleResolution": "Node",
         "esModuleInterop": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "moduleResolution": "Bundler",
+        "module": "ESNext",
     },
     "include": [
         "./**/*.ts"
