@@ -67,7 +67,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 #### Machine types
 
 * Controls
-  * Switch
+  * Lever
   * Button
   * Pressure plate
   * Laser / laser sensor

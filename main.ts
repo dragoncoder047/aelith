@@ -3,76 +3,15 @@
 import K from './init';
 import './layers';
 
-import {
-    AreaCompOpt,
-    CompList,
-} from 'kaplay';
 import './assets/loadLevel';
-import { MParser } from './assets/mparser';
-import { boxComp } from './components/box';
-import { grabbable } from './components/grabbable';
-import { hoverOutline } from './components/hoverOutline';
-import { infFriction } from './components/infFriction';
-import { linked } from './components/linked';
-import { thudder } from './components/thudder';
-import { toggler } from './components/toggler';
 import {
     BAP_OPTS,
-    FOOTSTEP_INTERVAL,
-    TILE_SIZE
-} from './constants';
+    FOOTSTEP_INTERVAL} from './constants';
 import { shouldMoveDown, shouldMoveLeft, shouldMoveRight, shouldMoveUp } from './controlsImpl';
 import './cursor';
 import './cursorControlsImpl';
 import { player } from './player';
 import './playerStateManage';
-
-/**
- * Create default components for common tile objects.
- */
-export function defaults(areaOpts?: AreaCompOpt): CompList<any> {
-    return [
-        K.area(areaOpts!),
-        K.anchor("center"),
-        K.offscreen({ hide: true }),
-        K.timer(),
-        K.rotate(0),
-        K.outline(0, K.WHITE),
-    ];
-}
-
-/**
- * Return components for a machine
- */
-export function machine(areaOpts?: AreaCompOpt): CompList<any> {
-    return [
-        toggler("off", "on", false),
-        K.state("off"),
-        linked(MParser.uid()),
-        ...defaults(areaOpts)
-    ];
-}
-
-/**
- * Components for a moveable, grabbable box.
- */
-export function box(): CompList<any> {
-    return [
-        K.sprite("box", { fill: false }),
-        "box",
-        K.body(),
-        // make box a teeny bit smaller so that it fits down holes
-        // and I don't have to stomp on it
-        ...machine({ scale: (TILE_SIZE - 1) / TILE_SIZE }),
-        hoverOutline(),
-        K.tile({ isObstacle: true }),
-        thudder(),
-        grabbable(),
-        K.layer("boxes"),
-        infFriction(),
-        boxComp()
-    ];
-}
 
 // set gravity for platformer
 K.setGravity(600);
@@ -84,7 +23,6 @@ const follower = player.onUpdate(() => {
 
 // custom thud, not using thudder component
 player.onGround(() => {
-    console.log("thud");
     if (!player.intersectingAny("button")) {
         K.play("thud", { detune: -500 });
     }

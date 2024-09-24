@@ -2,7 +2,6 @@ import { GameObj, LevelComp } from "kaplay";
 import { WORLD_FILE } from "../assets";
 import { TILE_SIZE } from "../constants";
 import K from "../init";
-import { world } from "../main";
 import { MParser } from './mparser';
 import { player } from "../player";
 
@@ -44,9 +43,6 @@ K.load((async () => {
     if (playerPositions.length > 1) {
         console.warn(`Multiple @'s in ${WORLD_FILE} - using the first one`);
     }
-    // @ts-expect-error
-    // What, tsc can't read?? This is inside an *async* IIFE!
-    // It is NOT going to be used before being defined!
     player.pos = playerPositions[0]!.worldPos();
     playerPositions.forEach(K.destroy);
 

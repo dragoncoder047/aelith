@@ -1,34 +1,32 @@
-import { CompList, Vec2, GameObj, LevelComp, AreaComp, SpriteComp, PosComp } from "kaplay";
-import { button } from "../components/button";
-import { clicky } from "../components/click_noise";
-import { conveyor } from "../components/conveyor";
-import { hoverOutline } from "../components/hoverOutline";
-import { nudge } from "../components/nudge";
-import { spriteToggle } from "../components/spriteToggle";
-import { toggleSwitch } from "../components/toggleSwitch";
-import { TILE_SIZE } from "../constants";
-import K from "../init";
-import { machine, box, defaults } from "../main";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, SpriteComp, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
+import K from "../init";
+import { box } from '../object_factories/box';
+import { button } from "../object_factories/button";
+import { conveyor } from "../object_factories/conveyor";
+import { ladder } from "../object_factories/ladder";
+import { lever } from "../object_factories/lever";
+import { light } from '../object_factories/light';
+import { playerPosition } from "../object_factories/playerPosition";
+import { wall } from "../object_factories/wall";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
-
 export const MParser: {
     world: GameObj<LevelComp> | undefined,
     spawners: { [x: string]: (this: typeof MParser) => CompList<any>; };
-    storedProcedures: { [x: string]: string; };
-    commands: { [x: string]: (this: typeof MParser) => void; };
     fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; };
+    commands: { [x: string]: (this: typeof MParser) => void; };
     buffer: string | number | undefined;
     parenStack: string[];
-    process(cmd: string, pos?: Vec2): CompList<any> | undefined;
-    mergeAcross(): void;
-    cleanBuffer(): void;
-    build(): void;
+    storedProcedures: { [x: string]: string; };
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
+    mergeAcross(): void;
+    process(cmd: string, pos?: Vec2): CompList<any> | undefined;
+    cleanBuffer(): void;
+    build(): void;
     uid(): string;
 } = {
     world: undefined,
@@ -36,40 +34,19 @@ export const MParser: {
      * Commands that spawn a machine at that particular location.
      */
     spawners: {
-        L: () => [
-            K.sprite("light"),
-            spriteToggle(),
-            ...machine(),
-            K.anchor("bot"),
-        ],
-        S: () => [
-            K.sprite("switch"),
-            spriteToggle(),
-            ...machine(),
-            hoverOutline(),
-            K.anchor("bot"),
-            toggleSwitch(),
-            clicky(),
-        ],
-        B: () => [
-            K.sprite("button"),
-            spriteToggle(),
-            nudge(0, 12),
-            ...machine({ offset: K.vec2(0, 3) }),
-            K.body({ isStatic: true }),
-            button(),
-            clicky(),
-        ],
-        C: () => [
-            K.sprite("conveyor"),
-            spriteToggle(),
-            ...machine(),
-            K.body({ isStatic: true }),
-            conveyor(),
-            K.surfaceEffector({ speed: 0, forceScale: Number.MAX_VALUE }),
-            nudge(0, 8),
-        ],
+        L: light,
+        S: lever,
+        B: button,
+        C: conveyor,
         X: box,
+    },
+    /**
+     * Commands that spawn a tile that isn't configurable.
+     */
+    fixedTiles: {
+        "@": playerPosition,
+        "#": wall,
+        "=": ladder,
     },
     storedProcedures: {},
     /**
@@ -163,35 +140,6 @@ export const MParser: {
         "\\": stackOp("ab", "ba"), // swap
         "&": stackOp("abc", "bca"), // roll
         ":": stackOp("a", "aa"), // dup
-    },
-    /**
-     * Commands that spawn a tile that isn't configurable.
-     */
-    fixedTiles: {
-        "@": () => [
-            "playerPosition",
-            // for debugging only, the @ tile is removed
-            K.rect(10, 10),
-            K.color(K.GREEN),
-            K.anchor("center"),
-            K.area(),
-            // player is handled separately
-        ],
-        "#": () => [
-            K.sprite("steel"),
-            K.body({ isStatic: true }),
-            K.tile({ isObstacle: true }),
-            ...defaults(),
-            "wall",
-        ],
-        "=": () => [
-            K.sprite("ladder"),
-            ...defaults(),
-            // override default with smaller shape to make
-            // falling-off-the-ladder have more realistic bounds
-            K.area({ scale: 1.0 / TILE_SIZE }),
-            "ladder",
-        ],
     },
     /**
      * Used to hold intermediate parsing results.
@@ -340,7 +288,6 @@ export const MParser: {
                 throw new Error("bad command: " + cmd);
             }
         }
-        console.log(this.stack);
     },
     /**
      * Queue of commands to be executed to initialize the game.
