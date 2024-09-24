@@ -1,8 +1,9 @@
-import { AreaComp, BodyComp, Comp, GameObj, KEventController, PosComp, ZComp } from 'kaplay';
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp } from 'kaplay';
 import { player } from '../player';
 
 export interface GrabbableComp extends Comp {
-    physicsFoo: KEventController | undefined
+    physicsFoo: KEventController | undefined,
+    oldLayer: string
 }
 
 /**
@@ -12,15 +13,17 @@ export interface GrabbableComp extends Comp {
 export function grabbable(): GrabbableComp {
     return {
         id: "grabbable",
-        require: ["area", "z", "body", "pos"],
+        require: ["area", "body", "pos"],
         physicsFoo: undefined,
-        add(this: GameObj<AreaComp | BodyComp | PosComp>) {
+        oldLayer: "",
+        add(this: GameObj<AreaComp | BodyComp | PosComp | GrabbableComp | LayerComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) {
                     if (player.grabbing === this) {
                         player.grabbing = undefined;
                     }
                     else {
+                        this.oldLayer = this.layer!;
                         player.grabbing = this;
                     }
                 }
@@ -29,12 +32,13 @@ export function grabbable(): GrabbableComp {
                 if (player.grabbing === this) coll.preventResolution();
             });
         },
-        update(this: GameObj<ZComp | PosComp | BodyComp>) {
+        update(this: GameObj<LayerComp | PosComp | BodyComp | GrabbableComp>) {
+            // there must be a better way to do this
             if (player.grabbing === this) {
-                this.z = Number.MAX_VALUE;
+                this.layer = "grabbing";
             }
             else {
-                this.z = 0;
+                if (this.oldLayer != "") this.layer = this.oldLayer;
             }
         }
     };

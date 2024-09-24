@@ -68,7 +68,7 @@ export function box(): CompList<any> {
         K.tile({ isObstacle: true }),
         thudder(),
         grabbable(),
-        K.z(0),
+        K.layer("boxes"),
         infFriction(),
         boxComp()
     ];

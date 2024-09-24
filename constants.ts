@@ -2,12 +2,16 @@ import { AudioPlayOpt } from "kaplay";
 
 /**
  * Pixel size for rendering
+ *
+ * * Use 1 for debugging (and zoom out via the browser too)
+ * * Use 3 for standard game play
  */
-export const SCALE = 1;
+export const SCALE = 3;
 
 /**
  * Tile map grid size
- * Don't change this
+ *
+ * Don't change this, it is hardcoded in the spritemap
  */
 export const TILE_SIZE = 32;
 
@@ -33,9 +37,9 @@ export const CONVEYOR_SPEED = 32;
 export const MAX_THROW_VEL = 400;
 
 /**
- * Maximum displacement for the throw velocity
+ * Maximum displacement for the throw velocity.
  */
-export const MAX_THROW_STRETCH = 80;
+export const MAX_THROW_STRETCH = 200;
 
 /**
  * Player terminal velocity

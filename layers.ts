@@ -4,6 +4,8 @@ K.layers([
     "background",
     "world",
     "player",
+    "boxes",
     "continuations",
+    "grabbing",
     "ui",
 ], "world");
