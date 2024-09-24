@@ -2,15 +2,18 @@
 // mostly because uBlock is an idiot and decides to block "clicky.js"
 // even if it's a 1st party script
 
-import { GameObj, StateComp } from 'kaplay';
+import { Comp, GameObj, StateComp } from 'kaplay';
 import { BAP_OPTS } from '../constants';
 import K from '../init';
 
+export interface ClickyComp extends Comp {
+}
+
 /**
  * Plays a sound when the state changes.
- * @param {string[]} [states=["off", "on"]] states to look at
+ * @param states states to look at
  */
-export function clicky(states = ["off", "on"]) {
+export function clicky(states: string[] = ["off", "on"]): ClickyComp {
     return {
         id: "clicky",
         require: ["state"],

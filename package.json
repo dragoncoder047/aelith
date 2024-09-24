@@ -5,8 +5,8 @@
     "author": "dragoncoder047",
     "main": "index.js",
     "scripts": {
-        "build": "esbuild main.ts --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6",
-        "dev:build": "esbuild main.ts --watch --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6",
+        "build": "esbuild main.ts --bundle --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6 --tree-shaking=true",
+        "dev:build": "esbuild main.ts --watch --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6 --tree-shaking=true",
         "dev:serve": "./serve",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc"

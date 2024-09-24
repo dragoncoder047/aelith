@@ -1,19 +1,26 @@
-import { GameObj, KEventController } from "kaplay";
+import { Comp, GameObj, KEventController } from "kaplay";
+
+export interface LinkComp extends Comp {
+    readonly idTag: string,
+    tag: string,
+    broadcast(msg: string): void,
+    onMessage(cb: (msg: string) => void): KEventController,
+}
 
 /**
  * Component that links two game objects by messages
  * @param tag ID of linked objects
  */
-export function linked(tag: string) {
+export function linked(tag: string): LinkComp {
     var closure__tag = tag;
     return {
         id: "linked",
         get idTag() { return "__linkid_" + closure__tag; },
         get tag() { return closure__tag; },
         set tag(newTag) {
-            this.unuse(this.idTag); // cSpell: ignore unuse
+            (this as unknown as GameObj).unuse(this.idTag); // cSpell: ignore unuse
             closure__tag = newTag;
-            this.use(this.idTag);
+            (this as unknown as GameObj).use(this.idTag);
         },
         add(this: GameObj) {
             this.use(this.idTag);

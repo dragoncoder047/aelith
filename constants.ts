@@ -1,4 +1,4 @@
-import { type AudioPlayOpt } from "kaplay";
+import { AudioPlayOpt } from "kaplay";
 
 /**
  * Pixel size for rendering

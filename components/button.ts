@@ -1,11 +1,19 @@
 import {
     AreaComp,
     BodyComp,
+    Comp,
     GameObj,
     KEventController,
     StateComp,
     TimerComp
 } from "kaplay";
+
+export interface ButtonComp extends Comp {
+    onDelay: number,
+    offDelay: number | "toggle",
+    switchMessage: string,
+    stompedBy: Set<GameObj>,
+}
 
 /**
  * Enables the object to turn on and off when it is stomped
@@ -13,11 +21,11 @@ import {
  * @param offDelay delay to turn off when unstomped
  * * "toggle" means it is a bistable toggle (stomp on, stomp off)
  * * negative delay means that it will automatically turn off after delay even if the stomping object is still on it
- * @param {string} [switchMessage="toggle"] message used to toggle state
+ * @param switchMessage message used to toggle state
  */
-export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, switchMessage: string = "toggle") {
-    var stompedTimer: KEventController;
-    var unstompedTimer: KEventController;
+export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, switchMessage: string = "toggle"): ButtonComp {
+    var stompedTimer: KEventController | null;
+    var unstompedTimer: KEventController | null;
     // cSpell: ignore unstomped
     return {
         id: "button",
@@ -26,7 +34,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
         offDelay,
         switchMessage,
         stompedBy: new Set(),
-        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp>) {
+        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | ButtonComp>) {
             this.onPhysicsResolve(coll => {
                 if (!coll.isTop()) return;
                 const obj = coll.target;

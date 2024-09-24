@@ -1,8 +1,19 @@
+import { Comp, GameObj, StateComp, SpriteComp /*, SurfaceEffectorComp */ } from 'kaplay';
 import { CONVEYOR_SPEED } from '../constants';
+import K from '../init';
+type SurfaceEffectorComp = ReturnType<typeof K.surfaceEffector>; // why is this necessary??
 
 type ConveyorMode = "l" | "r" | "lr" | "rl";
 
-export function conveyor(states: [string, string] = ["off", "on"], mode: ConveyorMode = "lr") {
+export interface ConveyorComp extends Comp {
+    mode: ConveyorMode,
+    turnSpeed: number,
+    _speeds: [number, number] | [],
+    __lastX: number,
+    _recomputeSpeeds(): void,
+}
+
+export function conveyor(states: [string, string] = ["off", "on"], mode: ConveyorMode = "lr"): ConveyorComp {
     var closure__mode = mode;
     return {
         id: "conveyor",
@@ -18,7 +29,7 @@ export function conveyor(states: [string, string] = ["off", "on"], mode: Conveyo
         add() {
             this._recomputeSpeeds();
         },
-        update() {
+        update(this: GameObj<ConveyorComp | StateComp | SurfaceEffectorComp | SpriteComp>) {
             const x = this._speeds[states.indexOf(this.state)]!;
             this.speed = this.turnSpeed * x;
             if (this.__lastX === x) return;

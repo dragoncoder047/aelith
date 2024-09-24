@@ -5,6 +5,7 @@
         "IIFE",
         "kaplay",
         "kont",
+        "mparser",
         "unuse"
     ]
 }

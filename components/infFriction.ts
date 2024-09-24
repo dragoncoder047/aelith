@@ -1,8 +1,13 @@
-import { BodyComp, GameObj } from 'kaplay';
+import { BodyComp, Comp, GameObj, Tag } from 'kaplay';
 import K from '../init';
 
-export function infFriction() {
+export interface InfiniteFrictionComp extends Comp {
+    infFrictionTags: Tag[]
+}
+
+export function infFriction(infFrictionTags: Tag[] = ["wall"]): InfiniteFrictionComp {
     return {
+        infFrictionTags,
         add(this: GameObj<BodyComp>) {
             this.onPhysicsResolve(coll => {
                 if (coll.target.is("surfaceEffector") && coll.isBottom()) {
@@ -10,8 +15,8 @@ export function infFriction() {
                 }
             });
         },
-        update(this: GameObj<BodyComp>) {
-            if (this.curPlatform()?.is("wall")) {
+        update(this: GameObj<BodyComp | InfiniteFrictionComp>) {
+            if (this.infFrictionTags.some(t => this.curPlatform()?.is(t))) {
                 this.vel = this.vel.reject(K.RIGHT);
             }
         },

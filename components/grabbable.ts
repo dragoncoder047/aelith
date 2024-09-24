@@ -1,17 +1,18 @@
-import { AreaComp, BodyComp, GameObj, PosComp, ZComp } from 'kaplay';
-import { player } from '../main';
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, PosComp, ZComp } from 'kaplay';
+import { player } from '../player';
+
+export interface GrabbableComp extends Comp {
+    physicsFoo: KEventController | null
+}
 
 /**
  * Component for a grabbable object, i.e. something that
  * can be picked up by the player when clicked.
  */
-export function grabbable() {
+export function grabbable(): GrabbableComp {
     return {
         id: "grabbable",
         require: ["area", "z", "body", "pos"],
-        /**
-         * @type {import("kaplay").KEventController?}
-         */
         physicsFoo: null,
         add(this: GameObj<AreaComp | BodyComp | PosComp>) {
             this.onClick(() => {

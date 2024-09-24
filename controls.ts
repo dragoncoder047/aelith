@@ -1,4 +1,6 @@
-import { type ButtonsDef } from 'kaplay';
+// @ts-expect-error
+// why is this not exported??
+import { ButtonsDef } from 'kaplay';
 
 export const CONTROLS: ButtonsDef = {
     jump: {

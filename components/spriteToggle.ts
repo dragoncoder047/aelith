@@ -1,9 +1,13 @@
-import { GameObj, SpriteComp, StateComp } from "kaplay";
+import { Comp, GameObj, SpriteComp, StateComp } from "kaplay";
+
+
+export interface SpriteToggleComp extends Comp {
+}
 
 /**
  * Toggles between frames when states change.
  */
-export function spriteToggle(states: [string, string] = ["off", "on"]) {
+export function spriteToggle(states: string[] = ["off", "on"]): SpriteToggleComp {
     return {
         id: "sprite-toggle",
         require: ["state", "sprite"],
@@ -16,7 +20,7 @@ export function spriteToggle(states: [string, string] = ["off", "on"]) {
             });
         },
         inspect() {
-            return "sprite-toggle: " + states.join(" <-> ");
+            return "sprite-toggle: " + states.join(", ");
         }
     };
 }
