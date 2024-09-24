@@ -1,10 +1,11 @@
 // cSpell: ignore kaplay
 
+import K from './init';
+import './layers';
+
 import {
     AreaCompOpt,
     CompList,
-    GameObj,
-    LevelComp
 } from 'kaplay';
 import './assets/loadLevel';
 import { MParser } from './assets/mparser';
@@ -21,10 +22,8 @@ import {
     TILE_SIZE
 } from './constants';
 import { shouldMoveDown, shouldMoveLeft, shouldMoveRight, shouldMoveUp } from './controlsImpl';
-import { cursor } from './cursor';
+import './cursor';
 import './cursorControlsImpl';
-import K from './init';
-import './layers';
 import { player } from './player';
 import './playerStateManage';
 
@@ -131,9 +130,7 @@ K.loop(0.1, () => {
     }
 });
 
-// setTimeout(() => K.debug.paused = true, 100);
+// setTimeout(() => K.debug.paused = true, 600);
 // K.debug.inspect = true;
 // follower.paused = true;
 // K.debug.timeScale = 0.2;
-
-if (!(player.layerIndex! < cursor.layerIndex!)) K.debug.error("Blooey!");

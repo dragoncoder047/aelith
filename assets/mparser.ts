@@ -9,6 +9,7 @@ import { toggleSwitch } from "../components/toggleSwitch";
 import { TILE_SIZE } from "../constants";
 import K from "../init";
 import { machine, box, defaults } from "../main";
+import { LinkComp } from "../components/linked";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -114,10 +115,10 @@ export const MParser: {
             if (typeof n === "string") {
                 link = n;
                 n = this.stack.pop();
-            }
-            var off = [];
+            };
+            var off: GameObj<LinkComp>[] = [];
             for (var i = 0; i < n; i++) {
-                var item = this.stack.pop();
+                var item = this.stack.pop() as GameObj<LinkComp>;
                 item.tag = link;
                 off.push(item);
             }
@@ -240,7 +241,7 @@ export const MParser: {
                 }
             }
             if ((oldLen > 0 || this.parenStack.length > 1) && this.parenStack[0] !== "[") {
-                if (this.buffer === undefined) this.buffer = "";
+                if (typeof this.buffer !== "string") this.buffer = "";
                 this.buffer += cmd;
             }
             return;
@@ -251,13 +252,11 @@ export const MParser: {
         }
         else if (/\d/.test(cmd)) {
             // it's a digit
-            if (typeof this.buffer === "string") {
+            if (typeof this.buffer !== "number") {
                 this.cleanBuffer();
                 this.buffer = 0;
             }
-
-            else
-                this.buffer = 10 * (this.buffer as number) + parseInt(cmd);
+            this.buffer = 10 * this.buffer + parseInt(cmd);
         }
         else {
             // Buffer-ending command
