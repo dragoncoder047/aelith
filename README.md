@@ -17,7 +17,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 
 * It is a platformer game
 * Uses pixel art
-* Use kaplayjs library
+* Use [kaplayjs](https://github.com/kaplayjs/kaplay) library
 * Resources:
     * [map editor](https://stmn.github.io/ascii-map-editor/)
     * [ZzFX](https://killedbyapixel.github.io/ZzFX/)

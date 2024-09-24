@@ -45,7 +45,7 @@ player.onUpdate(() => {
 const UI = K.add([K.fixed(), K.layer("ui")]);
 
 const FPSindicator = UI.add([
-    K.text("", { size: 8, font: "unscii", }), // cSpell: ignore unscii
+    K.text("", { size: 8, font: "IBM Mono", }),
     K.pos(10, 10),
     K.layer("ui"),
 ])
