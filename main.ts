@@ -28,9 +28,6 @@ import './layers';
 import { player } from './player';
 import './playerStateManage';
 
-export var world: GameObj<LevelComp>;
-
-
 /**
  * Create default components for common tile objects.
  */

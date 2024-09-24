@@ -61,6 +61,6 @@ player.onButtonPress("throw", () => {
     var direction = cursor.screenPos()!.sub(player.screenPos()!).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
     const len = direction.len();
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
-    player.grabbing = null;
+    player.grabbing = undefined;
     thrown.applyImpulse(direction);
 });

@@ -15,14 +15,14 @@ import { machine, box, defaults } from "../main";
  */
 
 export const MParser: {
-    world: GameObj<LevelComp> | null,
+    world: GameObj<LevelComp> | undefined,
     spawners: { [x: string]: (this: typeof MParser) => CompList<any>; };
     storedProcedures: { [x: string]: string; };
     commands: { [x: string]: (this: typeof MParser) => void; };
     fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; };
-    buffer: string | number | null;
+    buffer: string | number | undefined;
     parenStack: string[];
-    process(cmd: string, pos: Vec2 | null): CompList<any> | undefined;
+    process(cmd: string, pos?: Vec2): CompList<any> | undefined;
     mergeAcross(): void;
     cleanBuffer(): void;
     build(): void;
@@ -30,7 +30,7 @@ export const MParser: {
     stack: any[];
     uid(): string;
 } = {
-    world: null,
+    world: undefined,
     /**
      * Commands that spawn a machine at that particular location.
      */
@@ -195,7 +195,7 @@ export const MParser: {
     /**
      * Used to hold intermediate parsing results.
      */
-    buffer: null,
+    buffer: undefined,
     parenStack: [],
     process(cmd, pos): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
@@ -221,10 +221,10 @@ export const MParser: {
                         if (typeof code !== "string") throw "oops string";
                         this.commandQueue.push(() => {
                             this.parenStack = [];
-                            this.buffer = null;
+                            this.buffer = undefined;
                             const oLen = this.commandQueue.length;
                             for (var i = 0; i < code.length; i++) {
-                                this.process(code[i]!, null);
+                                this.process(code[i]!);
                             }
                             if (this.parenStack.length > 0) throw "oops parens";
                             if (this.commandQueue.length === oLen && code != "") throw "oops nothing";
@@ -240,7 +240,7 @@ export const MParser: {
                 }
             }
             if ((oldLen > 0 || this.parenStack.length > 1) && this.parenStack[0] !== "[") {
-                if (this.buffer === null) this.buffer = "";
+                if (this.buffer === undefined) this.buffer = "";
                 this.buffer += cmd;
             }
             return;
@@ -265,10 +265,10 @@ export const MParser: {
             if (cmd in this.commands) {
                 this.commandQueue.push(this.commands[cmd]!);
             }
-            else if (pos != null && cmd in this.fixedTiles) {
+            else if (pos != undefined && cmd in this.fixedTiles) {
                 return this.fixedTiles[cmd]!.call(this);
             }
-            else if (pos != null && cmd in this.spawners) {
+            else if (pos != undefined && cmd in this.spawners) {
                 this.commandQueue.push(pos);
                 var rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
@@ -286,12 +286,12 @@ export const MParser: {
     mergeAcross() {
         const allowedTags = ["wall" /**, "conveyor"/**/];
         for (var y = 0; y < this.world!.numRows(); y++) {
-            var prevTile: GameObj<AreaComp | SpriteComp | PosComp> | null = null;
+            var prevTile: GameObj<AreaComp | SpriteComp | PosComp> | undefined = undefined;
             var prevTag: string = "";
             for (var x = 0; x < this.world!.numColumns(); x++) {
                 const thisTile = this.world!.getAt(K.vec2(x, y))[0]!;
-                if (prevTile != null
-                    && thisTile != null
+                if (prevTile != undefined
+                    && thisTile != undefined
                     && prevTag != ""
                     && thisTile.is(prevTag)) {
                     // merge across
@@ -303,12 +303,12 @@ export const MParser: {
                 }
                 else {
                     // reset
-                    if (thisTile != null && allowedTags.some(t => thisTile.is(t))) {
+                    if (thisTile != undefined && allowedTags.some(t => thisTile.is(t))) {
                         prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp>;
                         prevTag = allowedTags.find(t => thisTile.is(t))!;
                     }
                     else {
-                        prevTile = null;
+                        prevTile = undefined;
                         prevTag = "";
                     }
                 }
@@ -319,8 +319,8 @@ export const MParser: {
      * Reset the buffer at the end of a buffer command.
      */
     cleanBuffer() {
-        if (this.buffer !== null) this.commandQueue.push(this.buffer);
-        this.buffer = null;
+        if (this.buffer !== undefined) this.commandQueue.push(this.buffer);
+        this.buffer = undefined;
     },
     /**
      * Execute the stored commands in the queue, to initialize the machines.

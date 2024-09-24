@@ -2,7 +2,7 @@ import { AreaComp, BodyComp, Comp, GameObj, KEventController, PosComp, ZComp } f
 import { player } from '../player';
 
 export interface GrabbableComp extends Comp {
-    physicsFoo: KEventController | null
+    physicsFoo: KEventController | undefined
 }
 
 /**
@@ -13,12 +13,12 @@ export function grabbable(): GrabbableComp {
     return {
         id: "grabbable",
         require: ["area", "z", "body", "pos"],
-        physicsFoo: null,
+        physicsFoo: undefined,
         add(this: GameObj<AreaComp | BodyComp | PosComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) {
                     if (player.grabbing === this) {
-                        player.grabbing = null;
+                        player.grabbing = undefined;
                     }
                     else {
                         player.grabbing = this;
@@ -29,7 +29,7 @@ export function grabbable(): GrabbableComp {
                 if (player.grabbing === this) coll.preventResolution();
             });
         },
-        update(this: GameObj<ZComp>) {
+        update(this: GameObj<ZComp | PosComp | BodyComp>) {
             if (player.grabbing === this) {
                 this.z = Number.MAX_VALUE;
             }

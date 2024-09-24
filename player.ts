@@ -1,11 +1,11 @@
-import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, SpriteComp, StateComp, Comp, Tag } from "kaplay";
+import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
 import { infFriction } from "./components/infFriction";
 import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY } from "./constants";
 import K from "./init";
-import { world } from "./main";
+import { MParser } from "./assets/mparser";
 
 export interface PlayerComp extends Comp {
-    grabbing: GameObj<PosComp | BodyComp> | null,
+    grabbing: GameObj<PosComp | BodyComp> | undefined,
     intDist: number,
     canTouch(target: GameObj<PosComp>): boolean,
     intersectingAny(type: Tag, where?: GameObj): boolean,
@@ -14,10 +14,10 @@ export interface PlayerComp extends Comp {
 
 function playerComp(): PlayerComp {
     return {
-        grabbing: null,
+        grabbing: undefined,
         update(this: GameObj<PlayerComp | PosComp | BodyComp>) {
             // move the grabbing to self
-            if (this.grabbing !== null) {
+            if (this.grabbing !== undefined) {
                 if (this.curPlatform() === this.grabbing) this.jump(1); // Reset curPlatform()
                 this.grabbing.vel = K.vec2(0); // Reset velocity
                 this.grabbing.moveTo(this.worldPos()!.sub(this.grabbing.parent!.worldPos()));
@@ -35,10 +35,10 @@ function playerComp(): PlayerComp {
             const diff = target.worldPos()!.sub(this.worldPos()!);
             if (diff.len() > this.intDist)
                 return false;
-            if (!world)
+            if (!MParser.world)
                 return true; // bail if world isn't initialized yet
             const line = new K.Line(this.worldPos()!, target.worldPos()!);
-            for (var object of world.get(["area", "tile"])) {
+            for (var object of MParser.world.get(["area", "tile"])) {
                 if (object.isObstacle && object !== target && object !== this.grabbing) {
                     const boundingbox = object.worldArea();
                     if (boundingbox.collides(line)) {
@@ -51,20 +51,20 @@ function playerComp(): PlayerComp {
         /**
          * True if overlapping any game object with the tag "type".
          */
-        intersectingAny(this: GameObj<AreaComp>, type, where = world) {
-            return where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
+        intersectingAny(this: GameObj<AreaComp>, type, where = MParser.world) {
+            return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
         /**
-         * Get the currently hovering object, or null.
+         * Get the currently hovering object, or undefined.
          */
         getTargeted() {
-            if (!world)
+            if (!MParser.world)
                 return;
             /**
              * @{import("kaplay").GameObj<import("kaplay").LayerComp>[]}
              */
             const candidates: GameObj<AreaComp | LayerComp>[] = [];
-            for (var obj of world.get<AreaComp | LayerComp | PosComp>("hoverOutline")) {
+            for (var obj of MParser.world.get<AreaComp | LayerComp | PosComp>("hoverOutline")) {
                 if (obj.isHovering() && this.canTouch(obj))
                     candidates.push(obj as GameObj<AreaComp | LayerComp>);
             }

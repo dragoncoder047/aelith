@@ -7,6 +7,7 @@ import {
     StateComp,
     TimerComp
 } from "kaplay";
+import { LinkComp } from "./linked";
 
 export interface ButtonComp extends Comp {
     onDelay: number,
@@ -24,8 +25,8 @@ export interface ButtonComp extends Comp {
  * @param switchMessage message used to toggle state
  */
 export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, switchMessage: string = "toggle"): ButtonComp {
-    var stompedTimer: KEventController | null;
-    var unstompedTimer: KEventController | null;
+    var stompedTimer: KEventController | undefined;
+    var unstompedTimer: KEventController | undefined;
     // cSpell: ignore unstomped
     return {
         id: "button",
@@ -34,21 +35,21 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
         offDelay,
         switchMessage,
         stompedBy: new Set(),
-        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | ButtonComp>) {
+        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | ButtonComp | LinkComp>) {
             this.onPhysicsResolve(coll => {
                 if (!coll.isTop()) return;
                 const obj = coll.target;
                 if (this.stompedBy.has(obj)) return;
                 if (unstompedTimer) {
                     unstompedTimer.cancel();
-                    unstompedTimer = null;
+                    unstompedTimer = undefined;
                 }
                 else {
                     if (stompedTimer) stompedTimer.cancel();
                     const shouldSwitch = this.stompedBy.size === 0;
                     this.stompedBy.add(obj);
                     stompedTimer = this.wait(this.onDelay, () => {
-                        stompedTimer = null;
+                        stompedTimer = undefined;
                         if (shouldSwitch) this.broadcast(this.switchMessage);
                         if (typeof this.offDelay === "number" && this.offDelay < 0)
                             this.trigger("collideEnd", obj);
@@ -59,7 +60,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                 if (!this.stompedBy.has(obj)) return;
                 if (stompedTimer) {
                     stompedTimer.cancel();
-                    stompedTimer = null;
+                    stompedTimer = undefined;
                 }
                 else {
                     if (unstompedTimer) unstompedTimer.cancel();
@@ -67,7 +68,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                     const shouldSwitch = this.stompedBy.size === 0;
                     if (this.offDelay === "toggle") return;
                     unstompedTimer = this.wait(Math.abs(this.offDelay), () => {
-                        unstompedTimer = null;
+                        unstompedTimer = undefined;
                         if (shouldSwitch) this.broadcast(this.switchMessage);
                     });
                 }
