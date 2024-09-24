@@ -6,7 +6,10 @@
 2. `cd` to this directory
 3. `pnpm install`
 4. `pnpm dev`
-5. open <http://localhost:8000> in Chrome (NOT Safari, see kaplayjs/kaplay#289)
+5. open <http://localhost:8000>
+6. if you get a white screen of death check browser console for errors:
+    * "assignment to readonly property" from kaplay.ts &rarr; use Chrome not Safari (see kaplayjs/kaplay#289)
+    * "xxx is only available in secure origins" &rarr; go to chrome://flags/#unsafely-treat-insecure-origin-as-secure and add <http://localhost:8000>
 
 ## Dev notes follow
 
