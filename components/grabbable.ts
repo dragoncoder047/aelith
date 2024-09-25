@@ -1,5 +1,5 @@
-import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp } from 'kaplay';
-import { player } from '../player';
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp } from "kaplay";
+import { player } from "../player";
 
 export interface GrabbableComp extends Comp {
     physicsFoo: KEventController | undefined,

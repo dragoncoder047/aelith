@@ -2,12 +2,12 @@ import { AreaComp, CompList, GameObj, LevelComp, PosComp, SpriteComp, Vec2 } fro
 import { LinkComp } from "../components/linked";
 import { K } from "../init";
 
-import { box } from '../object_factories/box';
+import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
 import { conveyor } from "../object_factories/conveyor";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
-import { light } from '../object_factories/light';
+import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 

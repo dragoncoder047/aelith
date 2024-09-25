@@ -2,8 +2,8 @@
 // mostly because uBlock is an idiot and decides to block "clicky.js"
 // even if it's a 1st party script
 
-import { Comp, GameObj, StateComp } from 'kaplay';
-import { BAP_OPTS } from '../constants';
+import { Comp, GameObj, StateComp } from "kaplay";
+import { BAP_OPTS } from "../constants";
 import { K } from "../init";
 
 export interface ClickyComp extends Comp {

@@ -1,4 +1,4 @@
-import { AudioPlayOpt, BodyComp, Comp, GameObj } from 'kaplay';
+import { AudioPlayOpt, BodyComp, Comp, GameObj } from "kaplay";
 import { K } from "../init";
 
 export interface ThudderComp extends Comp {

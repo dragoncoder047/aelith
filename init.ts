@@ -1,7 +1,7 @@
-import { CONTROLS } from './controls';
-import { SCALE } from './constants';
-import kaplay from 'kaplay';
-import { KAPLAYCtx } from 'kaplay';
+import { CONTROLS } from "./controls";
+import { SCALE } from "./constants";
+import kaplay from "kaplay";
+import { KAPLAYCtx } from "kaplay";
 
 export const K: KAPLAYCtx<typeof CONTROLS> = kaplay({
     crisp: true,

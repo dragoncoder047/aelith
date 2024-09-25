@@ -1,6 +1,6 @@
-import { AreaComp, Comp, GameObj, PosComp } from 'kaplay';
-import { player } from '../player';
-import { LinkComp } from './linked';
+import { AreaComp, Comp, GameObj, PosComp } from "kaplay";
+import { player } from "../player";
+import { LinkComp } from "./linked";
 
 export interface TogglerSwitchComp extends Comp {
 }

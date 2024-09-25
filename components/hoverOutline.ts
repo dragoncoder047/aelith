@@ -1,6 +1,6 @@
-import { AreaComp, Comp, GameObj, OutlineComp, PosComp } from 'kaplay';
+import { AreaComp, Comp, GameObj, OutlineComp, PosComp } from "kaplay";
 import { K } from "../init";
-import { player } from '../player';
+import { player } from "../player";
 
 export interface HoverOutlineComp extends Comp {
 }

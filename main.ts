@@ -6,11 +6,11 @@ import './layers';
 import './assets/loadLevel';
 import {
     BAP_OPTS,
-    FOOTSTEP_INTERVAL} from './constants';
-import { shouldMoveDown, shouldMoveLeft, shouldMoveRight, shouldMoveUp } from './controlsImpl';
+    FOOTSTEP_INTERVAL} from "./constants";
+import { shouldMoveDown, shouldMoveLeft, shouldMoveRight, shouldMoveUp } from "./controlsImpl";
 import './cursor';
 import './cursorControlsImpl';
-import { player } from './player';
+import { player } from "./player";
 import './playerStateManage';
 
 // set gravity for platformer

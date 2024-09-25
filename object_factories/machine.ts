@@ -1,9 +1,9 @@
-import { AreaCompOpt, CompList } from 'kaplay';
-import { MParser } from '../assets/mparser';
-import { linked } from '../components/linked';
-import { toggler } from '../components/toggler';
+import { AreaCompOpt, CompList } from "kaplay";
+import { MParser } from "../assets/mparser";
+import { linked } from "../components/linked";
+import { toggler } from "../components/toggler";
 import { K } from "../init";
-import { defaults } from './default';
+import { defaults } from "./default";
 
 
 /**
