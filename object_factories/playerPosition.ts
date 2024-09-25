@@ -1,5 +1,6 @@
 import { CompList } from "kaplay";
-import K from "../init";
+import { K } from "../init";
+
 
 /**
  * Dummy object - just used by MParser and friends to mark the

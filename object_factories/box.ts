@@ -5,7 +5,8 @@ import { hoverOutline } from "../components/hoverOutline";
 import { infFriction } from "../components/infFriction";
 import { thudder } from "../components/thudder";
 import { TILE_SIZE } from "../constants";
-import K from "../init";
+import { K } from "../init";
+
 import { machine } from "./machine";
 
 /**

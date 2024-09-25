@@ -1,5 +1,6 @@
 import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH } from "./constants";
-import K from "./init";
+import { K } from "./init";
+
 import { cursor } from './cursor';
 import { player } from "./player";
 

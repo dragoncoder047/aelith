@@ -4,7 +4,7 @@
 
 import { Comp, GameObj, StateComp } from 'kaplay';
 import { BAP_OPTS } from '../constants';
-import K from '../init';
+import { K } from "../init";
 
 export interface ClickyComp extends Comp {
 }

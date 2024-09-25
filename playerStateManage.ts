@@ -1,5 +1,6 @@
 import { shouldMoveLeft, shouldMoveRight, shouldMoveUp, shouldMoveDown } from "./controlsImpl";
-import K from "./init";
+import { K } from "./init";
+
 import { player } from "./player";
 
 // State functions

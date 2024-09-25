@@ -1,6 +1,6 @@
 import { Comp, GameObj, StateComp, SpriteComp /*, SurfaceEffectorComp */ } from 'kaplay';
 import { CONVEYOR_SPEED } from '../constants';
-import K from '../init';
+import { K } from "../init";
 type SurfaceEffectorComp = ReturnType<typeof K.surfaceEffector>; // why is this necessary??
 
 type ConveyorMode = "l" | "r" | "lr" | "rl";

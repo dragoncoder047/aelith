@@ -10,4 +10,3 @@ export const K: KAPLAYCtx<typeof CONTROLS> = kaplay({
     background: "#000000",
     buttons: CONTROLS
 });
-export default K;

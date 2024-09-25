@@ -1,5 +1,5 @@
 import { BodyComp, Comp, GameObj, Tag } from 'kaplay';
-import K from '../init';
+import { K } from "../init";
 
 export interface InfiniteFrictionComp extends Comp {
     infFrictionTags: Tag[]

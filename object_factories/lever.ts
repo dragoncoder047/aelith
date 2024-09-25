@@ -1,5 +1,6 @@
 import { CompList } from "kaplay";
-import K from "../init";
+import { K } from "../init";
+
 import { spriteToggle } from "../components/spriteToggle";
 import { machine } from "./machine";
 import { hoverOutline } from "../components/hoverOutline";

@@ -1,4 +1,4 @@
-import K from './init';
+import { K } from "./init";
 
 // Load assets
 K.loadSpriteAtlas("assets/spritemap.png", "assets/spritemap.json");

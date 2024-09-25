@@ -1,7 +1,7 @@
 import { GameObj, LevelComp } from "kaplay";
 import { WORLD_FILE } from "../assets";
 import { TILE_SIZE } from "../constants";
-import K from "../init";
+import { K } from "../init";
 import { MParser } from './mparser';
 import { player } from "../player";
 
@@ -34,7 +34,6 @@ K.load((async () => {
         K.debug.paused = true;
         throw new Error(msg);
     }
-
 
     const playerPositions = MParser.world.get("playerPosition");
     if (playerPositions.length == 0) {

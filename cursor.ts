@@ -1,5 +1,6 @@
 import { Comp, GameObj, PosComp, SpriteComp } from "kaplay";
-import K from "./init";
+import { K } from "./init";
+
 import { player } from "./player";
 
 /* -------- Cursor for interaction ------------- */

@@ -1,5 +1,5 @@
 import { AreaCompOpt, CompList } from 'kaplay';
-import K from '../init';
+import { K } from "../init";
 
 
 /**

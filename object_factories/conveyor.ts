@@ -2,7 +2,8 @@ import { CompList } from "kaplay";
 import { conveyor as conveyorComp } from "../components/conveyor";
 import { nudge } from "../components/nudge";
 import { spriteToggle } from "../components/spriteToggle";
-import K from "../init";
+import { K } from "../init";
+
 import { machine } from "./machine";
 
 export function conveyor(): CompList<any> {

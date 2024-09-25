@@ -1,5 +1,5 @@
 import { Comp, GameObj, PosComp, Vec2Args } from 'kaplay';
-import K from '../init';
+import { K } from "../init";
 
 export interface NudgeComp extends Comp {
 }

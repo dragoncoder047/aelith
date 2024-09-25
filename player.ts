@@ -1,7 +1,8 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
 import { infFriction } from "./components/infFriction";
 import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY } from "./constants";
-import K from "./init";
+import { K } from "./init";
+
 import { MParser } from "./assets/mparser";
 
 export interface PlayerComp extends Comp {

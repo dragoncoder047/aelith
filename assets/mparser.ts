@@ -1,6 +1,7 @@
 import { AreaComp, CompList, GameObj, LevelComp, PosComp, SpriteComp, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
-import K from "../init";
+import { K } from "../init";
+
 import { box } from '../object_factories/box';
 import { button } from "../object_factories/button";
 import { conveyor } from "../object_factories/conveyor";

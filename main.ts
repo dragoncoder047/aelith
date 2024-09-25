@@ -1,6 +1,6 @@
 // cSpell: ignore kaplay
 
-import K from './init';
+import { K } from "./init";
 import './layers';
 
 import './assets/loadLevel';
