@@ -14,7 +14,12 @@ export function boxComp(): BoxComp {
         require: ["body"],
         wasHittingPlayer: false,
         add(this: GameObj<SpriteComp | BodyComp | AreaComp | BoxComp | PosComp>) {
-            setTimeout(() => this.frame = K.randi(this.numFrames()), 10); // give time for frame data to load
+            const x = K.onUpdate(() => {
+                if (this.numFrames() > 0) { // Wait for frame data to load
+                    this.frame = K.randi(this.numFrames());
+                    x.cancel();
+                }
+            });
             this.onBeforePhysicsResolve((coll: Collision) => {
                 if (this === player.grabbing) {
                     this.hittingPlayer = true;
