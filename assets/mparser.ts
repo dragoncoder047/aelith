@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
 import { K } from "../init";
 
@@ -131,6 +131,29 @@ export const MParser: {
             const code = this.stack.pop() as string;
             for (var i = 0; i < times; i++) {
                 this.commandQueue.unshift(code);
+            }
+        },
+        // if-loop command: objects* code tag n -- objects*
+        i() {
+            const n = this.stack.pop() as number;
+            const tag = this.stack.pop() as Tag;
+            const code = this.stack.pop() as (this: typeof MParser) => void;
+            const objects: GameObj[] = [];
+            this.commandQueue.unshift(() => {
+                while (objects.length > 0) this.stack.push(objects.pop());
+            });
+            for (var i = 0; i < n; i++) {
+                const obj = this.stack.pop() as GameObj
+                objects.push(obj);
+                this.commandQueue.unshift(() => {
+                    this.stack.pop();
+                })
+                this.commandQueue.unshift(() => {
+                    this.stack.push(obj);
+                    if (obj.is(tag)) {
+                        this.commandQueue.unshift(code);
+                    }
+                });
             }
         },
         // push a uid
