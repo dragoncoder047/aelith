@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, SpriteComp, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
 import { K } from "../init";
 
@@ -61,40 +61,40 @@ export const MParser: {
         },
         // negate command: number -- number
         "-"() {
-            this.stack.push(-this.stack.pop());
+            this.stack.push(-(this.stack.pop() as number));
         },
         // set property: obj pName value -- obj
         s() {
-            var value = this.stack.pop();
-            var propName = this.stack.pop();
-            var obj = this.stack.pop();
+            const value = this.stack.pop();
+            const propName = this.stack.pop() as string;
+            const obj = this.stack.pop();
             obj[propName] = value;
             this.stack.push(obj);
         },
         // rotate by degrees: obj degrees -- obj
         r() {
-            var degrees = this.stack.pop();
-            var object = this.stack.pop();
+            const degrees = this.stack.pop() as number;
+            const object = this.stack.pop() as GameObj<RotateComp>;
             object.angle += degrees;
             this.stack.push(object);
         },
         // nudge: obj x y -- obj
         n() {
-            var y = this.stack.pop();
-            var x = this.stack.pop();
-            var obj = this.stack.pop();
+            const y = this.stack.pop() as number;
+            const x = this.stack.pop() as number;
+            const obj = this.stack.pop() as GameObj<PosComp>;
             obj.pos = obj.pos.add(K.vec2(x, y));
             this.stack.push(obj);
         },
         // link command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
         $() {
-            var n = this.stack.pop();
+            var n = this.stack.pop() as number | string;
             var link = this.uid();
             if (typeof n === "string") {
                 link = n;
-                n = this.stack.pop();
+                n = this.stack.pop() as number;
             };
-            var off: GameObj<LinkComp>[] = [];
+            const off: GameObj<LinkComp>[] = [];
             for (var i = 0; i < n; i++) {
                 var item = this.stack.pop() as GameObj<LinkComp>;
                 item.tag = link;
@@ -105,30 +105,30 @@ export const MParser: {
         },
         // define command: value name --
         d() {
-            var pName = this.stack.pop();
-            var pContent = this.stack.pop();
+            const pName = this.stack.pop() as string;
+            const pContent = this.stack.pop() as string;
             this.storedProcedures[pName] = pContent;
         },
         // get command: name -- value
         g() {
-            var pName = this.stack.pop();
-            var val = this.storedProcedures[pName];
+            const pName = this.stack.pop() as string;
+            const val = this.storedProcedures[pName];
             if (val === undefined)
                 throw "undefined: " + pName;
             this.stack.push(val);
         },
         // call command: *arguments name -- *values
         c() {
-            var pName = this.stack.pop();
-            var proc = this.storedProcedures[pName];
+            const pName = this.stack.pop() as string;
+            const proc = this.storedProcedures[pName];
             if (proc === undefined)
                 throw "undefined: " + pName;
             this.commandQueue.unshift(proc);
         },
         // loop command: code n -- *anything
         l() {
-            var times = this.stack.pop();
-            var code = this.stack.pop();
+            const times = this.stack.pop() as number;
+            const code = this.stack.pop() as string;
             for (var i = 0; i < times; i++) {
                 this.commandQueue.unshift(code);
             }

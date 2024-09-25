@@ -5,7 +5,7 @@ export interface InfiniteFrictionComp extends Comp {
     infFrictionTags: Tag[]
 }
 
-export function infFriction(infFrictionTags: Tag[] = ["wall"]): InfiniteFrictionComp {
+export function infFriction(infFrictionTags: Tag[] = ["wall", "box"]): InfiniteFrictionComp {
     return {
         infFrictionTags,
         add(this: GameObj<BodyComp>) {
