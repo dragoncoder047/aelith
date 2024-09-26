@@ -206,7 +206,13 @@ export const MParser: {
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
                             this.commandQueue.unshift(() => {
                                 this.stack.push(() => {
+                                    this.commandQueue.unshift(() => {
+                                        this.storedProcedures = Object.getPrototypeOf(this.storedProcedures);
+                                    });
                                     this.commandQueue = procSource.concat(this.commandQueue);
+                                    this.commandQueue.unshift(() => {
+                                        this.storedProcedures = Object.create(this.storedProcedures);
+                                    });
                                 });
                             });
                         });
