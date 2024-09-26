@@ -32,6 +32,11 @@ export const WALK_SPEED = 64;
 export const CONVEYOR_SPEED = 32;
 
 /**
+ * Force of the fans.
+ */
+export const WIND_FORCE = 100;
+
+/**
  * Maximum velocity for a throw.
  */
 export const MAX_THROW_VEL = 400;

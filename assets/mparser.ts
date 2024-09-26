@@ -10,6 +10,7 @@ import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
+import { windTunnel } from "../object_factories/windTunnel";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -40,6 +41,7 @@ export const MParser: {
         B: button,
         C: conveyor,
         X: box,
+        W: windTunnel,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
