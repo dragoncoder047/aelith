@@ -158,6 +158,23 @@ export const MParser: {
                 });
             }
         },
+        // partition: objects* partitionStr -- objects*
+        p() {
+            const partitionString = this.stack.pop() as string;
+            const commands = Array.from(partitionString.matchAll(/(\d+)([a-z]+)/gi));
+            const objects: { [group: string]: GameObj[] } = {}
+            for (var [_, countStr, group] of commands) {
+                const count = parseInt(countStr!);
+                if (!(group! in objects)) objects[group!] = [];
+                for (var i = 0; i < count; i++) {
+                    const obj = this.stack.pop() as GameObj;
+                    objects[group!]!.unshift(obj);
+                }
+            }
+            for (group of Object.keys(objects).sort().reverse()) {
+                this.stack.push(...objects[group]!);
+            }
+        },
         // push a uid
         u() {
             this.stack.push(this.uid());
@@ -166,6 +183,12 @@ export const MParser: {
         "\\": stackOp("ab", "ba"), // swap
         "&": stackOp("abc", "bca"), // roll
         ":": stackOp("a", "aa"), // dup
+        // debug command: logs the top object
+        "?"() {
+            const object = this.stack.pop() as GameObj;
+            console.log(`${object.tags} tags`, object);
+            this.stack.push(object);
+        }
     },
     /**
      * Used to hold intermediate parsing results.
