@@ -1,5 +1,6 @@
 import { Comp, GameObj, StateComp } from "kaplay";
 import { LinkComp } from "./linked";
+import { K } from "../init";
 
 export interface TogglerComp extends Comp {
     falseState: string,
@@ -26,11 +27,14 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
             this._syncState();
         },
         add(this: GameObj<StateComp | TogglerComp | LinkComp>) {
-            this._syncState();
+            const zz_dummy = K.onUpdate(() => {
+                this._syncState();
+                zz_dummy.cancel();
+            });
             this.onMessage(msg => {
                 if (msg == this.toggleMsg) {
                     this.togglerState = !this.togglerState;
-                    this._syncState();
+                    // this._syncState(); // called implicitly by setter
                 }
             });
         },

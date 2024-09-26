@@ -5,6 +5,7 @@ import { K } from "../init";
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
 import { conveyor } from "../object_factories/conveyor";
+import { fan } from "../object_factories/fan";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
@@ -42,6 +43,7 @@ export const MParser: {
         C: conveyor,
         X: box,
         W: windTunnel,
+        F: fan,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
@@ -57,9 +59,10 @@ export const MParser: {
      * to initialize the machines.
      */
     commands: {
-        // drop/done command: anything -- nothing
+        // drop/done command: things* n --
         "."() {
-            this.stack.pop();
+            const howmany = this.stack.pop() as number;
+            this.stack.splice(this.stack.length - howmany, howmany);
         },
         // negate command: number -- number
         "-"() {
@@ -89,7 +92,7 @@ export const MParser: {
             this.stack.push(obj);
         },
         // link command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
-        $() {
+        x() {
             var n = this.stack.pop() as number | string;
             var link = this.uid();
             if (typeof n === "string") {
@@ -276,6 +279,7 @@ export const MParser: {
                 // add "machine" tag if it isn't on already
                 // (kaplay deduplicates tags automatically)
                 rv.push("machine");
+                rv.push(cmd);
                 return rv;
             }
             else throw "unknown command " + cmd;

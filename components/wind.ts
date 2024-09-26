@@ -1,4 +1,4 @@
-import { Comp, GameObj, AreaComp, StateComp, SpriteComp } from "kaplay";
+import { Comp, GameObj, AreaComp, StateComp } from "kaplay";
 import { K } from "../init";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";

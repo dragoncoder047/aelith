@@ -34,7 +34,12 @@ export const CONVEYOR_SPEED = 32;
 /**
  * Force of the fans.
  */
-export const WIND_FORCE = 100;
+export const WIND_FORCE = 200;
+
+/**
+ * Drag for all moving objects
+ */
+export const DRAG = 0.999;
 
 /**
  * Maximum velocity for a throw.

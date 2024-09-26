@@ -101,5 +101,20 @@
                 "speed": 16
             }
         }
+    },
+    "fan": {
+        "x": 160,
+        "y": 190,
+        "width": 96,
+        "height": 32,
+        "sliceX": 3,
+        "anims": {
+            "spin": {
+                "from": 0,
+                "to": 2,
+                "loop": true,
+                "speed": 30
+            }
+        }
     }
 }

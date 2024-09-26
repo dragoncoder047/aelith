@@ -1,6 +1,6 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
-import { infFriction } from "./components/infFriction";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY } from "./constants";
+import { correctPhysics } from "./components/correctPhysics";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, DRAG } from "./constants";
 import { K } from "./init";
 
 import { MParser } from "./assets/mparser";
@@ -91,9 +91,12 @@ export const player = K.add([
             K.vec2(-TILE_SIZE / 2, -TILE_SIZE / 2),
         ]),
     } /**/),
-    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
+    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY, drag: DRAG }),
     K.anchor("center"),
     K.state("normal"),
-    infFriction(),
+    correctPhysics(),
     playerComp(),
 ]);
+
+// @ts-expect-error
+window.player = player;
