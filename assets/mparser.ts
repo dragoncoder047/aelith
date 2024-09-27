@@ -59,10 +59,12 @@ export const MParser: {
      * to initialize the machines.
      */
     commands: {
-        // drop/done command: things* n --
+        // drop/done command: things* n? --
         "."() {
-            const howmany = this.stack.pop() as number;
-            this.stack.splice(this.stack.length - howmany, howmany);
+            const howmany = this.stack.pop();
+            if (typeof howmany === "number") 
+                this.stack.splice(this.stack.length - howmany, howmany);
+            else return;
         },
         // negate command: number -- number
         "-"() {
