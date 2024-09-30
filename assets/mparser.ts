@@ -23,7 +23,7 @@ export const MParser: {
     commands: { [x: string]: (this: typeof MParser) => void; };
     buffer: string | number | undefined;
     parenStack: string[];
-    storedProcedures: { [x: string]: string; };
+    storedProcedures: { [x: string]: string | number | ((this: typeof MParser) => void); };
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
     mergeAcross(): void;
@@ -60,14 +60,13 @@ export const MParser: {
      */
     commands: {
         // drop/done command: things* n? --
-        "."() {
+        z() {
             const howmany = this.stack.pop();
-            if (typeof howmany === "number") 
+            if (typeof howmany === "number")
                 this.stack.splice(this.stack.length - howmany, howmany);
-            else return;
         },
         // negate command: number -- number
-        "-"() {
+        n() {
             this.stack.push(-(this.stack.pop() as number));
         },
         // set property: obj pName value -- obj
@@ -85,8 +84,8 @@ export const MParser: {
             object.angle += degrees;
             this.stack.push(object);
         },
-        // nudge: obj x y -- obj
-        n() {
+        // move: obj x y -- obj
+        m() {
             const y = this.stack.pop() as number;
             const x = this.stack.pop() as number;
             const obj = this.stack.pop() as GameObj<PosComp>;
@@ -153,7 +152,12 @@ export const MParser: {
                 const obj = this.stack.pop() as GameObj
                 objects.push(obj);
                 this.commandQueue.unshift(() => {
-                    this.stack.pop();
+                    const o = this.stack.pop();
+                    if (o === obj) return;
+                    // The inside code dropped the object,
+                    // we need to mirror this at the end
+                    this.stack.push(o);
+                    objects.splice(objects.indexOf(obj), 1);
                 })
                 this.commandQueue.unshift(() => {
                     this.stack.push(obj);

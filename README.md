@@ -86,7 +86,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 ## TODO
 
 * [ ] Implement grabbing and interaction controls
-* [X] Implement inventory UI - `fixed` component
+* [ ] Implement inventory UI - `fixed` component
   * [ ] More UI controls
 * [ ] Get sounds
     * [ ] Jump: `zzfx(...[,,440,,,.2,,.5,5]);`
@@ -95,16 +95,16 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
     * [ ] Teleport: `zzfx(...[,0,440,,,.6,1,,,2e3,,,.05,,,,.005]);`
     * [ ] Assert(true) / checkpoint: `zzfx(...[,0,1e3,,,.2,1,,,,290,.07,,,,,,,.1])`
     * [ ] Pick up: `zzfx(...[,,100,,,,4,2])`
-    * [ ] Set down object: ``
-      * [ ] Implement this
+    * [ ] Throw object: ``
+      * [X] Implement this
     * [ ] Switch on: ``
     * [ ] Switch off: de-tuned down by 400 cents: ``
 * [ ] Make sprites and machines
   * [X] Finish climbing animation
   * [X] Wall and ladder tiles
   * [X] Button
-  * [ ] Switch
-  * [ ] Conveyor
+  * [X] Switch
+  * [X] Conveyor
   * [ ] Door
   * [ ] Laser
   * [ ] Decoration tiles
