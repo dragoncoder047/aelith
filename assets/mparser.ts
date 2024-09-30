@@ -12,6 +12,7 @@ import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
+import { WORLD_FILE } from "../assets";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -100,14 +101,14 @@ export const MParser: {
                 link = n;
                 n = this.stack.pop() as number;
             };
-            const off: GameObj<LinkComp>[] = [];
+            const grp: GameObj<LinkComp>[] = [];
             for (var i = 0; i < n; i++) {
                 var item = this.stack.pop() as GameObj<LinkComp>;
                 item.tag = link;
-                off.push(item);
+                grp.push(item);
             }
-            while (off.length > 0)
-                this.stack.push(off.pop());
+            while (grp.length > 0)
+                this.stack.push(grp.pop());
         },
         // define command: value name --
         d() {
@@ -221,7 +222,7 @@ export const MParser: {
                     else if (cmd === "}") {
                         this.cleanBuffer();
                         const code = this.commandQueue.pop();
-                        if (typeof code !== "string") throw "oops string";
+                        if (typeof code !== "string") throw "BUG: cleanBuffer() not string!";
                         this.commandQueue.push(() => {
                             this.parenStack = [];
                             this.buffer = undefined;
@@ -229,8 +230,8 @@ export const MParser: {
                             for (var i = 0; i < code.length; i++) {
                                 this.process(code[i]!);
                             }
-                            if (this.parenStack.length > 0) throw "oops parens";
-                            if (this.commandQueue.length === oLen && code != "") throw "oops nothing";
+                            if (this.parenStack.length > 0) throw "BUG: mismatched parens should have been handled by now";
+                            if (this.commandQueue.length === oLen && code != "") throw "BUG: Lambda is not empty string but there are no code";
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
                             this.commandQueue.unshift(() => {
                                 this.stack.push(() => {
