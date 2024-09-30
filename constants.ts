@@ -29,7 +29,7 @@ export const WALK_SPEED = 64;
 /**
  * Maximum speed (pixels/sec) at which a conveyor moves objects
  */
-export const CONVEYOR_SPEED = 32;
+export const CONVEYOR_SPEED = 64;
 
 /**
  * Force of the fans.

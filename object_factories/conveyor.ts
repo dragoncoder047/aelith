@@ -13,7 +13,7 @@ export function conveyor(): CompList<any> {
         ...machine(),
         K.body({ isStatic: true }),
         conveyorComp(),
-        K.surfaceEffector({ speed: 0, forceScale: 1000 }),
+        K.surfaceEffector({ speed: 0, forceScale: Number.MAX_VALUE }),
         nudge(0, 8),
     ]
 }

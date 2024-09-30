@@ -89,16 +89,16 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 * [ ] Implement inventory UI - `fixed` component
   * [ ] More UI controls
 * [ ] Get sounds
-    * [ ] Jump: `zzfx(...[,,440,,,.2,,.5,5]);`
-    * [ ] Footsteps: ``
+    * [ ] Jump: `zzfx(...[,,440,,,.2,,.5,5])`
+    * [ ] Footsteps: `zzfx(...[,.5,120,,,.01,2])`
     * [ ] Climbing: ``
-    * [ ] Teleport: `zzfx(...[,0,440,,,.6,1,,,2e3,,,.05,,,,.005]);`
+    * [ ] Teleport: `zzfx(...[,0,440,,,.6,1,,,2e3,,,.05,,,,.005])`
     * [ ] Assert(true) / checkpoint: `zzfx(...[,0,1e3,,,.2,1,,,,290,.07,,,,,,,.1])`
     * [ ] Pick up: `zzfx(...[,,100,,,,4,2])`
-    * [ ] Throw object: ``
+    * [ ] Throw object: `zzfx(...[,,440,.05,,,,,,,,,,3])`
       * [X] Implement this
-    * [ ] Switch on: ``
-    * [ ] Switch off: de-tuned down by 400 cents: ``
+    * [ ] Switch on: `zzfx(...[,,630,,,.01,2,,,,,,,,,.1])`
+    * [ ] Switch off: de-tuned down by 400 cents: `zzfx(...[,,500,,,.01,2,,,,,,,,,.1])`
 * [ ] Make sprites and machines
   * [X] Finish climbing animation
   * [X] Wall and ladder tiles
