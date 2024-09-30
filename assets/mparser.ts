@@ -188,10 +188,6 @@ export const MParser: {
         u() {
             this.stack.push(this.uid());
         },
-        // stack ops
-        "\\": stackOp("ab", "ba"), // swap
-        "&": stackOp("abc", "bca"), // roll
-        ":": stackOp("a", "aa"), // dup
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
@@ -366,23 +362,3 @@ export const MParser: {
         return Math.random().toString(16).slice(2, 10);
     }
 };
-
-/**
- * helper function for MParser
- */
-function stackOp(from: string, to: string): (this: typeof MParser) => void {
-    if ([].some.call(from, (ch: string, i: number) => from.indexOf(ch) !== i))
-        throw new Error("stack op definition error: duplicate input names: " + from);
-    if ([].some.call(to, (ch: string) => from.indexOf(ch) === -1))
-        throw new Error("stack op definition error: undefined character in output: " + to);
-    const reversedFrom: string[] = [].slice.call(from).reverse();
-    return function (this: typeof MParser) {
-        const nameMap: { [n: string]: any; } = {};
-        for (var c of reversedFrom) {
-            nameMap[c] = this.stack.pop();
-        }
-        for (var c of to) {
-            this.stack.push(nameMap[c]);
-        }
-    };
-}
