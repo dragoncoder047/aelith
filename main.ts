@@ -6,7 +6,8 @@ import './layers';
 import './assets/loadLevel';
 import {
     BAP_OPTS,
-    FOOTSTEP_INTERVAL} from "./constants";
+    FOOTSTEP_INTERVAL
+} from "./constants";
 import { getMotionVector } from "./controlsImpl";
 import './cursor';
 import './cursorControlsImpl';
@@ -32,9 +33,14 @@ player.onGround(() => {
 // Footsteps sound effects when walking
 var footstepsCounter = 0;
 player.onUpdate(() => {
-    var xy = getMotionVector().scale(+player.isGrounded());
-    if (player.state == "normal") xy = xy.reject(K.getGravityDirection());
-    if (player.state != "climbing") footstepsCounter += K.dt() * xy.len();
+    var xy = getMotionVector();
+    if (player.state == "normal") {
+        if (xy.x === 0)
+            xy = xy.reject(K.getGravityDirection());
+        if (!player.isGrounded()) xy = xy.scale(0);
+    }
+    if (player.state === "climbing" || player.state === "normal")
+        footstepsCounter += K.dt() * xy.len();
     if (footstepsCounter >= FOOTSTEP_INTERVAL) {
         footstepsCounter = 0;
         K.play("bap", BAP_OPTS[player.state]?.());
