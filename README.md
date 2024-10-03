@@ -36,20 +36,20 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 
 ### Types of items generally
 
-| Item type | Can be put in inventory / carried | Can be physically interacted with (click action) | Makes ambient sounds | Linked to form machine groups |
-|:---------:|:---------------------------------:|:------------------------------------------------:|:--------------------:|:-----------------------------:|
-| Continuation trap | Yes | | | |
-| Continuation | Yes | | Yes | |
-| Lever | | Yes | Yes | Yes |
-| Button | | Yes | Yes | Yes |
-| Laser break-beam | | | | Yes |
-| Door | | | Yes | Yes |
-| Conveyor | | | Yes | Yes |
-| Moving ladder | | | | Yes |
-| Fan | | | Yes | Yes |
-| Light | | | | Yes |
-| Box | Yes | Yes | | |
-| Decorations | | | | |
+| Done? | Item type | Can be put in inventory / carried | Can be physically interacted with (click action) | Makes ambient sounds | Linked to form machine groups |
+|:-----:|:---------:|:---------------------------------:|:------------------------------------------------:|:--------------------:|:-----------------------------:|
+| | Continuation trap | Yes | | | |
+| | Continuation | Yes | | Yes | |
+| Yes | Lever | | Yes | Yes | Yes |
+| Yes | Button | | Yes | Yes | Yes |
+| | Laser break-beam | | | | Yes |
+| | Door | | | Yes | Yes |
+| Yes | Conveyor | | | Yes | Yes |
+| | Moving ladder | | | | Yes |
+| Yes | Fan | | | Yes | Yes |
+| Yes | Light | | | | Yes |
+| Yes | Box | Yes | Yes | | |
+| | Decorations | | | | |
 
 ### Types of continuation traps
 
