@@ -36,11 +36,13 @@ player.onButtonPress("jump", () => {
     }
 });
 player.onButtonPress("climb", () => {
+    if (player.intersectingAny("ladder")) {
+        player.enterState("climbing");
+    }
+});
+player.onButtonRelease("climb", () => {
     if (player.state === "climbing") {
         player.enterState("normal");
-    }
-    else if (player.intersectingAny("ladder")) {
-        player.enterState("climbing");
     }
 });
 player.onButtonPress("throw", () => {
