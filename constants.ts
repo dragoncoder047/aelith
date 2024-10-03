@@ -34,7 +34,7 @@ export const CONVEYOR_SPEED = 64;
 /**
  * Force of the fans.
  */
-export const WIND_FORCE = 200;
+export const WIND_FORCE = 300;
 
 /**
  * Drag for all moving objects

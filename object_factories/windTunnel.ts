@@ -10,6 +10,7 @@ export function windTunnel(): CompList<any> {
         K.color(K.getBackground()!),
         ...machine(),
         wind(),
+        K.outline(0),
         K.areaEffector({
             forceAngle: -90,
             forceMagnitude: WIND_FORCE

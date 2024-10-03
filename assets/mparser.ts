@@ -12,7 +12,6 @@ import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
-import { WORLD_FILE } from "../assets";
 import { TogglerComp } from "../components/toggler";
 import { TILE_SIZE } from "../constants";
 
@@ -204,16 +203,16 @@ export const MParser: {
             const match = /^([+-]?\d+)([+-][xy])$/i.exec(mod);
             if (!match) throw "invalid elongate command " + mod;
             const [_, dir, axis] = match;
-            const intDir = parseInt(dir!);
-            const move = (axis![1] == "+" ? intDir : -intDir) * TILE_SIZE;
+            const dirI = parseInt(dir!);
+            const move = (axis![0] == "+" ? dirI : -dirI) * TILE_SIZE / 2;
             switch (axis![1]!.toLowerCase()) {
                 case "x":
-                    obj.area.scale.x += intDir;
-                    obj.moveBy(move, 0);
+                    obj.area.scale.x += dirI;
+                    obj.area.offset.x += move;
                     break;
                 case "y":
-                    obj.area.scale.y += intDir;
-                    obj.moveBy(0, move);
+                    obj.area.scale.y += dirI;
+                    obj.area.offset.y += move;
                     break;
                 default:
                     throw "BUG: something's wrong with my regex in e() command";

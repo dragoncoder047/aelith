@@ -1,5 +1,5 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
-import { WORLD_FILE } from "../assets";
+import { WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { MParser } from "./mparser";

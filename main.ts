@@ -1,18 +1,18 @@
 // cSpell: ignore kaplay
 
 import { K } from "./init";
-import './layers';
+import "./layers";
 
-import './assets/loadLevel';
+import "./assets/loadLevel";
 import {
     BAP_OPTS,
     FOOTSTEP_INTERVAL
 } from "./constants";
 import { getMotionVector } from "./controlsImpl";
-import './cursor';
-import './cursorControlsImpl';
+import "./cursor";
+import "./cursorControlsImpl";
 import { player } from "./player";
-import './playerStateManage';
+import "./playerStateManage";
 
 // set gravity for platformer
 K.setGravity(600);
