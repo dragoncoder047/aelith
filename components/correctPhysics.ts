@@ -1,8 +1,7 @@
 import { BodyComp, Comp, GameObj, Tag } from "kaplay";
-import { K } from "../init";
 
 export interface CorrectPhysicsComp extends Comp {
-    require: string[] // why is this necessary?
+    require: Tag[] // why is this necessary?
 }
 
 /**
