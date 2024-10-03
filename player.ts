@@ -1,5 +1,4 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
-import { correctPhysics } from "./components/correctPhysics";
 import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, DRAG } from "./constants";
 import { K } from "./init";
 
@@ -94,7 +93,6 @@ export const player = K.add([
     K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY, drag: DRAG }),
     K.anchor("center"),
     K.state("normal"),
-    correctPhysics(),
     playerComp(),
 ]);
 

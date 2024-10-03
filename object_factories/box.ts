@@ -2,7 +2,6 @@ import { CompList } from "kaplay";
 import { boxComp } from "../components/box";
 import { grabbable } from "../components/grabbable";
 import { hoverOutline } from "../components/hoverOutline";
-import { correctPhysics } from "../components/correctPhysics";
 import { thudder } from "../components/thudder";
 import { DRAG, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -25,7 +24,6 @@ export function box(): CompList<any> {
         thudder(),
         grabbable(),
         K.layer("boxes"),
-        correctPhysics(),
         boxComp()
     ];
 }
