@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:kaplayjs/kaplay#9e637f35aa8cae3dd1b1eb873d59d482586c1193
-        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/9e637f35aa8cae3dd1b1eb873d59d482586c1193
+        specifier: github:kaplayjs/kaplay#37c8d67dfb679847ac3a734819aa53460ae5654a
+        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/37c8d67dfb679847ac3a734819aa53460ae5654a
     devDependencies:
       esbuild:
         specifier: ^0.24.0
@@ -20,46 +20,6 @@ importers:
         version: 5.6.2
 
 packages:
-
-  '@dprint/darwin-arm64@0.47.2':
-    resolution: {integrity: sha512-mVPFBJsXxGDKHHCAY8wbqOyS4028g1bN15H9tivCnPAjwaZhkUimZHXWejXADjhGn+Xm2SlakugY9PY/68pH3Q==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@dprint/darwin-x64@0.47.2':
-    resolution: {integrity: sha512-T7wzlc+rBV+6BRRiBjoqoy5Hj4TR2Nv2p2s9+ycyPGs10Kj/JXOWD8dnEHeBgUr2r4qe/ZdcxmsFQ5Hf2n0WuA==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@dprint/linux-arm64-glibc@0.47.2':
-    resolution: {integrity: sha512-B0m1vT5LdVtrNOVdkqpLPrSxuCD+l5bTIgRzPaDoIB1ChWQkler9IlX8C+RStpujjPj6SYvwo5vTzjQSvRdQkA==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@dprint/linux-arm64-musl@0.47.2':
-    resolution: {integrity: sha512-zID6wZZqpg2/Q2Us+ERQkbhLwlW3p3xaeEr00MPf49bpydmEjMiPuSjWPkNv+slQSIyIsVovOxF4lbNZjsdtvw==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@dprint/linux-x64-glibc@0.47.2':
-    resolution: {integrity: sha512-rB3WXMdINnRd33DItIp7mObS7dzHW90ZzeJSsoKJLPp+Z7wXjjb27UUowfqVI4baa/1pd7sdbX54DPohMtfu/A==}
-    cpu: [x64]
-    os: [linux]
-
-  '@dprint/linux-x64-musl@0.47.2':
-    resolution: {integrity: sha512-E0+TNbzYdTXJ/jCVjUctVxkda/faw++aDQLfyWGcmdMJnbM7NZz+W4fUpDXzMPsjy+zTWxXcPK7/q2DZz2gnbg==}
-    cpu: [x64]
-    os: [linux]
-
-  '@dprint/win32-arm64@0.47.2':
-    resolution: {integrity: sha512-K1EieTCFjfOCmyIhw9zFSduE6qVCNHEveupqZEfbSkVGw5T9MJQ1I9+n7MDb3RIDYEUk0enJ58/w82q8oDKCyA==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@dprint/win32-x64@0.47.2':
-    resolution: {integrity: sha512-LhizWr8VrhHvq4ump8HwOERyFmdLiE8C6A42QSntGXzKdaa2nEOq20x/o56ZIiDcesiV+1TmosMKimPcOZHa+Q==}
-    cpu: [x64]
-    os: [win32]
 
   '@esbuild/aix-ppc64@0.24.0':
     resolution: {integrity: sha512-WtKdFM7ls47zkKHFVzMz8opM7LkcsIp9amDUBIAWirg70RM71WRSjdILPsY5Uv1D42ZpUfaPILDlfactHgsRkw==}
@@ -205,26 +165,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@kaplayjs/dprint-config@1.1.0':
-    resolution: {integrity: sha512-yMcScoE/3cDrVyX+T5I5T2qIMq5pnzdbmTNSTonT3/toOUBQwHqfEsqLjj7+4MkHf16HgNrN8nu+bkZ8VZ36kQ==}
-    hasBin: true
-
-  commander@12.1.0:
-    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
-
-  dprint@0.47.2:
-    resolution: {integrity: sha512-geUcVIIrmLaY+YtuOl4gD7J/QCjsXZa5gUqre9sO6cgH0X/Fa9heBN3l/AWVII6rKPw45ATuCSDWz1pyO+HkPQ==}
-    hasBin: true
-
   esbuild@0.24.0:
     resolution: {integrity: sha512-FuLPevChGDshgSicjisSooU0cemp/sGXR841D5LHMB7mTVOmsEHcAxaH3irL53+8YDIeVNQEySh4DaYU/iuPqQ==}
     engines: {node: '>=18'}
     hasBin: true
 
-  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/9e637f35aa8cae3dd1b1eb873d59d482586c1193:
-    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/9e637f35aa8cae3dd1b1eb873d59d482586c1193}
-    version: 4000.0.0-alpha.5
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/37c8d67dfb679847ac3a734819aa53460ae5654a:
+    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/37c8d67dfb679847ac3a734819aa53460ae5654a}
+    version: 4000.0.0-alpha.6
 
   typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
@@ -232,30 +180,6 @@ packages:
     hasBin: true
 
 snapshots:
-
-  '@dprint/darwin-arm64@0.47.2':
-    optional: true
-
-  '@dprint/darwin-x64@0.47.2':
-    optional: true
-
-  '@dprint/linux-arm64-glibc@0.47.2':
-    optional: true
-
-  '@dprint/linux-arm64-musl@0.47.2':
-    optional: true
-
-  '@dprint/linux-x64-glibc@0.47.2':
-    optional: true
-
-  '@dprint/linux-x64-musl@0.47.2':
-    optional: true
-
-  '@dprint/win32-arm64@0.47.2':
-    optional: true
-
-  '@dprint/win32-x64@0.47.2':
-    optional: true
 
   '@esbuild/aix-ppc64@0.24.0':
     optional: true
@@ -329,24 +253,6 @@ snapshots:
   '@esbuild/win32-x64@0.24.0':
     optional: true
 
-  '@kaplayjs/dprint-config@1.1.0':
-    dependencies:
-      commander: 12.1.0
-      dprint: 0.47.2
-
-  commander@12.1.0: {}
-
-  dprint@0.47.2:
-    optionalDependencies:
-      '@dprint/darwin-arm64': 0.47.2
-      '@dprint/darwin-x64': 0.47.2
-      '@dprint/linux-arm64-glibc': 0.47.2
-      '@dprint/linux-arm64-musl': 0.47.2
-      '@dprint/linux-x64-glibc': 0.47.2
-      '@dprint/linux-x64-musl': 0.47.2
-      '@dprint/win32-arm64': 0.47.2
-      '@dprint/win32-x64': 0.47.2
-
   esbuild@0.24.0:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.24.0
@@ -374,8 +280,6 @@ snapshots:
       '@esbuild/win32-ia32': 0.24.0
       '@esbuild/win32-x64': 0.24.0
 
-  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/9e637f35aa8cae3dd1b1eb873d59d482586c1193:
-    dependencies:
-      '@kaplayjs/dprint-config': 1.1.0
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/37c8d67dfb679847ac3a734819aa53460ae5654a: {}
 
   typescript@5.6.2: {}

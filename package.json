@@ -12,13 +12,13 @@
         "lint": "tsc"
     },
     "license": "GPL-3.0-only",
-    "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c",
+    "packageManager": "pnpm@9.12.0+sha512.4abf725084d7bcbafbd728bfc7bee61f2f791f977fd87542b3579dcb23504d170d46337945e4c66485cd12d588a0c0e570ed9c477e7ccdd8507cf05f3f92eaca",
     "devDependencies": {
         "esbuild": "^0.24.0",
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:kaplayjs/kaplay#9e637f35aa8cae3dd1b1eb873d59d482586c1193"
+        "kaplay": "github:kaplayjs/kaplay#37c8d67dfb679847ac3a734819aa53460ae5654a"
     },
     "type": "module"
 }
