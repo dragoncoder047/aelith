@@ -1,4 +1,4 @@
-import { GameObj, LevelComp } from "kaplay";
+import { GameObj, LevelComp, PosComp } from "kaplay";
 import { WORLD_FILE } from "../assets";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -35,14 +35,14 @@ K.load((async () => {
         throw new Error(msg);
     }
 
-    const playerPositions = MParser.world.get("playerPosition");
+    const playerPositions = MParser.world.get("playerPosition") as GameObj<PosComp>[];
     if (playerPositions.length == 0) {
         throw new SyntaxError(`need a @ in ${WORLD_FILE}`);
     }
     if (playerPositions.length > 1) {
         console.warn(`Multiple @'s in ${WORLD_FILE} - using the first one`);
     }
-    player.pos = playerPositions[0]!.worldPos();
+    player.pos = playerPositions[0]!.worldPos()!;
     playerPositions.forEach(K.destroy);
 
 })());
