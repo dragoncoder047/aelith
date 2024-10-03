@@ -13,6 +13,8 @@ import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
 import { WORLD_FILE } from "../assets";
+import { TogglerComp } from "../components/toggler";
+import { TILE_SIZE } from "../constants";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -184,6 +186,39 @@ export const MParser: {
             for (group of Object.keys(objects).sort().reverse()) {
                 this.stack.push(...objects[group]!);
             }
+        },
+        // toggle command: flips the state of the game object
+        t() {
+            const obj = this.stack.pop() as GameObj<TogglerComp>;
+            const zz = obj.onUpdate(() => {
+                obj.togglerState = !obj.togglerState;
+                zz.cancel();
+            });
+            this.stack.push(obj);
+        },
+        // elongate command: stretches the object's area in the specified direction
+        // intended to be used for wind tunnels
+        e() {
+            const mod = this.stack.pop() as string;
+            const obj = this.stack.pop() as GameObj<AreaComp | PosComp>;
+            const match = /^([+-]?\d+)([+-][xy])$/i.exec(mod);
+            if (!match) throw "invalid elongate command " + mod;
+            const [_, dir, axis] = match;
+            const intDir = parseInt(dir!);
+            const move = (axis![1] == "+" ? intDir : -intDir) * TILE_SIZE;
+            switch (axis![1]!.toLowerCase()) {
+                case "x":
+                    obj.area.scale.x += intDir;
+                    obj.moveBy(move, 0);
+                    break;
+                case "y":
+                    obj.area.scale.y += intDir;
+                    obj.moveBy(0, move);
+                    break;
+                default:
+                    throw "BUG: something's wrong with my regex in e() command";
+            }
+            this.stack.push(obj);
         },
         // push a uid
         u() {
