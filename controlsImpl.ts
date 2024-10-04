@@ -35,8 +35,8 @@ player.onButtonPress("jump", () => {
             K.play("jump");
     }
 });
-player.onButtonPress("climb", () => {
-    if (player.intersectingAny("ladder")) {
+player.onButtonDown("climb", () => {
+    if (player.intersectingAny("ladder") && player.state !== "climbing") {
         player.enterState("climbing");
     }
 });
