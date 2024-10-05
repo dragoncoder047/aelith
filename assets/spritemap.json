@@ -84,9 +84,9 @@
         "x": 96,
         "y": 222,
         "width": 128,
-        "height": 32,
+        "height": 16,
         "sliceX": 4,
-        "sliceY": 2,
+        "sliceY": 1,
         "anims": {
             "forward": {
                 "from": 0,
@@ -95,8 +95,8 @@
                 "speed": 16
             },
             "backward": {
-                "from": 4,
-                "to": 7,
+                "from": 3,
+                "to": 0,
                 "loop": true,
                 "speed": 16
             }
@@ -116,5 +116,11 @@
                 "speed": 30
             }
         }
+    },
+    "door": {
+        "x": 0,
+        "y": 254,
+        "width": 32,
+        "height": 64
     }
 }

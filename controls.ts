@@ -3,21 +3,27 @@
 import { ButtonsDef } from "kaplay";
 
 export const CONTROLS: ButtonsDef = {
+    // action controls
     jump: {
         keyboard: ["space"],
         gamepad: ["south"],
     },
-    climb: {
-        keyboard: ["q", "enter"],
-        gamepad: ["lshoulder"], // cSpell: ignore lshoulder
-    },
     click: {
         mouse: ["left"],
-        gamepad: ["rshoulder"], // cSpell: ignore rshoulder
+        gamepad: ["west"],
     },
     throw: {
         mouse: ["right"],
-        gamepad: ["rtrigger"], // cSpell: ignore rtrigger
+        gamepad: ["north"],
+    },
+    invoke: {
+        keyboard: ["e", "enter"],
+        gamepad: ["east"],
+    },
+    // motion controls
+    climb: {
+        keyboard: ["q", "shift"],
+        gamepad: ["lshoulder"], // cSpell: ignore lshoulder
     },
     move_left: {
         keyboard: ["a", "left"],
