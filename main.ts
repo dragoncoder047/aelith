@@ -6,7 +6,8 @@ import "./layers";
 import "./assets/loadLevel";
 import {
     BAP_OPTS,
-    FOOTSTEP_INTERVAL
+    FOOTSTEP_INTERVAL,
+    GRAVITY
 } from "./constants";
 import { getMotionVector } from "./controlsImpl";
 import "./cursor";
@@ -14,8 +15,7 @@ import "./cursorControlsImpl";
 import { player } from "./player";
 import "./playerStateManage";
 
-// set gravity for platformer
-K.setGravity(600);
+K.setGravity(GRAVITY);
 
 // Keep player centered in window
 const follower = player.onUpdate(() => {

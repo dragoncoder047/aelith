@@ -1,5 +1,5 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, DRAG } from "./constants";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, DAMPING } from "./constants";
 import { K } from "./init";
 
 import { MParser } from "./assets/mparser";
@@ -90,7 +90,7 @@ export const player = K.add([
             K.vec2(-TILE_SIZE / 2, -TILE_SIZE / 2),
         ]),
     } /**/),
-    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY, drag: DRAG }),
+    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY, damping: DAMPING }),
     K.anchor("center"),
     K.state("normal"),
     playerComp(),

@@ -9,6 +9,11 @@ import { AudioPlayOpt } from "kaplay";
 export const SCALE = 3;
 
 /**
+ * Gravity for platformer
+ */
+export const GRAVITY = 600;
+
+/**
  * Tile map grid size
  *
  * Don't change this, it is hardcoded in the spritemap
@@ -37,9 +42,23 @@ export const CONVEYOR_SPEED = 64;
 export const WIND_FORCE = 300;
 
 /**
- * Drag for all moving objects
+ * Motion damping for all moving objects
  */
-export const DRAG = 0.999;
+export const DAMPING = 0;
+
+/**
+ * Physical friction for all moving objects
+ * 
+ * TODO: unused until mflerackers merges the friction changes
+ */
+export const FRICTION = 0.5;
+
+/**
+ * Physical friction for all moving objects
+ * 
+ * TODO: unused until mflerackers merges the friction changes
+ */
+export const RESTITUTION = 0;
 
 /**
  * Maximum velocity for a throw.
