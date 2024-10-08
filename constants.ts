@@ -42,23 +42,14 @@ export const CONVEYOR_SPEED = 64;
 export const WIND_FORCE = 300;
 
 /**
- * Motion damping for all moving objects
- */
-export const DAMPING = 0;
-
-/**
  * Physical friction for all moving objects
- * 
- * TODO: unused until mflerackers merges the friction changes
  */
 export const FRICTION = 0.5;
 
 /**
- * Physical friction for all moving objects
- * 
- * TODO: unused until mflerackers merges the friction changes
+ * Physical bounciness for all moving objects
  */
-export const RESTITUTION = 0;
+export const RESTITUTION = 0.2;
 
 /**
  * Maximum velocity for a throw.

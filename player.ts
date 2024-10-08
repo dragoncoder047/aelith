@@ -1,5 +1,5 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, DAMPING } from "./constants";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION } from "./constants";
 import { K } from "./init";
 
 import { MParser } from "./assets/mparser";
@@ -79,8 +79,8 @@ export const player = K.add([
     K.layer("player"),
     "player",
     K.pos(0, 0),
-    K.area(/**/ {
-        shape: new K.Polygon([
+    K.area({
+        /**/shape: new K.Polygon([
             K.vec2(0, -TILE_SIZE - 0.5),
             K.vec2(TILE_SIZE / 2, -TILE_SIZE / 2),
             K.vec2(TILE_SIZE / 2, TILE_SIZE / 2),
@@ -88,9 +88,11 @@ export const player = K.add([
             K.vec2(0.1, TILE_SIZE - 0.5),
             K.vec2(-TILE_SIZE / 2, TILE_SIZE / 2),
             K.vec2(-TILE_SIZE / 2, -TILE_SIZE / 2),
-        ]),
-    } /**/),
-    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY, damping: DAMPING }),
+        ]),/**/
+        friction: FRICTION,
+        restitution: RESTITUTION,
+    }),
+    K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
     K.anchor("center"),
     K.state("normal"),
     playerComp(),
