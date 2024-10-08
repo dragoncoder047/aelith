@@ -2,13 +2,14 @@ import { CompList } from "kaplay";
 import { K } from "../init";
 
 import { defaults } from "./default";
+import { FRICTION } from "../constants";
 
 export function wall(): CompList<any> {
     return [
         K.sprite("steel"),
         K.body({ isStatic: true }),
         K.tile({ isObstacle: true }),
-        ...defaults(),
+        ...defaults({ friction: FRICTION }),
         "wall",
     ]
 }

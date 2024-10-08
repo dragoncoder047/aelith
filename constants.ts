@@ -44,7 +44,7 @@ export const WIND_FORCE = 300;
 /**
  * Physical friction for all moving objects
  */
-export const FRICTION = 0.5;
+export const FRICTION = 0.25;
 
 /**
  * Physical bounciness for all moving objects

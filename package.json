@@ -18,7 +18,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:kaplayjs/kaplay#3f5436de4d44548bae48b655730717ac99b64d13"
+        "kaplay": "github:kaplayjs/kaplay#5c741b18415dd41604abcea8dc65666476ce3e90"
     },
     "type": "module"
 }
