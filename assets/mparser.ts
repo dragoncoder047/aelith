@@ -14,6 +14,7 @@ import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
 import { TogglerComp } from "../components/toggler";
 import { TILE_SIZE } from "../constants";
+import { door } from "../object_factories/door";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -46,6 +47,7 @@ export const MParser: {
         X: box,
         W: windTunnel,
         F: fan,
+        D: door,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
@@ -76,6 +78,7 @@ export const MParser: {
             const value = this.stack.pop();
             const propName = this.stack.pop() as string;
             const obj = this.stack.pop();
+            if (!(propName in obj)) throw `prop ${propName} don't exist on ${obj} ${obj.tags}`;
             obj[propName] = value;
             this.stack.push(obj);
         },
