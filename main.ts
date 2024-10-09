@@ -5,6 +5,7 @@ import "./layers";
 
 import "./assets/loadLevel";
 import {
+    ALPHA,
     BAP_OPTS,
     FOOTSTEP_INTERVAL,
     GRAVITY
@@ -16,10 +17,9 @@ import { player } from "./player";
 import "./playerStateManage";
 
 K.setGravity(GRAVITY);
-
 // Keep player centered in window
 const follower = player.onUpdate(() => {
-    K.camPos(player.worldPos()!);
+    K.camPos(K.camPos().scale(1 - ALPHA).add(player.worldPos()!.scale(ALPHA)));
 });
 
 // custom thud, not using thudder component

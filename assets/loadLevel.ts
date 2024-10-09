@@ -44,5 +44,7 @@ K.load((async () => {
     }
     player.pos = playerPositions[0]!.worldPos()!;
     playerPositions.forEach(K.destroy);
+    // prevent superfast scroll on load
+    K.camPos(player.worldPos()!);
 
 })());

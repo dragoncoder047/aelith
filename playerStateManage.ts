@@ -19,7 +19,7 @@ player.onStateEnter("jump", () => {
 });
 player.onStateEnter("climbing", () => {
     player.gravityScale = 0;
-    player.drag = 1;
+    player.damping = Number.MAX_VALUE;
     player.mass = Number.MAX_VALUE;
     player.vel = K.vec2(0);
     player.play("climbing");
@@ -35,7 +35,7 @@ player.onStateUpdate("climbing", () => {
 });
 player.onStateEnd("climbing", () => {
     player.gravityScale = 1;
-    player.drag = 0;
+    player.damping = 0;
     player.animSpeed = 1;
     player.mass = 1;
 });

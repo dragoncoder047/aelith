@@ -9,6 +9,12 @@ import { AudioPlayOpt } from "kaplay";
 export const SCALE = 3;
 
 /**
+ * Lowpass filter coefficient on camera pan.
+ */
+export const ALPHA = 0.05;
+
+
+/**
  * Gravity for platformer
  */
 export const GRAVITY = 600;

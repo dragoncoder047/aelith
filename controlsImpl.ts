@@ -11,12 +11,12 @@ export function getMotionVector(): Vec2 {
     return K.vec2(
         +K.isButtonDown("move_right") - +K.isButtonDown("move_left"),
         +K.isButtonDown("move_down") - +K.isButtonDown("move_up"), // y increases downward
-    ).add(K.getGamepadStick("left"));
+    ).add(K.getGamepadStick("left").reflect(K.RIGHT)); // y increases downward
 }
 
 function motionHandler() {
     const xy = getMotionVector();
-    if (player.state === "normal" && player.isGrounded())
+    if (player.state === "normal")
         xy.y = 0;
     player.move(xy.scale(WALK_SPEED));
     if (xy.x > 0)
