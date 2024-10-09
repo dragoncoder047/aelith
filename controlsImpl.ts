@@ -1,4 +1,4 @@
-import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH } from "./constants";
+import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH, FOOTSTEP_INTERVAL, BAP_OPTS } from "./constants";
 import { K } from "./init";
 
 import { cursor } from "./cursor";
@@ -32,7 +32,7 @@ player.onButtonPress("jump", () => {
         player.jump();
         player.enterState("jump");
         if (!player.intersectingAny("button"))
-            K.play("jump");
+            player.playSound("jump");
     }
 });
 player.onButtonDown("climb", () => {
@@ -53,4 +53,20 @@ player.onButtonPress("throw", () => {
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
     player.grabbing = undefined;
     thrown.applyImpulse(direction);
+});
+
+// Footsteps sound effects when walking
+player.onUpdate(() => {
+    var xy = getMotionVector();
+    if (player.state == "normal") {
+        if (xy.x === 0)
+            xy = xy.reject(K.getGravityDirection());
+        if (!player.isGrounded()) xy = xy.scale(0);
+    }
+    if (player.state === "climbing" || player.state === "normal")
+        player.footstepsCounter += K.dt() * xy.len();
+    if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
+        player.footstepsCounter = 0;
+        player.playSound("bap", BAP_OPTS[player.state]);
+    }
 });

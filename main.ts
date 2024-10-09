@@ -5,47 +5,16 @@ import "./layers";
 
 import "./assets/loadLevel";
 import {
-    ALPHA,
-    BAP_OPTS,
-    FOOTSTEP_INTERVAL,
     GRAVITY
 } from "./constants";
-import { getMotionVector } from "./controlsImpl";
+import "./controlsImpl";
 import "./cursor";
 import "./cursorControlsImpl";
 import { player } from "./player";
 import "./playerStateManage";
 
 K.setGravity(GRAVITY);
-// Keep player centered in window
-const follower = player.onUpdate(() => {
-    K.camPos(K.camPos().scale(1 - ALPHA).add(player.worldPos()!.scale(ALPHA)));
-});
-
-// custom thud, not using thudder component
-player.onGround(() => {
-    if (!player.intersectingAny("button")) {
-        K.play("thud", { detune: -500 });
-    }
-});
-
-
-// Footsteps sound effects when walking
-var footstepsCounter = 0;
-player.onUpdate(() => {
-    var xy = getMotionVector();
-    if (player.state == "normal") {
-        if (xy.x === 0)
-            xy = xy.reject(K.getGravityDirection());
-        if (!player.isGrounded()) xy = xy.scale(0);
-    }
-    if (player.state === "climbing" || player.state === "normal")
-        footstepsCounter += K.dt() * xy.len();
-    if (footstepsCounter >= FOOTSTEP_INTERVAL) {
-        footstepsCounter = 0;
-        K.play("bap", BAP_OPTS[player.state]?.());
-    }
-});
+const follower = player.camFollower!;
 
 /* -------------------- UI --------------------- */
 
