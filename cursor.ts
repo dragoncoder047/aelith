@@ -22,12 +22,10 @@ function cursorComp(): CursorComp {
             const targeted = player.getTargeted();
             if (targeted !== undefined) {
                 this.frame = 0;
-                // this.area.scale = K.wave(0.8, 1.2, K.time());
             }
             else {
                 // frame 1 is a little smaller and gray
                 this.frame = 1;
-                // this.area.scale = 1;
             }
         },
         update() {

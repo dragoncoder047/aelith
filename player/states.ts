@@ -1,7 +1,7 @@
-import { getMotionVector } from "./controlsImpl";
-import { K } from "./init";
+import { getMotionVector } from "./controls/impl";
+import { K } from "../init";
 
-import { player } from "./player";
+import { player } from ".";
 
 // State functions
 player.onStateUpdate("normal", () => {

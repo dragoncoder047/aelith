@@ -7,11 +7,11 @@ import "./assets/loadLevel";
 import {
     GRAVITY
 } from "./constants";
-import "./controlsImpl";
+import "./player/controls/impl";
 import "./cursor";
 import "./cursorControlsImpl";
 import { player } from "./player";
-import "./playerStateManage";
+import "./player/states";
 import "./ui";
 
 K.setGravity(GRAVITY);

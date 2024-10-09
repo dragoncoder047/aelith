@@ -13,6 +13,11 @@ export const SCALE = 3;
  */
 export const ALPHA = 0.05;
 
+/**
+ * Margin for UI components
+ */
+export const MARGIN = 20 / SCALE;
+
 
 /**
  * Gravity for platformer

@@ -1,4 +1,4 @@
-import { CONTROLS } from "./controls";
+import { CONTROLS } from "./player/controls";
 import { SCALE } from "./constants";
 import kaplay from "kaplay";
 import { KAPLAYCtx } from "kaplay";

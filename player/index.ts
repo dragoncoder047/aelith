@@ -1,10 +1,10 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2 } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA, BAP_OPTS, FOOTSTEP_INTERVAL } from "./constants";
-import { K } from "./init";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA, BAP_OPTS, FOOTSTEP_INTERVAL } from "../constants";
+import { K } from "../init";
 
-import { MParser } from "./assets/mparser";
-import { getMotionVector } from "./controlsImpl";
-import { thudder } from "./components/thudder";
+import { MParser } from "../assets/mparser";
+import { getMotionVector } from "./controls/impl";
+import { thudder } from "../components/thudder";
 
 export interface PlayerComp extends Comp {
     grabbing: GameObj<PosComp | BodyComp> | undefined
@@ -78,6 +78,8 @@ function playerComp(): PlayerComp {
                 return;
             const candidates = MParser.world.get<AreaComp | LayerComp | PosComp>("area")
                 .filter(obj => (obj.is("box") || obj.is("lever")) && obj.isHovering() && this.canTouch(obj));
+            candidates.unshift(...K.get<PosComp | AreaComp | LayerComp>("ui-button", { recursive: true })
+                .filter(b => b.isHovering()));
             candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
             return candidates[0];
         },

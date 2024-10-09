@@ -1,10 +1,11 @@
 import { UI } from ".";
+import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 
 
 const FPSindicator = UI.add([
-    K.text("", { size: 8, font: "IBM Mono" }),
-    K.pos(10, 10),
+    K.text("", { size: 8 / SCALE, font: "IBM Mono" }),
+    K.pos(MARGIN, MARGIN),
     K.layer("ui"),
 ]);
 var frameCounter = 0;

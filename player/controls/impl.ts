@@ -1,8 +1,8 @@
-import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH, FOOTSTEP_INTERVAL, BAP_OPTS } from "./constants";
-import { K } from "./init";
+import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH, FOOTSTEP_INTERVAL, BAP_OPTS } from "../../constants";
+import { K } from "../../init";
 
-import { cursor } from "./cursor";
-import { player } from "./player";
+import { cursor } from "../../cursor";
+import { player } from "..";
 import { Vec2 } from "kaplay";
 
 // Controls
