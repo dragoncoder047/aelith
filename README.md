@@ -43,7 +43,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 | Yes | Lever | | Yes | Yes | Yes |
 | Yes | Button | | Yes | Yes | Yes |
 | | Laser break-beam | | | | Yes |
-| | Door | | | Yes | Yes |
+| Yes | Door | | | Yes | Yes |
 | Yes | Conveyor | | | Yes | Yes |
 | | Moving ladder | | | | Yes |
 | Yes | Fan | | | Yes | Yes |
@@ -99,13 +99,15 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
       * [X] Implement this
     * [ ] Switch on: `zzfx(...[,,630,,,.01,2,,,,,,,,,.1])`
     * [ ] Switch off: de-tuned down by 400 cents: `zzfx(...[,,500,,,.01,2,,,,,,,,,.1])`
+    * [ ] Conveyor sound: ``
+    * [ ] Fan sound: ``
 * [ ] Make sprites and machines
   * [X] Finish climbing animation
   * [X] Wall and ladder tiles
   * [X] Button
   * [X] Switch
   * [X] Conveyor
-  * [ ] Door
+  * [X] Door
   * [ ] Laser
   * [ ] Decoration tiles
   * [ ] Machine tiles
