@@ -91,7 +91,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 * [ ] Get sounds
     * [ ] Jump: `zzfx(...[,,440,,,.2,,.5,5])`
     * [ ] Footsteps: `zzfx(...[,.5,120,,,.01,2])`
-    * [ ] Climbing: ``
+    * [ ] Climbing: `zzfx(...[,.5,1e3,,,.01,1,,,,,,,,,.1])`
     * [ ] Teleport: `zzfx(...[,0,440,,,.6,1,,,2e3,,,.05,,,,.005])`
     * [ ] Assert(true) / checkpoint: `zzfx(...[,0,1e3,,,.2,1,,,,290,.07,,,,,,,.1])`
     * [ ] Pick up: `zzfx(...[,,100,,,,4,2])`

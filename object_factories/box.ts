@@ -1,7 +1,6 @@
 import { CompList } from "kaplay";
 import { boxComp } from "../components/box";
 import { grabbable } from "../components/grabbable";
-import { hoverOutline } from "../components/hoverOutline";
 import { thudder } from "../components/thudder";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -23,7 +22,6 @@ export function box(): CompList<any> {
             friction: FRICTION,
             restitution: RESTITUTION
         }),
-        hoverOutline(),
         K.tile({ isObstacle: true }),
         thudder(),
         grabbable(),

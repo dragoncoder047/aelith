@@ -1,5 +1,5 @@
-import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION } from "./constants";
+import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, TileComp } from "kaplay";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, SCALE } from "./constants";
 import { K } from "./init";
 
 import { MParser } from "./assets/mparser";
@@ -39,7 +39,10 @@ function playerComp(): PlayerComp {
                 return true; // bail if world isn't initialized yet
             const line = new K.Line(this.worldPos()!, target.worldPos()!);
             for (var object of MParser.world.get(["area", "tile"])) {
-                if (object.isObstacle && object !== target && object !== this.grabbing) {
+                if (object.isObstacle
+                        && object !== target
+                        && object !== this.grabbing
+                        && object.collisionIgnore.every((t: string) => !this.is(t))) {
                     const boundingbox = object.worldArea();
                     if (boundingbox.collides(line)) {
                         return false;
@@ -60,16 +63,30 @@ function playerComp(): PlayerComp {
         getTargeted() {
             if (!MParser.world)
                 return;
-            /**
-             * @{import("kaplay").GameObj<import("kaplay").LayerComp>[]}
-             */
-            const candidates: GameObj<AreaComp | LayerComp>[] = [];
-            for (var obj of MParser.world.get<AreaComp | LayerComp | PosComp>("hoverOutline")) {
-                if (obj.isHovering() && this.canTouch(obj))
-                    candidates.push(obj as GameObj<AreaComp | LayerComp>);
-            }
+            const candidates = MParser.world.get<AreaComp | LayerComp | PosComp>("area")
+                .filter(obj => (obj.is("box") || obj.is("lever")) && obj.isHovering() && this.canTouch(obj));
             candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
             return candidates[0];
+        },
+        draw(this: GameObj<PosComp | PlayerComp>) {
+            const s = this.getTargeted() as GameObj<PosComp | SpriteComp | AreaComp> | undefined;
+            if (s == undefined) {
+                return;
+            }
+            // draw outline on object being hovered
+            const r = s.worldArea().bbox();
+            K.drawRect({
+                fill: false,
+                width: r.width,
+                height: r.height,
+                pos: this.fromWorld(r.pos),
+                outline: {
+                    width: 2,
+                    color: K.WHITE,
+                    opacity: K.wave(0, 1, K.time() * Math.PI * 2),
+                    join: "miter",
+                }
+            });
         }
     };
 }
@@ -81,14 +98,14 @@ export const player = K.add([
     K.pos(0, 0),
     K.area({
         /**/shape: new K.Polygon([
-            K.vec2(0, -TILE_SIZE - 0.5),
-            K.vec2(TILE_SIZE / 2, -TILE_SIZE / 2),
-            K.vec2(TILE_SIZE / 2, TILE_SIZE / 2),
-            K.vec2(-0.1, TILE_SIZE - 0.5),
-            K.vec2(0.1, TILE_SIZE - 0.5),
-            K.vec2(-TILE_SIZE / 2, TILE_SIZE / 2),
-            K.vec2(-TILE_SIZE / 2, -TILE_SIZE / 2),
-        ]),/**/
+        K.vec2(0, -TILE_SIZE - 0.5),
+        K.vec2(TILE_SIZE / 2, -TILE_SIZE / 2),
+        K.vec2(TILE_SIZE / 2, TILE_SIZE / 2),
+        K.vec2(-0.1, TILE_SIZE - 0.5),
+        K.vec2(0.1, TILE_SIZE - 0.5),
+        K.vec2(-TILE_SIZE / 2, TILE_SIZE / 2),
+        K.vec2(-TILE_SIZE / 2, -TILE_SIZE / 2),
+    ]),/**/
         friction: FRICTION,
         restitution: RESTITUTION,
     }),
