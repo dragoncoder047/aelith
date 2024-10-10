@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp, SpriteComp } from "kaplay";
 import { player } from "../player";
 
 export interface GrabbableComp extends Comp {
@@ -16,29 +16,30 @@ export function grabbable(): GrabbableComp {
         require: ["area", "body", "pos"],
         physicsFoo: undefined,
         oldLayer: "",
-        add(this: GameObj<AreaComp | BodyComp | PosComp | GrabbableComp | LayerComp>) {
+        add(this: GameObj<AreaComp | BodyComp | PosComp | GrabbableComp | LayerComp | SpriteComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) {
-                    if (player.grabbing === this) {
-                        player.grabbing = undefined;
+                    if (player.holdingItem === this) {
+                        player.drop(this);
                     }
                     else {
                         this.oldLayer = this.layer!;
-                        player.grabbing = this;
+                        player.grab(this);
                     }
                 }
             });
             this.onBeforePhysicsResolve(coll => {
-                if (player.grabbing === this) coll.preventResolution();
+                if (player.holdingItem === this) coll.preventResolution();
             });
         },
-        update(this: GameObj<LayerComp | PosComp | BodyComp | GrabbableComp>) {
+        update(this: GameObj<LayerComp | PosComp | BodyComp | GrabbableComp | SpriteComp>) {
             // there must be a better way to do this
-            if (player.grabbing === this) {
+            if (player.holdingItem === this) {
                 this.layer = "grabbing";
             }
-            else {
-                if (this.oldLayer != "") this.layer = this.oldLayer;
+            else if (this.oldLayer != "") {
+                this.layer = this.oldLayer;
+                this.oldLayer = "";
             }
         }
     };

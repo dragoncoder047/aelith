@@ -46,12 +46,12 @@ player.onButtonRelease("climb", () => {
     }
 });
 player.onButtonPress("throw", () => {
-    const thrown = player.grabbing;
+    const thrown = player.holdingItem;
     if (!thrown) return;
     var direction = cursor.screenPos()!.sub(player.screenPos()!).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
     const len = direction.len();
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
-    player.grabbing = undefined;
+    player.drop(thrown);
     thrown.applyImpulse(direction);
 });
 

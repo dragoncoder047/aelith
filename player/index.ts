@@ -7,7 +7,7 @@ import { getMotionVector } from "./controls/impl";
 import { thudder } from "../components/thudder";
 
 export interface PlayerComp extends Comp {
-    grabbing: GameObj<PosComp | BodyComp> | undefined
+    readonly holdingItem: GameObj<PosComp | BodyComp | SpriteComp> | undefined
     intDist: number
     camFollower: KEventController | undefined
     footstepsCounter: number,
@@ -15,11 +15,17 @@ export interface PlayerComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean
     getTargeted(): GameObj<AreaComp | LayerComp> | undefined
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): void
+    inventory: GameObj<PosComp | SpriteComp | BodyComp>[]
+    holdingIndex: number
+    grab(object: GameObj<PosComp | SpriteComp | BodyComp>): void
+    drop(object: GameObj<PosComp | SpriteComp | BodyComp>): void
 }
 
 function playerComp(): PlayerComp {
     return {
-        grabbing: undefined,
+        get holdingItem() {
+            return this.inventory[this.holdingIndex];
+        },
         camFollower: undefined,
         footstepsCounter: 0,
         add(this: GameObj) {
@@ -29,11 +35,18 @@ function playerComp(): PlayerComp {
             });
         },
         update(this: GameObj<PlayerComp | PosComp | BodyComp>) {
+            // hide all inventory items
+            this.inventory.forEach(item => {
+                item.paused = true;
+                item.hidden = true;
+            });
             // move the grabbing to self
-            if (this.grabbing !== undefined) {
-                if (this.curPlatform() === this.grabbing) this.jump(1); // Reset curPlatform()
-                this.grabbing.vel = K.vec2(0); // Reset velocity
-                this.grabbing.moveTo(this.worldPos()!.sub(this.grabbing.parent!.worldPos()));
+            if (this.holdingItem !== undefined) {
+                if (this.curPlatform() === this.holdingItem) this.jump(1); // Reset curPlatform()
+                this.holdingItem.vel = K.vec2(0); // Reset velocity
+                this.holdingItem.moveTo(this.worldPos()!.sub(this.holdingItem.parent!.worldPos()!));
+                this.holdingItem.paused = false;
+                this.holdingItem.hidden = false;
             }
         },
         /**
@@ -53,8 +66,9 @@ function playerComp(): PlayerComp {
             const line = new K.Line(this.worldPos()!, target.worldPos()!);
             for (var object of MParser.world.get(["area", "tile"])) {
                 if (object.isObstacle
+                    && !object.paused
                     && object !== target
-                    && object !== this.grabbing
+                    && object !== this.holdingItem
                     && object.collisionIgnore.every((t: string) => !this.is(t))) {
                     const boundingbox = object.worldArea();
                     if (boundingbox.collides(line)) {
@@ -77,7 +91,7 @@ function playerComp(): PlayerComp {
             if (!MParser.world)
                 return;
             const candidates = MParser.world.get<AreaComp | LayerComp | PosComp>("area")
-                .filter(obj => (obj.is("box") || obj.is("lever")) && obj.isHovering() && this.canTouch(obj));
+                .filter(obj => (obj.is("box") || obj.is("lever")) && !obj.paused && obj.isHovering() && this.canTouch(obj));
             candidates.unshift(...K.get<PosComp | AreaComp | LayerComp>("ui-button", { recursive: true })
                 .filter(b => b.isHovering()));
             candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
@@ -128,6 +142,33 @@ function playerComp(): PlayerComp {
             const u = this.onUpdate(func);
             zz.onEnd(u.cancel); // why does this never get called?
             K.wait(zz.duration(), u.cancel);
+        },
+        inventory: [],
+        holdingIndex: 0,
+        grab(this: GameObj<PlayerComp>, obj) {
+            // already have it. Problem.
+            if (this.inventory.indexOf(obj) !== -1) {
+                K.debug.log("BUG: tried to grab item that i already have");
+                return;
+            };
+            // Put in inventory
+            this.holdingIndex = this.inventory.length;
+            this.inventory.push(obj);
+        },
+        drop(this: GameObj<PlayerComp | PosComp>, obj) {
+            const i = this.inventory.indexOf(obj);
+            // already dropped it. Problem.
+            if (i === -1) {
+                K.debug.log("BUG: tried to drop item i don't have");
+                return;
+            };
+            obj.paused = false;
+            obj.hidden = false;
+            obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+            this.inventory.splice(i, 1);
+            if (this.holdingIndex >= this.inventory.length) {
+                this.holdingIndex = this.inventory.length - 1;
+            }
         }
     };
 }
