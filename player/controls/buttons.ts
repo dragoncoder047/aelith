@@ -16,7 +16,7 @@ export const CONTROLS: Controls = {
         keyboard: ["space"],
         gamepad: ["south"],
     },
-    click: {
+    interact: {
         mouse: ["left"],
         gamepad: ["west"],
     },

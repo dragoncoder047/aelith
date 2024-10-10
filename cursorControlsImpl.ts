@@ -10,8 +10,8 @@ cursor.onGamepadStick("right", xy => {
 });
 K.onMouseMove(() => {
     cursor.update();
-    if (cursor.screenPos()!.x < player.screenPos()!.x) player.flipX = false;
+    if (K.mousePos().x < player.screenPos()!.x) player.flipX = false;
     else player.flipX = true;
 });
-K.onButtonPress("click", () => cursor.press());
-K.onButtonRelease("click", () => cursor.release());
+K.onButtonPress("interact", () => cursor.press());
+K.onButtonRelease("interact", () => cursor.release());
