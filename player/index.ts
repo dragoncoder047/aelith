@@ -15,7 +15,7 @@ export interface PlayerComp extends Comp {
     canTouch(target: GameObj<PosComp>): boolean
     intersectingAny(type: Tag, where?: GameObj): boolean
     getTargeted(): GameObj<AreaComp | LayerComp> | undefined
-    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): void
+    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
     inventory: PlayerInventoryItem[]
     holdingIndex: number
     grab(object: PlayerInventoryItem): void
@@ -134,12 +134,13 @@ function playerComp(): PlayerComp {
          */
         playSound(this: GameObj<PosComp | PlayerComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel = undefined) {
             if (typeof opt === "function") opt = opt();
+            const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
             if (impactVel !== undefined) {
                 v *= Math.min(1, 4 * impactVel / TERMINAL_VELOCITY);
             }
             const zz = K.play(soundID, opt);
-            const func = () => {
+            const doWatch = () => {
                 const dist = this.worldPos()!.dist(pos);
                 const rv1 = Math.min(K.width(), K.height());
                 const rv0 = Math.max(K.width(), K.height()) + rv1;
@@ -147,10 +148,22 @@ function playerComp(): PlayerComp {
                 zz.pan = K.mapc(pos.x - this.pos.x, -this.intDist, this.intDist, -1, 1);
                 // K.debug.log(soundID, "volume", zz.volume.toFixed(2), "pan", zz.pan.toFixed(2));
             };
-            func();
-            const u = this.onUpdate(func);
-            zz.onEnd(u.cancel); // why does this never get called?
-            K.wait(zz.duration(), u.cancel);
+            doWatch();
+            const watchUpdate = this.onUpdate(doWatch);
+            const cancelAll = () => {
+                zz.stop();
+                watchUpdate.cancel();
+                waiting.cancel();
+                onEndEvents.trigger();
+            }
+            const waiting = K.wait(zz.duration(), cancelAll);
+            zz.onEnd(cancelAll); // why does this never get called?
+            return {
+                cancel: cancelAll,
+                onEnd(p) {
+                    return onEndEvents.add(p);
+                },
+            };
         },
         inventory: [],
         holdingIndex: 0,

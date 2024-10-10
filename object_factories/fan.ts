@@ -3,6 +3,7 @@ import { machine } from "./machine";
 import { K } from "../init";
 import { animRun } from "../components/animRun";
 import { FRICTION } from "../constants";
+import { ambiance } from "../components/ambientSound";
 
 export function fan(): CompList<any> {
     return [
@@ -11,5 +12,6 @@ export function fan(): CompList<any> {
         K.tile({ isObstacle: true }),
         ...machine({ friction: FRICTION }),
         animRun("spin"),
+        ambiance("fan_running", "fan_start", "fan_stop"),
     ];
 }

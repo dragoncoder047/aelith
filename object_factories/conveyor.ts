@@ -5,6 +5,7 @@ import { spriteToggle } from "../components/spriteToggle";
 import { K } from "../init";
 
 import { machine } from "./machine";
+import { ambiance } from "../components/ambientSound";
 
 export function conveyor(): CompList<any> {
     return [
@@ -15,5 +16,6 @@ export function conveyor(): CompList<any> {
         conveyorComp(),
         K.surfaceEffector({ speed: 0, forceScale: Number.MAX_VALUE }),
         nudge(0, 8),
+        ambiance("conveyor_running"),
     ]
 }

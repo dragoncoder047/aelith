@@ -1,10 +1,11 @@
 import { CONTROLS } from "./player/controls";
 import { SCALE } from "./constants";
-import kaplay from "kaplay";
+import kaplay, { MergePlugins } from "kaplay";
 import { KAPLAYCtx } from "kaplay";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 
-export const K: KAPLAYCtx<typeof CONTROLS> = kaplay({
+// why is the MergePlugins necessary?
+export const K: KAPLAYCtx<typeof CONTROLS> & MergePlugins<[typeof kaplayZzFX]> = kaplay({
     crisp: true,
     global: false,
     scale: SCALE,
