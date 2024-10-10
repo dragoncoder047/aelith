@@ -97,8 +97,8 @@ export const MParser: {
             obj.pos = obj.pos.add(K.vec2(x, y));
             this.stack.push(obj);
         },
-        // link command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
-        x() {
+        // group command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
+        g() {
             var n = this.stack.pop() as number | string;
             var link = this.uid();
             if (typeof n === "string") {
