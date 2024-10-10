@@ -6,7 +6,7 @@ import { MARGIN, SCALE } from "../constants";
 
 const inventory = UI.add([
     K.text("", {
-        size: 16 / SCALE,
+        size: 24 / SCALE,
         font: "IBM Mono",
     }),
     K.pos(),
@@ -18,6 +18,6 @@ const inventory = UI.add([
         }
     }
 ]);
-inventory.use(uiButton(() => alert("happy")));
+inventory.use(uiButton(() => K.debug.log("happy")));
 
 inventory.text = "\x11 foo \x10";

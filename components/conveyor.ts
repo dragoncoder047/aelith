@@ -35,7 +35,7 @@ export function conveyor(states: [string, string] = ["off", "on"], mode: Conveyo
             if (this.__lastX === x) return;
             switch (x) {
                 case 0:
-                    this.animSpeed = 0;;
+                    this.animSpeed = 0;
                     break;
                 case 1:
                     this.animSpeed = 1;
