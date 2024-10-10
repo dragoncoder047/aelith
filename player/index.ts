@@ -142,24 +142,27 @@ function playerComp(): PlayerComp {
             const zz = K.play(soundID, opt);
             const doWatch = () => {
                 const dist = this.worldPos()!.dist(pos);
-                const rv1 = Math.min(K.width(), K.height());
-                const rv0 = Math.max(K.width(), K.height()) + rv1;
+                const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
+                const rv0 = rv1 * 2;
                 zz.volume = v * K.mapc(dist, rv1, rv0, 1, 0);
                 zz.pan = K.mapc(pos.x - this.pos.x, -this.intDist, this.intDist, -1, 1);
                 // K.debug.log(soundID, "volume", zz.volume.toFixed(2), "pan", zz.pan.toFixed(2));
             };
             doWatch();
             const watchUpdate = this.onUpdate(doWatch);
-            const cancelAll = () => {
+            const done = () => {
                 zz.stop();
                 watchUpdate.cancel();
                 waiting.cancel();
                 onEndEvents.trigger();
             }
-            const waiting = K.wait(zz.duration(), cancelAll);
-            zz.onEnd(cancelAll); // why does this never get called?
+            const waiting = K.wait(zz.duration(), done);
+            zz.onEnd(done); // why does this never get called?
             return {
-                cancel: cancelAll,
+                cancel: () => {
+                    onEndEvents.clear();
+                    done();
+                },
                 onEnd(p) {
                     return onEndEvents.add(p);
                 },
