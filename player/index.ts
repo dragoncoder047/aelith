@@ -1,12 +1,14 @@
-import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2, PlatformEffectorComp } from "kaplay";
+import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2, PlatformEffectorComp, NamedComp, AnchorComp } from "kaplay";
 import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA } from "../constants";
 import { K } from "../init";
 
 import { MParser } from "../assets/mparser";
 import { thudder } from "../components/thudder";
 
+export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp>;
+
 export interface PlayerComp extends Comp {
-    readonly holdingItem: GameObj<PosComp | BodyComp | SpriteComp> | undefined
+    readonly holdingItem: PlayerInventoryItem | undefined
     intDist: number
     camFollower: KEventController | undefined
     footstepsCounter: number,
@@ -14,10 +16,10 @@ export interface PlayerComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean
     getTargeted(): GameObj<AreaComp | LayerComp> | undefined
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): void
-    inventory: GameObj<PosComp | SpriteComp | BodyComp>[]
+    inventory: PlayerInventoryItem[]
     holdingIndex: number
-    grab(object: GameObj<PosComp | SpriteComp | BodyComp>): void
-    drop(object: GameObj<PosComp | SpriteComp | BodyComp>): void
+    grab(object: PlayerInventoryItem): void
+    drop(object: PlayerInventoryItem): void
 }
 
 function playerComp(): PlayerComp {
@@ -97,24 +99,32 @@ function playerComp(): PlayerComp {
             return candidates[0];
         },
         draw(this: GameObj<PosComp | PlayerComp>) {
-            const s = this.getTargeted() as GameObj<PosComp | SpriteComp | AreaComp> | undefined;
-            if (s == undefined || s.is("ui-button")) {
-                return;
-            }
             // draw outline on object being hovered
-            const r = s.worldArea().bbox();
-            K.drawRect({
-                fill: false,
-                width: r.width,
-                height: r.height,
-                pos: this.fromWorld(r.pos),
-                outline: {
-                    width: 2,
-                    color: K.WHITE,
-                    opacity: K.wave(0, 1, K.time() * Math.PI * 2),
-                    join: "miter",
-                }
-            });
+            const s = this.getTargeted() as GameObj<PosComp | SpriteComp | AreaComp> | undefined;
+            if (s !== undefined && !s.is("ui-button")) {
+                const r = s.worldArea().bbox();
+                K.drawRect({
+                    fill: false,
+                    width: r.width,
+                    height: r.height,
+                    pos: this.fromWorld(r.pos),
+                    outline: {
+                        width: 2,
+                        color: K.WHITE,
+                        opacity: K.wave(0, 1, K.time() * Math.PI * 2),
+                        join: "miter",
+                    }
+                });
+            }
+            // // draw holding object on top of self
+            // const h = this.holdingItem;
+            // if (h !== undefined) {
+            //     K.drawSprite({
+            //         sprite: h.sprite,
+            //         pos: K.vec2(0),
+            //         frame: h.frame,
+            //     });
+            // }
         },
         /**
          * Play sound, but spatial relative to the player
@@ -153,7 +163,10 @@ function playerComp(): PlayerComp {
             // Put in inventory
             this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
+            obj.paused = true;
+            obj.hidden = true;
             this.playSound("grab");
+            this.trigger("inventoryChange");
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
             const i = this.inventory.indexOf(obj);
@@ -172,6 +185,7 @@ function playerComp(): PlayerComp {
             if (obj.is("platformEffector")) {
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             }
+            this.trigger("inventoryChange");
         }
     };
 }

@@ -26,6 +26,7 @@ export function box(): CompList<any> {
         thudder(),
         grabbable(),
         K.layer("boxes"),
+        K.named("box"),
         boxComp(),
         K.platformEffector({
             shouldCollide(obj, normal) {

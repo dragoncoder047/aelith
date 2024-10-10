@@ -1,5 +1,5 @@
-import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, PosComp, SpriteComp } from "kaplay";
-import { player } from "../player";
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, LayerComp, NamedComp, PosComp, SpriteComp } from "kaplay";
+import { player, PlayerInventoryItem } from "../player";
 
 export interface GrabbableComp extends Comp {
     physicsFoo: KEventController | undefined,
@@ -16,7 +16,7 @@ export function grabbable(): GrabbableComp {
         require: ["area", "body", "pos"],
         physicsFoo: undefined,
         oldLayer: "",
-        add(this: GameObj<AreaComp | BodyComp | PosComp | GrabbableComp | LayerComp | SpriteComp>) {
+        add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
             this.onClick(() => {
                 if (player.canTouch(this)) {
                     if (player.holdingItem === this) {
@@ -32,7 +32,7 @@ export function grabbable(): GrabbableComp {
                 if (player.holdingItem === this) coll.preventResolution();
             });
         },
-        update(this: GameObj<LayerComp | PosComp | BodyComp | GrabbableComp | SpriteComp>) {
+        update(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
             // there must be a better way to do this
             if (player.holdingItem === this) {
                 this.layer = "grabbing";
