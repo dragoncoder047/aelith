@@ -11,6 +11,9 @@ importers:
       kaplay:
         specifier: github:kaplayjs/kaplay#5c741b18415dd41604abcea8dc65666476ce3e90
         version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/5c741b18415dd41604abcea8dc65666476ce3e90
+      zzfx:
+        specifier: ^1.3.0
+        version: 1.3.0
     devDependencies:
       esbuild:
         specifier: ^0.24.0
@@ -179,6 +182,9 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  zzfx@1.3.0:
+    resolution: {integrity: sha512-59fM+Oo/0NBmjK0G7Ryo1Zt/2MiIKAhtCiFDbuyopihJgZxFB+Ow9Gdgu77KAdiNSS1E7mMqduXV1hnNkBb/eg==}
+
 snapshots:
 
   '@esbuild/aix-ppc64@0.24.0':
@@ -283,3 +289,5 @@ snapshots:
   kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/5c741b18415dd41604abcea8dc65666476ce3e90: {}
 
   typescript@5.6.2: {}
+
+  zzfx@1.3.0: {}
