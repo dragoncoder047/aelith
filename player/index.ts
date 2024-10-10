@@ -1,9 +1,8 @@
 import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2 } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA, BAP_OPTS, FOOTSTEP_INTERVAL } from "../constants";
+import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA } from "../constants";
 import { K } from "../init";
 
 import { MParser } from "../assets/mparser";
-import { getMotionVector } from "./controls/impl";
 import { thudder } from "../components/thudder";
 
 export interface PlayerComp extends Comp {
@@ -154,6 +153,7 @@ function playerComp(): PlayerComp {
             // Put in inventory
             this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
+            this.playSound("grab");
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
             const i = this.inventory.indexOf(obj);

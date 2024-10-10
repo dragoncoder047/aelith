@@ -11,6 +11,8 @@ export interface ZzFXPlugin {
 export function kaplayZzFX(K: KAPLAYCtx): ZzFXPlugin {
     const oldPlay = K.play;
     const zzfxMap = new Map<string, (number | undefined)[]>();
+    // use the same audio context if the user calls zzfx() directly
+    ZZFX.x = K.audioCtx;
     return {
         play(src, options) {
             if (typeof src === "string" && zzfxMap.has(src)) {

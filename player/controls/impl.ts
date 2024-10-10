@@ -1,4 +1,4 @@
-import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH, FOOTSTEP_INTERVAL, BAP_OPTS } from "../../constants";
+import { WALK_SPEED, SCALE, MAX_THROW_VEL, MAX_THROW_STRETCH, FOOTSTEP_INTERVAL } from "../../constants";
 import { K } from "../../init";
 
 import { cursor } from "../../cursor";
@@ -53,6 +53,7 @@ player.onButtonPress("throw", () => {
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
     player.drop(thrown);
     thrown.applyImpulse(direction);
+    player.playSound("throw");
 });
 
 // Footsteps sound effects when walking
@@ -67,6 +68,6 @@ player.onUpdate(() => {
         player.footstepsCounter += K.dt() * xy.len();
     if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
         player.footstepsCounter = 0;
-        player.playSound("bap", BAP_OPTS[player.state]);
+        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
     }
 });

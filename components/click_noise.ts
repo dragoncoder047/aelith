@@ -4,7 +4,6 @@
 // XXX: I'm bundling everything now, does this still apply?
 
 import { Comp, GameObj, PosComp, StateComp } from "kaplay";
-import { BAP_OPTS } from "../constants";
 import { player } from "../player";
 
 export interface ClickyComp extends Comp {
@@ -14,14 +13,14 @@ export interface ClickyComp extends Comp {
  * Plays a sound when the state changes.
  * @param states states to look at
  */
-export function clicky(states: string[] = ["off", "on"]): ClickyComp {
+export function clicky(states: string[] = ["off", "on"], sounds: string[] = ["switch_off", "switch_on"]): ClickyComp {
     return {
         id: "clicky",
         require: ["state", "pos"],
         add(this: GameObj<StateComp | PosComp>) {
-            states.forEach(state => {
+            states.forEach((state, i) => {
                 this.onStateEnter(state, () => {
-                    player.playSound("bap", BAP_OPTS[state], this.worldPos()!);
+                    player.playSound(sounds[i]!, undefined, this.worldPos()!);
                 });
             });
         },
