@@ -117,19 +117,20 @@ export const MParser: {
         // define command: value name --
         d() {
             const pName = this.stack.pop() as string;
-            const pContent = this.stack.pop() as string;
+            const pContent = this.stack.pop() as typeof this.storedProcedures[string];
             this.storedProcedures[pName] = pContent;
         },
         // get command: name -- value
-        g() {
+        // couldn't use g cause it's taken already
+        k() {
             const pName = this.stack.pop() as string;
             const val = this.storedProcedures[pName];
             if (val === undefined)
                 throw "undefined: " + pName;
             this.stack.push(val);
         },
-        // call command: *arguments name -- *values
-        c() {
+        // invoke command: *arguments name -- *values
+        i() {
             const pName = this.stack.pop() as string;
             const proc = this.storedProcedures[pName];
             if (proc === undefined)
@@ -144,8 +145,8 @@ export const MParser: {
                 this.commandQueue.unshift(code);
             }
         },
-        // if-loop command: objects* code tag n -- objects*
-        i() {
+        // filtered command: objects* code tag n -- objects*
+        f() {
             const n = this.stack.pop() as number;
             const tag = this.stack.pop() as Tag;
             const code = this.stack.pop() as (this: typeof MParser) => void;
