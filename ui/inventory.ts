@@ -22,3 +22,4 @@ const inventory = UI.add([
 inventory.use(uiButton(() => K.debug.log("happy")));
 
 inventory.text = "\x11 foo \x10";
+inventory.color = K.WHITE.darken(127);

@@ -41,7 +41,7 @@ export const cursor = K.add([
     K.sprite("cursor"),
     "cursor",
     K.anchor("center"),
-    K.layer("ui"),
+    K.layer("cursor"),
     K.color(),
     K.area({ scale: 0 }), // single point
     K.fakeMouse(),

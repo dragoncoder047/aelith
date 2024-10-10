@@ -99,7 +99,7 @@ function playerComp(): PlayerComp {
         },
         draw(this: GameObj<PosComp | PlayerComp>) {
             const s = this.getTargeted() as GameObj<PosComp | SpriteComp | AreaComp> | undefined;
-            if (s == undefined) {
+            if (s == undefined || s.is("ui-button")) {
                 return;
             }
             // draw outline on object being hovered

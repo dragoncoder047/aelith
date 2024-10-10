@@ -8,4 +8,5 @@ K.layers([
     "continuations",
     "grabbing",
     "ui",
+    "cursor",
 ], "world");
