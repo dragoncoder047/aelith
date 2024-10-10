@@ -12,9 +12,10 @@ const inventory = UI.add([
     K.pos(),
     K.area(),
     K.layer("ui"),
+    K.anchor("botleft"),
     {
         update(this: GameObj<PosComp | TextComp>) {
-            this.pos = K.vec2(MARGIN, K.height() - MARGIN - this.height);
+            this.pos = K.vec2(MARGIN, K.height() - MARGIN);
         }
     }
 ]);
