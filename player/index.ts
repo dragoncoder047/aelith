@@ -1,4 +1,4 @@
-import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2 } from "kaplay";
+import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2, PlatformEffectorComp } from "kaplay";
 import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA } from "../constants";
 import { K } from "../init";
 
@@ -168,6 +168,9 @@ function playerComp(): PlayerComp {
             this.inventory.splice(i, 1);
             if (this.holdingIndex >= this.inventory.length) {
                 this.holdingIndex = this.inventory.length - 1;
+            }
+            if (obj.is("platformEffector")) {
+                (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             }
         }
     };

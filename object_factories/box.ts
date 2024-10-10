@@ -6,6 +6,7 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 
 import { machine } from "./machine";
+import { player } from "../player";
 
 /**
  * Components for a moveable, grabbable box.
@@ -13,7 +14,6 @@ import { machine } from "./machine";
 export function box(): CompList<any> {
     return [
         K.sprite("box", { fill: false }),
-        "box",
         K.body({ maxVelocity: TERMINAL_VELOCITY }),
         ...machine({
             // make box a teeny bit smaller so that it fits down holes
@@ -26,6 +26,15 @@ export function box(): CompList<any> {
         thudder(),
         grabbable(),
         K.layer("boxes"),
-        boxComp()
+        boxComp(),
+        K.platformEffector({
+            shouldCollide(obj, normal) {
+                if (obj !== player) return true;
+                if (K.LEFT.eq(normal)) return false;
+                if (K.RIGHT.eq(normal)) return false;
+                if (K.UP.eq(normal)) return false;
+                return true;
+            },
+        })
     ];
 }
