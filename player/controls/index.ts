@@ -1,8 +1,16 @@
-// @ts-expect-error
-// why is this not exported??
-import { ButtonsDef } from "kaplay";
+import { Key, KGamepadButton, MouseButton } from "kaplay";
 
-export const CONTROLS: ButtonsDef = {
+type ButtonBinding = {
+    keyboard?: Key | Key[],
+    mouse?: MouseButton | MouseButton[],
+    gamepad?: KGamepadButton | KGamepadButton[]
+}
+
+type Controls = {
+    [button: string]: ButtonBinding
+}
+
+export const CONTROLS: Controls = {
     // action controls
     jump: {
         keyboard: ["space"],
