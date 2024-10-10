@@ -1,7 +1,6 @@
 import { CompList } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-
 import { defaults } from "./default";
 
 export function ladder(): CompList<any> {

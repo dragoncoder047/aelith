@@ -1,10 +1,9 @@
 import { CompList } from "kaplay";
-import { K } from "../init";
-
-import { spriteToggle } from "../components/spriteToggle";
-import { machine } from "./machine";
-import { toggleSwitch } from "../components/toggleSwitch";
 import { clicky } from "../components/click_noise";
+import { spriteToggle } from "../components/spriteToggle";
+import { toggleSwitch } from "../components/toggleSwitch";
+import { K } from "../init";
+import { machine } from "./machine";
 
 export function lever(): CompList<any> {
     return [

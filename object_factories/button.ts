@@ -1,12 +1,11 @@
 import { CompList } from "kaplay";
-import { K } from "../init";
-
-import { spriteToggle } from "../components/spriteToggle";
-import { nudge } from "../components/nudge";
-import { machine } from "./machine";
-import { clicky } from "../components/click_noise";
 import { button as buttonComp } from "../components/button";
+import { clicky } from "../components/click_noise";
+import { nudge } from "../components/nudge";
+import { spriteToggle } from "../components/spriteToggle";
 import { FRICTION } from "../constants";
+import { K } from "../init";
+import { machine } from "./machine";
 
 export function button(): CompList<any> {
     return [

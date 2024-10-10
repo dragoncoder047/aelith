@@ -1,5 +1,3 @@
-import { AudioPlayOpt } from "kaplay";
-
 /**
  * Pixel size for rendering
  *

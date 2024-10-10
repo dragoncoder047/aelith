@@ -1,6 +1,6 @@
 import { AreaComp, Comp, GameObj, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
-import { TogglerComp } from "./toggler";
 import { K } from "../init";
+import { TogglerComp } from "./toggler";
 
 
 export interface RollingDoorComp extends Comp {

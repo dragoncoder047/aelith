@@ -1,8 +1,8 @@
 import { GameObj, PosComp, TextComp } from "kaplay";
 import { UI } from ".";
-import { K } from "../init";
 import { uiButton } from "../components/uiButton";
 import { MARGIN, SCALE, TILE_SIZE } from "../constants";
+import { K } from "../init";
 import { player } from "../player";
 
 function updateInventory() {

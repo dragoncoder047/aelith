@@ -1,6 +1,5 @@
 import { cursor } from "./cursor";
 import { K } from "./init";
-
 import { player } from "./player";
 
 // right stick moves cursor

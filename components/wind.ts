@@ -1,8 +1,8 @@
-import { Comp, GameObj, StateComp, AreaComp, BodyComp, PosComp } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, StateComp } from "kaplay";
+import { WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
-import { WALK_SPEED } from "../constants";
 type AreaEffectorComp = ReturnType<typeof K.areaEffector>; // why is this necessary??
 
 export interface WindComp extends Comp {

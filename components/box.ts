@@ -1,4 +1,4 @@
-import { GameObj, SpriteComp, BodyComp, AreaComp, Collision, Comp, PosComp, PlatformEffectorComp } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PlatformEffectorComp, PosComp, SpriteComp } from "kaplay";
 import { K } from "../init";
 
 export interface BoxComp extends Comp {

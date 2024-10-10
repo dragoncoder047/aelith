@@ -1,7 +1,6 @@
 import { Comp, GameObj, SpriteComp, StateComp } from "kaplay";
 import { TogglerComp } from "./toggler";
 
-
 export interface AnimRunComp extends Comp {
 }
 

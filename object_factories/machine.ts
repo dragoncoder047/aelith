@@ -5,7 +5,6 @@ import { toggler } from "../components/toggler";
 import { K } from "../init";
 import { defaults } from "./default";
 
-
 /**
  * Return components for a machine
  */

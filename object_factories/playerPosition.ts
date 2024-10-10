@@ -1,7 +1,6 @@
 import { CompList } from "kaplay";
 import { K } from "../init";
 
-
 /**
  * Dummy object - just used by MParser and friends to mark the
  * start location of the player. These are deleted after loading is

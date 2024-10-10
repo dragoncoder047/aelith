@@ -1,6 +1,6 @@
-import { TILE_SIZE, WIND_FORCE } from "../constants";
-import { wind } from "../components/wind";
 import { CompList } from "kaplay";
+import { wind } from "../components/wind";
+import { TILE_SIZE, WIND_FORCE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 

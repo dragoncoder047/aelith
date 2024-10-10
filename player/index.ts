@@ -1,9 +1,8 @@
-import { GameObj, PosComp, BodyComp, AreaComp, LayerComp, Comp, Tag, SpriteComp, KEventController, AudioPlayOpt, Vec2, PlatformEffectorComp, NamedComp, AnchorComp } from "kaplay";
-import { TILE_SIZE, JUMP_FORCE, TERMINAL_VELOCITY, FRICTION, RESTITUTION, ALPHA } from "../constants";
-import { K } from "../init";
-
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, LayerComp, NamedComp, PlatformEffectorComp, PosComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { thudder } from "../components/thudder";
+import { ALPHA, FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { K } from "../init";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp>;
 

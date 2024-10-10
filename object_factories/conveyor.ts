@@ -1,11 +1,10 @@
 import { CompList } from "kaplay";
+import { ambiance } from "../components/ambientSound";
 import { conveyor as conveyorComp } from "../components/conveyor";
 import { nudge } from "../components/nudge";
 import { spriteToggle } from "../components/spriteToggle";
 import { K } from "../init";
-
 import { machine } from "./machine";
-import { ambiance } from "../components/ambientSound";
 
 export function conveyor(): CompList<any> {
     return [

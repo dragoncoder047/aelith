@@ -1,7 +1,6 @@
 import { AreaCompOpt, CompList } from "kaplay";
 import { K } from "../init";
 
-
 /**
  * Create default components for common tile objects.
  */

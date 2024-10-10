@@ -1,7 +1,6 @@
 import { Comp, GameObj, PosComp, StateComp } from "kaplay";
-import { TogglerComp } from "./toggler";
 import { player } from "../player";
-
+import { TogglerComp } from "./toggler";
 
 export interface AmbientSoundComp extends Comp {
     cur: ReturnType<typeof player.playSound> | undefined

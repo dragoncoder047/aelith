@@ -1,7 +1,6 @@
-import { CONTROLS } from "./player/controls";
+import kaplay, { KAPLAYCtx, MergePlugins } from "kaplay";
 import { SCALE } from "./constants";
-import kaplay, { MergePlugins } from "kaplay";
-import { KAPLAYCtx } from "kaplay";
+import { CONTROLS } from "./player/controls";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 
 // why is the MergePlugins necessary?

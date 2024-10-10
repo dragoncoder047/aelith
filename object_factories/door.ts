@@ -1,11 +1,10 @@
 import { CompList } from "kaplay";
-import { K } from "../init";
-
-import { machine } from "./machine";
-import { rollingDoor } from "../components/rollingDoor";
-import { nudge } from "../components/nudge";
-import { TILE_SIZE } from "../constants";
 import { clicky } from "../components/click_noise";
+import { nudge } from "../components/nudge";
+import { rollingDoor } from "../components/rollingDoor";
+import { TILE_SIZE } from "../constants";
+import { K } from "../init";
+import { machine } from "./machine";
 
 /**
  * Components for a rolling door.

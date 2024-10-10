@@ -1,9 +1,9 @@
 import { CompList } from "kaplay";
-import { machine } from "./machine";
-import { K } from "../init";
+import { ambiance } from "../components/ambientSound";
 import { animRun } from "../components/animRun";
 import { FRICTION } from "../constants";
-import { ambiance } from "../components/ambientSound";
+import { K } from "../init";
+import { machine } from "./machine";
 
 export function fan(): CompList<any> {
     return [

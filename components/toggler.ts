@@ -1,6 +1,6 @@
 import { Comp, GameObj, StateComp } from "kaplay";
-import { LinkComp } from "./linked";
 import { K } from "../init";
+import { LinkComp } from "./linked";
 
 export interface TogglerComp extends Comp {
     falseState: string,
