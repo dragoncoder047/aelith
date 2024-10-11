@@ -1,6 +1,6 @@
 import { CompList, Vec2 } from "kaplay";
-import { boxComp } from "../components/box";
 import { grabbable } from "../components/grabbable";
+import { randomFrame } from "../components/randomFrame";
 import { thudder } from "../components/thudder";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -30,7 +30,7 @@ export function box(): CompList<any> {
         grabbable(),
         K.layer("boxes"),
         K.named("box"),
-        boxComp(),
+        randomFrame(),
         K.platformEffector({
             shouldCollide(obj, normal) {
                 if (obj !== player) return true;
