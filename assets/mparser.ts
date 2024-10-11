@@ -1,10 +1,12 @@
 import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
+import { TogglerComp } from "../components/toggler";
+import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
 import { conveyor } from "../object_factories/conveyor";
+import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
@@ -12,9 +14,6 @@ import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
-import { TogglerComp } from "../components/toggler";
-import { TILE_SIZE } from "../constants";
-import { door } from "../object_factories/door";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).

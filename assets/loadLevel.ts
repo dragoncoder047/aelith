@@ -2,8 +2,8 @@ import { GameObj, LevelComp, PosComp } from "kaplay";
 import { WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { MParser } from "./mparser";
 import { player } from "../player";
+import { MParser } from "./mparser";
 
 K.load((async () => {
     var txt = await fetch(WORLD_FILE).then(r => r.text());
@@ -23,7 +23,7 @@ K.load((async () => {
                 throw new SyntaxError(msg);
             }
         }
-    }) as GameObj<LevelComp>;
+    }) as GameObj<LevelComp | PosComp>;
 
     try {
         MParser.build();
@@ -35,7 +35,7 @@ K.load((async () => {
         throw new Error(msg);
     }
 
-    const playerPositions = MParser.world.get("playerPosition") as GameObj<PosComp>[];
+    const playerPositions = MParser.world!.get("playerPosition") as GameObj<PosComp>[];
     if (playerPositions.length == 0) {
         throw new SyntaxError(`need a @ in ${WORLD_FILE}`);
     }
