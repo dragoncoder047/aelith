@@ -28,10 +28,19 @@ export const CONTROLS: Controls = {
         keyboard: ["e", "enter"],
         gamepad: ["east"],
     },
+    // inventory controls
+    inv_previous: {
+        keyboard: ["z"],
+        gamepad: ["dpad-left"]
+    },
+    inv_next: {
+        keyboard: ["c"],
+        gamepad: ["dpad-right"]
+    },
     // motion controls
     climb: {
         keyboard: ["q", "shift"],
-        gamepad: ["lshoulder"], // cSpell: ignore lshoulder
+        gamepad: ["lshoulder"],
     },
     move_left: {
         keyboard: ["a", "left"],

@@ -56,7 +56,8 @@ player.onButtonPress("throw", () => {
 });
 
 player.onButtonPress("interact", () => {
-    if (K.get<AreaComp>("ui-button").some(x => x.isHovering()))
+    if (K.get<AreaComp>("ui-button").some(x => x.isHovering())
+        && K.getLastInputDeviceType() === "mouse")
         return;
     if (player.lookingAt !== undefined)
         player.lookingAt.trigger("interact");
@@ -70,6 +71,10 @@ player.onMouseMove(mousePos => {
 player.onGamepadStick("right", xy => {
     player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
 });
+
+// Inventory
+player.onButtonPress("inv_previous", () => player.scrollInventory(-1));
+player.onButtonPress("inv_next", () => player.scrollInventory(1));
 
 // Footsteps sound effects when walking
 player.onUpdate(() => {
