@@ -11,7 +11,6 @@ export interface PlayerComp extends Comp {
     readonly headPosWorld: Vec2
     camFollower: KEventController | undefined
     footstepsCounter: number,
-    canTouch(target: GameObj<PosComp>): boolean
     intersectingAny(type: Tag, where?: GameObj): boolean
     lookingAt: GameObj | undefined
     lookingDirection: Vec2
@@ -57,31 +56,6 @@ function playerComp(): PlayerComp {
                 this.holdingItem.paused = false;
                 this.holdingItem.hidden = false;
             }
-        },
-        canTouch(this: GameObj<PlayerComp | PosComp>, target) {
-            // is a UI button?
-            if (target.is("ui-button"))
-                return true;
-            // always gonna be too far?
-            const diff = target.worldPos()!.sub(this.worldPos()!);
-            if (diff.len() > INTERACT_DISTANCE)
-                return false;
-            if (!MParser.world)
-                return true; // bail if world isn't initialized yet
-            const line = new K.Line(this.worldPos()!, target.worldPos()!);
-            for (var object of MParser.world.get(["area", "tile"])) {
-                if (object.isObstacle
-                    && !object.paused
-                    && object !== target
-                    && object !== this.holdingItem
-                    && object.collisionIgnore.every((t: string) => !this.is(t))) {
-                    const boundingbox = object.worldArea();
-                    if (boundingbox.collides(line)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
         },
         /**
          * True if overlapping any game object with the tag "type".
