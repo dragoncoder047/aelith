@@ -13,8 +13,8 @@ export function toggleSwitch(msg: string = "toggle"): TogglerSwitchComp {
         id: "toggleSwitch",
         require: ["linked", "area"],
         add(this: GameObj<AreaComp | PosComp | LinkComp>) {
-            this.onClick(() => {
-                if (player.canTouch(this)) this.broadcast(msg);
+            this.on("interact", () => {
+                this.broadcast(msg);
             });
         }
     };

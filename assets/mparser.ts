@@ -20,7 +20,7 @@ import { door } from "../object_factories/door";
  * Main parser handler for level map data (in WORLD_FILE).
  */
 export const MParser: {
-    world: GameObj<LevelComp> | undefined,
+    world: GameObj<LevelComp | PosComp> | undefined,
     spawners: { [x: string]: (this: typeof MParser) => CompList<any>; };
     fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; };
     commands: { [x: string]: (this: typeof MParser) => void; };

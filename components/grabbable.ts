@@ -17,15 +17,13 @@ export function grabbable(): GrabbableComp {
         physicsFoo: undefined,
         oldLayer: "",
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
-            this.onClick(() => {
-                if (player.canTouch(this)) {
-                    if (player.holdingItem === this) {
-                        player.drop(this);
-                    }
-                    else {
-                        this.oldLayer = this.layer!;
-                        player.grab(this);
-                    }
+            this.on("interact", () => {
+                if (player.holdingItem === this) {
+                    player.drop(this);
+                }
+                else {
+                    this.oldLayer = this.layer!;
+                    player.grab(this);
                 }
             });
             this.onBeforePhysicsResolve(coll => {

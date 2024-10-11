@@ -30,6 +30,11 @@ export const GRAVITY = 600;
 export const TILE_SIZE = 32;
 
 /**
+ * Interaction distance
+ */
+export const INTERACT_DISTANCE = TILE_SIZE * 4;
+
+/**
  * How often (in seconds) a footstep sound should be played
  * when the player is walking
  */

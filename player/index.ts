@@ -1,28 +1,34 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, LayerComp, NamedComp, PlatformEffectorComp, PosComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { thudder } from "../components/thudder";
-import { ALPHA, FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp>;
 
 export interface PlayerComp extends Comp {
     readonly holdingItem: PlayerInventoryItem | undefined
-    intDist: number
+    readonly headPosWorld: Vec2
     camFollower: KEventController | undefined
     footstepsCounter: number,
     canTouch(target: GameObj<PosComp>): boolean
     intersectingAny(type: Tag, where?: GameObj): boolean
-    getTargeted(): GameObj<AreaComp | LayerComp> | undefined
+    lookingAt: GameObj | undefined
+    lookingDirection: Vec2
+    _cache: any
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
     inventory: PlayerInventoryItem[]
     holdingIndex: number
     grab(object: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
+    lookAt(pos: Vec2): void
 }
 
 function playerComp(): PlayerComp {
     return {
+        get headPosWorld() {
+            return (this as unknown as GameObj<PosComp>).worldPos()!.add(K.UP.scale(TILE_SIZE * 2 / 3));
+        },
         get holdingItem() {
             return this.inventory[this.holdingIndex];
         },
@@ -49,17 +55,13 @@ function playerComp(): PlayerComp {
                 this.holdingItem.hidden = false;
             }
         },
-        /**
-         * Interaction distance
-         */
-        intDist: TILE_SIZE * 4,
         canTouch(this: GameObj<PlayerComp | PosComp>, target) {
             // is a UI button?
             if (target.is("ui-button"))
                 return true;
             // always gonna be too far?
             const diff = target.worldPos()!.sub(this.worldPos()!);
-            if (diff.len() > this.intDist)
+            if (diff.len() > INTERACT_DISTANCE)
                 return false;
             if (!MParser.world)
                 return true; // bail if world isn't initialized yet
@@ -84,38 +86,64 @@ function playerComp(): PlayerComp {
         intersectingAny(this: GameObj<AreaComp>, type, where = MParser.world) {
             return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
-        /**
-         * Get the currently hovering object, or undefined.
-         */
-        getTargeted() {
-            if (!MParser.world)
-                return;
-            const candidates = MParser.world.get<AreaComp | LayerComp | PosComp>("area")
-                .filter(obj => (obj.is("box") || obj.is("lever")) && !obj.paused && obj.isHovering() && this.canTouch(obj));
-            candidates.unshift(...K.get<PosComp | AreaComp | LayerComp>("ui-button", { recursive: true })
-                .filter(b => b.isHovering()));
-            candidates.sort((a, b) => ((a?.layerIndex ?? 0) - (b?.layerIndex ?? 0)));
-            return candidates[0];
-        },
+        lookingAt: undefined,
+        lookingDirection: K.LEFT,
+        _cache: { time: 0, pos: K.vec2(0), la: K.LEFT, rcr: null },
         draw(this: GameObj<PosComp | PlayerComp>) {
-            // draw outline on object being hovered
-            const s = this.getTargeted() as GameObj<PosComp | SpriteComp | AreaComp> | undefined;
-            if (s !== undefined && !s.is("ui-button")) {
-                const r = s.worldArea().bbox();
+            // find targeted object 
+            do { // nifty do-while-false loop to basically "goto end-of-this-block"
+                if (!(K.time() > (this._cache.time + 0.1)
+                    || !this.pos.eq(this._cache.pos)
+                    || !this.lookingDirection.unit().eq(this._cache.la)))
+                    break;
+                this.lookingAt = undefined;
+                if (!MParser.world) break;
+                const rcr = actuallyRaycast(
+                    MParser.world.get<AreaComp>("area")
+                        .filter(x => (this.inventory as any[]).indexOf(x) === -1
+                            && x.collisionIgnore.every(t => !this.is(t))),
+                    this.headPosWorld,
+                    this.lookingDirection,
+                    INTERACT_DISTANCE);
+                if (!rcr) break;
+                const obj = rcr.object;
+
+                if (!obj
+                    || (!obj.is("box") && !obj.is("lever"))
+                    || obj.paused
+                    || (this.inventory as any[]).indexOf(obj) !== -1) break;
+
+                this.lookingAt = obj;
+                this._cache = { pos: this.pos, la: this.lookingDirection.unit(), time: K.time(), rcr }
+            } while (false);
+
+            if (this.lookingAt && this._cache.rcr) {
+                // draw outline on object being targeted
+                const r = this.lookingAt.worldArea().bbox();
                 K.drawRect({
                     fill: false,
                     width: r.width,
                     height: r.height,
                     pos: this.fromWorld(r.pos),
                     outline: {
-                        width: 2,
+                        width: 2 / SCALE,
                         color: K.WHITE,
                         opacity: K.wave(0, 1, K.time() * Math.PI * 2),
                         join: "miter",
                     }
                 });
+                // draw line to object being hovered
+                K.drawLine({
+                    p1: this.fromWorld(this.headPosWorld),
+                    p2: this.fromWorld(this._cache.rcr.point),
+                    width: 1 / SCALE,
+                    color: K.WHITE.darken(127)
+                });
             }
+
             // // draw holding object on top of self
+            // // this is commanted out because it *should* be implemented by layers
+            // // but it isn't and I can't get it to work any other way
             // const h = this.holdingItem;
             // if (h !== undefined) {
             //     K.drawSprite({
@@ -144,7 +172,7 @@ function playerComp(): PlayerComp {
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
                 const rv0 = rv1 * 2;
                 zz.volume = v * K.mapc(dist, rv1, rv0, 1, 0);
-                zz.pan = K.mapc(pos.x - this.pos.x, -this.intDist, this.intDist, -1, 1);
+                zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -1, 1);
                 // K.debug.log(soundID, "volume", zz.volume.toFixed(2), "pan", zz.pan.toFixed(2));
             };
             doWatch();
@@ -201,11 +229,17 @@ function playerComp(): PlayerComp {
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             }
             this.trigger("inventoryChange");
-        }
+        },
+        lookAt(this: GameObj<PlayerComp | PosComp | SpriteComp>, pos) {
+            this.lookingDirection = pos.sub(this.headPosWorld);
+            if (this.lookingDirection.x < 0) this.flipX = false;
+            else if (this.lookingDirection.x > 0) this.flipX = true;
+        },
     };
 }
 
 export const player = K.add([
+    playerComp(),
     K.sprite("player"),
     K.layer("player"),
     "player",
@@ -228,10 +262,44 @@ export const player = K.add([
     K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
     K.anchor("center"),
     K.state("normal"),
-    playerComp(),
 ]);
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
 
 // @ts-expect-error
 window.player = player;
+
+
+//------------------------------------------------------------
+
+function actuallyRaycast(objects: GameObj<AreaComp>[], origin: Vec2, direction: Vec2, distance: number) {
+    direction = direction.unit();
+    const line = new K.Line(origin, origin.add(direction.scale(distance)));
+    const line2 = line.clone();
+    const result = {
+        point: undefined as unknown as Vec2,
+        fraction: Number.MAX_VALUE,
+        object: undefined as unknown as GameObj<AreaComp>,
+    };
+    for (var obj of objects) {
+        const wa = obj.worldArea();
+        const doesHit = wa.collides(line);
+        if (!doesHit) continue;
+        var fraction = 1 / 2;
+        var step = 1 / 4;
+        // binary search
+        while (step > Number.EPSILON) {
+            line2.p2 = line2.p1.add(direction.scale(distance * fraction));
+            if (wa.collides(line2)) fraction -= step;
+            else fraction += step;
+            step /= 2;
+        }
+        if (fraction < result.fraction) {
+            result.fraction = fraction;
+            result.object = obj;
+            result.point = K.lerp(origin, line.p2, fraction);
+        }
+    }
+    if (result.object === undefined) return undefined;
+    return result;
+}

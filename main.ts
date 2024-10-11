@@ -7,8 +7,6 @@ import "./assets/loadLevel";
 import {
     GRAVITY
 } from "./constants";
-import "./cursor";
-import "./cursorControlsImpl";
 import { player } from "./player";
 import "./player/controls/impl";
 import "./player/states";

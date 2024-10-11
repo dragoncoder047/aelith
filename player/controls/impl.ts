@@ -1,4 +1,4 @@
-import { Vec2 } from "kaplay";
+import { AreaComp, Vec2 } from "kaplay";
 import { player } from "..";
 import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, WALK_SPEED } from "../../constants";
 import { cursor } from "../../cursor";
@@ -47,12 +47,28 @@ player.onButtonRelease("climb", () => {
 player.onButtonPress("throw", () => {
     const thrown = player.holdingItem;
     if (!thrown) return;
-    var direction = cursor.screenPos()!.sub(player.screenPos()!).scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
+    var direction = player.lookingDirection.scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
     const len = direction.len();
     if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
     player.drop(thrown);
     thrown.applyImpulse(direction);
     player.playSound("throw");
+});
+
+player.onButtonPress("interact", () => {
+    if (K.get<AreaComp>("ui-button").some(x => x.isHovering()))
+        return;
+    if (player.lookingAt !== undefined)
+        player.lookingAt.trigger("interact");
+});
+
+// Mouse looking
+player.onMouseMove(mousePos => {
+    // toWorld is darn bugged kaplayjs/kaplay#325
+    player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
+});
+player.onGamepadStick("right", xy => {
+    player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
 });
 
 // Footsteps sound effects when walking
