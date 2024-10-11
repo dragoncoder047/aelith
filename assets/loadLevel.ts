@@ -11,7 +11,6 @@ K.load((async () => {
         tileWidth: TILE_SIZE,
         tileHeight: TILE_SIZE,
         tiles: {}, // everything is handled by MParser
-        pos: K.vec2(64, 64),
         wildcardTile(cmd, pos) {
             try {
                 return MParser.process(cmd, pos);

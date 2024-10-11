@@ -147,18 +147,6 @@ function playerComp(): PlayerComp {
                     color: K.BLUE.darken(127),
                 });
             }
-
-            // // draw holding object on top of self
-            // // this is commanted out because it *should* be implemented by layers
-            // // but it isn't and I can't get it to work any other way
-            // const h = this.holdingItem;
-            // if (h !== undefined) {
-            //     K.drawSprite({
-            //         sprite: h.sprite,
-            //         pos: K.vec2(0),
-            //         frame: h.frame,
-            //     });
-            // }
         },
         /**
          * Play sound, but spatial relative to the player
@@ -298,6 +286,18 @@ export const player = K.add([
     K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
     K.anchor("center"),
     K.state("normal"),
+    {
+        draw(this: GameObj<PosComp | PlayerComp>) {
+            if (this.holdingItem) {
+                // draw the item again on top
+                K.pushTransform();
+                K.pushMatrix(this.transform.invert()); // weird math
+                K.pushTranslate(this.holdingItem.worldPos()!.add(this.holdingItem.parent!.worldPos()!));
+                this.holdingItem.draw();
+                K.popTransform();
+            }
+        }
+    }
 ]);
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
