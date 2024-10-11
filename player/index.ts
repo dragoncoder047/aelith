@@ -21,6 +21,8 @@ export interface PlayerComp extends Comp {
     holdingIndex: number
     grab(object: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
+    scrollInventory(dir: 1 | -1): void
+    canScrollInventory(dir: 1 | -1): boolean
     lookAt(pos: Vec2): void
 }
 
@@ -196,7 +198,7 @@ function playerComp(): PlayerComp {
             };
         },
         inventory: [],
-        holdingIndex: 0,
+        holdingIndex: -1,
         grab(this: GameObj<PlayerComp>, obj) {
             // already have it. Problem.
             if (this.inventory.indexOf(obj) !== -1) {
@@ -230,6 +232,21 @@ function playerComp(): PlayerComp {
             }
             this.trigger("inventoryChange");
         },
+        scrollInventory(this: GameObj<PlayerComp>, dir) {
+            this.holdingIndex += dir;
+            if (this.holdingIndex < -1) this.holdingIndex = -1;
+            if (this.holdingIndex >= this.inventory.length) this.holdingIndex = this.inventory.length - 1;
+            this.trigger("inventoryChange");
+        },
+        canScrollInventory(dir) {
+            if (dir === 1) {
+                return this.holdingIndex < this.inventory.length - 1;
+            }
+            if (dir === -1) {
+                return this.holdingIndex > -1;
+            }
+            return false;
+        },  
         lookAt(this: GameObj<PlayerComp | PosComp | SpriteComp>, pos) {
             this.lookingDirection = pos.sub(this.headPosWorld);
             if (this.lookingDirection.x < 0) this.flipX = false;

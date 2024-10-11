@@ -1,12 +1,15 @@
-import { CompList } from "kaplay";
+import { CompList, Vec2 } from "kaplay";
 import { boxComp } from "../components/box";
 import { grabbable } from "../components/grabbable";
 import { thudder } from "../components/thudder";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
-import { getMotionVector } from "../player/controls/impl";
 import { machine } from "./machine";
+
+// async import
+var getMotionVector: () => Vec2;
+import("../player/controls/impl").then(m => getMotionVector = m.getMotionVector);
 
 /**
  * Components for a moveable, grabbable box.

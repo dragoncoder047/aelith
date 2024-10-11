@@ -6,12 +6,15 @@ import { K } from "../init";
 import { player } from "../player";
 
 function updateInventory() {
-    const holdingItem = player.inventory[player.holdingIndex];
-    if (holdingItem === undefined) {
+    if (player.inventory.length === 0) {
+        inventory.text = "";
+        return;
+    }
+    if (player.holdingItem === undefined) {
         inventory.text = "nothing";
         return;
     }
-    const name = holdingItem.name;
+    const name = player.holdingItem.name;
     inventory.text = name;
     const countAll = player.inventory.map(i => +(i.name === name)).reduce((a, b) => a + b, 0);
     const countBefore = player.inventory.slice(0, player.holdingIndex).map(i => +(i.name === name)).reduce((a, b) => a + b, 1);
@@ -31,13 +34,11 @@ const btnLeft = UI.add([
     {
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(MARGIN, K.height() - MARGIN);
+            this.hidden = !player.canScrollInventory(-1);
         }
     }
 ]);
-btnLeft.use(uiButton(() => {
-    player.holdingIndex = (player.holdingIndex + player.inventory.length - 1) % player.inventory.length;
-    updateInventory();
-}));
+btnLeft.use(uiButton(() => player.scrollInventory(-1)));
 const inventory = UI.add([
     K.text("foo", {
         size: 16 / SCALE,
@@ -71,12 +72,10 @@ const btnRight = UI.add([
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(MARGIN + inventory.pos.x + inventory.width,
                 K.height() - MARGIN);
+            this.hidden = !player.canScrollInventory(1);
         }
     }
 ]);
-btnRight.use(uiButton(() => {
-    player.holdingIndex = (player.holdingIndex + 1) % player.inventory.length;
-    updateInventory();
-}));
+btnRight.use(uiButton(() => player.scrollInventory(1)));
 updateInventory();
 player.on("inventoryChange", updateInventory);
