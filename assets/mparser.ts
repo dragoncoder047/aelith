@@ -341,11 +341,15 @@ export const MParser: {
                     && prevTag != ""
                     && thisTile.is(prevTag)) {
                     // merge across
-                    prevTile.area.offset.x += this.world!.tileWidth() / 2;
-                    prevTile.area.scale.x++;
-                    prevTile.transform = K.Mat4.rotateX(0);
-                    thisTile.unuse("area");
-                    thisTile.unuse(prevTag);
+                    prevTile.moveBy(TILE_SIZE / 2, 0);
+                    thisTile.destroy();
+                    const zz = K.onUpdate(((prevTile) => {
+                        return () => {
+                            prevTile.width = prevTile.width + TILE_SIZE;
+                            K.debug.log(prevTile.width);
+                            zz.cancel();
+                        };
+                    })(prevTile));
                 }
                 else {
                     // reset

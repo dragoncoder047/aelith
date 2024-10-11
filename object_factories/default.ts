@@ -8,7 +8,6 @@ export function defaults(areaOpts?: AreaCompOpt): CompList<any> {
     return [
         K.area(areaOpts!),
         K.anchor("center"),
-        K.offscreen({ hide: true }),
         K.timer(),
         K.tile({ isObstacle: true }),
         K.rotate(0),
