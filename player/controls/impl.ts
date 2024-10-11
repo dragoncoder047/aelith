@@ -1,7 +1,6 @@
 import { AreaComp, Vec2 } from "kaplay";
 import { player } from "..";
-import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, WALK_SPEED } from "../../constants";
-import { cursor } from "../../cursor";
+import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, SCALE, WALK_SPEED } from "../../constants";
 import { K } from "../../init";
 
 // Controls
@@ -73,7 +72,7 @@ player.onUpdate(() => {
     if (player.state == "normal") {
         if (xy.x === 0)
             xy = xy.reject(K.getGravityDirection());
-        if (!player.isGrounded()) xy = xy.scale(0);
+        if (!player.isGrounded()) return;
     }
     if (player.state === "climbing" || player.state === "normal")
         player.footstepsCounter += K.dt() * xy.len();
