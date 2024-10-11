@@ -44,19 +44,15 @@ player.onButtonRelease("climb", () => {
     }
 });
 player.onButtonPress("throw", () => player.throw());
-
-player.onButtonPress("interact", () => {
-    if (K.get<AreaComp>("ui-button").some(x => x.isHovering())
-        && K.getLastInputDeviceType() === "mouse")
-        return;
-    if (player.lookingAt !== undefined)
-        player.lookingAt.trigger("interact");
-});
+player.onButtonPress("interact", () => player.lookingAt?.trigger("interact"));
+player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke"));
 
 // Mouse looking
 player.onMouseMove(mousePos => {
+    if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
+        player.lookAt(undefined);
     // toWorld is darn bugged kaplayjs/kaplay#325
-    player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
+    else player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
 });
 player.onGamepadStick("right", xy => {
     player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));

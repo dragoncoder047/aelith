@@ -13,17 +13,17 @@ export interface PlayerComp extends Comp {
     footstepsCounter: number,
     intersectingAny(type: Tag, where?: GameObj): boolean
     lookingAt: GameObj | undefined
-    lookingDirection: Vec2
+    lookingDirection: Vec2 | undefined
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
     inventory: PlayerInventoryItem[]
     holdingIndex: number
     grab(object: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
-    readonly throwImpulse: Vec2
+    readonly throwImpulse: Vec2 | undefined
     throw(): void
     scrollInventory(dir: 1 | -1): void
     canScrollInventory(dir: 1 | -1): boolean
-    lookAt(pos: Vec2): void
+    lookAt(pos: Vec2 | undefined): void
 }
 
 function playerComp(): PlayerComp {
@@ -70,7 +70,7 @@ function playerComp(): PlayerComp {
             var rcr: RaycastResult = null;
             do { // nifty do-while-false loop to basically "goto end-of-this-block"
                 this.lookingAt = undefined;
-                if (!MParser.world) break;
+                if (!MParser.world || !this.lookingDirection) break;
                 rcr = actuallyRaycast(
                     MParser.world.get<AreaComp>("area")
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
@@ -113,10 +113,10 @@ function playerComp(): PlayerComp {
                     width: 1 / SCALE,
                     color: K.WHITE.darken(200)
                 });
-            } else if (this.holdingItem) {
+            } else if (this.holdingItem && this.throwImpulse) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
-                K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse, t), {
+                K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
                     width: 1 / SCALE,
                     color: K.BLUE.darken(127),
                 });
@@ -200,6 +200,7 @@ function playerComp(): PlayerComp {
             this.trigger("inventoryChange");
         },
         get throwImpulse() {
+            if (!this.lookingDirection) return undefined;
             var direction = this.lookingDirection.scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
             const len = direction.len();
             if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
@@ -207,7 +208,7 @@ function playerComp(): PlayerComp {
         },
         throw(this: GameObj<PlayerComp>) {
             const thrown = this.holdingItem;
-            if (!thrown) return;
+            if (!thrown || !this.throwImpulse) return;
             this.drop(thrown);
             thrown.applyImpulse(this.throwImpulse);
             this.playSound("throw");
@@ -229,6 +230,10 @@ function playerComp(): PlayerComp {
             return false;
         },
         lookAt(this: GameObj<PlayerComp | PosComp | SpriteComp>, pos) {
+            if (!pos) {
+                this.lookingDirection = undefined;
+                return;
+            }
             this.lookingDirection = pos.sub(this.headPosWorld);
             if (this.lookingDirection.x < 0) this.flipX = false;
             else if (this.lookingDirection.x > 0) this.flipX = true;

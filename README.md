@@ -85,12 +85,6 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 
 ## TODO
 
-* [ ] Implement grabbing and interaction controls
-* [ ] Implement inventory UI - `fixed` component
-  * [ ] More UI controls
-* [ ] Get ZzFX sounds
-    * [ ] Conveyor sound
-    * [ ] Fan sound
 * [ ] Make sprites and machines
   * [X] Finish climbing animation
   * [X] Wall and ladder tiles
