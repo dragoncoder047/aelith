@@ -17,6 +17,7 @@ import("../player/controls/impl").then(m => getMotionVector = m.getMotionVector)
 export function box(): CompList<any> {
     return [
         K.sprite("box", { fill: false }),
+        "box",
         K.body({ maxVelocity: TERMINAL_VELOCITY }),
         ...machine({
             // make box a teeny bit smaller so that it fits down holes
