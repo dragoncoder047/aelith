@@ -1,10 +1,10 @@
 /**
  * Pixel size for rendering
  *
- * * Use 1 for debugging (and zoom out via the browser too)
- * * Use 3 for standard game play
+ * * Use .25 for debugging
+ * * Use 2 for standard game play
  */
-export const SCALE = 3;
+export const SCALE = 2;
 
 /**
  * Lowpass filter coefficient on camera pan.
