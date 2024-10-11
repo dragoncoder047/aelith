@@ -4,16 +4,15 @@ import { K } from "../init";
 import { defaults } from "./default";
 import { mergeable } from "../components/mergeable";
 
-export function wall(): CompList<any> {
+export function barrier(): CompList<any> {
     return [
-        K.sprite("steel", {
-            tiled: true,
-            width: TILE_SIZE,
-            height: TILE_SIZE
-        }),
         K.body({ isStatic: true }),
         mergeable(),
-        ...defaults({ friction: FRICTION }),
+        ...defaults({
+            friction: FRICTION,
+            shape: new K.Rect(K.vec2(0), TILE_SIZE, TILE_SIZE),
+        }),
+        "barrier",
         "wall",
     ]
 }

@@ -1,7 +1,7 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
 import { LinkComp } from "../components/linked";
 import { TogglerComp } from "../components/toggler";
-import { TILE_SIZE } from "../constants";
+import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
@@ -14,6 +14,9 @@ import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
+import { textNote } from "../object_factories/text";
+import { barrier } from "../object_factories/barrier";
+import { MergeableComp } from "../components/mergeable";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -25,7 +28,7 @@ export const MParser: {
     commands: { [x: string]: (this: typeof MParser) => void; };
     buffer: string | number | undefined;
     parenStack: string[];
-    storedProcedures: { [x: string]: string | number | ((this: typeof MParser) => void); };
+    vars: { [x: string]: string | number | ((this: typeof MParser) => void); };
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
     mergeAcross(): void;
@@ -47,6 +50,7 @@ export const MParser: {
         W: windTunnel,
         F: fan,
         D: door,
+        T: textNote,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
@@ -54,9 +58,10 @@ export const MParser: {
     fixedTiles: {
         "@": playerPosition,
         "#": wall,
+        "%": barrier,
         "=": ladder,
     },
-    storedProcedures: {},
+    vars: { SCALE },
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
@@ -116,14 +121,14 @@ export const MParser: {
         // define command: value name --
         d() {
             const pName = this.stack.pop() as string;
-            const pContent = this.stack.pop() as typeof this.storedProcedures[string];
-            this.storedProcedures[pName] = pContent;
+            const pContent = this.stack.pop() as typeof this.vars[string];
+            this.vars[pName] = pContent;
         },
         // get command: name -- value
         // couldn't use g cause it's taken already
         k() {
             const pName = this.stack.pop() as string;
-            const val = this.storedProcedures[pName];
+            const val = this.vars[pName];
             if (val === undefined)
                 throw "undefined: " + pName;
             this.stack.push(val);
@@ -131,7 +136,7 @@ export const MParser: {
         // invoke command: *arguments name -- *values
         i() {
             const pName = this.stack.pop() as string;
-            const proc = this.storedProcedures[pName];
+            const proc = this.vars[pName];
             if (proc === undefined)
                 throw "undefined: " + pName;
             this.commandQueue.unshift(proc);
@@ -226,6 +231,13 @@ export const MParser: {
         u() {
             this.stack.push(this.uid());
         },
+        // fontsize command: obj size -- obj
+        a() {
+            const size = this.stack.pop() as number;
+            const obj = this.stack.pop() as GameObj<TextComp>;
+            obj.textSize = size * 8 / SCALE;
+            this.stack.push(obj);
+        },
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
@@ -255,6 +267,8 @@ export const MParser: {
                 if (this.parenStack.length == 0) {
                     if (cmd === ")") {
                         this.cleanBuffer();
+                        const string = this.commandQueue.pop() as string;
+                        this.commandQueue.push(decodeURIComponent(string));
                     }
                     else if (cmd === "}") {
                         this.cleanBuffer();
@@ -273,11 +287,11 @@ export const MParser: {
                             this.commandQueue.unshift(() => {
                                 this.stack.push(() => {
                                     this.commandQueue.unshift(() => {
-                                        this.storedProcedures = Object.getPrototypeOf(this.storedProcedures);
+                                        this.vars = Object.getPrototypeOf(this.vars);
                                     });
                                     this.commandQueue = procSource.concat(this.commandQueue);
                                     this.commandQueue.unshift(() => {
-                                        this.storedProcedures = Object.create(this.storedProcedures);
+                                        this.vars = Object.create(this.vars);
                                     });
                                 });
                             });
@@ -332,7 +346,7 @@ export const MParser: {
     mergeAcross() {
         const allowedTags = ["wall" /**, "conveyor"/**/];
         for (var y = 0; y < this.world!.numRows(); y++) {
-            var prevTile: GameObj<AreaComp | SpriteComp | PosComp> | undefined = undefined;
+            var prevTile: GameObj<AreaComp | SpriteComp | PosComp | MergeableComp> | undefined = undefined;
             var prevTag: string = "";
             for (var x = 0; x < this.world!.numColumns(); x++) {
                 const thisTile = this.world!.getAt(K.vec2(x, y))[0]!;
@@ -342,19 +356,13 @@ export const MParser: {
                     && thisTile.is(prevTag)) {
                     // merge across
                     prevTile.moveBy(TILE_SIZE / 2, 0);
+                    prevTile.modifyWidth(TILE_SIZE);
                     thisTile.destroy();
-                    const zz = K.onUpdate(((prevTile) => {
-                        return () => {
-                            prevTile.width = prevTile.width + TILE_SIZE;
-                            K.debug.log(prevTile.width);
-                            zz.cancel();
-                        };
-                    })(prevTile));
                 }
                 else {
                     // reset
                     if (thisTile != undefined && allowedTags.some(t => thisTile.is(t))) {
-                        prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp>;
+                        prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp | MergeableComp>;
                         prevTag = allowedTags.find(t => thisTile.is(t))!;
                     }
                     else {
