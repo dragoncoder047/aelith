@@ -44,16 +44,7 @@ player.onButtonRelease("climb", () => {
         player.enterState("normal");
     }
 });
-player.onButtonPress("throw", () => {
-    const thrown = player.holdingItem;
-    if (!thrown) return;
-    var direction = player.lookingDirection.scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
-    const len = direction.len();
-    if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
-    player.drop(thrown);
-    thrown.applyImpulse(direction);
-    player.playSound("throw");
-});
+player.onButtonPress("throw", () => player.throw());
 
 player.onButtonPress("interact", () => {
     if (K.get<AreaComp>("ui-button").some(x => x.isHovering())

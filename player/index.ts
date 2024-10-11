@@ -1,7 +1,7 @@
 import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { thudder } from "../components/thudder";
-import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp>;
@@ -15,12 +15,13 @@ export interface PlayerComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean
     lookingAt: GameObj | undefined
     lookingDirection: Vec2
-    _cache: any
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
     inventory: PlayerInventoryItem[]
     holdingIndex: number
     grab(object: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
+    readonly throwImpulse: Vec2
+    throw(): void
     scrollInventory(dir: 1 | -1): void
     canScrollInventory(dir: 1 | -1): boolean
     lookAt(pos: Vec2): void
@@ -90,24 +91,20 @@ function playerComp(): PlayerComp {
         },
         lookingAt: undefined,
         lookingDirection: K.LEFT,
-        _cache: { time: 0, pos: K.vec2(0), la: K.LEFT, rcr: null },
         draw(this: GameObj<PosComp | PlayerComp>) {
-            // find targeted object 
+            // find targeted object
+            var rcr: RaycastResult = null;
             do { // nifty do-while-false loop to basically "goto end-of-this-block"
-                if (!(K.time() > (this._cache.time + 0.1)
-                    || !this.pos.eq(this._cache.pos)
-                    || !this.lookingDirection.unit().eq(this._cache.la)))
-                    break;
                 this.lookingAt = undefined;
                 if (!MParser.world) break;
-                const rcr = actuallyRaycast(
+                rcr = actuallyRaycast(
                     MParser.world.get<AreaComp>("area")
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
                             && x.collisionIgnore.every(t => !this.is(t))),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
-                if (!rcr) break;
+                if (rcr === null) break;
                 const obj = rcr.object;
 
                 if (!obj
@@ -116,10 +113,9 @@ function playerComp(): PlayerComp {
                     || (this.inventory as any[]).indexOf(obj) !== -1) break;
 
                 this.lookingAt = obj;
-                this._cache = { pos: this.pos, la: this.lookingDirection.unit(), time: K.time(), rcr }
             } while (false);
 
-            if (this.lookingAt && this._cache.rcr) {
+            if (this.lookingAt) {
                 // draw outline on object being targeted
                 const r = this.lookingAt.worldArea().bbox();
                 K.drawRect({
@@ -134,12 +130,21 @@ function playerComp(): PlayerComp {
                         join: "miter",
                     }
                 });
+            }
+            if (rcr && this.lookingAt) {
                 // draw line to object being hovered
                 K.drawLine({
                     p1: this.fromWorld(this.headPosWorld),
-                    p2: this.fromWorld(this._cache.rcr.point),
+                    p2: this.fromWorld(rcr.point),
                     width: 1 / SCALE,
-                    color: K.WHITE.darken(127)
+                    color: K.WHITE.darken(200)
+                });
+            } else if (this.holdingItem) {
+                // draw throwing line to show trajectory of
+                // item being held when it is thrown
+                K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse, t), {
+                    width: 1 / SCALE,
+                    color: K.BLUE.darken(127),
                 });
             }
 
@@ -232,6 +237,20 @@ function playerComp(): PlayerComp {
             }
             this.trigger("inventoryChange");
         },
+        get throwImpulse() {
+            var direction = this.lookingDirection.scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
+            const len = direction.len();
+            if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);
+            return direction;
+        },
+        throw(this: GameObj<PlayerComp>) {
+            const thrown = this.holdingItem;
+            if (!thrown) return;
+            this.drop(thrown);
+            thrown.applyImpulse(this.throwImpulse);
+            this.playSound("throw");
+            this.trigger("throw");
+        },
         scrollInventory(this: GameObj<PlayerComp>, dir) {
             this.holdingIndex += dir;
             if (this.holdingIndex < -1) this.holdingIndex = -1;
@@ -246,7 +265,7 @@ function playerComp(): PlayerComp {
                 return this.holdingIndex > -1;
             }
             return false;
-        },  
+        },
         lookAt(this: GameObj<PlayerComp | PosComp | SpriteComp>, pos) {
             this.lookingDirection = pos.sub(this.headPosWorld);
             if (this.lookingDirection.x < 0) this.flipX = false;
@@ -290,33 +309,20 @@ window.player = player;
 //------------------------------------------------------------
 
 function actuallyRaycast(objects: GameObj<AreaComp>[], origin: Vec2, direction: Vec2, distance: number) {
-    direction = direction.unit();
-    const line = new K.Line(origin, origin.add(direction.scale(distance)));
-    const line2 = line.clone();
-    const result = {
-        point: undefined as unknown as Vec2,
-        fraction: Number.MAX_VALUE,
-        object: undefined as unknown as GameObj<AreaComp>,
-    };
+    direction = direction.unit().scale(distance);
+    var result: RaycastResult = null;
     for (var obj of objects) {
         const wa = obj.worldArea();
-        const doesHit = wa.collides(line);
-        if (!doesHit) continue;
-        var fraction = 1 / 2;
-        var step = 1 / 4;
-        // binary search
-        while (step > Number.EPSILON) {
-            line2.p2 = line2.p1.add(direction.scale(distance * fraction));
-            if (wa.collides(line2)) fraction -= step;
-            else fraction += step;
-            step /= 2;
-        }
-        if (fraction < result.fraction) {
-            result.fraction = fraction;
+        const thisResult = wa.raycast(origin, direction);
+        if (thisResult === null) continue;
+        if (result === null || thisResult.fraction < result.fraction) {
+            result = thisResult;
             result.object = obj;
-            result.point = K.lerp(origin, line.p2, fraction);
         }
     }
-    if (result.object === undefined) return undefined;
     return result;
+}
+
+function ballistics(pos: Vec2, vel: Vec2, t: number) {
+    return pos.add(vel.scale(t)).add(K.getGravityDirection().scale(K.getGravity() * t * t / 2));
 }
