@@ -251,6 +251,7 @@ export const MParser: {
     buffer: undefined,
     parenStack: [],
     process(cmd, pos): CompList<any> | undefined {
+        console.log(pos);
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);

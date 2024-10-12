@@ -23,10 +23,14 @@ K.load((async () => {
             }
         }
     }) as GameObj<LevelComp | PosComp>;
-
     try {
+        await nextFrame();
+        console.log("init");
         MParser.build();
+        console.log("built")
+        await nextFrame();
         MParser.mergeAcross();
+        console.log("merge")
     } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`;
         K.debug.error(msg);
@@ -47,3 +51,7 @@ K.load((async () => {
     K.camPos(player.worldPos()!);
 
 })());
+
+function nextFrame(): Promise<void> {
+    return new Promise(resolve => requestAnimationFrame(() => resolve()));
+}
