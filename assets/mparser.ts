@@ -62,10 +62,7 @@ export const MParser: {
         "%": barrier,
         "=": ladder,
     },
-    vars: {
-        GREEN: K.GREEN.darken(127),
-        PURPLE: K.MAGENTA.darken(100),
-    },
+    vars: {},
     strings: undefined,
     /**
      * Parser commands that are executed post-world-creation
@@ -127,6 +124,7 @@ export const MParser: {
         d() {
             const pName = this.stack.pop() as string;
             const pContent = this.stack.pop() as typeof this.vars[string];
+            // K.debug.log("define", pName, pContent);
             this.vars[pName] = pContent;
         },
         // get command: name -- value
@@ -274,6 +272,7 @@ export const MParser: {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
+            if ((cmd == "(" || cmd == "{") && typeof this.buffer !== "string") this.buffer = "";
         }
         if (this.parenStack.length > 0) {
             const popParen = (p: string) => {

@@ -15,3 +15,7 @@ export const K: KAPLAYCtx<typeof CONTROLS> & MergePlugins<[typeof kaplayZzFX]> =
 
 // @ts-expect-error
 window.K = K;
+
+export function nextFrame(): Promise<void> {
+    return new Promise(resolve => requestAnimationFrame(() => resolve()));
+}

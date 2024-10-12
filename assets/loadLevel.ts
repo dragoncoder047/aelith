@@ -1,9 +1,10 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
 import { STRINGS_FILE, WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
-import { K } from "../init";
+import { K, nextFrame } from "../init";
 import { player } from "../player";
 import { MParser } from "./mparser";
+import { doStartup } from "../startup";
 
 K.load((async () => {
     const [txt, strings] = await Promise.all([
@@ -53,9 +54,7 @@ K.load((async () => {
     playerPositions.forEach(K.destroy);
     // prevent superfast scroll on load
     K.camPos(player.worldPos()!);
+    // do startup sequence
+    doStartup();
 
 })());
-
-function nextFrame(): Promise<void> {
-    return new Promise(resolve => requestAnimationFrame(() => resolve()));
-}

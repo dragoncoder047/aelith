@@ -36,7 +36,7 @@ function playerComp(): PlayerComp {
         },
         camFollower: undefined,
         footstepsCounter: 0,
-        add(this: GameObj) {
+        add(this: GameObj<PlayerComp | PosComp>) {
             // Keep player centered in window
             this.camFollower = this.onUpdate(() => {
                 K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
