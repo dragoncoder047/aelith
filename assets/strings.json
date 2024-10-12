@@ -8,7 +8,7 @@
         "keyboard": "Use space\nto jump"
     },
     "var_grab": {
-        "gamepad": "This is a variable.\nMove the right stick and press X\nto grab it.\nThey will be very useful!",
-        "keyboard": "This is a variable.\nMove your mouse and left click\nto grab it.\nThey will be very useful!"
+        "gamepad": "This is a variable.\nMove the right stick\nand press X to grab it.\nThese will be very useful!",
+        "keyboard": "This is a variable.\nLeft-click to grab it.\nThese will be very useful!"
     }
 }

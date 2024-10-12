@@ -11,8 +11,8 @@
                            %                          ##############################################
                            %                         ###############################################
                            %                        ################################################
-                           %                        L          T                     #             %       (width)10bs(textFunc)(var_grab)qsz
-                           %                 T      T                                D             %       (1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger subroutines while they are pressed)sz
+                           %                        L          T        #                          %       (width)10bs(textFunc)(var_grab)qsz
+                           %                 T      T                   D                          %       (1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger things while they are pressed)sz
                      T     %                    B                 Xz                               %   T   (1b1a1b2a)p3g3z(text)(Aaaa!)sz(text)(Nothing to see over here)sz
 ####################################################################################################
 ####################################################################################################
