@@ -8,24 +8,19 @@ export const styles: TextComp["textStyles"] = {
             color: K.GREEN,
         }
     },
-    command(_i, _ch) {
-        return {
-            color: K.YELLOW,
-        }
+    command: {
+        color: K.YELLOW,
     },
-    prompt(_i, _ch) {
-        return {
-            color: K.CYAN,
-        }
+    prompt: {
+        color: K.CYAN,
     },
-    ident(_i, _ch) {
-        return {
-            color: K.GREEN,
-        }
+    ident: {
+        color: K.GREEN,
     },
-    gamename(_i, _ch) {
-        return {
-            color: K.MAGENTA,
-        }
+    gamename: {
+        color: K.MAGENTA,
+    },
+    stderr: {
+        color: K.RED.lighten(100),
     }
 };

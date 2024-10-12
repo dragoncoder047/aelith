@@ -1,18 +1,7 @@
-                                                                      T       (text)([gamename]KONT[/gamename])s(textSize)7as0 16nmz
-                                                                  T           (text)()s(width)20bs(startupText)d
-                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                           %                                            @    %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
-                           %                                                 %
+                                                                     T        (text)([gamename]KONT[/gamename])s(textSize)8as0 16nmz
+                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%T        (text)()s(width)20bs3bn0m(startupText)d
+                           %                                        %%%%%%%%%%
+                           %                                           @     %
                            %                               T                 %(textFunc)(jump_control)qsz
                            %                               #                 %
                            %                              ##          T      %   T(text)(%1B Go that way)sz(textFunc)(move_control)qs0 1bm(z)20s(moveControl)d
@@ -22,9 +11,9 @@
                            %                          ##############################################
                            %                         ###############################################
                            %                        ################################################
-                           %      T                                      ###########################       (width)10bs(textFunc)(var_grab)qsz
-                           %                                   T         D                         %       (1b1a)p(text)(Buttons trigger subroutines while they are pressed)sz
-                     T     %         Xz                           B                                %   T   (1b1a1b1a)p2g2z(text)(Aaaa!)sz(text)(Nothing to see over here)sz
+                           %                        L          T                     #             %       (width)10bs(textFunc)(var_grab)qsz
+                           %                 T      T                                D             %       (1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger subroutines while they are pressed)sz
+                     T     %                    B                 Xz                               %   T   (1b1a1b2a)p3g3z(text)(Aaaa!)sz(text)(Nothing to see over here)sz
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################
