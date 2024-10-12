@@ -413,8 +413,7 @@ export const MParser: {
             else if (typeof cmd === "string" || typeof cmd === "number")
                 this.stack.push(cmd);
             else {
-                // @ts-expect-error
-                K.debug.error("bad command", cmd);
+                K.debug.error("bad command: " + cmd);
                 throw new Error("bad command: " + cmd);
             }
         }
