@@ -13,6 +13,7 @@ export function machine(areaOpts?: AreaCompOpt): CompList<any> {
         toggler("off", "on", false),
         K.state("off"),
         linked(MParser.uid()),
+        K.offscreen({ hide: true }),
         ...defaults(areaOpts)
     ];
 }

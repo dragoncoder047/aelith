@@ -1,12 +1,15 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
-import { WORLD_FILE } from ".";
+import { STRINGS_FILE, WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
 import { MParser } from "./mparser";
 
 K.load((async () => {
-    var txt = await fetch(WORLD_FILE).then(r => r.text());
+    const [txt, strings] = await Promise.all([
+        fetch(WORLD_FILE).then(r => r.text()),
+        fetch(STRINGS_FILE).then(j => j.json())
+    ]);
     MParser.world = K.addLevel(txt.split("\n"), {
         tileWidth: TILE_SIZE,
         tileHeight: TILE_SIZE,
@@ -23,6 +26,7 @@ K.load((async () => {
             }
         }
     }) as GameObj<LevelComp | PosComp>;
+    MParser.strings = strings;
     try {
         await nextFrame();
         console.log("init");

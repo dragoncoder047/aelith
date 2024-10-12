@@ -1,0 +1,14 @@
+{
+    "move_control": {
+        "gamepad": "Use left stick to move",
+        "keyboard": "Use WASD or arrow keys to move"
+    },
+    "jump_control": {
+        "gamepad": "Use A button to jump",
+        "keyboard": "Use space to jump"
+    },
+    "var_grab": {
+        "gamepad": "That is an empty variable.\nMove right stick and press X\nto grab it.\n\nThey will be very useful!\n\n\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a",
+        "keyboard": "That is an empty variable.\nMove mouse and left click\nto grab it.\n\nThey will be very useful!\n\n\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a\u001a"
+    }
+}
