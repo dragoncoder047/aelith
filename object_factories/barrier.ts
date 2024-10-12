@@ -7,11 +7,10 @@ import { mergeable } from "../components/mergeable";
 export function barrier(): CompList<any> {
     return [
         K.body({ isStatic: true }),
+        K.rect(TILE_SIZE, TILE_SIZE),
+        K.opacity(0),
         mergeable(),
-        ...defaults({
-            friction: FRICTION,
-            shape: new K.Rect(K.vec2(0), TILE_SIZE, TILE_SIZE),
-        }),
+        ...defaults({ friction: FRICTION }),
         "barrier",
         "wall",
     ]

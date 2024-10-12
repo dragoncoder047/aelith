@@ -28,7 +28,7 @@ export const MParser: {
     commands: { [x: string]: (this: typeof MParser) => void; };
     buffer: string | number | undefined;
     parenStack: string[];
-    vars: { [x: string]: string | number | ((this: typeof MParser) => void); };
+    vars: { [x: string]: any; };
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
     mergeAcross(): void;
@@ -61,7 +61,10 @@ export const MParser: {
         "%": barrier,
         "=": ladder,
     },
-    vars: { SCALE },
+    vars: {
+        GREEN: K.GREEN.darken(127),
+        PURPLE: K.MAGENTA.darken(100),
+    },
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
@@ -82,7 +85,7 @@ export const MParser: {
             const value = this.stack.pop();
             const propName = this.stack.pop() as string;
             const obj = this.stack.pop();
-            if (!(propName in obj)) throw `prop ${propName} don't exist on ${obj} ${obj.tags}`;
+            // K.debug.log(`Setting ${propName} on ${obj.tags} to ${value}`);
             obj[propName] = value;
             this.stack.push(obj);
         },
@@ -231,12 +234,15 @@ export const MParser: {
         u() {
             this.stack.push(this.uid());
         },
-        // fontsize command: obj size -- obj
+        // fontsize command: size -- pixels
         a() {
             const size = this.stack.pop() as number;
-            const obj = this.stack.pop() as GameObj<TextComp>;
-            obj.textSize = size * 8 / SCALE;
-            this.stack.push(obj);
+            this.stack.push(size * 8 / SCALE);
+        },
+        // tilecount command: tiles -- pixels
+        b() {
+            const size = this.stack.pop() as number;
+            this.stack.push(size * TILE_SIZE);
         },
         // debug command: logs the top object
         "?"() {

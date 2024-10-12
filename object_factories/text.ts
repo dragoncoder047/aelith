@@ -10,5 +10,6 @@ export function textNote(): CompList<any> {
             width: TILE_SIZE * 4,
             align: "left"
         }),
+        K.color(K.WHITE.darken(100)),
     ]
 }

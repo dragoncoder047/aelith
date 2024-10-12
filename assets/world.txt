@@ -1,7 +1,9 @@
                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                           %                              T      %(text)(KONT)s7az
                            %                                     %
-                           %                   T          T      %(text)(Use WASD or arrow keys to move)sz(text)(Use space to jump)sz
+                           %                              T      %(text)(Use WASD or arrow keys to move)s0 6bm(z)20sz
+                           %                              T      %(text)(KONT)s(textSize)7as0 16nm(color)(PURPLE)ksz
+                           %                             T       %(text)($ ls -A /root%0ASegmentation fault (core dumped))s(width)10bs(color)(GREEN)ksz
+                           %                   T                 %(text)(Use space to jump)sz
                            %                   #            @    %
                            %                  ##                 %   T(text)(%1B Go that way)sz
                            %                 ###########################################
@@ -10,8 +12,8 @@
                            %              ##############################################
                            %             ###############################################
                            %            ################################################
-                           %                                 ###########################
-                           %                                 D   Dt
+                           % T                               ###########################       (width)10bs(text)(That is an empty variable.%0AClick with left mouse%0Ato grab it.%0A%0AThey will be very useful!%0A%0A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A%1A)sz
+                           %                       T         D   Dt                            (2b1a)p(text)(Buttons trigger subroutines while they are pressed)sz
                      T     %         Xz               B                                        (1a1b2a)p3g3z(text)(Nothing to see over here)sz
 ########################################################################################
 ########################################################################################
