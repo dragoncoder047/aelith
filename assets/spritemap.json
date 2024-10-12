@@ -124,7 +124,7 @@
         "height": 64
     },
     "continuation": {
-        "x": 64,
+        "x": 32,
         "y": 254,
         "width": 64,
         "height": 32,
@@ -141,8 +141,28 @@
     },
     "continuation_trap": {
         "x": 32,
-        "y": 254,
-        "width": 32,
-        "height": 32
+        "y": 299,
+        "width": 224,
+        "height": 19,
+        "sliceX": 7,
+        "anims": {
+            "ready": {
+                "from": 0,
+                "to": 5,
+                "loop": true,
+                "speed": 6
+            },
+            "dead": {
+                "from": 6,
+                "to": 6
+            }
+        }
+    },
+    "checkpoint": {
+        "x": 224,
+        "y": 222,
+        "width": 64,
+        "height": 64,
+        "sliceX": 2
     }
 }
