@@ -10,12 +10,12 @@
                            %                                                 %
                            %                                                 %
                            %                                                 %
-                           %                                          T      %(textFunc)(move_control)qs0 8bm(z)20s(moveControl)d
+                           %                                                 %
                            %                                                 %
                            %                                                 %
                            %                               T                 %(textFunc)(jump_control)qsz
                            %                               #                 %
-                           %                              ##                 %   T(text)(%1B Go that way)sz
+                           %                              ##          T      %   T(text)(%1B Go that way)sz(textFunc)(move_control)qs0 1bm(z)20s(moveControl)d
                            %                             ###########################################
                                                         ############################################
                                                        #############################################

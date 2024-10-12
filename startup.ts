@@ -1,4 +1,4 @@
-import { GameObj, TextComp } from "kaplay";
+import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { DynamicTextComp } from "./components/dynamicText";
 import { player } from "./player";
@@ -79,8 +79,8 @@ export async function doStartup() {
     var runningText = "";
     var typedText = "";
     var typedTextStyle: string | undefined = undefined;
-    const refresh = (style: string = "cursor") => {
-        startupTextElement.text = [runningText, wrap(typedText, typedTextStyle), wrap("_", style)].join("");
+    const refresh = () => {
+        startupTextElement.text = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
     };
     const say = (text: string, style: string | undefined) => {
         runningText += wrap(text, style);
@@ -96,20 +96,24 @@ export async function doStartup() {
         const text = processTextReplacements(chunk.text, vars);
         if (chunk.typewriter) {
             typedTextStyle = chunk.style;
-            for (var ch of text) {
-                type(ch);
-                await K.wait(K.rand(0.1, 0.2));
-            }
+            var stop = false;
+            await jumpWait((async () => {
+                for (var ch of text) {
+                    if (stop) return;
+                    type(ch);
+                    await K.wait(K.rand(0.1, 0.2));
+                }
+            })());
+            stop = true;
             typedText = "";
             say(text, chunk.style);
         } else {
             say(text, chunk.style);
         }
         if (chunk.wait) {
-            await K.wait(chunk.wait);
+            await jumpWait(K.wait(chunk.wait) as unknown as Promise<void>);
         }
     }
-    refresh("cursorblink");
 
     // Done typing
     bottomControlsElement.textFunc = oldTextFunc;
@@ -127,4 +131,15 @@ function processTextReplacements(text: string, vars: Record<string, string>): st
 function wrap(text: string, style: string | undefined) {
     if (style === "" || text === "") return text;
     return `[${style}]${text}[/${style}]`;
+}
+
+function promisify(cb: (f: (value: any) => void) => KEventController | undefined): Promise<void> {
+    var cbr: KEventController | undefined = undefined;
+    const p = new Promise<void>(r => { cbr = cb(r); });
+    if (cbr !== undefined) p.then((cbr as KEventController).cancel);
+    return p;
+}
+
+function jumpWait(p: Promise<void>): Promise<void> {
+    return Promise.race([p, promisify(r => K.onButtonPress("jump", r))])
 }

@@ -141,7 +141,7 @@ function playerComp(): PlayerComp {
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
                 const rv0 = rv1 * 2;
                 zz.volume = v * K.mapc(dist, rv1, rv0, 1, 0);
-                zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -1, 1);
+                zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3/4, 3/4);
                 // K.debug.log(soundID, "volume", zz.volume.toFixed(2), "pan", zz.pan.toFixed(2));
             };
             doWatch();
@@ -200,7 +200,7 @@ function playerComp(): PlayerComp {
             this.trigger("inventoryChange");
         },
         get throwImpulse() {
-            if (!this.lookingDirection) return undefined;
+            if (!this.lookingDirection || this.lookingDirection.slen() < 0.01) return undefined;
             var direction = this.lookingDirection.scale(SCALE * MAX_THROW_VEL / MAX_THROW_STRETCH);
             const len = direction.len();
             if (len > MAX_THROW_VEL) direction = direction.scale(MAX_THROW_VEL / len);

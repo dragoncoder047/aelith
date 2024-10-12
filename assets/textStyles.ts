@@ -4,11 +4,6 @@ import { K } from "../init";
 export const styles: TextComp["textStyles"] = {
     cursor(_i, _ch) {
         return {
-            color: K.GREEN,
-        }
-    },
-    cursorblink(_i, _ch) {
-        return {
             opacity: Math.round(K.wave(0, 1, K.time() * 2 * Math.PI)),
             color: K.GREEN,
         }

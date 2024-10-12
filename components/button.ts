@@ -8,6 +8,7 @@ import {
     TimerComp
 } from "kaplay";
 import { LinkComp } from "./linked";
+import { K } from "../init";
 
 export interface ButtonComp extends Comp {
     onDelay: number,
@@ -40,6 +41,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                 if (!coll.isTop()) return;
                 const obj = coll.target;
                 if (this.stompedBy.has(obj)) return;
+                obj.vel = K.vec2(0);
                 if (unstompedTimer) {
                     unstompedTimer.cancel();
                     unstompedTimer = undefined;
