@@ -16,7 +16,6 @@ export function textNote(): CompList<any> {
         }),
         K.color(K.WHITE.darken(100)),
         K.timer(),
-        K.offscreen({ hide: true }),
         dynamicText(),
     ]
 }

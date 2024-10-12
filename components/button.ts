@@ -41,7 +41,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                 if (!coll.isTop()) return;
                 const obj = coll.target;
                 if (this.stompedBy.has(obj)) return;
-                obj.vel = K.vec2(0);
+                obj.vel = obj.vel.reject(coll.normal);
                 if (unstompedTimer) {
                     unstompedTimer.cancel();
                     unstompedTimer = undefined;
