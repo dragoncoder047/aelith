@@ -12,7 +12,13 @@ type TextChunk = {
     skipIf?: (vars: Record<string, string>) => boolean,
 };
 
-function command(cmdStr: string, output: string, workingDir: string, waitAfter: number): TextChunk[] {
+function command(
+    cmdStr: string,
+    output: string,
+    workingDir: string,
+    waitBeforeCommand: number,
+    waitAfterCommand: number
+): TextChunk[] {
     return [
         {
             text: "\n{{user}}@dev ",
@@ -21,13 +27,13 @@ function command(cmdStr: string, output: string, workingDir: string, waitAfter: 
         {
             text: workingDir + " $ ",
             style: "prompt",
-            wait: waitAfter
+            wait: waitBeforeCommand
         },
         {
             text: cmdStr,
             typewriter: true,
             style: "command",
-            wait: 0.02 * cmdStr.length
+            wait: waitAfterCommand
         },
         ...(
             output !== "" ?
@@ -51,10 +57,10 @@ const chunks: TextChunk[] = [
     {
         text: "\nLogged in!",
     },
-    ...command("sudo ai-assistant &", "(1) 4242 ai-assistant\nAssistant is running", "~", 1),
-    ...command("ai \"find the answer\"", "Segmentation fault (core dumped)\n(1)  + 4242 exit 139   sudo ai-assistant", "~", 2),
-    ...command("cd /sys/ai", "", "~", 3),
-    ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25),
+    ...command("sudo ai-assistant &", "(1) 4242 ai-assistant\nAssistant is running", "~", 1, 1),
+    ...command("ai \"find the answer\"", "Segmentation fault (core dumped)\n(1)  + 4242 exit 139   sudo ai-assistant", "~", 1, 2),
+    ...command("cd /sys/ai", "", "~", 3, 0.25),
+    ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25, 1),
 ];
 
 export async function doStartup() {
