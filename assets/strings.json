@@ -19,16 +19,17 @@
             "climb": "Q or shift"
         }
     },
+    "control": "&controls.&inputType",
     "msg": {
         "gamename": "[gamename]KONT[/gamename]",
         "wrongWayLeft": "&arrow.left Go that way",
-        "move": "Use &controls.&inputType.move to move and &controls.&inputType.jump to jump",
-        "climb": "You can hold &controls.&inputType.climb and move to climb up a ladder",
+        "move": "Use &control.move to move and &control.jump to jump",
+        "climb": "You can hold &control.climb and move to climb up a ladder",
         "firstDoor": "And that is a door.\nTo open it, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
-        "variable": "This is a variable.\nTo grab it, aim with &controls.&inputType.aim and\npress &controls.&inputType.interact to grab it.\nThese will be very useful!",
+        "variable": "This is a variable.\nTo grab it, aim with &control.aim and\npress &control.interact to grab it.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here"
     }
 }
