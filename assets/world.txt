@@ -4,14 +4,14 @@
                                                   #=                   @     %
                                                   #=                         %
                                                   #=                         %
-                                             N    #=                  N      %   N(t)(&msg.wrongWayLeft)sz(t)(&msg.move)s0 1bm(z)20s(moveControl)d
+                                             N    #=                  N      %   N(t)(&msg.wrongWayLeft)sz(t)(&msg.move)s0 1bm(moveControl)d
                            %%%%%%%%%%%%%%%%%%%%%%%#=################################################(t)(&msg.climb)sz
                                                   #=################################################
                                                   #=################################################
                            %                       =################################################
                            %                       =################################################
                            %                       =################################################
-                           %                       =L          N          N         #              %       (width)10bs(t)(&msg.firstDoor)s0n12nmz(width)10bs(t)(&msg.variable)s0n12nmz
+                           %                       =L          N          N         #              %       (width)10bs(t)(&msg.firstDoor)s0n2bnmz(width)10bs(t)(&msg.variable)s0n12nmz
                            %                 N     =N                               D      [A]N    %       (width)10bs(t)(&msg.firstCheckpoint)sz(1b2a)p(t)(&msg.thisLightbulb)s4n30nmz(t)(&msg.button)sz
                      N     %                    B  =              Xz                               %       (1a1b2a)p3g3z(t)(&msg.nothingToSee)sz
 ####################################################################################################
