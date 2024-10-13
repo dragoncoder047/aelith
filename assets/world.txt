@@ -11,9 +11,9 @@
                            %                          ##############################################
                            %                         ###############################################
                            %                        ################################################
-                           %                        L          T        #                          %       (width)10bs(textFunc)(var_grab)qsz
-                           %                 T      T                   D                          %       (1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger things while they are pressed)sz
-                     T     %                    B                 Xz                               %   T   (1b1a1b2a)p3g3z(text)(Aaaa!)sz(text)(Nothing to see over here)sz
+                           %                        L          T          T         #              %       (width)10bs(text)(And that is a door.%0ATo open it, you will need to press%0Aand hold the button...%0Aif only you could do that...)s0n12nmz(width)10bs(textFunc)(var_grab)qs(baseText)(This is a variable.%0A{{s}}%0AThese will be very useful!)s0n12nmz
+                           %                 T      T                               D      [A]T    %       (text)(%1BCongrats, your first checkpoint!)sz(1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger things while they are pressed)sz
+                     T     %                    B                 Xz                               %       (1a1b2a)p3g3z(text)(Nothing to see over here)sz
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################

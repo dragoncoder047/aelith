@@ -3,6 +3,7 @@ import { MParser } from "./assets/mparser";
 import { DynamicTextComp } from "./components/dynamicText";
 import { player } from "./player";
 import { K } from "./init";
+import { processTextReplacements } from "./utils";
 
 type TextChunk = {
     text: string
@@ -121,13 +122,6 @@ export async function doStartup() {
     player.hidden = false;
     player.paused = false;
 };
-
-function processTextReplacements(text: string, vars: Record<string, string>): string {
-    for (var key of Object.getOwnPropertyNames(vars)) {
-        text = text.replaceAll(`{{${key}}}`, vars[key]!);
-    }
-    return text;
-}
 
 function wrap(text: string, style: string | undefined) {
     if (style === "" || text === "") return text;

@@ -1,14 +1,14 @@
 {
     "move_control": {
-        "gamepad": "Use left stick to move",
-        "keyboard": "Use WASD or arrow keys to move"
+        "gamepad": "Use left stick to move.",
+        "keyboard": "Use WASD or arrow keys to move."
     },
     "jump_control": {
-        "gamepad": "Use A button\nto jump",
-        "keyboard": "Use space\nto jump"
+        "gamepad": "Use A button\nto jump.",
+        "keyboard": "Use space\nto jump."
     },
     "var_grab": {
-        "gamepad": "This is a variable.\nMove the right stick\nand press X to grab it.\nThese will be very useful!",
-        "keyboard": "This is a variable.\nLeft-click to grab it.\nThese will be very useful!"
+        "gamepad": "Move the right stick\nand press X to grab it.",
+        "keyboard": "Left-click to grab it."
     }
 }
