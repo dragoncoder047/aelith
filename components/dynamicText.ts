@@ -1,6 +1,6 @@
 import { Comp, GameObj, TextComp } from "kaplay";
 import { processTextReplacements } from "../utils";
-import controlStrings from "../player/controls/strings.json";
+import strings from "../assets/strings.json";
 import { K } from "../init";
 
 export interface DynamicTextComp extends Comp {
@@ -13,8 +13,13 @@ export function dynamicText(): DynamicTextComp {
         require: ["text"],
         t: "",
         update(this: GameObj<TextComp | DynamicTextComp>) {
-            const cStrings = K.getLastInputDeviceType() === "gamepad" ? controlStrings.gamepad : controlStrings.keyboard;
-            this.text = processTextReplacements(this.t, cStrings);
+            this.text = processTextReplacements(this.t, {
+                ...strings,
+                inputType:
+                    K.getLastInputDeviceType() === "gamepad"
+                        ? "gamepad"
+                        : "keyboard"
+            });
         },
     }
 }

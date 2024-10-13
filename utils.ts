@@ -1,7 +1,30 @@
 
-export function processTextReplacements(text: string, vars: Record<string, string>): string {
-    for (var key of Object.getOwnPropertyNames(vars)) {
-        text = text.replaceAll(`{{${key}}}`, vars[key]!);
-    }
+type NestedStrings = Record<string, any>;
+export function processTextReplacements(text: string, vars: NestedStrings): string {
+    vars = flatten(vars);
+    do {
+        var changed = false;
+        for (var key of Object.getOwnPropertyNames(vars)) {
+            const rep = `{{${key}}}`;
+            if (text.indexOf(rep) !== -1) {
+                text = text.replaceAll(rep, vars[key]!);
+                changed = true;
+            }
+        }
+    } while (changed);
     return text;
+}
+
+export function flatten(vars: NestedStrings): Record<string, string> {
+    const out: Record<string, string> = {};
+    const recur = (curPath: string[], obj: NestedStrings | string) => {
+        if (typeof obj !== "object") {
+            out[curPath.join(".")] = obj;
+        }
+        else for (var next of Object.getOwnPropertyNames(obj)) {
+            recur(curPath.concat(next), obj[next]);
+        }
+    };
+    recur([], vars);
+    return out;
 }

@@ -1,0 +1,30 @@
+{
+    "controls": {
+        "gamepad": {
+            "move": "left stick",
+            "jump": "A button",
+            "aim": "right stick",
+            "interact": "X button",
+            "climb": "left shoulder"
+        },
+        "keyboard": {
+            "move": "WASD or arrow keys",
+            "jump": "space",
+            "aim": "mouse",
+            "interact": "left click",
+            "climb": "Q or shift"
+        }
+    },
+    "msg": {
+        "gamename": "[gamename]KONT[/gamename]",
+        "wrongWayLeft": "\u001b Go that way",
+        "move": "Use {{controls.move}} to move and {{controls.jump}} to jump",
+        "climb": "You can hold {{controls.climb}} and move to climb up a ladder",
+        "firstDoor": "And that is a door.\nTo open it, you will need to press\nand hold the button...\nif only you could do that...",
+        "firstCheckpoint": "\u001b Congrats,\n  your first\n  checkpoint!",
+        "thisLightbulb": "\u0018 Like this\n  lightbulb",
+        "button": "Buttons trigger things while they are pressed",
+        "variable": "This is a variable.\nTo grab it, aim with {{controls.aim}} and\npress {{controls.interact}} to grab it.\nThese will be very useful!",
+        "nothingToSee": "Nothing to see over here"
+    }
+}
