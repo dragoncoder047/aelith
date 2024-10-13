@@ -12,6 +12,5 @@ export function barrier(): CompList<any> {
         mergeable(),
         ...defaults({ friction: FRICTION }),
         "barrier",
-        "wall",
     ]
 }

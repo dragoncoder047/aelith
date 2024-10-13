@@ -349,7 +349,7 @@ export const MParser: {
      * on the edges
      */
     mergeAcross() {
-        const allowedTags = ["wall" /**, "conveyor"/**/];
+        const allowedTags = ["wall", "barrier", /**, "conveyor"/**/];
         for (var y = 0; y < this.world!.numRows(); y++) {
             var prevTile: GameObj<AreaComp | SpriteComp | PosComp | MergeableComp> | undefined = undefined;
             var prevTag: string = "";
