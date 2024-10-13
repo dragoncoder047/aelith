@@ -1,4 +1,8 @@
 {
+    "arrow": {
+        "left": "\u001b",
+        "up": "\u0018"
+    },
     "controls": {
         "gamepad": {
             "move": "left stick",
@@ -17,14 +21,14 @@
     },
     "msg": {
         "gamename": "[gamename]KONT[/gamename]",
-        "wrongWayLeft": "\u001b Go that way",
-        "move": "Use {{controls.move}} to move and {{controls.jump}} to jump",
-        "climb": "You can hold {{controls.climb}} and move to climb up a ladder",
+        "wrongWayLeft": "{{arrow.left}} Go that way",
+        "move": "Use {{controls.{{inputType}}.move}} to move and {{controls.{{inputType}}.jump}} to jump",
+        "climb": "You can hold {{controls.{{inputType}}.climb}} and move to climb up a ladder",
         "firstDoor": "And that is a door.\nTo open it, you will need to press\nand hold the button...\nif only you could do that...",
-        "firstCheckpoint": "\u001b Congrats,\n  your first\n  checkpoint!",
-        "thisLightbulb": "\u0018 Like this\n  lightbulb",
+        "firstCheckpoint": "{{arrow.left}} Congrats,\n  your first\n  checkpoint!",
+        "thisLightbulb": "{{arrow.up}} Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
-        "variable": "This is a variable.\nTo grab it, aim with {{controls.aim}} and\npress {{controls.interact}} to grab it.\nThese will be very useful!",
+        "variable": "This is a variable.\nTo grab it, aim with {{controls.{{inputType}}.aim}} and\npress {{controls.{{inputType}}.interact}} to grab it.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here"
     }
 }

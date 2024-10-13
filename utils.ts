@@ -1,13 +1,13 @@
 
 type NestedStrings = Record<string, any>;
 export function processTextReplacements(text: string, vars: NestedStrings): string {
-    vars = flatten(vars);
+    const flattenedVars = flatten(vars);
     do {
         var changed = false;
-        for (var key of Object.getOwnPropertyNames(vars)) {
+        for (var key of Object.getOwnPropertyNames(flattenedVars)) {
             const rep = `{{${key}}}`;
             if (text.indexOf(rep) !== -1) {
-                text = text.replaceAll(rep, vars[key]!);
+                text = text.replaceAll(rep, flattenedVars[key]!);
                 changed = true;
             }
         }

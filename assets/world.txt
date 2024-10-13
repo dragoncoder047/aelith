@@ -1,5 +1,5 @@
                                                                      N
-(t)({{msg.gamename}})s(textSize)8as0 16nmz                               N
+(t)({{msg.gamename}})s(textSize)8as0 16nmz                           N
 (t)()s(width)20bs3bn0m(startupText)d              %%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                                   #=                   @     %
                                                   #=                         %
