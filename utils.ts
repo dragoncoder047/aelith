@@ -5,7 +5,7 @@ export function processTextReplacements(text: string, vars: NestedStrings): stri
     do {
         var changed = false;
         for (var key of Object.getOwnPropertyNames(flattenedVars)) {
-            const rep = `{{${key}}}`;
+            const rep = `&${key}`;
             if (text.indexOf(rep) !== -1) {
                 text = text.replaceAll(rep, flattenedVars[key]!);
                 changed = true;

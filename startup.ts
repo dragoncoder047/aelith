@@ -22,7 +22,7 @@ function command(
 ): TextChunk[] {
     return [
         {
-            text: "\n{{user}}@dev ",
+            text: "\n&user@dev ",
             style: "ident",
         },
         {
@@ -47,7 +47,7 @@ function command(
 
 const chunks: TextChunk[] = [
     {
-        text: "Password for {{user}}: ",
+        text: "Password for &user: ",
         wait: 1
     },
     {
