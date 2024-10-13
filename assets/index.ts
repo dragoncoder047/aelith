@@ -22,5 +22,4 @@ K.loadFont("IBM Mono", "assets/Web437_IBM_EGA_8x8.woff");
 K.loadShaderURL("blink", undefined, "assets/blink.glsl");
 K.loadShaderURL("translateSprite", undefined, "assets/translate.glsl");
 export const WORLD_FILE = "assets/world.txt";
-export const STRINGS_FILE = "assets/strings.json";
 // cSpell: ignore glsl

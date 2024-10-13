@@ -1,19 +1,19 @@
-                                                                     T        (text)([gamename]KONT[/gamename])s(textSize)8as0 16nmz
-                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%T        (text)()s(width)20bs3bn0m(startupText)d
-                           %                                        %%%%%%%%%%
-                           %                                           @     %
-                           %                               T                 %(textFunc)(jump_control)qsz
-                           %                               #                 %
-                           %                              ##          T      %   T(text)(%1B Go that way)sz(textFunc)(move_control)qs0 1bm(z)20s(moveControl)d
-                           %                             ###########################################
-                                                        ############################################
-                                                       #############################################
-                           %                          ##############################################
-                           %                         ###############################################
-                           %                        ################################################
-                           %                        L          T          T         #              %       (width)10bs(text)(And that is a door.%0ATo open it, you will need to press%0Aand hold the button...%0Aif only you could do that...)s0n12nmz(width)10bs(textFunc)(var_grab)qs(baseText)(This is a variable.%0A{{s}}%0AThese will be very useful!)s0n12nmz
-                           %                 T      T                               D      [A]T    %       (text)(%1BCongrats, your first checkpoint!)sz(1b2a)p(text)(%18 Like this%0A  lightbulb)s4n30nmz(text)(Buttons trigger things while they are pressed)sz
-                     T     %                    B                 Xz                               %       (1a1b2a)p3g3z(text)(Nothing to see over here)sz
+                                                                     T        (t)([gamename]KONT[/gamename])s(textSize)8as0 16nmz
+                                                                     T        (t)()s(width)20bs3bn0m(startupText)d
+                                                  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                  #=                   @     %
+                                                  #=                         %
+                                                  #=                         %
+                                                  #=                  T      %   T(t)(%1B Go that way)sz(t)(Use {{c_move}} to move and {{c_jump}} to jump)s0 1bm(z)20s(moveControl)d
+                           %%%%%%%%%%%%%%%%%%%%%%%#=################################################
+                                                  #=################################################
+                                                  #=################################################
+                           %                       =################################################
+                           %                       =################################################
+                           %                       =################################################
+                           %                       =L          T          T         #              %       (width)10bs(t)(And that is a door.%0ATo open it, you will need to press%0Aand hold the button...%0Aif only you could do that...)s0n12nmz(width)10bs(t)(This is a variable.%0ATo grab it, aim with the {{c_aim}} and%0Apress {{c_interact}} to grab it.%0AThese will be very useful!)s0n12nmz
+                           %                 T     =T                               D      [A]T    %       (width)10bs(t)(%1B Congrats,%0A  your first%0A  checkpoint!)sz(1b2a)p(t)(%18 Like this%0A  lightbulb)s4n30nmz(t)(Buttons trigger things while they are pressed)sz
+                     T     %                    B  =              Xz                               %       (1a1b2a)p3g3z(t)(Nothing to see over here)sz
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################

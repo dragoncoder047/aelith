@@ -95,13 +95,14 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
   * [ ] Laser
   * [ ] Decoration tiles
   * [ ] Machine tiles
-  * [ ] Continuations
-  * [ ] Checkpoints
-  * [X] Cursor
+  * [X] Continuations
+  * [X] Checkpoints
 * [ ] Design world
   * [X] Method for notating which things are linked
 * [ ] Add continuation mechanics
   * [ ] `player.query` function is powerful here!
 * [ ] Add machines to be glitched/interacted with
+* [ ] Tail on player character
+  * [ ] Using spring/linear constraint plugin
 
 <!-- cSpell: ignore kaplay kaplayjs kont setjmp zzfx -->

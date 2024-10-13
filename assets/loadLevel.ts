@@ -1,5 +1,5 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
-import { STRINGS_FILE, WORLD_FILE } from ".";
+import { WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
 import { K, nextFrame } from "../init";
 import { player } from "../player";
@@ -7,10 +7,7 @@ import { MParser } from "./mparser";
 import { doStartup } from "../startup";
 
 K.load((async () => {
-    const [txt, strings] = await Promise.all([
-        fetch(WORLD_FILE).then(r => r.text()),
-        fetch(STRINGS_FILE).then(j => j.json())
-    ]);
+    const txt = await fetch(WORLD_FILE).then(r => r.text());
     MParser.world = K.addLevel(txt.split("\n"), {
         tileWidth: TILE_SIZE,
         tileHeight: TILE_SIZE,
@@ -27,15 +24,11 @@ K.load((async () => {
             }
         }
     }) as GameObj<LevelComp | PosComp>;
-    MParser.strings = strings;
     try {
         await nextFrame();
-        console.log("init");
         MParser.build();
-        console.log("built")
         await nextFrame();
         MParser.mergeAcross();
-        console.log("merge")
     } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`;
         K.debug.error(msg);

@@ -67,13 +67,12 @@ const chunks: TextChunk[] = [
 
 export async function doStartup() {
     // hide all
-    const startupTextElement = MParser.vars.startupText! as GameObj<TextComp>;
+    const startupTextElement = MParser.vars.startupText! as GameObj<TextComp | DynamicTextComp>;
     const bottomControlsElement = MParser.vars.moveControl! as GameObj<TextComp | DynamicTextComp>;
     player.hidden = true;
     player.paused = true;
-    const oldTextFunc = bottomControlsElement.textFunc;
-    bottomControlsElement.textFunc = undefined;
-    bottomControlsElement.text = "";
+    const oldT = bottomControlsElement.t;
+    bottomControlsElement.t = "";
 
     // get vars
     const vars = { user: "anon" };
@@ -82,7 +81,7 @@ export async function doStartup() {
     var typedText = "";
     var typedTextStyle: string | undefined = undefined;
     const refresh = () => {
-        startupTextElement.text = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
+        startupTextElement.t = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
     };
     const say = (text: string, style: string | undefined) => {
         runningText += wrap(text, style);
@@ -118,7 +117,7 @@ export async function doStartup() {
     }
 
     // Done typing
-    bottomControlsElement.textFunc = oldTextFunc;
+    bottomControlsElement.t = oldT;
     player.hidden = false;
     player.paused = false;
 };

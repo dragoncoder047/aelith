@@ -3,6 +3,7 @@
         "noEmit": true,
         "target": "ESNext",
         "esModuleInterop": true,
+        "resolveJsonModule": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
         "noImplicitAny": true,

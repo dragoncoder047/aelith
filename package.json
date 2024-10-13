@@ -3,10 +3,10 @@
     "description": "",
     "keywords": [],
     "author": "dragoncoder047",
-    "main": "index.js",
+    "main": "main.ts",
     "scripts": {
-        "build": "esbuild main.ts --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6 --tree-shaking=true",
-        "dev:build": "esbuild main.ts --watch --bundle --minify --sourcemap --platform=browser --outfile=build/kont.js --format=esm --target=es6 --tree-shaking=true",
+        "build": "node build.mjs",
+        "dev:build": "node build.mjs -w",
         "dev:serve": "./serve",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc"

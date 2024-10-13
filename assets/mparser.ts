@@ -29,7 +29,6 @@ export const MParser: {
     buffer: string | number | undefined;
     parenStack: string[];
     vars: { [x: string]: any; };
-    strings: { [key: string]: { gamepad: string, keyboard: string } } | undefined
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
     mergeAcross(): void;
@@ -63,7 +62,6 @@ export const MParser: {
         "=": ladder,
     },
     vars: {},
-    strings: undefined,
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
@@ -244,17 +242,6 @@ export const MParser: {
             const size = this.stack.pop() as number;
             this.stack.push(size * TILE_SIZE);
         },
-        // strings command: string key -- stringfunc
-        q() {
-            const key = this.stack.pop() as string;
-            if (!this.strings) throw "BUG: strings is not load";
-            if (!(key in this.strings)) throw "strings key not defined " + key;
-            const entries = this.strings[key]!;
-            this.stack.push(() => {
-                if (K.getLastInputDeviceType() === "gamepad") return entries.gamepad;
-                else return entries.keyboard;
-            });
-        },
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
@@ -268,7 +255,6 @@ export const MParser: {
     buffer: undefined,
     parenStack: [],
     process(cmd, pos): CompList<any> | undefined {
-        console.log(pos);
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);

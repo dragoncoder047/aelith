@@ -1,22 +1,20 @@
 import { Comp, GameObj, TextComp } from "kaplay";
 import { processTextReplacements } from "../utils";
+import controlStrings from "../player/controls/strings.json";
+import { K } from "../init";
 
 export interface DynamicTextComp extends Comp {
-    textFunc: (() => string) | undefined,
-    baseText: string | undefined
+    t: string
 }
 
 export function dynamicText(): DynamicTextComp {
     return {
         id: "dynamic-text",
         require: ["text"],
-        textFunc: undefined,
-        baseText: undefined,
+        t: "",
         update(this: GameObj<TextComp | DynamicTextComp>) {
-            if (this.textFunc) {
-                if (this.baseText) this.text = processTextReplacements(this.baseText, { s: this.textFunc() });
-                else this.text = this.textFunc();
-            }
+            const cStrings = K.getLastInputDeviceType() === "gamepad" ? controlStrings.gamepad : controlStrings.keyboard;
+            this.text = processTextReplacements(this.t, cStrings);
         },
     }
 }
