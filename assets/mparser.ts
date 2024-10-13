@@ -50,7 +50,7 @@ export const MParser: {
         W: windTunnel,
         F: fan,
         D: door,
-        T: textNote,
+        N: textNote,
     },
     /**
      * Commands that spawn a tile that isn't configurable.

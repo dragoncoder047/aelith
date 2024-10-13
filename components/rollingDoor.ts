@@ -30,7 +30,7 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!
-                this.use(K.shader("translateSprite", () => {
+                this.use(K.shader("translate", () => {
                     return {
                         u_moveby: K.vec2(0, this.rollAmount),
                         u_quad_topleft: K.vec2(fq.x, fq.y),

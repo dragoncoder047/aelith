@@ -1,14 +1,13 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
-import { WORLD_FILE } from ".";
 import { TILE_SIZE } from "../constants";
 import { K, nextFrame } from "../init";
 import { player } from "../player";
 import { MParser } from "./mparser";
 import { doStartup } from "../startup";
+import { worldFileSrc } from ".";
 
 K.load((async () => {
-    const txt = await fetch(WORLD_FILE).then(r => r.text());
-    MParser.world = K.addLevel(txt.split("\n"), {
+    MParser.world = K.addLevel(worldFileSrc.split("\n"), {
         tileWidth: TILE_SIZE,
         tileHeight: TILE_SIZE,
         tiles: {}, // everything is handled by MParser
@@ -38,10 +37,10 @@ K.load((async () => {
 
     const playerPositions = MParser.world!.get("playerPosition") as GameObj<PosComp>[];
     if (playerPositions.length == 0) {
-        throw new SyntaxError(`need a @ in ${WORLD_FILE}`);
+        throw new SyntaxError(`need a @ in WORLD_FILE`);
     }
     if (playerPositions.length > 1) {
-        console.warn(`Multiple @'s in ${WORLD_FILE} - using the first one`);
+        console.warn(`Multiple @'s in WORLD_FILE - using the first one`);
     }
     player.pos = playerPositions[0]!.worldPos()!;
     playerPositions.forEach(K.destroy);

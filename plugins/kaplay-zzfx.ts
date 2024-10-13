@@ -5,7 +5,8 @@ export type ZzFXSound = Parameters<typeof ZZFX.buildSamples>;
 
 export interface ZzFXPlugin {
     play: KAPLAYCtx["play"]
-    loadZzFX(name: string, parameters: ZzFXSound): Asset<ZzFXSound>
+    loadZzFX(name: string, parameters: ZzFXSound): Asset<ZzFXSound>,
+    loadZzFXMultiJSON(json: Record<string, ZzFXSound>): Asset<ZzFXSound>[]
 }
 
 export function kaplayZzFX(K: KAPLAYCtx): ZzFXPlugin {
@@ -26,5 +27,13 @@ export function kaplayZzFX(K: KAPLAYCtx): ZzFXPlugin {
             zzfxMap.set(name, parameters);
             return new K.Asset(Promise.resolve(parameters));
         },
+        loadZzFXMultiJSON(json) {
+            const out: Asset<ZzFXSound>[] = [];
+            for (var key of Object.getOwnPropertyNames(json)) {
+                // @ts-expect-error
+                out.push(K.loadZzFX(key, json[key]));
+            }
+            return out;
+        }
     }
 }

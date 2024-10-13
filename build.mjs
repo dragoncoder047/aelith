@@ -9,7 +9,8 @@ const config = {
     loader: {
         ".png": "dataurl",
         ".glsl": "text",
-        ".txt": "text"
+        ".txt": "text",
+        ".woff": "dataurl"
     },
     entryPoints: ["main.ts"],
     format: "esm",
