@@ -23,8 +23,6 @@ player.onStateEnter("climbing", () => {
     player.vel = K.vec2(0);
     player.play("climbing");
     player.flipX = false;
-    // Drop whatever is being grabbed when starting to climb
-    player.grabbing = undefined;
 });
 player.onStateUpdate("climbing", () => {
     if (!player.intersectingAny("ladder")) {

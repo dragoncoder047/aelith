@@ -1,7 +1,6 @@
 import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { DynamicTextComp } from "./components/dynamicText";
-import { player } from "./player";
 import { K } from "./init";
 import { processTextReplacements } from "./utils";
 
@@ -68,8 +67,8 @@ const chunks: TextChunk[] = [
 export async function doStartup() {
     // hide all
     const startupTextElement = MParser.vars.startupText! as GameObj<TextComp | DynamicTextComp>;
-    player.hidden = true;
-    player.paused = true;
+    K.get("player").forEach(p => p.hidden = p.paused = true);
+    K.get("tail").forEach(p => p.hidden = p.paused = true);
 
     // get vars
     const vars = { user: "anon" };
@@ -114,8 +113,8 @@ export async function doStartup() {
     }
 
     // Done typing
-    player.hidden = false;
-    player.paused = false;
+    K.get("player").forEach(p => p.hidden = p.paused = false);
+    K.get("tail").forEach(p => p.hidden = p.paused = false);
 };
 
 function wrap(text: string, style: string | undefined) {

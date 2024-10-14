@@ -1,4 +1,4 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, CircleComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
@@ -74,7 +74,8 @@ function playerComp(): PlayerComp {
                 rcr = actuallyRaycast(
                     MParser.world.get<AreaComp>("area")
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
-                            && x.collisionIgnore.every(t => !this.is(t))),
+                            && x.collisionIgnore.every(t => !this.is(t))
+                            && !x.is("tail")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
@@ -141,7 +142,7 @@ function playerComp(): PlayerComp {
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
                 const rv0 = rv1 * 2;
                 zz.volume = v * K.mapc(dist, rv1, rv0, 1, 0);
-                zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3/4, 3/4);
+                zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);
                 // K.debug.log(soundID, "volume", zz.volume.toFixed(2), "pan", zz.pan.toFixed(2));
             };
             doWatch();
@@ -285,6 +286,50 @@ player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersect
 
 // @ts-expect-error
 window.player = player;
+
+//------------------------------------------------------------
+
+// add tail
+var previous: GameObj = player;
+var pos = K.vec2(0, TILE_SIZE / 2);
+const numTailSegments = 8;
+const maxTailSize = 4;
+const tailColor = K.WHITE.darken(50);
+for (var i = 0; i < numTailSegments; i++) {
+    const sz = K.lerp(1, maxTailSize, (1 - (i / numTailSegments)) ** 2);
+    previous = K.add([
+        K.circle(sz / 2),
+        K.layer("playerTail"),
+        K.opacity(0),
+        K.pos(pos),
+        K.anchor("center"),
+        K.area({
+            collisionIgnore: ["player", "tail", "noCollideWithTail"],
+            friction: FRICTION / 10,
+            restitution: 0
+        }),
+        K.body({
+            mass: 0.1,
+            damping: 0.1
+        }),
+        K.spring({
+            other: previous as GameObj<BodyComp | PosComp>,
+            springConstant: 100,
+            springDamping: 50,
+            dampingClamp: 100,
+            length: sz / 2 + (previous?.radius ?? sz / 2),
+            p2: K.vec2(0, previous === player ? 8 : 0),
+            forceOther: previous !== player,
+            drawOpts: {
+                // @ts-expect-error
+                width: sz,
+                color: tailColor.darken(i * 3),
+            },
+        }),
+        "tail",
+    ]);
+    pos = pos.add(K.vec2(0, sz));
+}
 
 
 //------------------------------------------------------------

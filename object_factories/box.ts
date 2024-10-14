@@ -41,6 +41,7 @@ export function box(): CompList<any> {
                 if (K.RIGHT.eq(normal)) return false;
                 return true;
             },
-        })
+        }),
+        "noCollideWithTail",
     ];
 }

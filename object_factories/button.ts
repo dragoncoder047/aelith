@@ -16,5 +16,6 @@ export function button(): CompList<any> {
         K.body({ isStatic: true }),
         buttonComp(),
         clicky(),
+        "noCollideWithTail",
     ];
 }

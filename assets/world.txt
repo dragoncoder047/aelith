@@ -13,7 +13,7 @@
                            %                       =################################################
                            %                       =################################################
                            %                       =################################################
-                           %                       =L          N          M        I#              %       2g(1-x)e(1+y)e(1 s onCollide|player)qz(width)10bs(t)(&msg.firstDoor)s0n2bnmz(width)10bs(t)(&msg.variable)s0n10nmz
+                           %                       =L          N          M       I #              %       2g(1+y)e(1 s onCollide|player)qz(width)10bs(t)(&msg.firstDoor)s0n2bnmz(width)10bs(t)(&msg.variable)s0n10nmz
                            %                 N     =N                               D      [A]N    %       (width)10bs(t)(&msg.firstCheckpoint)sz(1b2a)p(t)(&msg.thisLightbulb)s4n30nmz(t)(&msg.button)sz
                      N     %                    B  =              Xz                               %       (1a1b2a)p3g3z(t)(&msg.nothingToSee)sz
 ####################################################################################################

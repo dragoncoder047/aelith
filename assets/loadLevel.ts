@@ -42,7 +42,11 @@ K.load((async () => {
     if (playerPositions.length > 1) {
         console.warn(`Multiple @'s in WORLD_FILE - using the first one`);
     }
-    player.pos = playerPositions[0]!.worldPos()!;
+    const moveBy = playerPositions[0]!.worldPos()!.sub(player.pos);
+    player.moveBy(moveBy);
+    // move tail segments too
+    K.get("tail").forEach(t => t.moveBy(moveBy));
+    // remove player position things
     playerPositions.forEach(K.destroy);
     // prevent superfast scroll on load
     K.camPos(player.worldPos()!);

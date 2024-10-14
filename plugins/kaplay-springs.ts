@@ -4,43 +4,53 @@ export interface SpringCompOpt {
     other: GameObj<BodyComp | PosComp>
     p1?: Vec2
     p2?: Vec2
+    forceSelf?: boolean,
+    forceOther?: boolean
     length?: number | "auto"
     springConstant?: number
-    damping?: number
-    drawOpts: Omit<DrawLineOpt | DrawCircleOpt, "p1" | "p2" | "pos" | "radius">
+    springDamping?: number
+    dampingClamp?: number
+    drawOpts?: Omit<DrawLineOpt | DrawCircleOpt, "p1" | "p2" | "pos" | "radius">
 }
 
 export interface SpringComp extends Comp {
     other: GameObj<BodyComp | PosComp>
     p1: Vec2
-    p2: Vec2
+    p2: Vec2,
+    forceSelf: boolean,
+    forceOther: boolean
     length: number
     springConstant: number
-    damping: number
+    springDamping: number
+    dampingClamp: number
     drawOpts: Omit<DrawLineOpt & DrawCircleOpt, "p1" | "p2" | "pos" | "radius">,
     readonly actualP2: Vec2
+    _applyForces(f: Vec2): void,
 }
 
 export interface KAPLAYSpringsPlugin {
     spring(opts?: SpringCompOpt): SpringComp
 }
 
-export function kaplaySprings(K: KAPLAYCtx):KAPLAYSpringsPlugin {
+export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
     return {
         // @ts-expect-error
         spring(opts = {}) {
             if (!opts.other) throw new Error("need other on spring");
             if (!opts.other.is("body")) throw new Error("other needs to be a body");
-            opts.drawOpts = Object.assign({ width: 2, color: K.WHITE, cap: "round", join: "round" }, opts.drawOpts);
+            opts.drawOpts = Object.assign({ width: 2, color: K.WHITE }, opts.drawOpts);
             return {
                 id: "spring",
                 require: ["body", "pos"],
                 other: opts.other,
                 p1: opts.p1 ?? K.vec2(0, 0),
                 p2: opts.p2 ?? K.vec2(0, 0),
+                forceSelf: opts.forceSelf ?? true,
+                forceOther: opts.forceOther ?? true,
                 length: opts.length ?? "auto",
+                dampingClamp: opts.dampingClamp ?? 10,
                 springConstant: opts.springConstant ?? 20,
-                damping: opts.damping ?? 0,
+                springDamping: opts.springDamping ?? 0,
                 drawOpts: opts.drawOpts,
                 add() {
                     // @ts-expect-error
@@ -55,14 +65,18 @@ export function kaplaySprings(K: KAPLAYCtx):KAPLAYSpringsPlugin {
                     const displacement = this.actualP2.sub(this.p1);
                     const targetDisplacement = displacement.unit().scale(this.length);
 
-                    const force = targetDisplacement.sub(displacement).scale(this.springConstant);
-                    if (!this.isStatic) this.addForce(force.scale(-1));
-                    if (!this.other.isStatic) this.other.addForce(force);
+                    const springForce = targetDisplacement.sub(displacement).scale(this.springConstant);
+                    this._applyForces(springForce);
 
                     const relVel = this.other.vel.sub(this.vel).project(displacement);
-                    const dampingForce = relVel.scale(Math.expm1(-this.damping * K.dt() * K.dt()));
-                    if (!this.isStatic) this.addForce(dampingForce.scale(-1 / 2));
-                    if (!this.other.isStatic) this.other.addForce(dampingForce.scale(1 / 2));
+                    const rvl = relVel.len();
+                    const relVelClamped = rvl > this.dampingClamp ? relVel.scale(this.dampingClamp / rvl) : relVel;
+                    const dampingForce = relVelClamped.scale(Math.expm1(-this.springDamping * K.fixedDt()));
+                    this._applyForces(dampingForce);
+                },
+                _applyForces(this: GameObj<BodyComp | SpringComp>, f) {
+                    if (!this.isStatic && this.forceSelf) this.addForce(f.scale(-1 / 2));
+                    if (!this.other.isStatic && this.forceOther) this.other.addForce(f.scale(1 / 2));
                 },
                 draw() {
                     K.drawLine({
@@ -72,12 +86,12 @@ export function kaplaySprings(K: KAPLAYCtx):KAPLAYSpringsPlugin {
                     });
                     K.drawCircle({
                         ...this.drawOpts,
-                        radius: this.drawOpts.width!,
+                        radius: this.drawOpts.width! / 2,
                         pos: this.p1,
                     });
                     K.drawCircle({
                         ...this.drawOpts,
-                        radius: this.drawOpts.width!,
+                        radius: this.drawOpts.width! / 2,
                         pos: this.actualP2,
                     });
                 }
