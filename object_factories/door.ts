@@ -1,5 +1,5 @@
 import { CompList } from "kaplay";
-import { clicky } from "../components/click_noise";
+import { clicky } from "../components/clicky";
 import { nudge } from "../components/nudge";
 import { rollingDoor } from "../components/rollingDoor";
 import { TILE_SIZE } from "../constants";

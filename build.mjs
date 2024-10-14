@@ -14,7 +14,7 @@ const config = {
     },
     entryPoints: ["main.ts"],
     format: "esm",
-    target: "es6",
+    target: "esnext",
     treeShaking: true,
     outfile: "build/kont.js",
 };

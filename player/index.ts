@@ -294,7 +294,7 @@ var previous: GameObj = player;
 var pos = K.vec2(0, TILE_SIZE / 2);
 const numTailSegments = 8;
 const maxTailSize = 4;
-const tailColor = K.WHITE.darken(50);
+const tailColor = K.WHITE;
 for (var i = 0; i < numTailSegments; i++) {
     const sz = K.lerp(1, maxTailSize, (1 - (i / numTailSegments)) ** 2);
     previous = K.add([
@@ -323,7 +323,7 @@ for (var i = 0; i < numTailSegments; i++) {
             drawOpts: {
                 // @ts-expect-error
                 width: sz,
-                color: tailColor.darken(i * 3),
+                color: tailColor,
             },
         }),
         "tail",

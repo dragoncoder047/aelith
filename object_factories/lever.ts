@@ -1,5 +1,5 @@
 import { CompList } from "kaplay";
-import { clicky } from "../components/click_noise";
+import { clicky } from "../components/clicky";
 import { spriteToggle } from "../components/spriteToggle";
 import { toggleSwitch } from "../components/toggleSwitch";
 import { K } from "../init";

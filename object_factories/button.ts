@@ -1,6 +1,6 @@
 import { CompList } from "kaplay";
 import { button as buttonComp } from "../components/button";
-import { clicky } from "../components/click_noise";
+import { clicky } from "../components/clicky";
 import { nudge } from "../components/nudge";
 import { spriteToggle } from "../components/spriteToggle";
 import { FRICTION } from "../constants";
