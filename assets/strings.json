@@ -31,7 +31,7 @@
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
-        "variable": "This is a variable.\nTo grab it, aim with &control.aim and &control.verbInteract &control.interact to grab it.\nThese will be very useful!",
+        "variable": "This is a variable.\nAim with &control.aim and &control.verbInteract &control.interact to grab it.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here"
     }
 }
