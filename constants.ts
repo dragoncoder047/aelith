@@ -2,9 +2,9 @@
  * Pixel size for rendering
  *
  * * Use .25 for debugging
- * * Use 2 for standard game play
+ * * Use 2.01 for standard game play (don't use an integer or it will be very buggy)
  */
-export const SCALE = 2;
+export const SCALE = 2.01;
 
 /**
  * Lowpass filter coefficient on camera pan.
