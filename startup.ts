@@ -68,11 +68,8 @@ const chunks: TextChunk[] = [
 export async function doStartup() {
     // hide all
     const startupTextElement = MParser.vars.startupText! as GameObj<TextComp | DynamicTextComp>;
-    const bottomControlsElement = MParser.vars.moveControl! as GameObj<TextComp | DynamicTextComp>;
     player.hidden = true;
     player.paused = true;
-    const oldT = bottomControlsElement.t;
-    bottomControlsElement.t = "";
 
     // get vars
     const vars = { user: "anon" };
@@ -117,7 +114,6 @@ export async function doStartup() {
     }
 
     // Done typing
-    bottomControlsElement.t = oldT;
     player.hidden = false;
     player.paused = false;
 };

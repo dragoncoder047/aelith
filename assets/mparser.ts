@@ -1,22 +1,25 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
+import { MergeableComp } from "../components/mergeable";
 import { TogglerComp } from "../components/toggler";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
 import { conveyor } from "../object_factories/conveyor";
 import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
+import { invisibleTrigger } from "../object_factories/invisibleTrigger";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
+import { popupTextNote } from "../object_factories/popupText";
+import { textNote } from "../object_factories/text";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
-import { textNote } from "../object_factories/text";
-import { barrier } from "../object_factories/barrier";
-import { MergeableComp } from "../components/mergeable";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -51,6 +54,8 @@ export const MParser: {
         F: fan,
         D: door,
         N: textNote,
+        M: popupTextNote,
+        I: invisibleTrigger,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
@@ -249,6 +254,13 @@ export const MParser: {
         b() {
             const size = this.stack.pop() as number;
             this.stack.push(size * TILE_SIZE);
+        },
+        // invisible trigger setup command
+        q() {
+            const s = this.stack.pop() as string;
+            const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
+            obj.setup(s);
+            this.stack.push(s);
         },
         // debug command: logs the top object
         "?"() {
