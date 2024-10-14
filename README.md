@@ -26,7 +26,6 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 ## Mechanics
 
 * Player can only grab items, throw items, and "use" items
-  * --- HOW TO IMPLEMENT THIS IN KAPLAY?
 * Player can interact with machines when they are close enough to them.
 * Throughout the gameplay, the player finds items that work as continuation traps
   * These items when "used" give the player a "continuation"
@@ -102,7 +101,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 * [ ] Add continuation mechanics
   * [ ] `player.query` function is powerful here!
 * [ ] Add machines to be glitched/interacted with
-* [ ] Tail on player character
-  * [ ] Using spring/linear constraint plugin
+* [X] Tail on player character
+  * [X] Using spring/linear constraint plugin
 
 <!-- cSpell: ignore kaplay kaplayjs kont setjmp zzfx -->
