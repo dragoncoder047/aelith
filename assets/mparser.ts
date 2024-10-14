@@ -181,14 +181,22 @@ export const MParser: {
         // partition: objects* partitionStr -- objects*
         p() {
             const partitionString = this.stack.pop() as string;
-            const commands = Array.from(partitionString.matchAll(/(\d+)([a-z]+)/gi));
-            const objects: { [group: string]: GameObj[] } = {}
+            const commands = Array.from(partitionString.matchAll(/(\d+)([a-z+]+)/gi));
+            const objects: { [group: string]: any[] } = {}
+            var lastGroup: any[] = [];
             for (var [_, countStr, group] of commands) {
                 const count = parseInt(countStr!);
-                if (!(group! in objects)) objects[group!] = [];
-                for (var i = 0; i < count; i++) {
-                    const obj = this.stack.pop() as GameObj;
-                    objects[group!]!.unshift(obj);
+                if (group === "+") {
+                    for (var i = 0; i < count; i++)
+                        lastGroup.unshift(lastGroup.at(-1));
+                } else {
+                    if (!(group! in objects))
+                        objects[group!] = [];
+                    for (var i = 0; i < count; i++) {
+                        const obj = this.stack.pop();
+                        objects[group!]!.unshift(obj);
+                    }
+                    lastGroup = objects[group!]!;
                 }
             }
             for (group of Object.keys(objects).sort().reverse()) {
