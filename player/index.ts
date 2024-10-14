@@ -152,7 +152,7 @@ function playerComp(): PlayerComp {
                 waiting.cancel();
                 onEndEvents.trigger();
             }
-            const waiting = K.wait(zz.duration(), done);
+            const waiting = K.wait(Math.max(zz.duration(), 0.5), done);
             zz.onEnd(done); // why does this never get called?
             return {
                 cancel: () => {
@@ -178,6 +178,7 @@ function playerComp(): PlayerComp {
             obj.paused = true;
             obj.hidden = true;
             this.playSound("grab");
+            this.trigger("grab");
             this.trigger("inventoryChange");
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
@@ -197,6 +198,7 @@ function playerComp(): PlayerComp {
             if (obj.is("platformEffector")) {
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             }
+            this.trigger("drop");
             this.trigger("inventoryChange");
         },
         get throwImpulse() {
