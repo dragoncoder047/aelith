@@ -10,6 +10,7 @@
             "aim": "the right stick",
             "interact": "X",
             "verbInteract": "press",
+            "verbSpaceInteract": " ",
             "climb": "the left shoulder"
         },
         "keyboard": {
@@ -18,6 +19,7 @@
             "aim": "the mouse",
             "interact": "left click",
             "verbInteract": "",
+            "verbSpaceInteract": "",
             "climb": "Q or shift"
         }
     },
@@ -31,7 +33,7 @@
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
-        "variable": "This is a variable.\nAim with &control.aim and &control.verbInteract &control.interact to grab it.\nThese will be very useful!",
+        "variable": "This is a variable.\nAim with &control.aim and\n&control.verbInteract&control.verbSpaceInteract&control.interact to grab it.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here"
     }
 }
