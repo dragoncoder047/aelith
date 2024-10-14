@@ -4,7 +4,7 @@
                                                   #=                   @     %
                                                   #=                         %
                                                   #=                         %
-                                             N    #=                  M      %   N(t)(&msg.wrongWayLeft)sz(t)(&msg.move)s0 1bm(1 p onGround)qz
+                                             N    #=                  M     I%M2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)qz(t)(&msg.move)s0 1bm(1 p onGround)qz
                            %%%%%%%%%%%%%%%%%%%%%%%#=################################################(t)(&msg.climb)sz
                                                   #=################################################
                                                   #=################################################
