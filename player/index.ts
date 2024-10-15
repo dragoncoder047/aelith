@@ -12,11 +12,12 @@ export interface PlayerComp extends Comp {
     camFollower: KEventController | undefined
     footstepsCounter: number,
     intersectingAny(type: Tag, where?: GameObj): boolean
-    lookingAt: GameObj | undefined
+    lookingAt: GameObj<AreaComp> | undefined
     lookingDirection: Vec2 | undefined
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
     inventory: PlayerInventoryItem[]
     holdingIndex: number
+    addToInventory(object: PlayerInventoryItem): void
     grab(object: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
     readonly throwImpulse: Vec2 | undefined
@@ -44,17 +45,16 @@ function playerComp(): PlayerComp {
         },
         update(this: GameObj<PlayerComp | PosComp | BodyComp>) {
             // hide all inventory items
-            this.inventory.forEach(item => {
-                item.paused = true;
-                item.hidden = true;
-            });
+            this.inventory.forEach(item => item.paused = item.hidden = true);
             // move the grabbing to self
-            if (this.holdingItem !== undefined) {
-                if (this.curPlatform() === this.holdingItem) this.jump(1); // Reset curPlatform()
-                this.holdingItem.vel = K.vec2(0); // Reset velocity
-                this.holdingItem.moveTo(this.worldPos()!.sub(this.holdingItem.parent!.worldPos()!));
-                this.holdingItem.paused = false;
-                this.holdingItem.hidden = false;
+            const h = this.holdingItem;
+            if (h !== undefined) {
+                // Clear curPlatform() if I'm standing on it
+                if (this.curPlatform() === h) this.jump(1);
+                h.vel = K.vec2(0); // Reset velocity
+                if (h.is("grabbable"))
+                    h.moveTo(this.worldPos()!.sub(h.parent!.worldPos()!));
+                h.paused = h.hidden = false;
             }
         },
         /**
@@ -75,16 +75,16 @@ function playerComp(): PlayerComp {
                     MParser.world.get<AreaComp>("area")
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
                             && x.collisionIgnore.every(t => !this.is(t))
+                            && !x.paused
                             && !x.is("tail")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null) break;
-                const obj = rcr.object;
+                const obj = rcr.object as GameObj<AreaComp>;
 
-                if (!obj
-                    || (!obj.is("interactable") && !obj.is("grabbable"))
-                    || obj.paused) break;
+                if (!obj || (!obj.is("interactable") && !obj.is("grabbable")))
+                    break;
 
                 this.lookingAt = obj;
             } while (false);
@@ -113,7 +113,7 @@ function playerComp(): PlayerComp {
                     width: 1 / SCALE,
                     color: K.WHITE.darken(200)
                 });
-            } else if (this.holdingItem && this.throwImpulse && this.holdingItem.is("throwable")) {
+            } else if (this.holdingItem?.is("throwable") && this.throwImpulse) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
                 K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
@@ -166,20 +166,23 @@ function playerComp(): PlayerComp {
         },
         inventory: [],
         holdingIndex: -1,
+        addToInventory(this: GameObj<PlayerComp>, obj) {
+            // Put in inventory
+            this.holdingIndex = this.inventory.length;
+            this.inventory.push(obj);
+            obj.paused = true;
+            obj.hidden = true;
+            this.trigger("inventoryChange");
+        },
         grab(this: GameObj<PlayerComp>, obj) {
             // already have it. Problem.
             if (this.inventory.indexOf(obj) !== -1) {
                 K.debug.log("BUG: tried to grab item that i already have");
                 return;
             };
-            // Put in inventory
-            this.holdingIndex = this.inventory.length;
-            this.inventory.push(obj);
-            obj.paused = true;
-            obj.hidden = true;
+            this.addToInventory(obj);
             this.playSound("grab");
-            this.trigger("grab");
-            this.trigger("inventoryChange");
+            this.trigger("grab", obj);
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
             const i = this.inventory.indexOf(obj);
@@ -189,17 +192,14 @@ function playerComp(): PlayerComp {
                 return;
             };
             if (!obj.is("throwable")) return;
-            obj.paused = false;
-            obj.hidden = false;
+            obj.paused = obj.hidden = false;
             obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
             this.inventory.splice(i, 1);
-            if (this.holdingIndex >= this.inventory.length) {
+            if (this.holdingIndex >= this.inventory.length)
                 this.holdingIndex = this.inventory.length - 1;
-            }
-            if (obj.is("platformEffector")) {
+            if (obj.is("platformEffector"))
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
-            }
-            this.trigger("drop");
+            this.trigger("drop", obj);
             this.trigger("inventoryChange");
         },
         get throwImpulse() {
@@ -215,7 +215,7 @@ function playerComp(): PlayerComp {
             this.drop(thrown);
             thrown.applyImpulse(this.throwImpulse);
             this.playSound("throw");
-            this.trigger("throw");
+            this.trigger("throw", thrown);
         },
         scrollInventory(this: GameObj<PlayerComp>, dir) {
             this.holdingIndex += dir;
@@ -273,7 +273,7 @@ export const player = K.add([
             if (this.holdingItem) {
                 // draw the item again on top
                 K.pushTransform();
-                K.pushMatrix(this.transform.invert()); // weird math
+                K.pushMatrix(this.transform.inverse); // weird math
                 K.pushTranslate(this.holdingItem.worldPos()!.add(this.holdingItem.parent!.worldPos()!));
                 this.holdingItem.draw();
                 K.popTransform();

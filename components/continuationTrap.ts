@@ -1,7 +1,17 @@
-import { Comp, GameObj, NamedComp, ShaderComp, SpriteComp } from "kaplay";
+import { Comp, GameObj, NamedComp, ShaderComp, SpriteComp, Vec2 } from "kaplay";
 import trapTypes from "../assets/trapTypes.json"
 import { player, PlayerInventoryItem } from "../player";
 import { K } from "../init";
+
+export type ContinuationData = {
+    playerPos: Vec2,
+    capturedRadius: number,
+    objects: {
+        objID: number,
+        pos?: Vec2,
+        toggleState?: boolean
+    }[],
+};
 
 export interface ContinuationTrapComp extends Comp {
     isPreparing: boolean
@@ -13,10 +23,10 @@ export interface ContinuationTrapComp extends Comp {
     captured: undefined[]
 }
 
-export function trap(): ContinuationTrapComp {
+export function trap(soundOnCapture: string): ContinuationTrapComp {
     return {
         id: "continuation-trap",
-        require: ["sprite", "pos", "body", "named", "shader"],
+        require: ["sprite", "pos", "named", "shader"],
         captured: [],
         isPreparing: false,
         radius: 0,
@@ -28,30 +38,31 @@ export function trap(): ContinuationTrapComp {
         },
         add(this: GameObj<ContinuationTrapComp | NamedComp>) {
             this.on("invoke", () => {
-                if (this.isPreparing || !this.data?.prepare) {
-                    this.isPreparing = false;
-                    this.capture();
-                } else if (this.enabled) {
-                    this.isPreparing = true;
+                if (!this.isPreparing && this.data?.prepare)
                     this.prepare();
-                }
+                else this.capture();
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
-            if (this === player.holdingItem) {
+            if (this === player.holdingItem)
                 this.flipX = player.flipX;
-            }
+            const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
             if (this.enabled) {
-                if (this.isPreparing) this.play("ready");
-                else this.play("idle");
-            } else this.play("disabled");
-            this.uniform!.u_targetcolor = K.Color.fromHex(this.data?.color || "#ff0000");
+                if (this.isPreparing) p("ready");
+                else p("idle");
+            } else p("disabled");
+            this.uniform!.u_targetcolor = K.Color.fromHex(this.data?.color ?? "#ff0000");
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp>) {
-            K.debug.log("prepare", this.name);
+            if (!this.enabled) return;
+            this.isPreparing = true;
+            K.debug.log("prepare", this.name, this.data?.prepare);
         },
         capture(this: GameObj<ContinuationTrapComp | NamedComp>) {
+            this.isPreparing = false;
+            if (!this.enabled) return;
             K.debug.log("capture!!", this.name);
+            player.playSound(soundOnCapture);
         }
     };
 }

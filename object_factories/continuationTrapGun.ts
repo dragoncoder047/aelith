@@ -3,7 +3,7 @@ import { K } from "../init";
 import { defaults } from "./default";
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
-import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { FRICTION, RESTITUTION, TERMINAL_VELOCITY } from "../constants";
 
 export function continuationTrap(): CompList<any> {
     return [
@@ -16,9 +16,8 @@ export function continuationTrap(): CompList<any> {
         K.shader("recolor-red", {
             u_targetcolor: K.RED,
         }),
-        trap(),
+        trap("capture"),
         grabbable(),
-        K.layer("boxes"),
         K.named("{undefined}"),
         K.platformEffector({ ignoreSides: [] }),
         "throwable",
