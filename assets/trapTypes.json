@@ -1,0 +1,50 @@
+{
+    "throw": {
+        "color": "#0000ff",
+        "radius": 0,
+        "reusable": false,
+        "concurrent": false,
+        "prepare": null,
+        "special": null
+    },
+    "setjmp": {
+        "color": "#00ffff",
+        "radius": 4,
+        "reusable": false,
+        "concurrent": false,
+        "prepare": null,
+        "special": null
+    },
+    "async": {
+        "color": "#ff0000",
+        "radius": 0,
+        "reusable": true,
+        "concurrent": false,
+        "prepare": "throw",
+        "special": null
+    },
+    "yield": {
+        "color": "#ffff00",
+        "radius": 0,
+        "reusable": true,
+        "concurrent": true,
+        "prepare": null,
+        "special": "recapture"
+    },
+    "call/cc": {
+        "color": "#ffffff",
+        "radius": 0,
+        "reusable": true,
+        "concurrent": true,
+        "prepare": "editRadius",
+        "special": "modify"
+    },
+    "assert": {
+        "color": "#00ff00",
+        "radius": 1.79e+308,
+        "reusable": true,
+        "concurrent": false,
+        "prepare": null,
+        "special": null
+    }
+}

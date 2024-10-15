@@ -11,6 +11,5 @@ export function defaults(areaOpts?: AreaCompOpt): CompList<any> {
         K.timer(),
         K.tile({ isObstacle: true }),
         K.rotate(0),
-        K.outline(0, K.WHITE),
     ];
 }

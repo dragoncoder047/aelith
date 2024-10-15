@@ -13,6 +13,7 @@ export function lever(): CompList<any> {
         K.anchor("bot"),
         toggleSwitch(),
         clicky(),
-        "lever"
+        "lever",
+        "interactable",
     ];
 }

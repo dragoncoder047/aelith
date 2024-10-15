@@ -8,6 +8,7 @@ import { K } from "../init";
 import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
+import { continuationTrap } from "../object_factories/continuationTrapGun";
 import { conveyor } from "../object_factories/conveyor";
 import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
@@ -56,6 +57,7 @@ export const MParser: {
         N: textNote,
         M: popupTextNote,
         I: invisibleTrigger,
+        T: continuationTrap
     },
     /**
      * Commands that spawn a tile that isn't configurable.

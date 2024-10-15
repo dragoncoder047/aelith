@@ -149,7 +149,7 @@
                 "loop": true,
                 "speed": 6
             },
-            "dead": {
+            "disabled": {
                 "from": 6,
                 "to": 6
             }

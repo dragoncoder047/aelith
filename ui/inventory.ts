@@ -43,7 +43,7 @@ const inventory = UI.add([
     K.text("foo", {
         size: 16 / SCALE,
         font: "IBM Mono",
-        width: TILE_SIZE * 2,
+        width: TILE_SIZE * 3,
         align: "center"
     }),
     K.pos(),

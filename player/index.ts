@@ -4,7 +4,7 @@ import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 
-export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp>;
+export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
 export interface PlayerComp extends Comp {
     readonly holdingItem: PlayerInventoryItem | undefined
@@ -83,9 +83,8 @@ function playerComp(): PlayerComp {
                 const obj = rcr.object;
 
                 if (!obj
-                    || (!obj.is("box") && !obj.is("lever"))
-                    || obj.paused
-                    || (this.inventory as any[]).indexOf(obj) !== -1) break;
+                    || (!obj.is("interactable") && !obj.is("grabbable"))
+                    || obj.paused) break;
 
                 this.lookingAt = obj;
             } while (false);

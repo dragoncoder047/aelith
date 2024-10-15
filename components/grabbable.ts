@@ -39,6 +39,9 @@ export function grabbable(): GrabbableComp {
                 this.layer = this.oldLayer;
                 this.oldLayer = "";
             }
+        },
+        destroy(this: PlayerInventoryItem) {
+            if (player.inventory.indexOf(this) !== -1) player.drop(this);
         }
     };
 }
