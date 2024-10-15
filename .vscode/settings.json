@@ -15,6 +15,7 @@
         "lshoulder",
         "mapc",
         "mparser",
+        "setjmp",
         "slen",
         "tweener",
         "unuse",

@@ -114,7 +114,7 @@ function playerComp(): PlayerComp {
                     width: 1 / SCALE,
                     color: K.WHITE.darken(200)
                 });
-            } else if (this.holdingItem && this.throwImpulse) {
+            } else if (this.holdingItem && this.throwImpulse && this.holdingItem.is("throwable")) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
                 K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
@@ -189,6 +189,7 @@ function playerComp(): PlayerComp {
                 K.debug.log("BUG: tried to drop item i don't have");
                 return;
             };
+            if (!obj.is("throwable")) return;
             obj.paused = false;
             obj.hidden = false;
             obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
@@ -211,7 +212,7 @@ function playerComp(): PlayerComp {
         },
         throw(this: GameObj<PlayerComp>) {
             const thrown = this.holdingItem;
-            if (!thrown || !this.throwImpulse) return;
+            if (!thrown || !this.throwImpulse || !thrown.is("throwable")) return;
             this.drop(thrown);
             thrown.applyImpulse(this.throwImpulse);
             this.playSound("throw");

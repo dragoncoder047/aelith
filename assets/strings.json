@@ -11,6 +11,9 @@
             "interact": "X",
             "verbInteract": "press",
             "verbSpaceInteract": " ",
+            "throw": "Y",
+            "verbThrow": "press",
+            "verbSpaceThrow": " ",
             "climb": "the left shoulder"
         },
         "keyboard": {
@@ -20,6 +23,9 @@
             "interact": "left click",
             "verbInteract": "",
             "verbSpaceInteract": "",
+            "throw": "right click",
+            "verbThrow": "",
+            "verbSpaceThrow": "",
             "climb": "Q or shift"
         }
     },
@@ -29,11 +35,12 @@
         "wrongWayLeft": "&arrow.left Go that way",
         "move": "Use &control.move to move and &control.jump to jump",
         "climb": "You can hold &control.climb and move to climb up a ladder",
-        "firstDoor": "And that is a door.\nTo open it, you will need to press\nand hold the button...\nif only you could do that...",
+        "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
         "variable": "This is a variable.\nAim with &control.aim and\n&control.verbInteract&control.verbSpaceInteract&control.interact to grab it.\nThese will be very useful!",
-        "nothingToSee": "Nothing to see over here"
+        "nothingToSee": "Nothing to see over here",
+        "throwable": "You can &control.verbThrow&control.verbSpaceThrow&control.throw to throw the variable again -- the blue line shows where it will go."
     }
 }

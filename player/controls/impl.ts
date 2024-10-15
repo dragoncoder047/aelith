@@ -26,7 +26,7 @@ function motionHandler() {
 player.onButtonDown(["move_left", "move_right", "move_up", "move_down"], motionHandler);
 player.onGamepadStick("left", motionHandler);
 player.onButtonPress("jump", () => {
-    if (player.isGrounded() || player.state === "climbing") {
+    if (player.isGrounded() && player.state !== "climbing") {
         player.jump();
         player.enterState("jump");
         if (!player.intersectingAny("button"))

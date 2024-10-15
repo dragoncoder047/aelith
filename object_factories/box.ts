@@ -43,5 +43,7 @@ export function box(): CompList<any> {
             },
         }),
         "noCollideWithTail",
+        "throwable",
+        "showAimWhenHeld",
     ];
 }
