@@ -45,7 +45,6 @@ export function continuationCore(
             this.worldMarker.hidden = true;
         },
         invoke(this: GameObj<ContinuationComp>) {
-            K.debug.log("restore", this.type);
             // do restore of captured data
             const p = player.worldPos()!;
             const delta = this.captured.playerPos.sub(p);

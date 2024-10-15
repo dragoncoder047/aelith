@@ -68,7 +68,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         prepare(this: GameObj<ContinuationTrapComp | NamedComp>) {
             if (!this.enabled) return;
             this.isPreparing = true;
-            K.debug.log("prepare", this.name, this.data?.prepare);
             this.radius = this.data!.radius * TILE_SIZE;
             if (!this.data?.prepare) {
                 this.capture();
@@ -85,7 +84,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp>) {
             this.isPreparing = false;
             if (!this.enabled) return;
-            K.debug.log("capture!!", this.name);
             const data = this.peekCapture();
             const cont = K.add(continuation(this.name! as any, data)) as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
