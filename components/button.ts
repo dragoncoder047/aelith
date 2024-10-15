@@ -15,6 +15,7 @@ export interface ButtonComp extends Comp {
     offDelay: number | "toggle",
     switchMessage: string,
     stompedBy: Set<GameObj>,
+    ignoreCollisionsFrames: number,
 }
 
 /**
@@ -36,13 +37,17 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
         offDelay,
         switchMessage,
         stompedBy: new Set(),
+        ignoreCollisionsFrames: 0,
         add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | ButtonComp | LinkComp>) {
             this.onPhysicsResolve(coll => {
                 if (!coll.isTop()) return;
                 const obj = coll.target;
                 if (this.stompedBy.has(obj)) return;
+                if (this.ignoreCollisionsFrames > 0) {
+                    this.stompedBy.add(obj);
+                    return;
+                }
                 obj.vel = obj.vel.reject(coll.normal);
-                K.debug.log("new stomp", obj.id);
                 if (unstompedTimer) {
                     unstompedTimer.cancel();
                     unstompedTimer = undefined;
@@ -61,7 +66,10 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
             });
             this.onCollideEnd(obj => {
                 if (!this.stompedBy.has(obj)) return;
-                K.debug.log("new un-stomp", obj.id);
+                if (this.ignoreCollisionsFrames > 0) {
+                    this.stompedBy.delete(obj);
+                    return;
+                }
                 if (stompedTimer) {
                     stompedTimer.cancel();
                     stompedTimer = undefined;
@@ -77,6 +85,10 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                     });
                 }
             });
+        },
+        fixedUpdate() {
+            if (this.ignoreCollisionsFrames > 0)
+                this.ignoreCollisionsFrames--;
         }
     };
 }

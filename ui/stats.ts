@@ -36,16 +36,29 @@ const countIndicator = UI.add([
     K.layer("ui"),
 ]);
 
-K.loop(0.1, () => {
-    const objects = K.get("*", { recursive: true }).length;
-    countIndicator.text = objects + " objects";
-    if (objects > 150) {
+var objectCount = 0;
+function updateObjectCount() {
+    countIndicator.text = objectCount + " objects";
+    if (objectCount > 200) {
         countIndicator.color = K.RED;
     }
-    else if (objects > 70) {
+    else if (objectCount > 100) {
         countIndicator.color = K.YELLOW;
     }
     else {
         countIndicator.color = K.GREEN;
     }
+}
+
+K.wait(0.1, () => {
+    objectCount = K.get("*", { recursive: true }).length;
+    updateObjectCount();
+    K.onAdd(() => {
+        objectCount++;
+        updateObjectCount();
+    });
+    K.onDestroy(() => {
+        objectCount--;
+        updateObjectCount();
+    });
 });

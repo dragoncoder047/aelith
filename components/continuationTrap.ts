@@ -14,7 +14,6 @@ export type ContinuationDataEntry = {
     obj: GameObj<PosComp | BodyComp | ButtonComp | TogglerComp>
     pos?: Vec2
     togglerState?: boolean
-    stompedBy?: Set<GameObj>
 };
 export type ContinuationData = {
     playerPos: Vec2
@@ -132,8 +131,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     e.pos = obj.pos.clone();
                 if (obj.is("toggler"))
                     e.togglerState = obj.togglerState;
-                if (obj.is("button"))
-                    e.stompedBy = new Set(obj.stompedBy);
                 data.objects.push(e);
             }
             console.log(data);

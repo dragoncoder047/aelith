@@ -52,24 +52,34 @@ export function continuationCore(
             K.get<PosComp>("tail").forEach(t => t.moveBy(delta));
             player.moveBy(delta);
             player.playSound("teleport");
-            // K.camPos(K.camPos().add(delta));
+            K.camPos(K.camPos().add(delta));
             for (var e of this.captured.objects) {
                 player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
                 if (e.obj.is("body") && !e.obj.isStatic) {
                     if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius) {
                         // It is out of range, clone it
-                        K.debug.log("out of range");
-                        e.obj.parent!.add({ ...e.obj, pos: e.pos } as GameObj);
+                        e.obj.parent!.add({
+                            ...e.obj,
+                            pos: e.pos,
+                            parent: undefined, // this obj is getting a new parent
+                        } as unknown as GameObj);
                     } else {
                         // It's still in range, move it
-                        K.debug.log("in range");
                         e.obj.pos = e.pos!;
-                        // nudge a little to make sure it collides properly
                     }
                 }
                 e.obj.togglerState = e.togglerState!;
-                e.obj.stompedBy = e.stompedBy!;
-                K.debug.log("Restored", e.obj.tags, "to", e.togglerState);
+                // If it is a button that *was* stomped by a box when captured, but
+                // isn't stomped currently, the following happens when the continuation is
+                // invoked:
+                // 1. The box is moved back, so that it is colliding with the button.
+                // 2. The button state is surreptitiously restored by the continuation.
+                // 3. On the next frame, the button notices that it got stomped, and toggles
+                //    state - turning off wrongly.
+                // To prevent #3 from occuring, the button is told to ignore collisions for
+                // 5 physics frames (0.1 seconds) after being restored.
+                if (e.obj.is("button"))
+                    e.obj.ignoreCollisionsFrames = 5;
             }
             if (!this.data!.reusable) this.destroy();
         },
