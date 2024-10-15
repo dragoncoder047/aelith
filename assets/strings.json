@@ -31,7 +31,7 @@
     },
     "control": "&controls.&inputType",
     "msg": {
-        "gamename": "[gamename]KONT[/gamename]",
+        "gamename": "[gamename]debugger[/gamename];",
         "wrongWayLeft": "&arrow.left Go that way",
         "move": "Use &control.move to move and &control.jump to jump",
         "climb": "You can hold &control.climb and move to climb up a ladder",

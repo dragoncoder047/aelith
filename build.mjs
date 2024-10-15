@@ -16,7 +16,7 @@ const config = {
     format: "esm",
     target: "esnext",
     treeShaking: true,
-    outfile: "build/kont.js",
+    outfile: "build/debugger.js",
 };
 
 var watch = false;

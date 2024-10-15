@@ -1,4 +1,4 @@
-# KONT
+# debugger;
 
 -----------DEVELOPING STARTUP---------
 
@@ -104,4 +104,4 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 * [X] Tail on player character
   * [X] Using spring/linear constraint plugin
 
-<!-- cSpell: ignore kaplay kaplayjs kont setjmp zzfx -->
+<!-- cSpell: ignore kaplay kaplayjs setjmp zzfx -->
