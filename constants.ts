@@ -1,10 +1,15 @@
 /**
  * Pixel size for rendering
  *
- * * Use .25 for debugging
+ * * Use .5 for debugging
  * * Use 2.01 for standard game play (don't use an integer or it will be very buggy)
  */
 export const SCALE = 2.01;
+
+/**
+ * Pixel scale for fonts - independent of SCALE
+ */
+export const FONT_SCALE = 2;
 
 /**
  * Lowpass filter coefficient on camera pan.

@@ -93,7 +93,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             // Add circle effects
             player.playSound(soundOnCapture);
-            K.debug.log(K.Color.fromHex(this.data?.color ?? "#ff0000"));
             K.add([
                 K.pos(data.playerPos),
                 // CircleCompOpt is not in signature for some reason
@@ -101,6 +100,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     Math.min(K.vec2(K.width(), K.height()).len() / 2, this.radius),
                     // @ts-expect-error
                     { fill: false }),
+                // TODO: why is this circle always white?
                 K.outline(2, K.Color.fromHex(this.data?.color ?? "#ff0000")),
                 K.layer("ui"),
                 {
@@ -129,7 +129,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             for (var obj of foundObjects) {
                 const e: ContinuationDataEntry = { obj };
                 if (obj.is("body") && !obj.isStatic)
-                    e.pos = obj.worldPos()!;
+                    e.pos = obj.pos.clone();
                 if (obj.is("toggler"))
                     e.togglerState = obj.togglerState;
                 if (obj.is("button"))

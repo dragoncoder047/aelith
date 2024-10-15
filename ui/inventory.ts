@@ -1,7 +1,7 @@
 import { GameObj, PosComp, TextComp } from "kaplay";
 import { UI } from ".";
 import { uiButton } from "../components/uiButton";
-import { MARGIN, SCALE, TILE_SIZE } from "../constants";
+import { FONT_SCALE, MARGIN, SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
 
@@ -43,7 +43,7 @@ const inventory = UI.add([
     K.text("foo", {
         size: 16 / SCALE,
         font: "IBM Mono",
-        width: TILE_SIZE * 3,
+        width: TILE_SIZE * 3 / SCALE,
         align: "center"
     }),
     K.pos(),

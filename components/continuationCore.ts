@@ -63,12 +63,12 @@ export function continuationCore(
                     } else {
                         // It's still in range, move it
                         K.debug.log("in range");
-                        e.obj.pos = e.obj.fromWorld(e.pos!).add(0, -TILE_SIZE);
+                        e.obj.pos = e.pos!;
                         // nudge a little to make sure it collides properly
                     }
                 }
-                e.obj.stompedBy = e.stompedBy!;
                 e.obj.togglerState = e.togglerState!;
+                e.obj.stompedBy = e.stompedBy!;
                 K.debug.log("Restored", e.obj.tags, "to", e.togglerState);
             }
             if (!this.data!.reusable) this.destroy();

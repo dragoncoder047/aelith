@@ -3,7 +3,7 @@ import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
 import { TogglerComp } from "../components/toggler";
-import { SCALE, TILE_SIZE } from "../constants";
+import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
@@ -252,7 +252,7 @@ export const MParser: {
         // fontsize command: size -- pixels
         a() {
             const size = this.stack.pop() as number;
-            this.stack.push(size * 8 / SCALE);
+            this.stack.push(size * 8 / FONT_SCALE);
         },
         // tilecount command: tiles -- pixels
         b() {
