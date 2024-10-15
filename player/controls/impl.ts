@@ -46,6 +46,9 @@ player.onButtonRelease("climb", () => {
 player.onButtonPress("throw", () => player.throw());
 player.onButtonPress("interact", () => player.lookingAt?.trigger("interact"));
 player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke"));
+player.onButtonPress("invoke_increment", () => player.holdingItem?.trigger("modify", 1));
+player.onButtonPress("invoke_decrement", () => player.holdingItem?.trigger("modify", -1));
+player.onScroll(xy => player.holdingItem?.trigger("modify", xy.y));
 
 // Mouse looking
 player.onMouseMove(mousePos => {

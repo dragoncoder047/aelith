@@ -37,6 +37,14 @@ export const CONTROLS: Controls = {
         keyboard: ["c"],
         gamepad: ["dpad-right"]
     },
+    // inventory mod controls
+    invoke_increment: {
+        // mouse: scroll wheel
+        gamepad: ["dpad-down"],
+    },
+    invoke_decrement: {
+        gamepad: ["dpad-down"],
+    },
     // motion controls
     climb: {
         keyboard: ["q", "shift"],
