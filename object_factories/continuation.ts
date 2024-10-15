@@ -6,14 +6,18 @@ import { K } from "../init";
 import { defaults } from "./default";
 
 export function continuation(
-    pos: Vec2,
     type: keyof typeof continuationTypes,
     captured: ContinuationData
 ): CompList<any> {
     return [
         K.sprite("continuation", { anim: "spin" }),
-        K.pos(pos),
+        K.shader("recolor-red", {
+            u_targetcolor: K.RED,
+        }),
+        K.anchor("center"),
+        K.pos(captured.playerPos),
         ...defaults(),
+        K.named("{undefined}"),
         continuationCore(type, captured),
     ];
 }

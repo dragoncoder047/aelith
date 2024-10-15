@@ -20,7 +20,7 @@ export function checkpoint(): CompList<any> {
         {
             add(this: GameObj<AreaComp | ContinuationTrapComp>) {
                 this.onCollide("player", () => {
-                    this.capture();
+                    this.trigger("invoke");
                 });
             }
         }

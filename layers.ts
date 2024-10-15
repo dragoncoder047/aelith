@@ -5,9 +5,9 @@ K.layers([
     "world",
     "text",
     "boxes",
+    "continuations",
     "playerTail",
     "player",
-    "continuations",
     "grabbing",
     "ui",
 ], "world");

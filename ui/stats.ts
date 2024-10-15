@@ -36,7 +36,7 @@ const countIndicator = UI.add([
     K.layer("ui"),
 ]);
 
-K.wait(1, () => K.loop(1, () => {
+K.loop(0.1, () => {
     const objects = K.get("*", { recursive: true }).length;
     countIndicator.text = objects + " objects";
     if (objects > 150) {
@@ -48,4 +48,4 @@ K.wait(1, () => K.loop(1, () => {
     else {
         countIndicator.color = K.GREEN;
     }
-}));
+});

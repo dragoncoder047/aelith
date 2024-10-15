@@ -19,6 +19,7 @@ export interface PlayerComp extends Comp {
     holdingIndex: number
     addToInventory(object: PlayerInventoryItem): void
     grab(object: PlayerInventoryItem): void
+    removeFromInventory(item: PlayerInventoryItem): void
     drop(object: PlayerInventoryItem): void
     readonly throwImpulse: Vec2 | undefined
     throw(): void
@@ -52,8 +53,7 @@ function playerComp(): PlayerComp {
                 // Clear curPlatform() if I'm standing on it
                 if (this.curPlatform() === h) this.jump(1);
                 h.vel = K.vec2(0); // Reset velocity
-                if (h.is("grabbable"))
-                    h.moveTo(this.worldPos()!.sub(h.parent!.worldPos()!));
+                h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))));
                 h.paused = h.hidden = false;
             }
         },
@@ -184,6 +184,16 @@ function playerComp(): PlayerComp {
             this.playSound("grab");
             this.trigger("grab", obj);
         },
+        removeFromInventory(this: GameObj<PlayerComp | PosComp>, obj) {
+            const i = this.inventory.indexOf(obj);
+            if (i === -1) return;
+            obj.paused = obj.hidden = false;
+            obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+            this.inventory.splice(i, 1);
+            if (this.holdingIndex >= this.inventory.length)
+                this.holdingIndex = this.inventory.length - 1;
+            this.trigger("inventoryChange");
+        },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
             const i = this.inventory.indexOf(obj);
             // already dropped it. Problem.
@@ -191,16 +201,10 @@ function playerComp(): PlayerComp {
                 K.debug.log("BUG: tried to drop item i don't have");
                 return;
             };
-            if (!obj.is("throwable")) return;
-            obj.paused = obj.hidden = false;
-            obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
-            this.inventory.splice(i, 1);
-            if (this.holdingIndex >= this.inventory.length)
-                this.holdingIndex = this.inventory.length - 1;
             if (obj.is("platformEffector"))
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
+            this.removeFromInventory(obj);
             this.trigger("drop", obj);
-            this.trigger("inventoryChange");
         },
         get throwImpulse() {
             if (!this.lookingDirection || this.lookingDirection.slen() < 0.01) return undefined;
@@ -274,7 +278,7 @@ export const player = K.add([
                 // draw the item again on top
                 K.pushTransform();
                 K.pushMatrix(this.transform.inverse); // weird math
-                K.pushTranslate(this.holdingItem.worldPos()!.add(this.holdingItem.parent!.worldPos()!));
+                K.pushTranslate(this.holdingItem.parent ? this.holdingItem.parent.transform.transformVector(this.holdingItem.worldPos()!, K.vec2(0)) : K.vec2(0));
                 this.holdingItem.draw();
                 K.popTransform();
             }

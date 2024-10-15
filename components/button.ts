@@ -42,6 +42,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
                 const obj = coll.target;
                 if (this.stompedBy.has(obj)) return;
                 obj.vel = obj.vel.reject(coll.normal);
+                K.debug.log("new stomp", obj.id);
                 if (unstompedTimer) {
                     unstompedTimer.cancel();
                     unstompedTimer = undefined;
@@ -60,6 +61,7 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
             });
             this.onCollideEnd(obj => {
                 if (!this.stompedBy.has(obj)) return;
+                K.debug.log("new un-stomp", obj.id);
                 if (stompedTimer) {
                     stompedTimer.cancel();
                     stompedTimer = undefined;
