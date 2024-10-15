@@ -51,7 +51,7 @@ export function continuationCore(
             K.get<PosComp>("tail").forEach(t => t.moveBy(delta));
             player.moveBy(delta);
             player.playSound("teleport");
-            K.camPos(K.camPos().add(delta));
+            // K.camPos(K.camPos().add(delta));
             for (var e of this.captured.objects) {
                 player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
                 if (e.obj.is("body") && !e.obj.isStatic) {
