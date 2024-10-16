@@ -3,7 +3,7 @@ import contTypes from "../assets/trapTypes.json";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
 import { ContinuationData } from "./continuationTrap";
-import { SCALE } from "../constants";
+import { SCALE, TILE_SIZE } from "../constants";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
@@ -100,9 +100,13 @@ export function continuationCore(
             if (!this.data!.reusable) this.destroy();
         },
         draw(this: GameObj<PosComp | ContinuationComp>) {
-            K.drawLine({
-                p1: K.vec2(0, 0),
-                p2: this.fromWorld(this.worldMarker.worldPos()!),
+            const p1 = K.vec2(0, 0);
+            const p2 = this.fromWorld(this.worldMarker.worldPos()!);
+            const segments = 8 * p1.sub(p2).len() / TILE_SIZE;
+            K.debug.log(K.rand(K.vec2(-2, 2)));
+            const f = (t: number) => K.lerp(p1, p2, t).add(K.rand(K.vec2(-2, 2)));
+            K.drawCurve(f, {
+                segments,
                 width: 1 / SCALE,
                 opacity: 0.5,
                 color: this.color

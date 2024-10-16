@@ -44,7 +44,7 @@
                 "default": "Press &control.invoke to capture a continuation",
                 "throw": "Press &control.invoke to toss the continuation trap",
                 "captureThrown": "Press &control.invoke again to capture a continuation from there",
-                "modify": "&control.verbModify&control.verbSpaceModify&control.modify to change the capture radius"
+                "modify": "&control.verbModify&control.verbSpaceModify&control.modify to change the capture radius.\nCurrent radius: &radius"
             }
         },
         "gamename": "[gamename]debugger[/gamename];",

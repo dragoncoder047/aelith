@@ -20,7 +20,7 @@
         "special": null
     },
     "async": {
-        "color": "#ff7700",
+        "color": "#ff8000",
         "radius": 0,
         "reusable": false,
         "concurrent": false,
@@ -40,7 +40,7 @@
         "special": "recapture"
     },
     "call/cc": {
-        "color": "#ffffff",
+        "color": "#aa22ff",
         "radius": 0,
         "reusable": true,
         "concurrent": true,

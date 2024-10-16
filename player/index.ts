@@ -189,6 +189,7 @@ function playerComp(): PlayerComp {
             this.addToInventory(obj);
             this.playSound("grab");
             this.trigger("grab", obj);
+            obj.trigger("grabbed");
         },
         removeFromInventory(this: GameObj<PlayerComp | PosComp>, obj) {
             const i = this.inventory.indexOf(obj);
@@ -211,6 +212,7 @@ function playerComp(): PlayerComp {
                 (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             this.removeFromInventory(obj);
             this.trigger("drop", obj);
+            obj.trigger("thrown");
         },
         get throwImpulse() {
             if (!this.lookingDirection || this.lookingDirection.slen() < 0.01) return undefined;

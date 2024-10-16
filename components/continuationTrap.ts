@@ -74,7 +74,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
             this.on("modify", (delta: number) => {
                 if (this.isPreparing && this.data?.prepare === "editRadius")
-                    this.radius += delta;
+                    this.radius = Math.max(0, this.radius + delta);
+            });
+            this.on("thrown", () => {
+                this.isPreparing = false;
             });
             this.hint = K.add([
                 K.pos(),
@@ -107,6 +110,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             } else this.hint!.t = "";
             this.hint!.color = this.color;
             this.hint!.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
+            this.hint!.data.radius = this.radius.toString();
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -119,7 +123,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             if (this.data?.prepare === "throw") {
                 // if we get in this function, I am selected
                 this.applyImpulse(player.throwImpulse!);
-                // K.wait(1, () => K.debug.paused = true);
             }
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
@@ -127,19 +130,22 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.data?.prepare === "editRadius") {
                     const willCapture = this.peekCapture();
                     for (var e of willCapture.objects) {
-                        const bbox = e.obj.worldArea().bbox();
-                        K.drawRect({
-                            fill: false,
-                            width: bbox.width,
-                            height: bbox.height,
-                            pos: this.fromWorld(bbox.pos),
-                            outline: {
-                                width: 2 / SCALE,
-                                color: this.color,
-                                opacity: K.wave(0, 1, K.time() * Math.PI * 2),
-                                join: "miter",
-                            }
-                        });
+                        if ((e.obj as any) === this) continue;
+                        if ((e.obj as any).is("invisible-trigger")) continue;
+                        const bbox = e.obj.worldArea?.().bbox();
+                        if (bbox)
+                            K.drawRect({
+                                fill: false,
+                                width: bbox.width,
+                                height: bbox.height,
+                                pos: this.fromWorld(bbox.pos),
+                                outline: {
+                                    width: 2 / SCALE,
+                                    color: K.RED,
+                                    opacity: K.wave(0, 1, K.time() * Math.PI * 2),
+                                    join: "miter",
+                                }
+                            });
                     }
                 }
             }

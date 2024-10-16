@@ -3,7 +3,7 @@
 (t)()s(width)20bs3bn0m(startupText)d              %%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                                   #=                   @     %
                                                   #=                         %
-                                                  #=                    T    %(name)(async)sz
+                                                  #=                    T    %(name)(call/cc)sz
                                              N    #=                  M     I%M2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)qz(t)(&msg.move)s0n1bm(1 p onGround)qz
                            %%%%%%%%%%%%%%%%%%%%%%%#=################################################(t)(&msg.climb)sz
                                                   #=################################################

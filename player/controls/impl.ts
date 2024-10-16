@@ -1,6 +1,6 @@
 import { AreaComp, Vec2 } from "kaplay";
 import { player } from "..";
-import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, SCALE, WALK_SPEED } from "../../constants";
+import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, SCALE, TILE_SIZE, WALK_SPEED } from "../../constants";
 import { K } from "../../init";
 
 // Controls
@@ -46,9 +46,9 @@ player.onButtonRelease("climb", () => {
 player.onButtonPress("throw", () => player.throw());
 player.onButtonPress("interact", () => player.lookingAt?.trigger("interact"));
 player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke"));
-player.onButtonPress("invoke_increment", () => player.holdingItem?.trigger("modify", 1));
-player.onButtonPress("invoke_decrement", () => player.holdingItem?.trigger("modify", -1));
-player.onScroll(xy => player.holdingItem?.trigger("modify", xy.y));
+player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", 1));
+player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -1));
+player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt(), TILE_SIZE * K.dt()))));
 
 // Mouse looking
 player.onMouseMove(mousePos => {
