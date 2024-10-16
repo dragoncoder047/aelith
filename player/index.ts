@@ -208,9 +208,10 @@ function playerComp(): PlayerComp {
                 K.debug.log("BUG: tried to drop item i don't have");
                 return;
             };
-            if (obj.is("platformEffector"))
-                (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             this.removeFromInventory(obj);
+            if (obj.is("platformEffector"))
+                [...this.inventory, this].forEach(item =>
+                    (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(item));
             this.trigger("drop", obj);
             obj.trigger("thrown");
         },
