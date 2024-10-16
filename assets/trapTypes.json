@@ -32,7 +32,7 @@
     "yield": {
         "color": "#ffff00",
         "radius": 0,
-        "reusable": true,
+        "reusable": false,
         "concurrent": true,
         "holdTrapHint": null,
         "prepareHint": null,

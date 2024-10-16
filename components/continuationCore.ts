@@ -1,12 +1,13 @@
 import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
 import contTypes from "../assets/trapTypes.json";
+import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
-import { ContinuationData } from "./continuationTrap";
-import { SCALE, TILE_SIZE } from "../constants";
+import { ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
+    trappedBy: GameObj//<ContinuationTrapComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
     readonly color: Color
     captured: ContinuationData
@@ -28,13 +29,15 @@ function getIndex(obj: GameObj<ContinuationComp>): number {
 
 export function continuationCore(
     type: keyof typeof contTypes,
-    captured: ContinuationData
+    captured: ContinuationData,
+    trap: GameObj<ContinuationTrapComp>
 ): ContinuationComp {
     return {
         id: "continuation",
         require: ["sprite", "pos", "shader", "named"],
         type,
         captured,
+        trappedBy: trap,
         worldMarker: K.add([
             K.sprite("continuation", { anim: "spin" }),
             K.pos(captured.playerPos),
@@ -60,6 +63,10 @@ export function continuationCore(
             this.worldMarker.hidden = true;
         },
         invoke(this: GameObj<ContinuationComp>) {
+            if (this.data?.special === "recapture") {
+                // Capture a continuation from right here so the player can go back.
+                this.trappedBy.capture();
+            }
             // do restore of captured data
             const p = player.worldPos()!;
             const delta = this.captured.playerPos.sub(p);

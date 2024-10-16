@@ -136,6 +136,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                         if (bbox)
                             K.drawRect({
                                 fill: false,
+                                color: this.color,
                                 width: bbox.width,
                                 height: bbox.height,
                                 pos: this.fromWorld(bbox.pos),
@@ -154,7 +155,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.isPreparing = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
-            const cont = K.add(continuation(this.name! as any, data)) as (PlayerInventoryItem & GameObj<ContinuationComp>);
+            const cont = K.add(continuation(this.name! as any, data, this)) as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             // Add circle effects
@@ -167,6 +168,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     // @ts-expect-error
                     { fill: false }),
                 // TODO: why is this circle always white?
+                K.color(this.color),
                 K.outline(2, this.color),
                 K.layer("ui"),
                 {
