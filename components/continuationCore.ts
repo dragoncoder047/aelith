@@ -103,8 +103,8 @@ export function continuationCore(
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
             const segments = 8 * p1.sub(p2).len() / TILE_SIZE;
-            K.debug.log(K.rand(K.vec2(-2, 2)));
-            const f = (t: number) => K.lerp(p1, p2, t).add(K.rand(K.vec2(-2, 2)));
+            const jitter = () => K.rand(K.vec2(-2, -2), K.vec2(2, 2));
+            const f = (t: number) => K.lerp(p1, p2, t).add(jitter());
             K.drawCurve(f, {
                 segments,
                 width: 1 / SCALE,
