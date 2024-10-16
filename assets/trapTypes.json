@@ -4,7 +4,9 @@
         "radius": 0,
         "reusable": false,
         "concurrent": false,
+        "holdTrapHint": null,
         "prepare": null,
+        "prepareHint": null,
         "special": null
     },
     "setjmp": {
@@ -12,6 +14,8 @@
         "radius": 4,
         "reusable": false,
         "concurrent": false,
+        "holdTrapHint": null,
+        "prepareHint": null,
         "prepare": null,
         "special": null
     },
@@ -20,6 +24,8 @@
         "radius": 0,
         "reusable": false,
         "concurrent": false,
+        "holdTrapHint": null,
+        "prepareHint": "&msg.continuation.hint.throw",
         "prepare": "throw",
         "special": null
     },
@@ -28,6 +34,8 @@
         "radius": 0,
         "reusable": true,
         "concurrent": true,
+        "holdTrapHint": null,
+        "prepareHint": null,
         "prepare": null,
         "special": "recapture"
     },
@@ -36,6 +44,8 @@
         "radius": 0,
         "reusable": true,
         "concurrent": true,
+        "holdTrapHint": null,
+        "prepareHint": "&msg.continuation.hint.editRadius",
         "prepare": "editRadius",
         "special": null
     },
@@ -43,7 +53,9 @@
         "color": "#00ff00",
         "radius": 1.79e+308,
         "reusable": true,
+        "holdTrapHint": null,
         "concurrent": false,
+        "prepareHint": null,
         "prepare": null,
         "special": null
     }

@@ -1,12 +1,14 @@
-import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, PosComp, ShaderComp, SpriteComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { continuation } from "../object_factories/continuation";
+import { popupTextNote } from "../object_factories/popupText";
 import { player, PlayerInventoryItem } from "../player";
 import { ButtonComp } from "./button";
 import { ContinuationComp } from "./continuationCore";
+import { DynamicTextComp } from "./dynamicText";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { TogglerComp } from "./toggler";
 
@@ -39,6 +41,7 @@ export interface ContinuationTrapComp extends Comp {
     readonly dontMoveToPlayer: boolean
     readonly color: Color
     radius: number
+    hint: GameObj<TextComp | ColorComp | DynamicTextComp> | undefined
     prepare(): void
     capture(): void
     peekCapture(): ContinuationData
@@ -63,6 +66,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
+        hint: undefined,
         add(this: GameObj<ContinuationTrapComp | NamedComp>) {
             this.on("invoke", () => {
                 if (this.isPreparing) this.capture();
@@ -72,6 +76,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.isPreparing && this.data?.prepare === "editRadius")
                     this.radius += delta;
             });
+            this.hint = this.add([
+                K.pos(0, TILE_SIZE * 2),
+                ...popupTextNote()
+            ]) as ContinuationTrapComp["hint"];
+            this.hint!.t = "";
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
             if (/**K.time() > 0.1 && /**/this.data === undefined)
@@ -88,6 +97,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.isPreparing && !this.is("throwable")) this.use("throwable");
                 else if (!this.isPreparing && this.is("throwable")) this.unuse("throwable");
             }
+            if (this.enabled) {
+                if (this.isPreparing) this.hint!.t = this.data?.prepareHint!;
+                else this.hint!.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
+            } else this.hint!.t = "";
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -102,22 +115,24 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.applyImpulse(player.throwImpulse!);
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
-            if (this.isPreparing && this.data?.prepare === "editRadius") {
-                const willCapture = this.peekCapture();
-                for (var e of willCapture.objects) {
-                    const bbox = e.obj.worldArea().bbox();
-                    K.drawRect({
-                        fill: false,
-                        width: bbox.width,
-                        height: bbox.height,
-                        pos: this.fromWorld(bbox.pos),
-                        outline: {
-                            width: 2 / SCALE,
-                            color: this.color,
-                            opacity: K.wave(0, 1, K.time() * Math.PI * 2),
-                            join: "miter",
-                        }
-                    });
+            if (this.isPreparing) {
+                if (this.data?.prepare === "editRadius") {
+                    const willCapture = this.peekCapture();
+                    for (var e of willCapture.objects) {
+                        const bbox = e.obj.worldArea().bbox();
+                        K.drawRect({
+                            fill: false,
+                            width: bbox.width,
+                            height: bbox.height,
+                            pos: this.fromWorld(bbox.pos),
+                            outline: {
+                                width: 2 / SCALE,
+                                color: this.color,
+                                opacity: K.wave(0, 1, K.time() * Math.PI * 2),
+                                join: "miter",
+                            }
+                        });
+                    }
                 }
             }
         },

@@ -76,6 +76,7 @@ export function continuationCore(
                     } else {
                         // It's still in range, move it
                         e.obj.pos = e.pos!;
+                        e.obj.vel = K.vec2(0);
                     }
                 }
                 e.obj.togglerState = e.togglerState!;
