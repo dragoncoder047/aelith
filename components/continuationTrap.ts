@@ -41,7 +41,7 @@ export interface ContinuationTrapComp extends Comp {
     readonly dontMoveToPlayer: boolean
     readonly color: Color
     radius: number
-    hint: GameObj<TextComp | ColorComp | DynamicTextComp> | undefined
+    hint: GameObj<TextComp | ColorComp | DynamicTextComp | PosComp> | undefined
     prepare(): void
     capture(): void
     peekCapture(): ContinuationData
@@ -76,8 +76,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.isPreparing && this.data?.prepare === "editRadius")
                     this.radius += delta;
             });
-            this.hint = this.add([
-                K.pos(0, TILE_SIZE * 2),
+            this.hint = K.add([
+                K.pos(),
                 ...textNote(),
                 K.anchor("center"),
                 K.color(this.color),
@@ -86,7 +86,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
             if (this.data === undefined)
-                throw `BUG: Continuation trap was not initialized!\nworld.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, col ${Math.round(this.pos.x / TILE_SIZE) + 1}`;
+                throw (`BUG: Continuation trap was not initialized!\n`
+                    + `world.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, `
+                    + `col ${Math.round(this.pos.x / TILE_SIZE) + 1}`);
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
             const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
@@ -96,14 +98,15 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             } else p("disabled");
             this.uniform!.u_targetcolor = this.color;
             if (this.data?.prepare === "throw") {
-                if (this.isPreparing && !this.is("throwable")) this.use("throwable");
-                else if (!this.isPreparing && this.is("throwable")) this.unuse("throwable");
+                if (!this.isPreparing && !this.is("throwable")) this.use("throwable");
+                else if (this.isPreparing && this.is("throwable")) this.unuse("throwable");
             }
             if (this.enabled && this === player.holdingItem) {
                 if (this.isPreparing) this.hint!.t = this.data?.prepareHint!;
                 else this.hint!.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
             } else this.hint!.t = "";
             this.hint!.color = this.color;
+            this.hint!.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -113,9 +116,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.capture();
                 return;
             }
-            if (this.data?.prepare === "throw")
+            if (this.data?.prepare === "throw") {
                 // if we get in this function, I am selected
                 this.applyImpulse(player.throwImpulse!);
+                // K.wait(1, () => K.debug.paused = true);
+            }
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
             if (this.isPreparing) {
@@ -171,16 +176,16 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 }
             ]);
         },
-        peekCapture(): ContinuationData {
+        peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {
             // Capture all of the objects
             const data: ContinuationData = {
-                playerPos: player.worldPos()!,
+                playerPos: (this.data?.prepare === "throw" ? this.worldPos()! : player.worldPos()!),
                 capturedRadius: this.radius,
                 objects: []
             };
             // find all the objects
             const foundObjects = MParser.world!.get<CDEComps>("machine")
-                .filter(obj => obj.worldPos()!.dist(player.worldPos()!) <= this.radius);
+                .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius);
             for (var obj of foundObjects) {
                 const e: ContinuationDataEntry = { obj };
                 if (obj.is("body") && !obj.isStatic)

@@ -26,9 +26,6 @@ export function grabbable(): GrabbableComp {
                     player.grab(this);
                 }
             });
-            this.onBeforePhysicsResolve(coll => {
-                if (player.holdingItem === this) coll.preventResolution();
-            });
         },
         update(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
             // there must be a better way to do this

@@ -20,12 +20,12 @@
         "special": null
     },
     "async": {
-        "color": "#ff0000",
+        "color": "#ff7700",
         "radius": 0,
         "reusable": false,
         "concurrent": false,
-        "holdTrapHint": null,
-        "prepareHint": "&msg.continuation.hint.throw",
+        "holdTrapHint": "&msg.continuation.hint.throw",
+        "prepareHint": "&msg.continuation.hint.captureThrown",
         "prepare": "throw",
         "special": null
     },

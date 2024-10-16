@@ -16,7 +16,7 @@
             "verbSpaceThrow": " ",
             "climb": "the left shoulder",
             "invoke": "B",
-            "modify": "dpad up and down",
+            "modify": "d-pad up and down",
             "verbModify": "Press",
             "verbSpaceModify": " "
         },
@@ -43,6 +43,7 @@
             "hint": {
                 "default": "Press &control.invoke to capture a continuation",
                 "throw": "Press &control.invoke to toss the continuation trap",
+                "captureThrown": "Press &control.invoke again to capture a continuation from there",
                 "modify": "&control.verbModify&control.verbSpaceModify&control.modify to change the capture radius"
             }
         },

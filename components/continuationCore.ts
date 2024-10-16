@@ -1,12 +1,14 @@
-import { Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
+import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
 import contTypes from "../assets/trapTypes.json";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
 import { ContinuationData } from "./continuationTrap";
+import { SCALE } from "../constants";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
+    readonly color: Color
     captured: ContinuationData
     worldMarker: GameObj<PosComp | SpriteComp | ShaderComp>
     invoke(): void,
@@ -40,17 +42,20 @@ export function continuationCore(
             K.anchor("center"),
             K.area({ collisionIgnore: ["*"] }),
             K.shader("recolor-red", {
-                u_targetcolor: K.Color.fromHex(contTypes[type].color),
+                u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
             }),
             "worldMarker",
         ]),
         get data() {
             return contTypes[this.type];
         },
+        get color() {
+            return K.Color.fromHex(this.data?.color ?? "#ff0000")
+        },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp>) {
             this.on("invoke", () => this.invoke());
             this.name = type + "(" + getIndex(this) + ")";
-            this.uniform!.u_targetcolor = K.Color.fromHex(this.data?.color ?? "#ff0000");
+            this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.worldMarker.hidden = true;
         },
@@ -93,6 +98,15 @@ export function continuationCore(
                     e.obj.ignoreCollisionsFrames = 5;
             }
             if (!this.data!.reusable) this.destroy();
+        },
+        draw(this: GameObj<PosComp | ContinuationComp>) {
+            K.drawLine({
+                p1: K.vec2(0, 0),
+                p2: this.fromWorld(this.worldMarker.worldPos()!),
+                width: 1 / SCALE,
+                opacity: 0.5,
+                color: this.color
+            });
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {
             player.removeFromInventory(this);

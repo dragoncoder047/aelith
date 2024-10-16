@@ -1,15 +1,11 @@
-import { CompList, Vec2 } from "kaplay";
+import { CompList } from "kaplay";
 import { grabbable } from "../components/grabbable";
 import { randomFrame } from "../components/randomFrame";
 import { thudder } from "../components/thudder";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { player } from "../player";
 import { machine } from "./machine";
-
-// async import
-var getMotionVector: () => Vec2;
-import("../player/controls/impl").then(m => getMotionVector = m.getMotionVector);
+import { throwablePlatformEff } from "./throwablePlatformEff";
 
 /**
  * Components for a moveable, grabbable box.
@@ -30,20 +26,8 @@ export function box(): CompList<any> {
         thudder(),
         grabbable(),
         K.layer("boxes"),
-        K.named("box"),
+        K.named("var"),
         randomFrame(),
-        K.platformEffector({
-            shouldCollide(obj, normal) {
-                if (obj !== player) return true;
-                if (K.UP.eq(normal)) return false;
-                if (getMotionVector().slen() > 1.3) return true;
-                if (K.LEFT.eq(normal)) return false;
-                if (K.RIGHT.eq(normal)) return false;
-                return true;
-            },
-        }),
-        "noCollideWithTail",
-        "throwable",
-        "showAimWhenHeld",
+        ...throwablePlatformEff(),
     ];
 }

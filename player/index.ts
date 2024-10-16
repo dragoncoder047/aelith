@@ -79,7 +79,8 @@ function playerComp(): PlayerComp {
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
                             && x.collisionIgnore.every(t => !this.is(t))
                             && !x.paused
-                            && !x.is("tail")),
+                            && !x.is("tail")
+                            && !x.is("invisible-trigger")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
@@ -279,12 +280,13 @@ export const player = K.add([
     K.state("normal"),
     {
         draw(this: GameObj<PosComp | PlayerComp>) {
-            if (this.holdingItem) {
+            const h = this.holdingItem;
+            if (h && (!h.is("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
                 // draw the item again on top
                 K.pushTransform();
                 K.pushMatrix(this.transform.inverse); // weird math
-                K.pushTranslate(this.holdingItem.parent ? this.holdingItem.parent.transform.transformVector(this.holdingItem.worldPos()!, K.vec2(0)) : K.vec2(0));
-                this.holdingItem.draw();
+                K.pushTranslate(h.parent ? h.parent.transform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
+                h.draw();
                 K.popTransform();
             }
         }
