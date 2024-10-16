@@ -45,7 +45,7 @@
         "reusable": true,
         "concurrent": true,
         "holdTrapHint": null,
-        "prepareHint": "&msg.continuation.hint.editRadius",
+        "prepareHint": "&msg.continuation.hint.modify",
         "prepare": "editRadius",
         "special": null
     },

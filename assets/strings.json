@@ -14,7 +14,11 @@
             "throw": "Y",
             "verbThrow": "press",
             "verbSpaceThrow": " ",
-            "climb": "the left shoulder"
+            "climb": "the left shoulder",
+            "invoke": "B",
+            "modify": "dpad up and down",
+            "verbModify": "Press",
+            "verbSpaceModify": " "
         },
         "keyboard": {
             "move": "WASD or arrow keys",
@@ -26,11 +30,22 @@
             "throw": "right click",
             "verbThrow": "",
             "verbSpaceThrow": "",
-            "climb": "Q or shift"
+            "climb": "Q or shift",
+            "invoke": "Enter",
+            "modify": "Scroll",
+            "verbModify": "",
+            "verbSpaceModify": ""
         }
     },
     "control": "&controls.&inputType",
     "msg": {
+        "continuation": {
+            "hint": {
+                "default": "Press &control.invoke to capture a continuation",
+                "throw": "Press &control.invoke to toss the continuation trap",
+                "modify": "&control.verbModify&control.verbSpaceModify&control.modify to change the capture radius"
+            }
+        },
         "gamename": "[gamename]debugger[/gamename];",
         "wrongWayLeft": "&arrow.left Go that way",
         "move": "Use &control.move to move and &control.jump to jump",

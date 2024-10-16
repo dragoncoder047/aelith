@@ -45,7 +45,7 @@ function playerComp(): PlayerComp {
                 K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
             });
         },
-        fixedUpdate(this: GameObj<PlayerComp | PosComp | BodyComp>) {
+        update(this: GameObj<PlayerComp | PosComp | BodyComp>) {
             // hide all inventory items
             this.inventory.forEach(item => item.paused = item.hidden = true);
             // move the grabbing to self

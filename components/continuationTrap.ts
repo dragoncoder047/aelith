@@ -4,7 +4,7 @@ import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { continuation } from "../object_factories/continuation";
-import { popupTextNote } from "../object_factories/popupText";
+import { textNote } from "../object_factories/text";
 import { player, PlayerInventoryItem } from "../player";
 import { ButtonComp } from "./button";
 import { ContinuationComp } from "./continuationCore";
@@ -78,12 +78,14 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
             this.hint = this.add([
                 K.pos(0, TILE_SIZE * 2),
-                ...popupTextNote()
+                ...textNote(),
+                K.anchor("center"),
+                K.color(this.color),
             ]) as ContinuationTrapComp["hint"];
             this.hint!.t = "";
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
-            if (/**K.time() > 0.1 && /**/this.data === undefined)
+            if (this.data === undefined)
                 throw `BUG: Continuation trap was not initialized!\nworld.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, col ${Math.round(this.pos.x / TILE_SIZE) + 1}`;
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
@@ -97,10 +99,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.isPreparing && !this.is("throwable")) this.use("throwable");
                 else if (!this.isPreparing && this.is("throwable")) this.unuse("throwable");
             }
-            if (this.enabled) {
+            if (this.enabled && this === player.holdingItem) {
                 if (this.isPreparing) this.hint!.t = this.data?.prepareHint!;
                 else this.hint!.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
             } else this.hint!.t = "";
+            this.hint!.color = this.color;
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -190,6 +193,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             }
             console.log(data);
             return data;
+        },
+        inspect() {
+            return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
         }
     };
 }

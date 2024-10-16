@@ -40,6 +40,9 @@ export function invisibleTriggerComp(): InvisibleTriggerComp {
             if (this.triggered && !this.resettable) return;
             this.triggered = true;
             this.broadcast(this.toggleMsg);
+        },
+        inspect() {
+            return "triggered: " + this.triggered;
         }
     }
 }

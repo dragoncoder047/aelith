@@ -21,5 +21,8 @@ export function dynamicText(): DynamicTextComp {
                         : "keyboard"
             });
         },
+        inspect() {
+            return "sub: " + this.t;
+        }
     }
 }

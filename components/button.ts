@@ -89,6 +89,9 @@ export function button(onDelay: number = 0, offDelay: number | "toggle" = 0, swi
         fixedUpdate() {
             if (this.ignoreCollisionsFrames > 0)
                 this.ignoreCollisionsFrames--;
+        },
+        inspect() {
+            return `stomped by ${this.stompedBy.size}`
         }
     };
 }

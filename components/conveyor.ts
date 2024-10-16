@@ -67,7 +67,7 @@ export function conveyor(states: [string, string] = ["off", "on"], mode: Conveyo
             }
         },
         inspect() {
-            return `mode ${this.mode}`;
+            return `conveyor mode ${this.mode}`;
         }
     };
 }

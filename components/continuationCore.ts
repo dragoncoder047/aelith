@@ -3,7 +3,6 @@ import contTypes from "../assets/trapTypes.json";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
 import { ContinuationData } from "./continuationTrap";
-import { TILE_SIZE } from "../constants";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
@@ -39,7 +38,7 @@ export function continuationCore(
             K.pos(captured.playerPos),
             K.layer("continuations"),
             K.anchor("center"),
-            K.area(),
+            K.area({ collisionIgnore: ["*"] }),
             K.shader("recolor-red", {
                 u_targetcolor: K.Color.fromHex(contTypes[type].color),
             }),
@@ -59,7 +58,7 @@ export function continuationCore(
             // do restore of captured data
             const p = player.worldPos()!;
             const delta = this.captured.playerPos.sub(p);
-            K.get<PosComp>("tail").forEach(t => t.moveBy(delta));
+            K.get<PosComp>("tail").forEach(t => t.pos = this.captured.playerPos);
             player.moveBy(delta);
             player.playSound("teleport");
             // K.camPos(K.camPos().add(delta));
@@ -101,6 +100,9 @@ export function continuationCore(
         },
         activate(this: GameObj<OpacityComp | ContinuationComp>) {
             this.worldMarker.hidden = this.hidden = false;
+        },
+        inspect() {
+            return `captured ${this.captured.objects.length} objects`
         }
     };
 }
