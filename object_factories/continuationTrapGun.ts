@@ -20,6 +20,7 @@ export function continuationTrap(): CompList<any> {
             u_targetcolor: K.RED,
         }),
         trap("capture"),
+        K.layer("boxes"),
         grabbable(),
         K.named("{undefined}"),
         ...throwablePlatformEff(),

@@ -79,8 +79,7 @@ function playerComp(): PlayerComp {
                         .filter(x => (this.inventory as any[]).indexOf(x) === -1
                             && x.collisionIgnore.every(t => !this.is(t))
                             && !x.paused
-                            && !x.is("tail")
-                            && !x.is("invisible-trigger")),
+                            && !x.is("raycastIgnore")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
@@ -341,6 +340,7 @@ for (var i = 0; i < numTailSegments; i++) {
             },
         }),
         "tail",
+        "raycastIgnore",
     ]);
     pos = pos.add(K.vec2(0, sz));
 }

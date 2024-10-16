@@ -17,6 +17,7 @@ export function checkpoint(): CompList<any> {
         trap("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
+        "raycastIgnore",
         {
             add(this: GameObj<AreaComp | ContinuationTrapComp>) {
                 this.onCollide("player", () => {
