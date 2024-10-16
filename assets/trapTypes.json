@@ -18,7 +18,7 @@
     "async": {
         "color": "#ff0000",
         "radius": 0,
-        "reusable": true,
+        "reusable": false,
         "concurrent": false,
         "prepare": "throw",
         "special": null
@@ -37,7 +37,7 @@
         "reusable": true,
         "concurrent": true,
         "prepare": "editRadius",
-        "special": "modify"
+        "special": null
     },
     "assert": {
         "color": "#00ff00",

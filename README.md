@@ -37,8 +37,8 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
 
 | Done? | Item type | Can be put in inventory / carried | Can be physically interacted with (click action) | Makes ambient sounds | Linked to form machine groups |
 |:-----:|:---------:|:---------------------------------:|:------------------------------------------------:|:--------------------:|:-----------------------------:|
-| | Continuation trap | Yes | | | |
-| | Continuation | Yes | | Yes | |
+| Yes | Continuation trap | Yes | | | |
+| Yes | Continuation | Yes | | Yes | |
 | Yes | Lever | | Yes | Yes | Yes |
 | Yes | Button | | Yes | Yes | Yes |
 | | Laser break-beam | | | | Yes |
@@ -98,8 +98,7 @@ Game premise: you are a bug in a computer system, and a rogue AI program is mess
   * [X] Checkpoints
 * [ ] Design world
   * [X] Method for notating which things are linked
-* [ ] Add continuation mechanics
-  * [ ] `player.query` function is powerful here!
+* [X] Add continuation mechanics
 * [ ] Add machines to be glitched/interacted with
 * [X] Tail on player character
   * [X] Using spring/linear constraint plugin

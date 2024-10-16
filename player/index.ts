@@ -1,5 +1,6 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, CircleComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
+import { ContinuationTrapComp } from "../components/continuationTrap";
 import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -52,9 +53,11 @@ function playerComp(): PlayerComp {
             if (h !== undefined) {
                 // Clear curPlatform() if I'm standing on it
                 if (this.curPlatform() === h) this.jump(1);
-                h.vel = K.vec2(0); // Reset velocity
-                h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))));
                 h.paused = h.hidden = false;
+                if (!h.is("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) {
+                    h.vel = K.vec2(0); // Reset velocity
+                    h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))));
+                }
             }
         },
         /**
@@ -188,7 +191,7 @@ function playerComp(): PlayerComp {
             const i = this.inventory.indexOf(obj);
             if (i === -1) return;
             obj.paused = obj.hidden = false;
-            obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+            if (obj.exists()) obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
             this.inventory.splice(i, 1);
             if (this.holdingIndex >= this.inventory.length)
                 this.holdingIndex = this.inventory.length - 1;

@@ -14,6 +14,17 @@ export interface ContinuationComp extends Comp {
     activate(): void,
 }
 
+const indexMap = new Map<number, number>();
+const counterMap = new Map<string, number>();
+function getIndex(obj: GameObj<ContinuationComp>): number {
+    if (indexMap.has(obj.id!)) return indexMap.get(obj.id!)!;
+    var counter = counterMap.get(obj.type) ?? 0;
+    counter++;
+    counterMap.set(obj.type, counter);
+    indexMap.set(obj.id!, counter);
+    return counter;
+}
+
 export function continuationCore(
     type: keyof typeof contTypes,
     captured: ContinuationData
@@ -39,7 +50,7 @@ export function continuationCore(
         },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp>) {
             this.on("invoke", () => this.invoke());
-            this.name = type + " " + K.time().toString(16);
+            this.name = type + "(" + getIndex(this) + ")";
             this.uniform!.u_targetcolor = K.Color.fromHex(this.data?.color ?? "#ff0000");
             this.hidden = true;
             this.worldMarker.hidden = true;
