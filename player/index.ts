@@ -197,8 +197,8 @@ function playerComp(): PlayerComp {
             obj.paused = obj.hidden = false;
             if (obj.exists()) obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
             this.inventory.splice(i, 1);
-            if (this.holdingIndex >= this.inventory.length)
-                this.holdingIndex = this.inventory.length - 1;
+            if (this.holdingIndex >= i)
+                this.holdingIndex--;
             this.trigger("inventoryChange");
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
