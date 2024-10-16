@@ -8,12 +8,14 @@ import { player, PlayerInventoryItem } from "../player";
 import { ContinuationComp } from "./continuationCore";
 import { TogglerComp } from "./toggler";
 import { ButtonComp } from "./button";
+import { InvisibleTriggerComp } from "./invisibleTrigger";
 
 
 export type ContinuationDataEntry = {
-    obj: GameObj<PosComp | BodyComp | ButtonComp | TogglerComp>
+    obj: GameObj<PosComp | BodyComp | ButtonComp | TogglerComp | InvisibleTriggerComp>
     pos?: Vec2
     togglerState?: boolean
+    triggeredState?: boolean
 };
 export type ContinuationData = {
     playerPos: Vec2
@@ -121,7 +123,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 objects: []
             };
             // find all the objects
-            const foundObjects = MParser.world!.get<PosComp | BodyComp | TogglerComp | ButtonComp>("machine")
+            const foundObjects = MParser.world!.get<PosComp | BodyComp | TogglerComp | ButtonComp | InvisibleTriggerComp>("machine")
                 .filter(obj => obj.worldPos()!.dist(player.worldPos()!) <= this.radius);
             for (var obj of foundObjects) {
                 const e: ContinuationDataEntry = { obj };
@@ -129,6 +131,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     e.pos = obj.pos.clone();
                 if (obj.is("toggler"))
                     e.togglerState = obj.togglerState;
+                if (obj.is("invisible-trigger"))
+                    e.triggeredState = obj.triggered;
                 data.objects.push(e);
             }
             console.log(data);

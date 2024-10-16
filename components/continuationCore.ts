@@ -68,6 +68,7 @@ export function continuationCore(
                     }
                 }
                 e.obj.togglerState = e.togglerState!;
+                e.obj.triggered = e.triggeredState!;
                 // If it is a button that *was* stomped by a box when captured, but
                 // isn't stomped currently, the following happens when the continuation is
                 // invoked:
