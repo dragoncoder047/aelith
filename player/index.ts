@@ -175,6 +175,8 @@ function playerComp(): PlayerComp {
             this.inventory.push(obj);
             obj.paused = true;
             obj.hidden = true;
+            if (obj.is("platformEffector"))
+                (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
             this.trigger("inventoryChange");
         },
         grab(this: GameObj<PlayerComp>, obj) {
