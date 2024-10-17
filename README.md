@@ -13,7 +13,7 @@
 
 ## Dev notes follow
 
-Game premise: you are a bug in a computer system, and a rogue AI program is messing with the computer's jobs. Using the power of continuations, you have to work your way up and down the programming language stack, beating increasingly hard challenges, until finally resetting the AI's memory into a stable state and averting total corruption.
+Game premise: Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it.
 
 * It is a platformer game
 * Uses pixel art
