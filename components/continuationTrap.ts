@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
@@ -6,11 +6,12 @@ import { K } from "../init";
 import { continuation } from "../object_factories/continuation";
 import { textNote } from "../object_factories/text";
 import { player, PlayerInventoryItem } from "../player";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { ButtonComp } from "./button";
 import { ContinuationComp } from "./continuationCore";
-import { DynamicTextComp } from "./dynamicText";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { TogglerComp } from "./toggler";
+import { zoop, ZoopComp, zoopRadius } from "./zoop";
 
 
 type CDEComps =
@@ -39,9 +40,11 @@ export interface ContinuationTrapComp extends Comp {
     readonly data: (typeof trapTypes)[keyof typeof trapTypes] | undefined
     readonly enabled: boolean
     readonly dontMoveToPlayer: boolean
+    readonly shouldShowWillCapture: boolean
     readonly color: Color
     radius: number
-    hint: GameObj<TextComp | ColorComp | DynamicTextComp | PosComp> | undefined
+    hint: GameObj<TextComp | ColorComp | DynamicTextComp | PosComp>
+    zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
     prepare(): void
     capture(): void
     peekCapture(): ContinuationData
@@ -66,7 +69,26 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
-        hint: undefined,
+        get shouldShowWillCapture() {
+            return (this.data?.prepare === "editRadius") ? this.isPreparing : ((this as any) === player.holdingItem);
+        },
+        hint: K.add([
+            K.pos(),
+            ...textNote(),
+            K.anchor("center"),
+            K.color(K.RED),
+        ]) as ContinuationTrapComp["hint"],
+        zoop: K.add([
+            K.pos(),
+            K.circle(zoopRadius(Infinity),
+                // CircleCompOpt is not in signature for some reason
+                // @ts-expect-error
+                { fill: false }),
+            // TODO: why is this circle always white?
+            K.outline(2, K.RED),
+            K.layer("ui"),
+            zoop(),
+        ]),
         add(this: GameObj<ContinuationTrapComp | NamedComp>) {
             this.on("invoke", () => {
                 if (this.isPreparing) this.capture();
@@ -79,38 +101,50 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
-            this.hint = K.add([
-                K.pos(),
-                ...textNote(),
-                K.anchor("center"),
-                K.color(this.color),
-            ]) as ContinuationTrapComp["hint"];
-            this.hint!.t = "";
+            this.hint.t = "";
+            K.wait(0.1, () => this.radius = zoopRadius(this.data!.radius * TILE_SIZE));
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
-            if (this.data === undefined)
-                throw (`BUG: Continuation trap was not initialized!\n`
-                    + `world.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, `
-                    + `col ${Math.round(this.pos.x / TILE_SIZE) + 1}`);
+            // if (this.data === undefined)
+            //     throw (`BUG: Continuation trap was not initialized!\n`
+            //         + `world.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, `
+            //         + `col ${Math.round(this.pos.x / TILE_SIZE) + 1}`);
+
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
+
             const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
             if (this.enabled) {
                 if (this.isPreparing) p("ready");
                 else p("idle");
             } else p("disabled");
-            this.uniform!.u_targetcolor = this.color;
+
             if (this.data?.prepare === "throw") {
                 if (!this.isPreparing && !this.is("throwable")) this.use("throwable");
                 else if (this.isPreparing && this.is("throwable")) this.unuse("throwable");
             }
+
             if (this.enabled && this === player.holdingItem) {
-                if (this.isPreparing) this.hint!.t = this.data?.prepareHint!;
-                else this.hint!.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
-            } else this.hint!.t = "";
-            this.hint!.color = this.color.lighten(100);
-            this.hint!.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
-            this.hint!.data.radius = this.radius.toString();
+                if (this.isPreparing) this.hint.t = this.data?.prepareHint!;
+                else this.hint.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
+            } else this.hint.t = "";
+
+            this.hint.color = this.color.lighten(100);
+            this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
+            this.hint.data.radius = this.radius.toString();
+            this.zoop.outline.color = K.Color.fromHSL(K.time() % 1, 1, 1/2)//this.color;
+            this.zoop.pos = this.worldPos()!;
+            this.uniform!.u_targetcolor = this.color;
+
+            if (this.shouldShowWillCapture) {
+                if (this.radius > 0 && !this.zoop.isZooping) {
+                    this.zoop.hidden = false;
+                    this.zoop.radius = zoopRadius(this.radius);
+                }
+            }
+            else if (!this.zoop.isZooping) {
+                this.zoop.hidden = true;
+            }
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -126,29 +160,34 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             }
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
-            if (this.isPreparing) {
-                if (this.data?.prepare === "editRadius") {
-                    const willCapture = this.peekCapture();
-                    for (var e of willCapture.objects) {
-                        if ((e.obj as any) === this) continue;
-                        if ((e.obj as any).is("invisible-trigger")) continue;
-                        const bbox = e.obj.worldArea?.().bbox();
-                        if (bbox)
-                            K.drawRect({
-                                fill: false,
+            if (this.shouldShowWillCapture) {
+                const willCapture = this.peekCapture();
+                for (var e of willCapture.objects) {
+                    if ((e.obj as any) === this) continue;
+                    if ((e.obj as any).is("invisible-trigger")) continue;
+                    const bbox = e.obj.worldArea?.().bbox();
+                    if (bbox)
+                        K.drawRect({
+                            fill: false,
+                            color: this.color,
+                            width: bbox.width,
+                            height: bbox.height,
+                            pos: this.fromWorld(bbox.pos),
+                            outline: {
+                                width: 2 / SCALE,
                                 color: this.color,
-                                width: bbox.width,
-                                height: bbox.height,
-                                pos: this.fromWorld(bbox.pos),
-                                outline: {
-                                    width: 2 / SCALE,
-                                    color: K.RED,
-                                    opacity: K.wave(0, 1, K.time() * Math.PI * 2),
-                                    join: "miter",
-                                }
-                            });
-                    }
+                                opacity: K.wave(0, 1, K.time() * Math.PI * 2),
+                                join: "miter",
+                            }
+                        });
                 }
+                if (this.radius > 0 && !this.zoop.isZooping) {
+                    this.zoop.hidden = false;
+                    this.zoop.radius = zoopRadius(this.radius);
+                }
+            }
+            else if (!this.zoop.isZooping) {
+                this.zoop.hidden = true;
             }
         },
         capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp>) {
@@ -158,31 +197,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             const cont = K.add(continuation(this.name! as any, data, this)) as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
-            // Add circle effects
             player.playSound(soundOnCapture);
-            K.add([
-                K.pos(data.playerPos),
-                // CircleCompOpt is not in signature for some reason
-                K.circle(
-                    Math.min(K.vec2(K.width(), K.height()).len() / 2, this.radius),
-                    // @ts-expect-error
-                    { fill: false }),
-                // TODO: why is this circle always white?
-                K.color(this.color),
-                K.outline(2, this.color),
-                K.layer("ui"),
-                {
-                    update(this: GameObj<CircleComp>) {
-                        // if (this.radius > 100)
-                        this.radius -= TILE_SIZE * 25 * K.dt();
-                        if (this.radius < 0) {
-                            player.addToInventory(cont);
-                            cont.activate();
-                            this.destroy();
-                        }
-                    }
-                }
-            ]);
+            this.zoop.zoop().then(() => {
+                player.addToInventory(cont);
+                cont.activate();
+            });
         },
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {
             // Capture all of the objects
