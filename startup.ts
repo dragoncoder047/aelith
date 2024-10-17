@@ -1,8 +1,7 @@
 import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
-import { DynamicTextComp } from "./components/dynamicText";
 import { K } from "./init";
-import { processTextReplacements } from "./utils";
+import { DynamicTextComp } from "./plugins/kaplay-dynamic-strings";
 
 type TextChunk = {
     text: string
@@ -96,7 +95,7 @@ export async function doStartup() {
 
     for (var chunk of chunks) {
         if (chunk.skipIf && chunk.skipIf(vars)) continue;
-        const text = processTextReplacements(chunk.text, vars);
+        const text = K.sub(chunk.text, vars);
         if (chunk.clear)
             runningText = typedText = "";
         if (chunk.typewriter) {

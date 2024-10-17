@@ -11,10 +11,12 @@ import translateShader from "./translate.glsl";
 // @ts-expect-error
 import worldFileSrc from "./world.txt";
 import { sounds } from "./sounds";
+import strings from "./strings.json"
 
 // Load assets
 K.loadSpriteAtlas(spritemapDataURL, spritemapDef);
 K.loadZzFXMultiJSON(sounds);
+K.loadStrings(strings);
 K.loadFont("IBM Mono", fontDataURL);
 K.loadShader("recolor-red", undefined, recolorRedShader);
 K.loadShader("translate", undefined, translateShader);

@@ -1,6 +1,7 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
 import { TILE_SIZE } from "../constants";
-import { K, nextFrame } from "../init";
+import { K } from "../init";
+import { nextFrame } from "../utils";
 import { player } from "../player";
 import { MParser } from "./mparser";
 import { doStartup } from "../startup";
