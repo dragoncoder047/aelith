@@ -18,15 +18,9 @@ K.loop(0.1, () => {
     lastTime = now;
     frameCounter = 0;
     FPSIndicator.text = "FPS: " + fps.toFixed(2).padStart(6);
-    if (fps < 15) {
-        FPSIndicator.color = K.RED;
-    }
-    else if (fps < 20) {
-        FPSIndicator.color = K.YELLOW;
-    }
-    else {
-        FPSIndicator.color = K.GREEN;
-    }
+    if (fps < 20) FPSIndicator.color = K.RED;
+    else if (fps < 30) FPSIndicator.color = K.YELLOW;
+    else FPSIndicator.color = K.GREEN;
 });
 
 const countIndicator = UI.add([
@@ -39,15 +33,9 @@ const countIndicator = UI.add([
 var objectCount = 0;
 function updateObjectCount() {
     countIndicator.text = objectCount + " objects";
-    if (objectCount > 200) {
-        countIndicator.color = K.RED;
-    }
-    else if (objectCount > 100) {
-        countIndicator.color = K.YELLOW;
-    }
-    else {
-        countIndicator.color = K.GREEN;
-    }
+    if (objectCount > 250) countIndicator.color = K.RED;
+    else if (objectCount > 150) countIndicator.color = K.YELLOW;
+    else countIndicator.color = K.GREEN;
 }
 
 K.wait(0.1, () => {
