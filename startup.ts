@@ -8,7 +8,8 @@ type TextChunk = {
     text: string
     style?: string
     typewriter?: boolean,
-    wait?: number,
+    wait?: number | (() => Promise<void>),
+    clear?: boolean,
     skipIf?: (vars: Record<string, string>) => boolean,
 };
 
@@ -46,8 +47,13 @@ function command(
 
 const chunks: TextChunk[] = [
     {
+        text: "Press ENTER to start...[cursor]_[/cursor]",
+        wait: () => jumpWait(new Promise(r => K.onKeyDown("enter", () => r()))),
+    },
+    {
         text: "Password for &user: ",
-        wait: 1
+        wait: 1,
+        clear: true,
     },
     {
         text: "*********",
@@ -91,6 +97,8 @@ export async function doStartup() {
     for (var chunk of chunks) {
         if (chunk.skipIf && chunk.skipIf(vars)) continue;
         const text = processTextReplacements(chunk.text, vars);
+        if (chunk.clear)
+            runningText = typedText = "";
         if (chunk.typewriter) {
             typedTextStyle = chunk.style;
             var stop = false;
@@ -108,7 +116,9 @@ export async function doStartup() {
             say(text, chunk.style);
         }
         if (chunk.wait) {
-            await jumpWait(K.wait(chunk.wait) as unknown as Promise<void>);
+            if (typeof chunk.wait === "function")
+                await chunk.wait();
+            else await jumpWait(K.wait(chunk.wait) as unknown as Promise<void>);
         }
     }
 
