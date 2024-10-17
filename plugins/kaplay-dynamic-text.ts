@@ -12,6 +12,82 @@ export interface DynamicTextComp extends Comp {
     data: Record<string, string>
 }
 
+export interface KAPLAYDynamicTextPlugin {
+    strings: NestedStrings,
+    langs: NavigatorLanguage["languages"]
+    sub(s: string, vars?: NestedStrings): string
+    loadStrings(s: NestedStrings): Asset<NestedStrings>
+    setLanguages(langs: KAPLAYDynamicTextPlugin["langs"]): void
+    dynamicText(t?: string): DynamicTextComp
+}
+
+export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
+    return {
+        strings: {},
+        langs: ["en"],
+        sub(s, vars) {
+            // @ts-expect-error
+            return subStrings(s, { ...K.strings, ...vars });
+        },
+        loadStrings(strings) {
+            // @ts-expect-error
+            K.strings = strings;
+            return new K.Asset(Promise.resolve(strings));
+        },
+        setLanguages(langs) {
+            // @ts-expect-error
+            K.langs = langs;
+        },
+        dynamicText(t = "undefined"): DynamicTextComp {
+            return {
+                id: "dynamic-text",
+                require: ["text"],
+                t,
+                data: {},
+                update(this: GameObj<TextComp | DynamicTextComp>) {
+                    // @ts-expect-error
+                    this.text = K.sub(this.t, {
+                        ...this.data,
+                        inputType: K.getLastInputDeviceType() === "gamepad"
+                            ? "gamepad"
+                            : "keyboard",
+                        // @ts-expect-error
+                        lang: findPreferredLanguage(K.langs),
+                    });
+                },
+                inspect() {
+                    return "sub: " + this.t;
+                }
+            }
+        }
+    }
+};
+
+function matchiness(a: string, b: string) {
+    const aa = new Intl.Locale(a);
+    const bb = new Intl.Locale(b);
+    if (aa.baseName === bb.baseName) return 3;
+    if (aa.language === bb.language) return 1;
+    return 0;
+}
+
+function findPreferredLanguage(availableLangs: NavigatorLanguage["languages"]): NavigatorLanguage["language"] {
+    const preferredLangs = navigator?.languages ?? [navigator.language];
+    var bestScore = -1;
+    var bestLang = "";
+    for (var candidate of availableLangs) {
+        var score = 0;
+        for (var preferred of preferredLangs) {
+            score += matchiness(preferred, candidate);
+        }
+        if (score > bestScore) {
+            bestLang = candidate;
+            bestScore = score;
+        }
+    }
+    return bestLang;
+}
+
 function subStrings(text: string, vars: NestedStrings): string {
     const flattenedVars = flatten(vars);
     do {
@@ -41,46 +117,3 @@ function flatten(vars: NestedStrings) {
     recur([], vars);
     return out;
 }
-
-export interface KAPLAYDynamicTextPlugin {
-    strings: NestedStrings
-    sub(s: string, vars?: NestedStrings): string
-    loadStrings(s: NestedStrings): Asset<NestedStrings>
-    dynamicText(t?: string): DynamicTextComp
-}
-
-export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
-    return {
-        strings: {},
-        sub(s, vars) {
-            // @ts-expect-error
-            return subStrings(s, { ...K.strings, ...vars });
-        },
-        loadStrings(strings) {
-            // @ts-expect-error
-            K.strings = strings;
-            return new K.Asset(Promise.resolve(strings));
-        },
-        dynamicText(t = "undefined"): DynamicTextComp {
-            return {
-                id: "dynamic-text",
-                require: ["text"],
-                t,
-                data: {},
-                update(this: GameObj<TextComp | DynamicTextComp>) {
-                    // @ts-expect-error
-                    this.text = K.sub(this.t, {
-                        ...this.data,
-                        inputType:
-                            K.getLastInputDeviceType() === "gamepad"
-                                ? "gamepad"
-                                : "keyboard"
-                    });
-                },
-                inspect() {
-                    return "sub: " + this.t;
-                }
-            }
-        }
-    }
-};
