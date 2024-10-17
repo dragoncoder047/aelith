@@ -108,7 +108,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (this.isPreparing) this.hint!.t = this.data?.prepareHint!;
                 else this.hint!.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
             } else this.hint!.t = "";
-            this.hint!.color = this.color;
+            this.hint!.color = this.color.lighten(100);
             this.hint!.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
             this.hint!.data.radius = this.radius.toString();
         },
