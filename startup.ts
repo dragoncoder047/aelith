@@ -1,7 +1,7 @@
 import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { K } from "./init";
-import { DynamicTextComp } from "./plugins/kaplay-dynamic-strings";
+import { DynamicTextComp } from "./plugins/kaplay-dynamic-text";
 
 type TextChunk = {
     text: string

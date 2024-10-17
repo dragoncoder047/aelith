@@ -1,7 +1,7 @@
 import kaplay from "kaplay";
 import { SCALE } from "./constants";
 import { CONTROLS } from "./player/controls/buttons";
-import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-strings";
+import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplaySprings } from "./plugins/kaplay-springs";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 

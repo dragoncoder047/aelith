@@ -42,14 +42,14 @@ function flatten(vars: NestedStrings) {
     return out;
 }
 
-export interface KAPLAYDynamicStringsPlugin {
+export interface KAPLAYDynamicTextPlugin {
     strings: NestedStrings
     sub(s: string, vars?: NestedStrings): string
     loadStrings(s: NestedStrings): Asset<NestedStrings>
     dynamicText(t?: string): DynamicTextComp
 }
 
-export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicStringsPlugin {
+export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
     return {
         strings: {},
         sub(s, vars) {
