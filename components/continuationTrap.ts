@@ -102,7 +102,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.isPreparing = false;
             });
             this.hint.t = "";
-            K.wait(0.1, () => this.radius = zoopRadius(this.data!.radius * TILE_SIZE));
+            K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
             // if (this.data === undefined)
