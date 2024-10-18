@@ -115,7 +115,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
 
             const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
             if (this.enabled) {
-                if (this.isPreparing) p("ready");
+                if (this.isPreparing || !this.data?.prepare) p("ready");
                 else p("idle");
             } else p("disabled");
 
