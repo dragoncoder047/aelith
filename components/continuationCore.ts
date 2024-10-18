@@ -80,6 +80,9 @@ export function continuationCore(
                 if (e.obj.is("body") && !e.obj.isStatic) {
                     if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius) {
                         // It is out of range, clone it
+                        K.debug.log("cloning!!");
+                        // This is the WRONG way to clone the object,
+                        // it causes weird things to happen!!
                         e.obj.parent!.add({
                             ...e.obj,
                             pos: e.pos,
