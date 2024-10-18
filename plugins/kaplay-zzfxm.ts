@@ -43,8 +43,6 @@ export function kaplayZzFXM(K: KAPLAYCtx): ZzFXMPlugin {
                 const buf = K.audioCtx.createBuffer(2, l.length, ZZFX.sampleRate);
                 buf.getChannelData(0).set(l, 0);
                 buf.getChannelData(1).set(r, 0);
-                // @ts-ignore
-                // waiting on kaplayjs/kaplay#464
                 await K.loadSound(name, buf);
                 return parameters;
             })());
