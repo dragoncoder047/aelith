@@ -2,8 +2,7 @@ import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { K } from "./init";
 import { DynamicTextComp } from "./plugins/kaplay-dynamic-text";
-import { musicName } from "./assets";
-import { MUSIC_VOLUME } from "./constants";
+import { musicPlay } from "./assets";
 
 type TextChunk = {
     text: string
@@ -135,7 +134,7 @@ export async function doStartup() {
     } while (false);
 
     // Start music
-    K.play(musicName, { loop: true, volume: MUSIC_VOLUME });
+    musicPlay.paused = false;
 };
 
 function wrap(text: string, style: string | undefined) {
