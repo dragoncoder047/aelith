@@ -75,7 +75,8 @@ export function continuationCore(
             player.playSound("teleport");
             // K.camPos(K.camPos().add(delta));
             for (var e of this.captured.objects) {
-                player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
+                if (!e.pos?.eq(player.worldPos()!))
+                    player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
                 if (e.obj.is("body") && !e.obj.isStatic) {
                     if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius) {
                         // It is out of range, clone it

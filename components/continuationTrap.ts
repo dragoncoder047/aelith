@@ -132,7 +132,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.hint.color = this.color.lighten(100);
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
             this.hint.data.radius = this.radius.toString();
-            this.zoop.outline.color = K.Color.fromHSL(K.time() % 1, 1, 1/2)//this.color;
+            this.zoop.outline.color = K.Color.fromHSL(K.time() % 1, 1, 1 / 2)//this.color;
             this.zoop.pos = this.worldPos()!;
             this.uniform!.u_targetcolor = this.color;
 
@@ -210,20 +210,21 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 capturedRadius: this.radius,
                 objects: []
             };
-            // find all the objects
-            const foundObjects = MParser.world!.get<CDEComps>("machine")
-                .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius);
-            for (var obj of foundObjects) {
-                const e: ContinuationDataEntry = { obj };
-                if (obj.is("body") && !obj.isStatic)
-                    e.pos = obj.pos.clone();
-                if (obj.is("toggler"))
-                    e.togglerState = obj.togglerState;
-                if (obj.is("invisible-trigger"))
-                    e.triggeredState = obj.triggered;
-                data.objects.push(e);
+            if (this.radius > 0) {
+                // find all the objects
+                const foundObjects = MParser.world!.get<CDEComps>("machine")
+                    .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius);
+                for (var obj of foundObjects) {
+                    const e: ContinuationDataEntry = { obj };
+                    if (obj.is("body") && !obj.isStatic)
+                        e.pos = obj.pos.clone();
+                    if (obj.is("toggler"))
+                        e.togglerState = obj.togglerState;
+                    if (obj.is("invisible-trigger"))
+                        e.triggeredState = obj.triggered;
+                    data.objects.push(e);
+                }
             }
-            console.log(data);
             return data;
         },
         inspect() {
