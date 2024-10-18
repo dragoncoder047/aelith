@@ -51,7 +51,7 @@ K.load((async () => {
     playerPositions.forEach(K.destroy);
     // prevent superfast scroll on load
     K.camPos(player.worldPos()!);
-    // do startup sequence
-    doStartup();
+    // do startup sequence -- after this function returns of course!
+    K.onLoad(doStartup);
 
 })());

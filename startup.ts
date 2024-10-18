@@ -71,7 +71,8 @@ const chunks: TextChunk[] = [
 
 export async function doStartup() {
     // hide all
-    const startupTextElement = MParser.vars.startupText! as GameObj<TextComp | DynamicTextComp>;
+    const startupTextElement = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp> | undefined;
+    if (!startupTextElement) return; // abort if the element doesn't exist, e.g. a testing world
     K.get("player").forEach(p => p.hidden = p.paused = true);
     K.get("tail").forEach(p => p.hidden = p.paused = true);
 
