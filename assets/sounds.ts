@@ -18,4 +18,8 @@ export const sounds: Record<string, ZzFXSound> = {
     conveyor_running: [.5,0,60,.01,1,.01,,,,,,,.1,.2,30],
     door_opening: [.5,,50,.5,,.5,3,,,,,,.1,50,,,,,,,-100],
     door_closing: [.5,,0,.25,,.25,,,,,40,.25,.05,50,-0.6,,,,,,-500],
+    typing: [,,1e3,,,.01,2,,,,,,,1,,,,,,,1e3],
+    // imitation of VS Code accessibility sound
+    command_success: [,0,500,.04,.16,.04,,,,,250,.12,.16,,,,,,,.5],
+    command_fail: [,0,300,,.2,.04,1,,,,-80,.12,.16,,,,,,,.5],
 };

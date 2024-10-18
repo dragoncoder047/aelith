@@ -8,10 +8,11 @@ import { MUSIC_VOLUME } from "./constants";
 type TextChunk = {
     text: string
     style?: string
-    typewriter?: boolean,
-    wait?: number | (() => Promise<void>),
-    clear?: boolean,
-    skipIf?: (vars: Record<string, string>) => boolean,
+    typewriter?: boolean
+    sound?: string
+    wait?: number | (() => Promise<void>)
+    clear?: boolean
+    skipIf?: (vars: Record<string, string>) => boolean
 };
 
 function command(
@@ -19,7 +20,8 @@ function command(
     output: string,
     workingDir: string,
     waitBeforeCommand: number,
-    waitAfterCommand: number
+    waitAfterCommand: number,
+    success: boolean | undefined
 ): TextChunk[] {
     return [
         {
@@ -37,12 +39,10 @@ function command(
             style: "command",
             wait: waitAfterCommand
         },
-        ...(
-            output !== "" ?
-                [{
-                    text: "\n" + output
-                }]
-                : [])
+        {
+            text: output ? "\n" + output : "",
+            sound: typeof success === "boolean" ? (success ? "command_success" : "command_fail") : undefined
+        }
     ];
 }
 
@@ -64,11 +64,11 @@ const chunks: TextChunk[] = [
     {
         text: "\nLogged in!",
     },
-    ...command("sudo ai-assistant &", "(1) 4242 ai-assistant\nAssistant is running", "~", 1, 1),
+    ...command("sudo ai-assistant &", "(1) 4242 ai-assistant\nAssistant is running", "~", 1, 1, true),
     ...command("ai \"find the answer\"", "Segmentation fault (core dumped)"
-        + "\n(1)  + 4242 exit 139   ai-assistant\n[stderr]ai: error: EHOSTDOWN[/stderr]", "~", 1, 2),
-    ...command("cd /sys/ai", "", "~", 3, 0.25),
-    ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25, 0.25),
+        + "\n(1)  + 4242 exit 139   ai-assistant\n[stderr]ai: error: EHOSTDOWN[/stderr]", "~", 1, 2, false),
+    ...command("cd /sys/ai", "", "~", 3, 0.25, true),
+    ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25, 0.25, undefined),
 ];
 
 export async function doStartup() {
@@ -94,6 +94,7 @@ export async function doStartup() {
         };
         const type = (text: string) => {
             typedText += text;
+            K.play("typing", { volume: K.rand(.5, 1) })
             refresh();
         };
 
@@ -118,6 +119,8 @@ export async function doStartup() {
             } else {
                 say(text, chunk.style);
             }
+            if (chunk.sound)
+                K.play(chunk.sound);
             if (chunk.wait) {
                 if (typeof chunk.wait === "function")
                     await chunk.wait();
