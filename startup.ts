@@ -2,6 +2,8 @@ import { GameObj, KEventController, TextComp } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { K } from "./init";
 import { DynamicTextComp } from "./plugins/kaplay-dynamic-text";
+import { musicName } from "./assets";
+import { MUSIC_VOLUME } from "./constants";
 
 type TextChunk = {
     text: string
@@ -70,61 +72,67 @@ const chunks: TextChunk[] = [
 ];
 
 export async function doStartup() {
-    // hide all
-    const startupTextElement = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp> | undefined;
-    if (!startupTextElement) return; // abort if the element doesn't exist, e.g. a testing world
-    K.get("player").forEach(p => p.hidden = p.paused = true);
-    K.get("tail").forEach(p => p.hidden = p.paused = true);
+    do {
+        // hide all
+        const startupTextElement = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp> | undefined;
+        if (!startupTextElement) break; // abort if the element doesn't exist, e.g. a testing world
+        K.get("player").forEach(p => p.hidden = p.paused = true);
+        K.get("tail").forEach(p => p.hidden = p.paused = true);
 
-    // get vars
-    const vars = { user: "anon" };
+        // get vars
+        const vars = { user: "anon" };
 
-    var runningText = "";
-    var typedText = "";
-    var typedTextStyle: string | undefined = undefined;
-    const refresh = () => {
-        startupTextElement.t = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
-    };
-    const say = (text: string, style: string | undefined) => {
-        runningText += wrap(text, style);
-        refresh();
-    };
-    const type = (text: string) => {
-        typedText += text;
-        refresh();
-    };
+        var runningText = "";
+        var typedText = "";
+        var typedTextStyle: string | undefined = undefined;
+        const refresh = () => {
+            startupTextElement.t = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
+        };
+        const say = (text: string, style: string | undefined) => {
+            runningText += wrap(text, style);
+            refresh();
+        };
+        const type = (text: string) => {
+            typedText += text;
+            refresh();
+        };
 
-    for (var chunk of chunks) {
-        if (chunk.skipIf && chunk.skipIf(vars)) continue;
-        const text = K.sub(chunk.text, vars);
-        if (chunk.clear)
-            runningText = typedText = "";
-        if (chunk.typewriter) {
-            typedTextStyle = chunk.style;
-            var stop = false;
-            await jumpWait((async () => {
-                for (var ch of text) {
-                    if (stop) return;
-                    type(ch);
-                    await K.wait(K.rand(0.1, 0.2));
-                }
-            })());
-            stop = true;
-            typedText = "";
-            say(text, chunk.style);
-        } else {
-            say(text, chunk.style);
+        for (var chunk of chunks) {
+            if (chunk.skipIf && chunk.skipIf(vars)) continue;
+            const text = K.sub(chunk.text, vars);
+            if (chunk.clear)
+                runningText = typedText = "";
+            if (chunk.typewriter) {
+                typedTextStyle = chunk.style;
+                var stop = false;
+                await jumpWait((async () => {
+                    for (var ch of text) {
+                        if (stop) return;
+                        type(ch);
+                        await K.wait(K.rand(0.1, 0.2));
+                    }
+                })());
+                stop = true;
+                typedText = "";
+                say(text, chunk.style);
+            } else {
+                say(text, chunk.style);
+            }
+            if (chunk.wait) {
+                if (typeof chunk.wait === "function")
+                    await chunk.wait();
+                else await jumpWait(K.wait(chunk.wait) as unknown as Promise<void>);
+            }
         }
-        if (chunk.wait) {
-            if (typeof chunk.wait === "function")
-                await chunk.wait();
-            else await jumpWait(K.wait(chunk.wait) as unknown as Promise<void>);
-        }
-    }
 
-    // Done typing
-    K.get("player").forEach(p => p.hidden = p.paused = false);
-    K.get("tail").forEach(p => p.hidden = p.paused = false);
+        // Done typing
+        K.get("player").forEach(p => p.hidden = p.paused = false);
+        K.get("tail").forEach(p => p.hidden = p.paused = false);
+
+    } while (false);
+
+    // Start music
+    K.play(musicName, { loop: true, volume: MUSIC_VOLUME });
 };
 
 function wrap(text: string, style: string | undefined) {

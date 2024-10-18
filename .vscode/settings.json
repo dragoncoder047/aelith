@@ -8,6 +8,7 @@
         "easings",
         "glsl",
         "grabbable",
+        "Hihat",
         "IIFE",
         "kaplay",
         "kaplayjs",
@@ -20,6 +21,7 @@
         "tweener",
         "unuse",
         "Zoop",
-        "ZZFX"
+        "ZZFX",
+        "zzfxm"
     ]
 }
