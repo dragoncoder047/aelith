@@ -1,3 +1,5 @@
+import { CompList, GameObj, LevelComp } from "kaplay";
+import { cloneable } from "../components/cloneable";
 import { grabbable } from "../components/grabbable";
 import { randomFrame } from "../components/randomFrame";
 import { thudder } from "../components/thudder";
@@ -9,7 +11,7 @@ import { throwablePlatformEff } from "./throwablePlatformEff";
 /**
  * Components for a moveable, grabbable box.
  */
-export function box() {
+export function box(): CompList<any> {
     return [
         K.sprite("box", { fill: false }),
         "box",
@@ -28,5 +30,6 @@ export function box() {
         K.named("var"),
         randomFrame(),
         ...throwablePlatformEff(),
+        cloneable((orig: GameObj<any>) => [...box(), K.pos((orig as any).pos)], ["frame"]),
     ];
 }

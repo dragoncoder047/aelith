@@ -3,7 +3,8 @@ import contTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
-import { ContinuationData, ContinuationTrapComp } from "./continuationTrap";
+import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
+import { CloneableComp } from "./cloneable";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
@@ -78,21 +79,15 @@ export function continuationCore(
                 if (!e.pos?.eq(player.worldPos()!))
                     player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
                 if (e.obj.is("body") && !e.obj.isStatic) {
-                    if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius) {
+                    var obj = e.obj;
+                    if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius
+                        && e.obj.is("cloneable")) {
                         // It is out of range, clone it
-                        K.debug.log("cloning!!");
-                        // This is the WRONG way to clone the object,
-                        // it causes weird things to happen!!
-                        e.obj.parent!.add({
-                            ...e.obj,
-                            pos: e.pos,
-                            parent: undefined, // this obj is getting a new parent
-                        } as unknown as GameObj);
-                    } else {
-                        // It's still in range, move it
-                        e.obj.pos = e.pos!;
-                        e.obj.vel = K.vec2(0);
+                        obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
                     }
+                    // Update pos and vel
+                    obj.pos = e.pos!.clone();
+                    obj.vel = K.vec2(0);
                 }
                 e.obj.togglerState = e.togglerState!;
                 e.obj.triggered = e.triggeredState!;

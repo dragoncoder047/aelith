@@ -14,7 +14,7 @@ import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
 
 
-type CDEComps =
+export type CDEComps =
     | PosComp
     | BodyComp
     | ButtonComp
@@ -105,24 +105,21 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
-            // if (this.data === undefined)
-            //     throw (`BUG: Continuation trap was not initialized!\n`
-            //         + `world.txt location: line ${Math.round(this.pos.y / TILE_SIZE) + 1}, `
-            //         + `col ${Math.round(this.pos.x / TILE_SIZE) + 1}`);
-
-            if (this === player.holdingItem)
-                this.flipX = player.flipX;
-
             const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
-            if (this.enabled) {
-                if (this.isPreparing || !this.data?.prepare) p("ready");
-                else p("idle");
-            } else p("disabled");
+            if (this.enabled) p("ready");
+            else p("disabled");
 
             if (this.data?.prepare === "throw") {
-                if (!this.isPreparing && !this.is("throwable")) this.use("throwable");
-                else if (this.isPreparing && this.is("throwable")) this.unuse("throwable");
-            }
+                if (!this.isPreparing) {
+                    if (this === player.holdingItem)
+                        this.flipX = player.flipX;
+                    if (!this.is("throwable")) this.use("throwable");
+                }
+                else if (this.isPreparing) {
+                    if (this.is("throwable")) this.unuse("throwable");
+                }
+            } else if (this === player.holdingItem)
+                this.flipX = player.flipX;
 
             if (this.enabled && this === player.holdingItem) {
                 if (this.isPreparing) this.hint.t = this.data?.prepareHint!;
@@ -132,7 +129,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.hint.color = this.color.lighten(100);
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
             this.hint.data.radius = this.radius.toString();
-            this.zoop.outline.color = K.Color.fromHSL(K.time() % 1, 1, 1 / 2)//this.color;
+            this.zoop.outline.color = this.color;
             this.zoop.pos = this.worldPos()!;
             this.uniform!.u_targetcolor = this.color;
 
@@ -194,7 +191,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.isPreparing = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
-            const cont = K.add(continuation(this.name! as any, data, this)) as (PlayerInventoryItem & GameObj<ContinuationComp>);
+            const cont = K.add(continuation(this.name! as any, data, this)) as unknown as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);

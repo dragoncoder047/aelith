@@ -1,4 +1,3 @@
-import { Comp } from "kaplay";
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY } from "../constants";
@@ -22,12 +21,5 @@ export function continuationTrap() {
         grabbable(),
         K.named("{undefined}"),
         ...throwablePlatformEff(),
-        // {
-        //     add() {
-        //         this.onBeforePhysicsResolve(coll => {
-        //             K.debug.log(coll);
-        //         })
-        //     }
-        // } as Comp
     ];
 }
