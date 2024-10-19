@@ -195,6 +195,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
+            this.zoop.radius = zoopRadius(this.radius);
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
