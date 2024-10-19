@@ -1,5 +1,7 @@
 # debugger;
 
+A puzzle platformer game.
+
 -----------DEVELOPING STARTUP---------
 
 1. make sure you have pnpm installed
@@ -15,14 +17,6 @@
 
 Game premise: Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it.
 
-* It is a platformer game
-* Uses pixel art
-* Use [kaplayjs](https://github.com/kaplayjs/kaplay) library
-* Resources:
-    * [map editor](https://stmn.github.io/ascii-map-editor/)
-    * [ZzFX](https://killedbyapixel.github.io/ZzFX/)
-    * [ZzFXM](https://keithclark.github.io/ZzFXM/)
-
 ## Mechanics
 
 * Player can only grab items, throw items, and "use" items
@@ -33,23 +27,6 @@ Game premise: Something went wrong in the computer system, and a debugger has be
       * The player can use these to teleport
       * The resetting mechanic can be use to get machines in "glitched" states that is the only way to beat the level
 
-### Types of items generally
-
-| Done? | Item type | Can be put in inventory / carried | Can be physically interacted with (click action) | Makes ambient sounds | Linked to form machine groups |
-|:-----:|:---------:|:---------------------------------:|:------------------------------------------------:|:--------------------:|:-----------------------------:|
-| Yes | Continuation trap | Yes | | | |
-| Yes | Continuation | Yes | | Yes | |
-| Yes | Lever | | Yes | Yes | Yes |
-| Yes | Button | | Yes | Yes | Yes |
-| | Laser break-beam | | | | Yes |
-| Yes | Door | | | Yes | Yes |
-| Yes | Conveyor | | | Yes | Yes |
-| | Moving ladder | | | | Yes |
-| Yes | Fan | | | Yes | Yes |
-| Yes | Light | | | | Yes |
-| Yes | Box | Yes | Yes | | |
-| | Decorations | | | | |
-
 ### Types of continuation traps
 
 * `throw` -- basic type; small radius, can only be invoked once; only saves player's position
@@ -57,7 +34,7 @@ Game premise: Something went wrong in the computer system, and a debugger has be
 * `async` -- continuation trap can be thrown (down a pipe or some other place); then be captured remotely
 * `yield` -- back-and-forth type; when invoked gives the player a continuation for where they invoked it from so they can go back
 * `call/cc` -- most powerful continuation trap; can be used infinite number of times and has a controllable radius of effect
-* `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die
+* `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die (TODO: When do they die??) or mess up
 
 ### Levels Mechanics Ideas
 
@@ -66,41 +43,18 @@ Game premise: Something went wrong in the computer system, and a debugger has be
 #### Machine types
 
 * Controls
-  * Lever
-  * Button
-  * Pressure plate
-  * Laser / laser sensor
-  * Proximity sensor
-* Effectors
-  * Doors (normal, trapdoors)
-  * Conveyor belts
-  * Moving ladders, mirrors
-  * Lights (decorations)
-* Block art
-  * Generic box
-  * Tower computer
-  * Battery
-  * Mirror
-
-## TODO
-
-* [ ] Make sprites and machines
-  * [X] Finish climbing animation
-  * [X] Wall and ladder tiles
+  * [X] Lever
   * [X] Button
-  * [X] Switch
-  * [X] Conveyor
-  * [X] Door
-  * [ ] Laser
-  * [ ] Decoration tiles
-  * [ ] Machine tiles
-  * [X] Continuations
-  * [X] Checkpoints
-* [ ] Design world
-  * [X] Method for notating which things are linked
-* [X] Add continuation mechanics
-* [ ] Add machines to be glitched/interacted with
-* [X] Tail on player character
-  * [X] Using spring/linear constraint plugin
+  * [ ] Laser / laser sensor
+* Effectors
+  * [X] Doors
+  * [X] Conveyor belts
+  * [ ] Moving ladders
+  * [ ] mirrors
+  * [X] Lights (decorations)
+* Block art
+  * [ ] Generic box
+  * [ ] Tower computer
+  * [ ] Battery
 
 <!-- cSpell: ignore kaplay kaplayjs setjmp zzfx -->
