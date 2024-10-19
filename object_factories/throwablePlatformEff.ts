@@ -1,4 +1,4 @@
-import { CompList, Tag, Vec2 } from "kaplay";
+import { Tag, Vec2 } from "kaplay";
 import { K } from "../init";
 import { player } from "../player";
 
