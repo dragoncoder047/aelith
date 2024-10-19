@@ -1,11 +1,11 @@
-import { AreaComp, CompList, GameObj } from "kaplay";
+import { AreaComp, Comp, GameObj, Tag } from "kaplay";
 import { ContinuationTrapComp, trap } from "../components/continuationTrap";
 import { K } from "../init";
 import { defaults } from "./default";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
 
-export function checkpoint(): CompList<any> {
+export function checkpoint() {
     return [
         K.sprite("checkpoint"),
         ...defaults(),
@@ -17,13 +17,13 @@ export function checkpoint(): CompList<any> {
         trap("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
-        "raycastIgnore",
+        "raycastIgnore" as Tag,
         {
             add(this: GameObj<AreaComp | ContinuationTrapComp>) {
                 this.onCollide("player", () => {
                     this.trigger("invoke");
                 });
             }
-        }
+        } as Comp,
     ];
 }

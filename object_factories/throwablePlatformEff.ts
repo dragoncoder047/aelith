@@ -1,4 +1,4 @@
-import { CompList, Vec2 } from "kaplay";
+import { CompList, Tag, Vec2 } from "kaplay";
 import { K } from "../init";
 import { player } from "../player";
 
@@ -6,7 +6,7 @@ import { player } from "../player";
 var getMotionVector: () => Vec2;
 import("../player/controls/impl").then(m => getMotionVector = m.getMotionVector);
 
-export function throwablePlatformEff(): CompList<any> {
+export function throwablePlatformEff() {
     return [
         K.platformEffector({
             shouldCollide(obj, normal) {
@@ -18,7 +18,7 @@ export function throwablePlatformEff(): CompList<any> {
                 return true;
             },
         }),
-        "throwable",
-        "noCollideWithTail",
+        "throwable" as Tag,
+        "noCollideWithTail" as Tag,
     ];
 }

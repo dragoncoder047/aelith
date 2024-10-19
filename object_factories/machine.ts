@@ -1,4 +1,4 @@
-import { AreaCompOpt, CompList } from "kaplay";
+import { AreaCompOpt } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { linked } from "../components/linked";
 import { toggler } from "../components/toggler";
@@ -8,7 +8,7 @@ import { defaults } from "./default";
 /**
  * Return components for a machine
  */
-export function machine(areaOpts?: AreaCompOpt): CompList<any> {
+export function machine(areaOpts?: AreaCompOpt) {
     return [
         toggler("off", "on", false),
         K.state("off"),

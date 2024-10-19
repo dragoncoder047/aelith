@@ -1,9 +1,8 @@
-import { CompList } from "kaplay";
 import { K } from "../init";
 import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { styles } from "../assets/textStyles";
 
-export function textNote(): CompList<any> {
+export function textNote() {
     return [
         K.text("", {
             font: "IBM Mono",

@@ -1,10 +1,9 @@
-import { CompList } from "kaplay";
 import { FRICTION, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 import { mergeable } from "../components/mergeable";
 
-export function barrier(): CompList<any> {
+export function barrier() {
     return [
         K.body({ isStatic: true }),
         K.rect(TILE_SIZE, TILE_SIZE),

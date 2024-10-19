@@ -1,13 +1,12 @@
-import { CompList } from "kaplay";
 import { wind } from "../components/wind";
 import { TILE_SIZE, WIND_FORCE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 
-export function windTunnel(): CompList<any> {
+export function windTunnel() {
     return [
         K.rect(TILE_SIZE, TILE_SIZE),
-        K.color(K.getBackground()!),
+        K.opacity(0),
         ...machine(),
         wind(),
         K.outline(0),

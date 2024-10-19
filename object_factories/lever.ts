@@ -1,11 +1,11 @@
-import { CompList } from "kaplay";
+import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
 import { spriteToggle } from "../components/spriteToggle";
 import { toggleSwitch } from "../components/toggleSwitch";
 import { K } from "../init";
 import { machine } from "./machine";
 
-export function lever(): CompList<any> {
+export function lever() {
     return [
         K.sprite("lever"),
         spriteToggle(),
@@ -13,7 +13,7 @@ export function lever(): CompList<any> {
         K.anchor("bot"),
         toggleSwitch(),
         clicky(),
-        "lever",
-        "interactable",
+        "lever" as Tag,
+        "interactable" as Tag,
     ];
 }

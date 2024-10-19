@@ -1,4 +1,3 @@
-import { CompList } from "kaplay";
 import { grabbable } from "../components/grabbable";
 import { randomFrame } from "../components/randomFrame";
 import { thudder } from "../components/thudder";
@@ -10,7 +9,7 @@ import { throwablePlatformEff } from "./throwablePlatformEff";
 /**
  * Components for a moveable, grabbable box.
  */
-export function box(): CompList<any> {
+export function box() {
     return [
         K.sprite("box", { fill: false }),
         "box",

@@ -1,4 +1,4 @@
-import { CompList } from "kaplay";
+import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
 import { nudge } from "../components/nudge";
 import { rollingDoor } from "../components/rollingDoor";
@@ -9,10 +9,10 @@ import { machine } from "./machine";
 /**
  * Components for a rolling door.
  */
-export function door(): CompList<any> {
+export function door() {
     return [
         K.sprite("door", { fill: false }),
-        "door",
+        "door" as Tag,
         K.body({ isStatic: true }),
         ...machine(),
         K.tile({ isObstacle: true }),

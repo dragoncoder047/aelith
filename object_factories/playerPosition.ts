@@ -1,4 +1,4 @@
-import { CompList } from "kaplay";
+import { Tag } from "kaplay";
 import { K } from "../init";
 
 /**
@@ -9,9 +9,9 @@ import { K } from "../init";
  * The appearance is a green square, so if world loading fails
  * they can easily be seen.
  */
-export function playerPosition(): CompList<any> {
+export function playerPosition() {
     return [
-        "playerPosition",
+        "playerPosition" as Tag,
         K.rect(10, 10),
         K.color(K.GREEN),
         K.anchor("center"),

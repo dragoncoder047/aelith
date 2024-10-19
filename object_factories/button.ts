@@ -1,4 +1,4 @@
-import { CompList } from "kaplay";
+import { Tag } from "kaplay";
 import { button as buttonComp } from "../components/button";
 import { clicky } from "../components/clicky";
 import { nudge } from "../components/nudge";
@@ -7,7 +7,7 @@ import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 
-export function button(): CompList<any> {
+export function button() {
     return [
         K.sprite("button"),
         spriteToggle(),
@@ -16,6 +16,6 @@ export function button(): CompList<any> {
         K.body({ isStatic: true }),
         buttonComp(),
         clicky(),
-        "noCollideWithTail",
+        "noCollideWithTail" as Tag,
     ];
 }

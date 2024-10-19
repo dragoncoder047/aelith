@@ -1,4 +1,4 @@
-import { CompList, GameObj, Vec2 } from "kaplay";
+import { GameObj } from "kaplay";
 import continuationTypes from "../assets/trapTypes.json";
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationData, ContinuationTrapComp } from "../components/continuationTrap";
@@ -9,7 +9,7 @@ export function continuation(
     type: keyof typeof continuationTypes,
     captured: ContinuationData,
     trap: GameObj<ContinuationTrapComp>
-): CompList<any> {
+) {
     return [
         K.sprite("continuation", { anim: "spin" }),
         K.shader("recolor-red", {

@@ -1,14 +1,12 @@
-import { CompList } from "kaplay";
+import { Comp } from "kaplay";
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
-import { player } from "../player";
-import { getMotionVector } from "../player/controls/impl";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
 
-export function continuationTrap(): CompList<any> {
+export function continuationTrap() {
     return [
         K.sprite("continuation_trap"),
         K.body({ maxVelocity: TERMINAL_VELOCITY }),
@@ -30,6 +28,6 @@ export function continuationTrap(): CompList<any> {
         //             K.debug.log(coll);
         //         })
         //     }
-        // }
+        // } as Comp
     ];
 }

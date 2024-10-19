@@ -1,11 +1,10 @@
-import { CompList } from "kaplay";
 import { ambiance } from "../components/ambientSound";
 import { animRun } from "../components/animRun";
 import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 
-export function fan(): CompList<any> {
+export function fan() {
     return [
         K.sprite("fan"),
         K.body({ isStatic: true }),

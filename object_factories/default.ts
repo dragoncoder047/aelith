@@ -1,10 +1,10 @@
-import { AreaCompOpt, CompList } from "kaplay";
+import { AreaCompOpt } from "kaplay";
 import { K } from "../init";
 
 /**
  * Create default components for common tile objects.
  */
-export function defaults(areaOpts?: AreaCompOpt): CompList<any> {
+export function defaults(areaOpts?: AreaCompOpt) {
     return [
         K.area(areaOpts!),
         K.anchor("center"),
