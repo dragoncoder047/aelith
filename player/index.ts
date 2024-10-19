@@ -4,6 +4,7 @@ import { ContinuationTrapComp } from "../components/continuationTrap";
 import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { HoldOffsetComp } from "../components/holdOffset";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
@@ -45,7 +46,7 @@ function playerComp(): PlayerComp {
                 K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
             });
         },
-        update(this: GameObj<PlayerComp | PosComp | BodyComp>) {
+        update(this: GameObj<PlayerComp | PosComp | BodyComp | SpriteComp>) {
             // hide all inventory items
             this.inventory.forEach(item => item.paused = item.hidden = true);
             // move the grabbing to self
@@ -56,7 +57,9 @@ function playerComp(): PlayerComp {
                 h.paused = h.hidden = false;
                 if (!h.is("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) {
                     h.vel = K.vec2(0); // Reset velocity
-                    h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))));
+                    const offset = h.is("hold-offset") ? (h as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
+                    const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
+                    h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
                 }
             }
         },
@@ -288,6 +291,7 @@ export const player = K.add([
                 K.pushTransform();
                 K.pushMatrix(this.transform.inverse); // weird math
                 K.pushTranslate(h.parent ? h.parent.transform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
+                K.pushTranslate(this.worldPos()!.sub(h.worldPos()!));
                 h.draw();
                 K.popTransform();
             }

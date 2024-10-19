@@ -7,6 +7,7 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 import { machine } from "./machine";
 import { throwablePlatformEff } from "./throwablePlatformEff";
+import { holdOffset } from "../components/holdOffset";
 
 /**
  * Components for a moveable, grabbable box.
@@ -26,6 +27,7 @@ export function box(): CompList<any> {
         K.tile({ isObstacle: true }),
         thudder(),
         grabbable(),
+        holdOffset(K.vec2(0)),
         K.layer("boxes"),
         K.named("var"),
         randomFrame(),

@@ -1,6 +1,7 @@
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
-import { FRICTION, RESTITUTION, TERMINAL_VELOCITY } from "../constants";
+import { holdOffset } from "../components/holdOffset";
+import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
@@ -19,6 +20,7 @@ export function continuationTrap() {
         trap("capture"),
         K.layer("boxes"),
         grabbable(),
+        holdOffset(K.vec2(-TILE_SIZE / 6, -TILE_SIZE / 12)),
         K.named("{undefined}"),
         ...throwablePlatformEff(),
     ];

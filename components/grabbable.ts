@@ -1,9 +1,8 @@
-import { AreaComp, Comp, GameObj, KEventController, LayerComp } from "kaplay";
+import { AreaComp, Comp, GameObj, KEventController, LayerComp, Vec2 } from "kaplay";
 import { player, PlayerInventoryItem } from "../player";
 
 export interface GrabbableComp extends Comp {
-    physicsFoo: KEventController | undefined,
-    oldLayer: string
+    oldLayer: string,
 }
 
 /**
@@ -14,7 +13,6 @@ export function grabbable(): GrabbableComp {
     return {
         id: "grabbable",
         require: ["area", "body", "pos"],
-        physicsFoo: undefined,
         oldLayer: "",
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
             this.on("interact", () => {
