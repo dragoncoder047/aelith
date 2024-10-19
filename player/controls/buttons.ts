@@ -18,15 +18,15 @@ export const CONTROLS: Controls = {
     },
     interact: {
         mouse: ["left"],
-        gamepad: ["west"],
+        gamepad: ["rtrigger"],
     },
     throw: {
         mouse: ["right"],
-        gamepad: ["north"],
+        gamepad: ["rstick"],
     },
     invoke: {
         keyboard: ["e", "enter"],
-        gamepad: ["east"],
+        gamepad: ["rshoulder"],
     },
     // inventory controls
     inv_previous: {
@@ -40,7 +40,7 @@ export const CONTROLS: Controls = {
     // inventory mod controls
     invoke_increment: {
         // mouse: scroll wheel
-        gamepad: ["dpad-down"],
+        gamepad: ["dpad-up"],
     },
     invoke_decrement: {
         gamepad: ["dpad-down"],
