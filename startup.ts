@@ -47,7 +47,7 @@ function command(
 
 const chunks: TextChunk[] = [
     {
-        text: "Press ENTER to start...[cursor]_[/cursor]",
+        text: "Press ENTER to start...",
         wait: () => jumpWait(new Promise(r => K.onKeyDown("enter", () => r()))),
     },
     {
@@ -85,7 +85,7 @@ export async function doStartup() {
         var typedText = "";
         var typedTextStyle: string | undefined = undefined;
         const refresh = () => {
-            startupTextElement.t = [runningText, wrap(typedText, typedTextStyle), wrap("_", "cursor")].join("");
+            startupTextElement.t = [runningText, wrap(typedText, typedTextStyle), wrap("\u2588", "cursor")].join("");
         };
         const say = (text: string, style: string | undefined) => {
             runningText += wrap(text, style);
