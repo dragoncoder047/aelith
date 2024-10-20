@@ -21,9 +21,6 @@ export function invisibleTriggerComp(): InvisibleTriggerComp {
         andState: "on",
         triggered: false,
         resettable: false,
-        add(this: GameObj) {
-            this.use("raycastIgnore");
-        },
         setup(this: GameObj<AreaComp | TogglerComp | InvisibleTriggerComp>, s) {
             // format is "1" if oneshot 
             // + "p" if event target is player

@@ -74,25 +74,23 @@ function playerComp(): PlayerComp {
         draw(this: GameObj<PosComp | PlayerComp>) {
             // find targeted object
             var rcr: RaycastResult = null;
-            do { // nifty do-while-false loop to basically "goto end-of-this-block"
+            do {
+                // nifty do-while-false loop to basically "goto end-of-this-block"
+
                 this.lookingAt = undefined;
-                if (!MParser.world || !this.lookingDirection) break;
+                if (!this.lookingDirection) break;
+
                 rcr = actuallyRaycast(
-                    MParser.world.get<AreaComp>("area")
-                        .filter(x => (this.inventory as any[]).indexOf(x) === -1
+                    K.get<AreaComp>("area", { recursive: true })
+                        .filter(x => !(this.inventory as any[]).includes(x)
                             && x.collisionIgnore.every(t => !this.is(t))
                             && !x.paused
-                            && !x.is("raycastIgnore")),
+                            && (x.is("interactable") || x.is("grabbable"))),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
-                if (rcr === null) break;
-                const obj = rcr.object as GameObj<AreaComp>;
-
-                if (!obj || (!obj.is("interactable") && !obj.is("grabbable")))
-                    break;
-
-                this.lookingAt = obj;
+                if (rcr === null || !rcr.object) break;
+                this.lookingAt = rcr.object as GameObj<AreaComp>;
             } while (false);
 
             if (this.lookingAt) {
@@ -345,7 +343,6 @@ for (var i = 0; i < numTailSegments; i++) {
             },
         }),
         "tail",
-        "raycastIgnore",
     ]);
     pos = pos.add(K.vec2(0, sz));
 }

@@ -1,4 +1,4 @@
-import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
+import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp, Tag } from "kaplay";
 import contTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -43,11 +43,12 @@ export function continuationCore(
             K.pos(captured.playerPos),
             K.layer("continuations"),
             K.anchor("center"),
-            K.area({ collisionIgnore: ["*"] }),
+            K.area(),
             K.shader("recolor-red", {
                 u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
             }),
-            "worldMarker",
+            "worldMarker" as Tag,
+            "interactable" as Tag,
         ]),
         get data() {
             return contTypes[this.type];
@@ -55,12 +56,16 @@ export function continuationCore(
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
-        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp>) {
+        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
             this.on("invoke", () => this.invoke());
             this.name = type + "(" + getIndex(this) + ")";
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.worldMarker.hidden = true;
+            this.worldMarker.on("interact", () => {
+                player.holdingIndex = player.inventory.indexOf(this);
+                player.trigger("inventoryChange");
+            });
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.data?.special === "recapture") {
