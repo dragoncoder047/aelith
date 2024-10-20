@@ -7,8 +7,8 @@ import { K } from "../../init";
 
 export function getMotionVector(): Vec2 {
     return K.vec2(
-        +K.isButtonDown("move_right") - +K.isButtonDown("move_left"),
-        +K.isButtonDown("move_down") - +K.isButtonDown("move_up"), // y increases downward
+        (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
+        (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
     ).add(K.getGamepadStick("left").reflect(K.RIGHT)); // y increases downward
 }
 
