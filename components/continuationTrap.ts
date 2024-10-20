@@ -24,6 +24,7 @@ export type CDEComps =
 
 export type ContinuationDataEntry = {
     obj: GameObj<CDEComps>
+    inPlayerInventory: boolean
     pos?: Vec2
     togglerState?: boolean
     triggeredState?: boolean
@@ -209,7 +210,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 const foundObjects = MParser.world!.get<CDEComps>("machine")
                     .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius);
                 for (var obj of foundObjects) {
-                    const e: ContinuationDataEntry = { obj };
+                    const e: ContinuationDataEntry = {
+                        obj,
+                        inPlayerInventory: player.inventory.includes(obj as any),
+                    };
                     if (obj.is("body") && !obj.isStatic)
                         e.pos = obj.pos.clone();
                     if (obj.is("toggler"))

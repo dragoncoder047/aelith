@@ -20,7 +20,7 @@ const config = {
 };
 
 var watch = false;
-if (process.argv.indexOf("-w") !== -1) watch = true;
+if (process.argv.includes("-w")) watch = true;
 
 if (watch) {
     const ctx = await esbuild.context({

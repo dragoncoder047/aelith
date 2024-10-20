@@ -21,8 +21,7 @@ const indexMap = new Map<number, number>();
 const counterMap = new Map<string, number>();
 function getIndex(obj: GameObj<ContinuationComp>): number {
     if (indexMap.has(obj.id!)) return indexMap.get(obj.id!)!;
-    var counter = counterMap.get(obj.type) ?? 0;
-    counter++;
+    const counter = (counterMap.get(obj.type) ?? 0) + 1;
     counterMap.set(obj.type, counter);
     indexMap.set(obj.id!, counter);
     return counter;
@@ -76,10 +75,12 @@ export function continuationCore(
             player.playSound("teleport");
             // K.camPos(K.camPos().add(delta));
             for (var e of this.captured.objects) {
-                if (!e.pos?.eq(player.worldPos()!))
-                    player.removeFromInventory(e.obj as unknown as PlayerInventoryItem);
+                if (!e.inPlayerInventory)
+                    player.removeFromInventory(e.obj as any);
+                else
+                    player.addToInventory(e.obj as any);
+                var obj = e.obj;
                 if (e.obj.is("body") && !e.obj.isStatic) {
-                    var obj = e.obj;
                     if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius
                         && e.obj.is("cloneable")) {
                         // It is out of range, clone it
@@ -89,8 +90,8 @@ export function continuationCore(
                     obj.pos = e.pos!.clone();
                     obj.vel = K.vec2(0);
                 }
-                e.obj.togglerState = e.togglerState!;
-                e.obj.triggered = e.triggeredState!;
+                obj.togglerState = e.togglerState!;
+                obj.triggered = e.triggeredState!;
                 // If it is a button that *was* stomped by a box when captured, but
                 // isn't stomped currently, the following happens when the continuation is
                 // invoked:
@@ -100,8 +101,8 @@ export function continuationCore(
                 //    state - turning off wrongly.
                 // To prevent #3 from occuring, the button is told to ignore collisions for
                 // 5 physics frames (0.1 seconds) after being restored.
-                if (e.obj.is("button"))
-                    e.obj.ignoreCollisionsFrames = 5;
+                if (obj.is("button"))
+                    obj.ignoreCollisionsFrames = 5;
             }
             if (!this.data!.reusable) this.destroy();
         },

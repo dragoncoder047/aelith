@@ -173,6 +173,7 @@ function playerComp(): PlayerComp {
         inventory: [],
         holdingIndex: -1,
         addToInventory(this: GameObj<PlayerComp>, obj) {
+            if (this.inventory.includes(obj)) return;
             // Put in inventory
             this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
@@ -204,9 +205,8 @@ function playerComp(): PlayerComp {
             this.trigger("inventoryChange");
         },
         drop(this: GameObj<PlayerComp | PosComp>, obj) {
-            const i = this.inventory.indexOf(obj);
-            // already dropped it. Problem.
-            if (i === -1) {
+            if (!this.inventory.includes(obj)) {
+                // already dropped it. Problem.
                 K.debug.log("BUG: tried to drop item i don't have");
                 return;
             };
@@ -215,7 +215,7 @@ function playerComp(): PlayerComp {
                 [...this.inventory, this].forEach(item =>
                     (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(item));
             this.trigger("drop", obj);
-            obj.trigger("thrown");
+            obj.trigger("dropped");
         },
         get throwImpulse() {
             if (!this.lookingDirection || this.lookingDirection.slen() < 0.01) return undefined;
@@ -228,6 +228,7 @@ function playerComp(): PlayerComp {
             const thrown = this.holdingItem;
             if (!thrown || !this.throwImpulse || !thrown.is("throwable")) return;
             this.drop(thrown);
+            thrown.trigger("thrown");
             thrown.applyImpulse(this.throwImpulse);
             this.playSound("throw");
             this.trigger("throw", thrown);

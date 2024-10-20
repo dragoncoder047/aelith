@@ -36,7 +36,7 @@ export function grabbable(): GrabbableComp {
             }
         },
         destroy(this: PlayerInventoryItem) {
-            if (player.inventory.indexOf(this) !== -1) player.drop(this);
+            if (player.inventory.includes(this)) player.drop(this);
         }
     };
 }
