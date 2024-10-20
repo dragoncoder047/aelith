@@ -80,11 +80,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         ]) as ContinuationTrapComp["hint"],
         zoop: K.add([
             K.pos(),
-            K.circle(zoopRadius(Infinity),
-                // CircleCompOpt is not in signature for some reason
-                // @ts-expect-error
-                { fill: false }),
-            // TODO: why is this circle always white?
+            K.circle(zoopRadius(Infinity), { fill: false }),
             K.outline(2, K.RED),
             K.layer("ui"),
             zoop(),
@@ -126,7 +122,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 else this.hint.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
             } else this.hint.t = "";
 
-            this.hint.color = this.color.lighten(100);
+            this.hint.color = this.color.lighten(50);
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
             this.hint.data.radius = this.radius.toString();
             this.zoop.outline.color = this.color;
