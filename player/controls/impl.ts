@@ -13,9 +13,11 @@ export function getMotionVector(): Vec2 {
 }
 
 function motionHandler() {
-    const xy = getMotionVector();
+    var xy = getMotionVector();
+    const len = xy.len();
+    if (len === 0) return;
     if (player.state === "normal")
-        xy.y = 0;
+        xy = xy.reject(K.UP).unit().scale(len);
     player.move(xy.scale(WALK_SPEED));
     if (xy.x > 0)
         player.flipX = true;
@@ -23,8 +25,8 @@ function motionHandler() {
         player.flipX = false;
 }
 
-player.onButtonDown(["move_left", "move_right", "move_up", "move_down"], motionHandler);
-player.onGamepadStick("left", motionHandler);
+player.onUpdate(motionHandler);
+
 player.onButtonPress("jump", () => {
     if (player.isGrounded() && player.state !== "climbing") {
         player.jump();
