@@ -59,6 +59,9 @@
         "nothingToSee": "Nothing to see over here",
         "throwable": "You can &control.verbThrow&control.verbSpaceThrow&control.throw to throw the variable again -- the blue line shows where it will go.",
         "firstContinuation": "That [green]green[/green] thing you are holding? It's a [special]continuation![/special]\nPress &control.invoke to invoke it.",
-        "firstTrap": "With that [blue]blue[/blue] device, you can capture your own continuations!\nDon't be shy -- grab it!"
+        "firstTrap": "With that [blue]blue[/blue] device, you can capture your own continuations!\nDon't be shy -- grab it!",
+        "firstChallenge": "There are a lot of race condition bugs... you'll have to use continuations to get around them.",
+        "completedFirstChallenge": "That was easy,\nwasn't it?",
+        "noMoreHelp": "There are more bugs, but I am not able to help you with them. Good luck!"
     }
 }
