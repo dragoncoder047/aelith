@@ -2,7 +2,6 @@ import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 
-
 const FPSIndicator = UI.add([
     K.text("", { size: 8 / SCALE, font: "IBM Mono" }),
     K.pos(MARGIN, MARGIN),
@@ -23,30 +22,30 @@ K.loop(0.1, () => {
     else FPSIndicator.color = K.GREEN;
 });
 
-const countIndicator = UI.add([
-    K.text("counting objects...", { size: 8 / SCALE, font: "IBM Mono" }),
-    K.pos(MARGIN, MARGIN + 12 / SCALE),
-    K.color(K.WHITE),
-    K.layer("ui"),
-]);
+// const countIndicator = UI.add([
+//     K.text("counting objects...", { size: 8 / SCALE, font: "IBM Mono" }),
+//     K.pos(MARGIN, MARGIN + 12 / SCALE),
+//     K.color(K.WHITE),
+//     K.layer("ui"),
+// ]);
 
-var objectCount = 0;
-function updateObjectCount() {
-    countIndicator.text = objectCount + " objects";
-    if (objectCount > 250) countIndicator.color = K.RED;
-    else if (objectCount > 150) countIndicator.color = K.YELLOW;
-    else countIndicator.color = K.GREEN;
-}
+// var objectCount = 0;
+// function updateObjectCount() {
+//     countIndicator.text = objectCount + " objects";
+//     if (objectCount > 250) countIndicator.color = K.RED;
+//     else if (objectCount > 150) countIndicator.color = K.YELLOW;
+//     else countIndicator.color = K.GREEN;
+// }
 
-K.wait(0.1, () => {
-    objectCount = K.get("*", { recursive: true }).length;
-    updateObjectCount();
-    K.onAdd(() => {
-        objectCount++;
-        updateObjectCount();
-    });
-    K.onDestroy(() => {
-        objectCount--;
-        updateObjectCount();
-    });
-});
+// K.wait(0.1, () => {
+//     objectCount = K.get("*", { recursive: true }).length;
+//     updateObjectCount();
+//     K.onAdd(() => {
+//         objectCount++;
+//         updateObjectCount();
+//     });
+//     K.onDestroy(() => {
+//         objectCount--;
+//         updateObjectCount();
+//     });
+// });
