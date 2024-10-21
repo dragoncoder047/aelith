@@ -23,8 +23,9 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
             });
             this.onCollideUpdate(obj => {
                 if (this.forceMagnitude > 0
-                        && obj.is(["body", "pos"])
-                        && (obj as GameObj<BodyComp>).curPlatform() !== null) {
+                    && K.Vec2.fromAngle(this.forceAngle).toAxis().eq(K.UP)
+                    && obj.is(["body", "pos"])
+                    && (obj as GameObj<BodyComp>).curPlatform() !== null) {
                     (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
                     (obj as GameObj<BodyComp>).jump(Number.EPSILON);
                 }

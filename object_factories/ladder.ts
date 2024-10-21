@@ -11,5 +11,6 @@ export function ladder() {
         // falling-off-the-ladder have more realistic bounds
         K.area({ scale: 1.0 / TILE_SIZE }),
         "ladder" as Tag,
+        "raycastIgnore" as Tag,
     ];
 }

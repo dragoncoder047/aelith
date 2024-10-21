@@ -98,6 +98,12 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
+            this.on("inactive", () => {
+                this.hint.hidden = this.zoop.hidden = true;
+            });
+            this.on("active", () => {
+                this.hint.hidden = this.zoop.hidden = false;
+            });
             this.hint.t = "";
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
@@ -130,14 +136,12 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.zoop.pos = this.worldPos()!;
             this.uniform!.u_targetcolor = this.color;
 
-            if (this.shouldShowWillCapture) {
-                if (this.radius > 0 && !this.zoop.isZooping) {
+            if (!this.zoop.isZooping) {
+                if (this.shouldShowWillCapture && this.radius > 0) {
                     this.zoop.hidden = false;
                     this.zoop.radius = zoopRadius(this.radius);
                 }
-            }
-            else if (!this.zoop.isZooping) {
-                this.zoop.hidden = true;
+                else this.zoop.hidden = true;
             }
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
@@ -159,6 +163,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).is("invisible-trigger")) continue;
+                    if (e.inPlayerInventory) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox)
                         K.drawRect({
@@ -175,13 +180,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                             }
                         });
                 }
-                if (this.radius > 0 && !this.zoop.isZooping) {
-                    this.zoop.hidden = false;
-                    this.zoop.radius = zoopRadius(this.radius);
-                }
-            }
-            else if (!this.zoop.isZooping) {
-                this.zoop.hidden = true;
             }
         },
         capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp>) {
@@ -208,14 +206,15 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             if (this.radius > 0) {
                 // find all the objects
                 const foundObjects = MParser.world!.get<CDEComps>("machine")
-                    .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius);
+                    .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius)
+                    .concat(player.inventory.filter(x => x.is("body")) as any);
                 for (var obj of foundObjects) {
                     const e: ContinuationDataEntry = {
                         obj,
                         inPlayerInventory: player.inventory.includes(obj as any),
                     };
                     if (obj.is("body") && !obj.isStatic)
-                        e.pos = obj.pos.clone();
+                        e.pos = (e.inPlayerInventory ? data.playerPos : obj.pos).clone();
                     if (obj.is("toggler"))
                         e.togglerState = obj.togglerState;
                     if (obj.is("invisible-trigger"))

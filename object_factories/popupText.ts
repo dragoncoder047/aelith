@@ -1,4 +1,4 @@
-import { Comp } from "kaplay";
+import { Comp, Tag } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { linked } from "../components/linked";
@@ -19,6 +19,7 @@ export function popupTextNote() {
                 // @ts-ignore
                 this.opacity = +(this.state === "on");
             }
-        } as Comp
+        } as Comp,
+        "raycastIgnore" as Tag,
     ]
 }

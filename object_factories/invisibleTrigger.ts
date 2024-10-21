@@ -1,7 +1,8 @@
+import { Tag } from "kaplay";
+import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
-import { invisibleTriggerComp } from "../components/invisibleTrigger";
 
 export function invisibleTrigger() {
     return [
@@ -9,5 +10,6 @@ export function invisibleTrigger() {
         K.opacity(0),
         ...machine(),
         invisibleTriggerComp(),
+        "raycastIgnore" as Tag,
     ];
 }

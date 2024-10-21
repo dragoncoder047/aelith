@@ -11,6 +11,7 @@ export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | Name
 export interface PlayerComp extends Comp {
     readonly holdingItem: PlayerInventoryItem | undefined
     readonly headPosWorld: Vec2
+    _pull2Pos(other: PlayerInventoryItem): void
     camFollower: KEventController | undefined
     footstepsCounter: number,
     intersectingAny(type: Tag, where?: GameObj): boolean
@@ -25,8 +26,8 @@ export interface PlayerComp extends Comp {
     drop(object: PlayerInventoryItem): void
     readonly throwImpulse: Vec2 | undefined
     throw(): void
-    scrollInventory(dir: 1 | -1): void
-    canScrollInventory(dir: 1 | -1): boolean
+    scrollInventory(dir: number): void
+    canScrollInventory(dir: number): boolean
     lookAt(pos: Vec2 | undefined): void
 }
 
@@ -46,6 +47,14 @@ function playerComp(): PlayerComp {
                 K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
             });
         },
+        _pull2Pos(this: GameObj<PlayerComp | SpriteComp | PosComp>, other) {
+            if (!other) return;
+            if (other.is("continuation-trap") && (other as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) return;
+            other.vel = K.vec2(0);
+            const offset = other.is("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
+            const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
+            other.moveTo(this.worldPos()!.add(other.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
+        },
         update(this: GameObj<PlayerComp | PosComp | BodyComp | SpriteComp>) {
             // hide all inventory items
             this.inventory.forEach(item => item.paused = item.hidden = true);
@@ -55,12 +64,7 @@ function playerComp(): PlayerComp {
                 // Clear curPlatform() if I'm standing on it
                 if (this.curPlatform() === h) this.jump(1);
                 h.paused = h.hidden = false;
-                if (!h.is("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) {
-                    h.vel = K.vec2(0); // Reset velocity
-                    const offset = h.is("hold-offset") ? (h as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
-                    const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
-                    h.moveTo(this.worldPos()!.add(h.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
-                }
+                this._pull2Pos(h);
             }
         },
         /**
@@ -80,17 +84,31 @@ function playerComp(): PlayerComp {
                 this.lookingAt = undefined;
                 if (!this.lookingDirection) break;
 
+                const allObjects = K.get<AreaComp>("area", { recursive: true })
+                    .filter(x => !(this.inventory as any[]).includes(x)
+                        && x.collisionIgnore.every(t => !this.is(t))
+                        && !x.is("raycastIgnore")
+                        && !x.paused);
+
+                // First raycast only the objects we are interested in
                 rcr = actuallyRaycast(
-                    K.get<AreaComp>("area", { recursive: true })
-                        .filter(x => !(this.inventory as any[]).includes(x)
-                            && x.collisionIgnore.every(t => !this.is(t))
-                            && !x.paused
-                            && (x.is("interactable") || x.is("grabbable"))),
+                    allObjects.filter(x => x.is("interactable") || x.is("grabbable")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
+
+                // If we are in range of an interesting object, check to see
+                // if it is obscured
+                rcr = actuallyRaycast(
+                    allObjects,
+                    this.headPosWorld,
+                    this.lookingDirection,
+                    INTERACT_DISTANCE);
+                if (rcr === null || !rcr.object) break;
+                if (!(rcr.object.is("interactable") || rcr.object.is("grabbable"))) break;
                 this.lookingAt = rcr.object as GameObj<AreaComp>;
+
             } while (false);
 
             if (this.lookingAt) {
@@ -173,13 +191,10 @@ function playerComp(): PlayerComp {
         addToInventory(this: GameObj<PlayerComp>, obj) {
             if (this.inventory.includes(obj)) return;
             // Put in inventory
-            this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
-            obj.paused = true;
-            obj.hidden = true;
+            this.scrollInventory(this.inventory.length);
             if (obj.is("platformEffector"))
                 (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
-            this.trigger("inventoryChange");
         },
         grab(this: GameObj<PlayerComp>, obj) {
             // already have it. Problem.
@@ -196,7 +211,10 @@ function playerComp(): PlayerComp {
             const i = this.inventory.indexOf(obj);
             if (i === -1) return;
             obj.paused = obj.hidden = false;
-            if (obj.exists()) obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+            if (obj.exists()) {
+                obj.trigger("inactive");
+                obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+            }
             this.inventory.splice(i, 1);
             if (this.holdingIndex >= i)
                 this.holdingIndex--;
@@ -232,19 +250,23 @@ function playerComp(): PlayerComp {
             this.trigger("throw", thrown);
         },
         scrollInventory(this: GameObj<PlayerComp>, dir) {
-            this.holdingIndex += dir;
-            if (this.holdingIndex < -1) this.holdingIndex = -1;
-            if (this.holdingIndex >= this.inventory.length) this.holdingIndex = this.inventory.length - 1;
+            const oldIndex = this.holdingIndex;
+            const wasHolding = this.holdingItem;
+            this.holdingIndex = K.clamp(this.holdingIndex + dir, -1, this.inventory.length - 1);
+            if (oldIndex === this.holdingIndex) return;
+            const nowHolding = this.holdingItem;
+            if (wasHolding) {
+                wasHolding.trigger("inactive");
+                wasHolding.paused = wasHolding.hidden = true;
+            }
+            if (nowHolding) {
+                nowHolding.trigger("active");
+                nowHolding.paused = nowHolding.hidden = false;
+            }
             this.trigger("inventoryChange");
         },
         canScrollInventory(dir) {
-            if (dir === 1) {
-                return this.holdingIndex < this.inventory.length - 1;
-            }
-            if (dir === -1) {
-                return this.holdingIndex > -1;
-            }
-            return false;
+            return (this.holdingIndex + dir) >= -1 && (this.holdingIndex + dir) < this.inventory.length;
         },
         lookAt(this: GameObj<PlayerComp | PosComp | SpriteComp>, pos) {
             if (!pos) {
@@ -295,7 +317,8 @@ export const player = K.add([
                 K.popTransform();
             }
         }
-    }
+    },
+    "raycastIgnore"
 ]);
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
@@ -343,6 +366,7 @@ for (var i = 0; i < numTailSegments; i++) {
             },
         }),
         "tail",
+        "raycastIgnore",
     ]);
     pos = pos.add(K.vec2(0, sz));
 }
