@@ -40,6 +40,7 @@ export const MParser: {
     process(cmd: string, pos?: Vec2): CompList<any> | undefined;
     cleanBuffer(): void;
     build(): void;
+    uid_counter: number,
     uid(): string;
 } = {
     world: undefined,
@@ -436,7 +437,8 @@ export const MParser: {
      * Intermediate stack of objects used during initialization.
      */
     stack: [],
+    uid_counter: 10000,
     uid() {
-        return Math.random().toString(16).slice(2, 10);
+        return (this.uid_counter++).toString(16);
     }
 };
