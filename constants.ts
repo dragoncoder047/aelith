@@ -44,17 +44,17 @@ export const INTERACT_DISTANCE = TILE_SIZE * 4;
  * How often (in seconds) a footstep sound should be played
  * when the player is walking
  */
-export const FOOTSTEP_INTERVAL = 0.25;
+export const FOOTSTEP_INTERVAL = 0.125;
 
 /**
  * Maximum speed (pixels/sec) at which the player moves
  */
-export const WALK_SPEED = 64;
+export const WALK_SPEED = 128;
 
 /**
  * Maximum speed (pixels/sec) at which a conveyor moves objects
  */
-export const CONVEYOR_SPEED = 64;
+export const CONVEYOR_SPEED = 128;
 
 /**
  * Force of the fans.

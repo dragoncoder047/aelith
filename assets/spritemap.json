@@ -17,7 +17,7 @@
                 "from": 8,
                 "to": 15,
                 "loop": true,
-                "speed": 32
+                "speed": 64
             },
             "jump": {
                 "from": 16,
