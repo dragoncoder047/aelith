@@ -90,6 +90,7 @@ export function continuationCore(
                         && e.obj.is("cloneable")) {
                         // It is out of range, clone it
                         obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
+                        obj.use("machine");
                     }
                     // Update pos and vel
                     obj.pos = e.pos!.clone();

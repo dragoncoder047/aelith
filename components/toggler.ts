@@ -27,9 +27,8 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
             this._syncState();
         },
         add(this: GameObj<StateComp | TogglerComp | LinkComp>) {
-            const zz_dummy = K.onUpdate(() => {
+            K.onLoad(() => {
                 this._syncState();
-                zz_dummy.cancel();
             });
             this.onMessage(msg => {
                 if (msg == this.toggleMsg) {

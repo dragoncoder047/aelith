@@ -205,7 +205,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             };
             if (this.radius > 0) {
                 // find all the objects
-                const foundObjects = MParser.world!.get<CDEComps>("machine")
+                const foundObjects = K.get<CDEComps>("machine", { recursive: true })
                     .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius)
                     .concat(player.inventory.filter(x => x.is("body")) as any);
                 for (var obj of foundObjects) {

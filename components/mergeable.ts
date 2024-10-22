@@ -1,4 +1,5 @@
 import { Comp, GameObj, SpriteComp } from "kaplay";
+import { K } from "../init";
 
 export interface MergeableComp extends Comp {
     widthToAdd: number
@@ -10,10 +11,9 @@ export function mergeable(): MergeableComp {
         widthToAdd: 0,
         id: "mergeable",
         add(this: GameObj<SpriteComp | MergeableComp>) {
-            const zz = this.onUpdate(() => {
+            K.onLoad(() => {
                 if (this.width > 0) {
                     this.width += this.widthToAdd;
-                    zz.cancel();
                     this.unuse("mergeable");
                 }
             });

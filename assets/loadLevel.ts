@@ -1,7 +1,6 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { nextFrame } from "../utils";
 import { player } from "../player";
 import { MParser } from "./mparser";
 import { doStartup } from "../startup";
@@ -25,9 +24,7 @@ K.load((async () => {
         }
     }) as GameObj<LevelComp | PosComp>;
     try {
-        await nextFrame();
         MParser.build();
-        await nextFrame();
         MParser.mergeAcross();
     } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`;
@@ -37,13 +34,11 @@ K.load((async () => {
     }
 
     const playerPositions = MParser.world!.get("playerPosition") as GameObj<PosComp>[];
-    if (playerPositions.length == 0) {
+    if (playerPositions.length == 0)
         throw new SyntaxError(`need a @ in WORLD_FILE`);
-    }
-    if (playerPositions.length > 1) {
+    if (playerPositions.length > 1)
         console.warn(`Multiple @'s in WORLD_FILE - using the first one`);
-    }
-    const moveBy = playerPositions[0]!.worldPos()!.sub(player.pos);
+    const moveBy = playerPositions[0]!.worldPos()!.sub(player.pos).add(0, TILE_SIZE / 2);
     player.moveBy(moveBy);
     // move tail segments too
     K.get("tail").forEach(t => t.moveBy(moveBy));
@@ -51,7 +46,7 @@ K.load((async () => {
     playerPositions.forEach(K.destroy);
     // prevent superfast scroll on load
     K.camPos(player.worldPos()!);
-    // do startup sequence -- after this function returns of course!
+
     K.onLoad(doStartup);
 
 })());

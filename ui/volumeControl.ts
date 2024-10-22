@@ -1,4 +1,3 @@
-
 import { GameObj, PosComp, TextComp } from "kaplay";
 import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";

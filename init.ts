@@ -17,3 +17,19 @@ export const K = kaplay({
 
 // @ts-expect-error
 window.K = K;
+
+// const oldOnUpdate = K.onUpdate;
+
+// var count = 0;
+// // @ts-ignore
+// K.onUpdate = (...args) => {
+//     K.debug.log("K.onUpdate count", ++count);
+//     // @ts-ignore
+//     const vv = oldOnUpdate(...args);
+//     const oldCancel = vv.cancel;
+//     vv.cancel = () => {
+//         K.debug.log("K.onUpdate count", --count);
+//         oldCancel();
+//     }
+//     return vv;
+// };

@@ -216,10 +216,7 @@ export const MParser: {
         // toggle command: flips the state of the game object
         t() {
             const obj = this.stack.pop() as GameObj<TogglerComp>;
-            const zz = obj.onUpdate(() => {
-                obj.togglerState = !obj.togglerState;
-                zz.cancel();
-            });
+            obj.togglerState = !obj.togglerState;
             this.stack.push(obj);
         },
         // elongate command: stretches the object's area in the specified direction
