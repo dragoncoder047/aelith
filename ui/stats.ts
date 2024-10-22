@@ -14,6 +14,10 @@ K.onUpdate(() => frameCounter++);
 K.loop(0.1, () => {
     const now = K.time();
     const fps = frameCounter / (now - lastTime);
+    if (isNaN(fps)) {
+        console.error("game is frozen??");
+        return;
+    }
     lastTime = now;
     frameCounter = 0;
     FPSIndicator.text = "FPS: " + fps.toFixed(2).padStart(6);
