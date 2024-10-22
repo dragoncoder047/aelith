@@ -64,9 +64,9 @@ const chunks: TextChunk[] = [
     {
         text: "\nLogged in!",
     },
-    ...command("sudo ai-assistant &", "(1) 4242 ai-assistant\nAssistant is running", "~", 1, 1, true),
+    ...command("sudo ai-assistant &", "\\[1] 4242 ai-assistant\nAssistant is running", "~", 1, 1, true),
     ...command("ai \"find the answer\"", "Segmentation fault (core dumped)"
-        + "\n(1)  + 4242 exit 139   ai-assistant\n[stderr]ai: error: EHOSTDOWN[/stderr]", "~", 1, 2, false),
+        + "\n\\[1]  + 4242 exit 139   ai-assistant\n[stderr]ai: error: EHOSTDOWN[/stderr]", "~", 1, 2, false),
     ...command("cd /sys/ai", "", "~", 3, 0.25, true),
     ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25, 0.25, undefined),
 ];
