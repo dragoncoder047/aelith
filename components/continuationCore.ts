@@ -58,7 +58,7 @@ export function continuationCore(
         },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
             this.on("invoke", () => this.invoke());
-            this.name = type + "(" + getIndex(this) + ")";
+            this.name = this.data!.cName;
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.worldMarker.hidden = true;

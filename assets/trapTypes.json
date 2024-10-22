@@ -1,5 +1,6 @@
 {
     "throw": {
+        "cName": "catch",
         "color": "#0000ff",
         "radius": 0,
         "reusable": false,
@@ -10,6 +11,7 @@
         "special": null
     },
     "setjmp": {
+        "cName": "longjmp",
         "color": "#00ffff",
         "radius": 4,
         "reusable": false,
@@ -20,6 +22,7 @@
         "special": null
     },
     "async": {
+        "cName": "await",
         "color": "#ff8000",
         "radius": 0,
         "reusable": false,
@@ -30,6 +33,7 @@
         "special": null
     },
     "yield": {
+        "cName": "next",
         "color": "#ffff00",
         "radius": 0,
         "reusable": false,
@@ -40,6 +44,7 @@
         "special": "recapture"
     },
     "call/cc": {
+        "cName": "k",
         "color": "#aa22ff",
         "radius": 0,
         "reusable": true,
@@ -50,6 +55,7 @@
         "special": null
     },
     "assert": {
+        "cName": "assert",
         "color": "#00ff00",
         "radius": 1.79e+308,
         "reusable": true,
