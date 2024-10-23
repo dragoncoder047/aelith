@@ -36,7 +36,7 @@ export const MParser: {
     vars: { [x: string]: any; };
     commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
     stack: any[];
-    mergeAcross(): void;
+    merge(): void;
     process(cmd: string, pos?: Vec2): CompList<any> | undefined;
     cleanBuffer(): void;
     build(): void;
@@ -367,34 +367,63 @@ export const MParser: {
         }
     },
     /**
-     * Merge blocks across horizontally in the world to ensure the player won't snag
-     * on the edges
+     * Merge blocks across horizontally and/or vertically in the world to ensure the player won't snag
+     * on the edges.
+     * 
+     * Uses https://stackoverflow.com/questions/5919298/algorithm-for-finding-the-fewest-rectangles-to-cover-a-set-of-rectangles-without
      */
-    mergeAcross() {
+    merge() {
+        const w = this.world!;
+        const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
         const allowedTags = ["wall", "barrier", /**, "conveyor"/**/];
-        for (var y = 0; y < this.world!.numRows(); y++) {
-            var prevTile: GameObj<AreaComp | SpriteComp | PosComp | MergeableComp> | undefined = undefined;
-            var prevTag: string = "";
-            for (var x = 0; x < this.world!.numColumns(); x++) {
-                const thisTile = this.world!.getAt(K.vec2(x, y))[0]!;
-                if (prevTile != undefined
-                    && thisTile != undefined
-                    && prevTag != ""
-                    && thisTile.is(prevTag)) {
-                    // merge across
-                    prevTile.moveBy(TILE_SIZE / 2, 0);
-                    prevTile.modifyWidth(TILE_SIZE);
-                    thisTile.destroy();
-                }
-                else {
-                    // reset
-                    if (thisTile != undefined && allowedTags.some(t => thisTile.is(t))) {
-                        prevTile = thisTile as GameObj<AreaComp | SpriteComp | PosComp | MergeableComp>;
-                        prevTag = allowedTags.find(t => thisTile.is(t))!;
+        for (var tag of allowedTags) {
+            const tiles: { [pos: string]: GameObj<AreaComp | MergeableComp | PosComp> } = {};
+            // get original tiles in a grid
+            for (var x = 0; x < w.numColumns(); x++)
+                for (var y = 0; y < w.numRows(); y++) {
+                    const obj = w.getAt(K.vec2(x, y))[0] as typeof tiles[keyof typeof tiles] | undefined;
+                    if (obj && obj.is(tag)) {
+                        console.log(tag, obj);
+                        tiles[c2k(x, y)] = obj;
                     }
-                    else {
-                        prevTile = undefined;
-                        prevTag = "";
+                }
+            // do merge algorithm
+            // scan grid
+            for (var y = 0; y < w.numRows(); y++) {
+                for (var x = 0; x < w.numColumns(); x++) {
+                    const k = c2k(x, y);
+                    const tile = tiles[k];
+                    if (!tile) continue;
+                    // found tile: stretch it across as far as possible
+                    var width = 1;
+                    for (var merge_x = x + 1; merge_x < w.numColumns(); merge_x++, width++) {
+                        const kk = c2k(merge_x, y);
+                        if (tiles[kk]) {
+                            tiles[kk].destroy();
+                            delete tiles[kk];
+                            tile.modifyWidth(TILE_SIZE);
+                            tile.moveBy(TILE_SIZE / 2, 0);
+                        } else break;
+                    }
+                    // now stretch downwards
+                    downstretchloop:
+                    for (var merge_y = y + 1; merge_y < w.numRows(); merge_y++) {
+                        // check to see if all squares below are filled
+                        for (var thisrow_x = x, i = 0; i < width; thisrow_x++, i++) {
+                            const kk = c2k(thisrow_x, merge_y);
+                            if (!tiles[kk]) {
+                                // done merging
+                                break downstretchloop;
+                            }
+                        }
+                        // get here = can merge down
+                        for (var thisrow_x = x, i = 0; i < width; thisrow_x++, i++) {
+                            const kk = c2k(thisrow_x, merge_y);
+                            tiles[kk]?.destroy();
+                            delete tiles[kk];
+                        }
+                        tile.modifyHeight(TILE_SIZE);
+                        tile.moveBy(0, TILE_SIZE / 2);
                     }
                 }
             }

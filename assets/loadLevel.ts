@@ -25,7 +25,7 @@ K.load((async () => {
     }) as GameObj<LevelComp | PosComp>;
     try {
         MParser.build();
-        MParser.mergeAcross();
+        MParser.merge();
     } catch (e: any) {
         const msg = `Tilemap build error: ${e.stack || e.toString()}`;
         K.debug.error(msg);

@@ -1,25 +1,31 @@
-import { Comp, GameObj, SpriteComp } from "kaplay";
+import { Comp, GameObj, SpriteComp, Vec2 } from "kaplay";
 import { K } from "../init";
 
 export interface MergeableComp extends Comp {
-    widthToAdd: number
+    dimToAdd: Vec2
+
     modifyWidth(width: number): void
+    modifyHeight(width: number): void
 }
 
 export function mergeable(): MergeableComp {
     return {
-        widthToAdd: 0,
+        dimToAdd: K.vec2(0),
         id: "mergeable",
         add(this: GameObj<SpriteComp | MergeableComp>) {
             K.onLoad(() => {
                 if (this.width > 0) {
-                    this.width += this.widthToAdd;
+                    this.width += this.dimToAdd.x;
+                    this.height += this.dimToAdd.y;
                     this.unuse("mergeable");
                 }
             });
         },
         modifyWidth(width) {
-            this.widthToAdd += width;
+            this.dimToAdd.x += width;
+        },
+        modifyHeight(height) {
+            this.dimToAdd.y += height;
         }
     };
 }
