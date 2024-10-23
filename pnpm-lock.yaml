@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:kaplayjs/kaplay#b1058a677d02938b5e823a03900c7fa3984f160b
-        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/b1058a677d02938b5e823a03900c7fa3984f160b
+        specifier: github:kaplayjs/kaplay#4433162823479d5a9301ebc315a0df04e92c0451
+        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/4433162823479d5a9301ebc315a0df04e92c0451
       zzfx:
         specifier: ^1.3.0
         version: 1.3.0
@@ -173,9 +173,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/b1058a677d02938b5e823a03900c7fa3984f160b:
-    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/b1058a677d02938b5e823a03900c7fa3984f160b}
-    version: 4000.0.0-alpha.10
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/4433162823479d5a9301ebc315a0df04e92c0451:
+    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/4433162823479d5a9301ebc315a0df04e92c0451}
+    version: 4000.0.0-alpha.11
 
   typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
@@ -286,7 +286,7 @@ snapshots:
       '@esbuild/win32-ia32': 0.24.0
       '@esbuild/win32-x64': 0.24.0
 
-  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/b1058a677d02938b5e823a03900c7fa3984f160b: {}
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/4433162823479d5a9301ebc315a0df04e92c0451: {}
 
   typescript@5.6.2: {}
 
