@@ -26,8 +26,16 @@ export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
         strings: {},
         langs: ["en"],
         sub(s, vars) {
-            // @ts-expect-error
-            return subStrings(s, { ...K.strings, ...vars });
+            return subStrings(s, {
+                // @ts-expect-error
+                ...K.strings,
+                inputType: K.getLastInputDeviceType() === "gamepad"
+                    ? "gamepad"
+                    : "keyboard",
+                // @ts-expect-error
+                lang: findPreferredLanguage(K.langs),
+                ...vars
+            });
         },
         loadStrings(strings) {
             // @ts-expect-error
@@ -46,14 +54,7 @@ export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
                 data: {},
                 update(this: GameObj<TextComp | DynamicTextComp>) {
                     // @ts-expect-error
-                    this.text = K.sub(this.t, {
-                        ...this.data,
-                        inputType: K.getLastInputDeviceType() === "gamepad"
-                            ? "gamepad"
-                            : "keyboard",
-                        // @ts-expect-error
-                        lang: findPreferredLanguage(K.langs),
-                    });
+                    this.text = K.sub(this.t, this.data);
                 },
                 inspect() {
                     return "sub: " + this.t;
@@ -90,17 +91,18 @@ function findPreferredLanguage(availableLangs: NavigatorLanguage["languages"]): 
 
 function subStrings(text: string, vars: NestedStrings): string {
     const flattenedVars = flatten(vars);
+    var changed = 0;
     do {
-        var changed = false;
         for (var key of Object.getOwnPropertyNames(flattenedVars)) {
             const rep = `&${key}`;
             if (text.indexOf(rep) !== -1) {
                 // @ts-expect-error
                 text = text.replaceAll(rep, flattenedVars[key]!);
-                changed = true;
+                changed = 2;
             }
         }
-    } while (changed);
+        changed--;
+    } while (changed > 0);
     return text;
 }
 

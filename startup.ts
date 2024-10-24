@@ -48,11 +48,11 @@ function command(
 
 const chunks: TextChunk[] = [
     {
-        text: "Press ENTER to start...",
+        text: "&msg.startup.pressToBegin",
         wait: () => jumpWait(new Promise(r => K.onKeyDown("enter", () => r()))),
     },
     {
-        text: "Password for &user: ",
+        text: "&msg.startup.password",
         wait: 1,
         clear: true,
     },
@@ -62,13 +62,13 @@ const chunks: TextChunk[] = [
         wait: 1
     },
     {
-        text: "\nLogged in!",
+        text: "\n&msg.startup.loggedInOK",
     },
-    ...command("sudo ai-assistant &", "\\[1] 4242 ai-assistant\nAssistant is running", "~", 1, 1, true),
-    ...command("ai \"find the answer\"", "Segmentation fault (core dumped)"
+    ...command("sudo ai-assistant &", "\\[1] 4242 ai-assistant\n&msg.startup.running", "~", 1, 1, true),
+    ...command("ai \"&msg.startup.findAnswer\"", "&msg.startup.segfault"
         + "\n\\[1]  + 4242 exit 139   ai-assistant\n[stderr]ai: error: EHOSTDOWN[/stderr]", "~", 1, 2, false),
     ...command("cd /sys/ai", "", "~", 3, 0.25, true),
-    ...command("gdb pm", "Starting debugger...", "/sys/ai", 0.25, 0.25, undefined),
+    ...command("gdb pm", "&msg.startup.startingDebugger", "/sys/ai", 0.25, 0.25, undefined),
 ];
 
 export async function doStartup() {
@@ -90,7 +90,7 @@ export async function doStartup() {
         }
 
         // get vars
-        const vars = { user: "anon" };
+        const vars = { user: "anonymous" };
 
         var runningText = "";
         var typedText = "";

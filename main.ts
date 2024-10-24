@@ -12,4 +12,5 @@ import "./player/states";
 import "./ui";
 
 K.setGravity(GRAVITY);
+K.setLanguages(["en", "es"]);
 const follower = player.camFollower!;
