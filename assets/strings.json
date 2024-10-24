@@ -47,6 +47,8 @@
                 "modify": "&control.verbModify&control.verbSpaceModify&control.modify to change the capture radius.\nCurrent radius: &radius"
             }
         },
+        "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
+        "gameErrorDetails": "You can search for the error online: ",
         "gamename": "[gamename]debugger[/gamename];",
         "wrongWayLeft": "&arrow.left Go that way",
         "move": "Use &control.move to move and &control.jump to jump",

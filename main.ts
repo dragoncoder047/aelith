@@ -1,6 +1,7 @@
 // cSpell: ignore kaplay
 
 import { K } from "./init";
+import "./bsod";
 import "./layers";
 
 import "./assets/loadLevel";
@@ -14,4 +15,8 @@ import "./ui";
 
 K.setGravity(GRAVITY);
 const follower = player.camFollower!;
+
+K.onUpdate(() => {
+    this_function_does_not_exist();
+});
 

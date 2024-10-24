@@ -49,4 +49,4 @@ K.load((async () => {
 
     K.onLoad(doStartup);
 
-})());
+})().catch(err => K.onUpdate(() => { throw err; })));

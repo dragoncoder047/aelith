@@ -141,7 +141,7 @@ export const MParser: {
             const pName = this.stack.pop() as string;
             const val = this.vars[pName];
             if (val === undefined)
-                throw "undefined: " + pName;
+                throw new ReferenceError("undefined: " + pName);
             this.stack.push(val);
         },
         // invoke command: *arguments name -- *values
@@ -149,7 +149,7 @@ export const MParser: {
             const pName = this.stack.pop() as string;
             const proc = this.vars[pName];
             if (proc === undefined)
-                throw "undefined: " + pName;
+                throw new ReferenceError("undefined: " + pName);
             this.commandQueue.unshift(proc);
         },
         // loop command: code n -- *anything
@@ -225,7 +225,7 @@ export const MParser: {
             const mod = this.stack.pop() as string;
             const obj = this.stack.pop() as GameObj<AreaComp | PosComp>;
             const match = /^([+-]?\d+)([+-][xy])$/i.exec(mod);
-            if (!match) throw "invalid elongate command " + mod;
+            if (!match) throw new Error("invalid elongate command " + mod);
             const [_, dir, axis] = match;
             const dirI = parseInt(dir!);
             const move = (axis![0] == "+" ? dirI : -dirI) * TILE_SIZE / 2;
@@ -239,7 +239,7 @@ export const MParser: {
                     obj.area.offset.y += move;
                     break;
                 default:
-                    throw "BUG: something's wrong with my regex in e() command";
+                    throw new Error("BUG: something's wrong with my regex in e() command");
             }
             this.stack.push(obj);
         },
@@ -284,10 +284,10 @@ export const MParser: {
         }
         if (this.parenStack.length > 0) {
             const popParen = (p: string) => {
-                if (!this.parenStack.length) throw "unmatched paren " + p;
+                if (!this.parenStack.length) throw new SyntaxError("unmatched paren " + p);
                 const oldState = this.parenStack.pop();
                 const expected = { "{": "}", "[": "]", "(": ")" }[oldState!];
-                if (p != expected) throw "mismatched parens " + oldState + " " + p;
+                if (p != expected) throw new SyntaxError("mismatched parens " + oldState + " " + p);
             };
             if (cmd == "]" || cmd == ")" || cmd == "}") {
                 popParen(cmd);
@@ -300,7 +300,7 @@ export const MParser: {
                     else if (cmd === "}") {
                         this.cleanBuffer();
                         const code = this.commandQueue.pop();
-                        if (typeof code !== "string") throw "BUG: cleanBuffer() not string!";
+                        if (typeof code !== "string") throw new Error("BUG: cleanBuffer() not string!");
                         this.commandQueue.push(() => {
                             this.parenStack = [];
                             this.buffer = undefined;
@@ -308,8 +308,8 @@ export const MParser: {
                             for (var i = 0; i < code.length; i++) {
                                 this.process(code[i]!);
                             }
-                            if (this.parenStack.length > 0) throw "BUG: mismatched parens should have been handled by now";
-                            if (this.commandQueue.length === oLen && code != "") throw "BUG: Lambda is not empty string but there are no code";
+                            if (this.parenStack.length > 0) throw new Error("BUG: mismatched parens should have been handled by now");
+                            if (this.commandQueue.length === oLen && code != "") throw new Error("BUG: Lambda is not empty string but there are no code");
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
                             this.commandQueue.unshift(() => {
                                 this.stack.push(() => {
@@ -363,7 +363,7 @@ export const MParser: {
                 rv.push(cmd);
                 return rv;
             }
-            else throw "unknown command " + cmd;
+            else throw ReferenceError("unknown command " + cmd);
         }
     },
     /**
