@@ -217,6 +217,7 @@ export const MParser: {
         t() {
             const obj = this.stack.pop() as GameObj<TogglerComp>;
             obj.togglerState = !obj.togglerState;
+            // K.onLoad(() => obj.togglerState = !obj.togglerState);
             this.stack.push(obj);
         },
         // elongate command: stretches the object's area in the specified direction
@@ -382,10 +383,7 @@ export const MParser: {
             for (var x = 0; x < w.numColumns(); x++)
                 for (var y = 0; y < w.numRows(); y++) {
                     const obj = w.getAt(K.vec2(x, y))[0] as typeof tiles[keyof typeof tiles] | undefined;
-                    if (obj && obj.is(tag)) {
-                        console.log(tag, obj);
-                        tiles[c2k(x, y)] = obj;
-                    }
+                    if (obj && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid

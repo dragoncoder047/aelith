@@ -63,7 +63,7 @@ export function conveyor(states: [string, string] = ["off", "on"], mode: Conveyo
                     this._speeds = [1, -1];
                     break;
                 default:
-                    throw "bad conveyor mode " + this.mode;
+                    throw new Error("bad conveyor mode " + this.mode);
             }
         },
         inspect() {

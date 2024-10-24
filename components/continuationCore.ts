@@ -1,4 +1,4 @@
-import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp, Tag } from "kaplay";
+import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp, Tag, OffScreenComp } from "kaplay";
 import contTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -12,7 +12,7 @@ export interface ContinuationComp extends Comp {
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
     readonly color: Color
     captured: ContinuationData
-    worldMarker: GameObj<PosComp | SpriteComp | ShaderComp>
+    worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp>
     invoke(): void,
     activate(): void,
 }
@@ -43,6 +43,7 @@ export function continuationCore(
             K.pos(captured.playerPos),
             K.layer("continuations"),
             K.anchor("center"),
+            K.offscreen(),
             K.area(),
             K.shader("recolor-red", {
                 u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
@@ -115,6 +116,10 @@ export function continuationCore(
         draw(this: GameObj<PosComp | ContinuationComp>) {
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
+            if (this.worldMarker.isOffScreen())  {
+                // TODO: cut the polygon at the edge of the screen
+                // so it won't lag if the line is super long
+            }
             const segments = 8 * p1.sub(p2).len() / TILE_SIZE;
             const jitter = () => K.rand(K.vec2(-2, -2), K.vec2(2, 2));
             const f = (t: number) => K.lerp(p1, p2, t).add(jitter());
