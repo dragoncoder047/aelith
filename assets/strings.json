@@ -109,7 +109,7 @@
                 "invoke": "R1",
                 "modify": {
                     "name": "el d-pad arriba y abajo",
-                    "verb": "presiona",
+                    "verb": "Presiona",
                     "space": " "
                 }
             },
@@ -142,7 +142,7 @@
             "pressToBegin": "Presione ENTER para iniciar...",
             "findAnswer": "encontrar la respuesta",
             "startingDebugger": "Inicio del programa de depuración...",
-            "segfault": "Fallo de segmentación (volcado de núcleo)",
+            "segfault": "Fallo de segmentación (núcleo volcado)",
             "running": "Asistente está lista"
         },
         "continuation": {
