@@ -3,7 +3,7 @@ import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 
 const FPSIndicator = UI.add([
-    K.text("", { size: 8 / SCALE, font: "IBM Mono" }),
+    K.text("", { size: 8 / SCALE }),
     K.pos(MARGIN, MARGIN),
     K.color(K.WHITE),
     K.layer("ui"),
@@ -27,7 +27,7 @@ K.loop(0.1, () => {
 });
 
 const countIndicator = UI.add([
-    K.text("counting objects...", { size: 8 / SCALE, font: "IBM Mono" }),
+    K.text("counting objects...", { size: 8 / SCALE }),
     K.pos(MARGIN, MARGIN + 12 / SCALE),
     K.color(K.WHITE),
     K.layer("ui"),

@@ -6,7 +6,7 @@ import { musicPlay } from "../assets";
 
 
 const musicButton = UI.add([
-    K.text("\u000e", { size: 24 / SCALE, font: "IBM Mono" }),
+    K.text("\u000e", { size: 24 / SCALE }),
     K.pos(),
     K.color(K.WHITE),
     K.anchor("botright"),

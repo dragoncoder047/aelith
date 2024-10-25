@@ -22,7 +22,17 @@ export function box(): CompList<any> {
             // and I don't have to stomp on it
             scale: (TILE_SIZE - 1) / TILE_SIZE,
             friction: FRICTION,
-            restitution: RESTITUTION
+            restitution: RESTITUTION,
+            shape: new K.Polygon([
+                K.vec2(-TILE_SIZE * 7 / 16, -TILE_SIZE / 2),
+                K.vec2(TILE_SIZE * 7 / 16, -TILE_SIZE / 2),
+                K.vec2(TILE_SIZE / 2, -TILE_SIZE * 7 / 16),
+                K.vec2(TILE_SIZE / 2, TILE_SIZE * 7 / 16),
+                K.vec2(TILE_SIZE * 7 / 16, TILE_SIZE / 2),
+                K.vec2(-TILE_SIZE * 7 / 16, TILE_SIZE / 2),
+                K.vec2(-TILE_SIZE / 2, TILE_SIZE * 7 / 16),
+                K.vec2(-TILE_SIZE / 2, -TILE_SIZE * 7 / 16),
+            ]),
         }),
         K.tile({ isObstacle: true }),
         thudder(),

@@ -5,7 +5,6 @@ import { styles } from "../assets/textStyles";
 export function textNote() {
     return [
         K.text("", {
-            font: "IBM Mono",
             size: 16 / FONT_SCALE,
             width: TILE_SIZE * 4,
             align: "left",

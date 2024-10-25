@@ -24,7 +24,6 @@ function updateInventory() {
 const btnLeft = UI.add([
     K.text("\x11", {
         size: 32 / SCALE,
-        font: "IBM Mono",
     }),
     K.pos(),
     K.area(),
@@ -42,7 +41,6 @@ btnLeft.use(uiButton(() => player.scrollInventory(-1)));
 const inventory = UI.add([
     K.text("foo", {
         size: 16 / SCALE,
-        font: "IBM Mono",
         width: TILE_SIZE * 6 / SCALE,
         align: "center"
     }),
@@ -61,7 +59,6 @@ const inventory = UI.add([
 const btnRight = UI.add([
     K.text("\x10", {
         size: 32 / SCALE,
-        font: "IBM Mono",
     }),
     K.pos(),
     K.area(),

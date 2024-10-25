@@ -1,16 +1,23 @@
 // cSpell: ignore kaplay
 
 import { K } from "./init";
-import "./bsod";
 import "./layers";
 
 import "./assets/loadLevel";
+import "./bsod";
 import { GRAVITY } from "./constants";
+import "./debugLinkage";
 import { player } from "./player";
 import "./player/controls/impl";
 import "./player/states";
 import "./ui";
+import { LinkComp } from "./components/linked";
 
 K.setGravity(GRAVITY);
 K.setLanguages(["en", "es"]);
-const follower = player.camFollower!;
+
+// @ts-ignore
+window.playerFollower = player.camFollower!;
+
+// @ts-ignore
+window.openSesame = (id: string) => K.get<LinkComp>("linked", { recursive: true })[0]!.broadcast("toggle");

@@ -117,8 +117,14 @@ export function continuationCore(
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
             if (this.worldMarker.isOffScreen())  {
-                // TODO: cut the polygon at the edge of the screen
-                // so it won't lag if the line is super long
+                const doubledScreenRect = new K.Rect(K.vec2(-K.width(), -K.height()), K.width() * 2, K.height() * 2);
+                const out = new K.Line(K.vec2(), K.vec2());
+                const clipped = new K.Line(p1, p2);
+                K.clipLineToRect(doubledScreenRect, clipped, out);
+                p1.x = out.p1.x;
+                p1.y = out.p1.y;
+                p2.x = out.p2.x;
+                p2.y = out.p2.y;
             }
             const segments = 8 * p1.sub(p2).len() / TILE_SIZE;
             const jitter = () => K.rand(K.vec2(-2, -2), K.vec2(2, 2));
