@@ -259,11 +259,20 @@ export const MParser: {
             this.stack.push(size * TILE_SIZE);
         },
         // invisible trigger setup command
-        q() {
+        v() {
             const s = this.stack.pop() as string;
             const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
             obj.setup(s);
             this.stack.push(s);
+        },
+        // squirrel command: obj name 1 -- or name 0 -- obj
+        // pushes to stacks
+        q() {
+            const push = !!this.stack.pop();
+            const name = this.stack.pop() as string;
+            if (!(name in this.vars)) this.vars[name] = [];
+            if (push) this.vars[name].push(this.stack.pop());
+            else this.stack.push(this.vars[name].pop());
         },
         // debug command: logs the top object
         "?"() {
@@ -368,8 +377,9 @@ export const MParser: {
         }
     },
     /**
-     * Merge blocks across horizontally and/or vertically in the world to ensure the player won't snag
-     * on the edges.
+     * Merge blocks across horizontally and/or vertically in the world
+     * to ensure the player won't snag on the edges, and to prevent excessive lag
+     * from too many game objects.
      * 
      * Uses https://stackoverflow.com/questions/5919298/algorithm-for-finding-the-fewest-rectangles-to-cover-a-set-of-rectangles-without
      */

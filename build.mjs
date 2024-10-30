@@ -5,6 +5,7 @@ const config = {
     bundle: true,
     sourcemap: true,
     minify: true,
+    keepNames: true,
     platform: "browser",
     loader: {
         ".png": "dataurl",
