@@ -1,3 +1,4 @@
+import { KEventController } from "kaplay";
 import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
@@ -8,10 +9,9 @@ const FPSIndicator = UI.add([
     K.color(K.WHITE),
     K.layer("ui"),
 ]);
-var frameCounter = 0;
-var lastTime = 0;
+var frameCounter = 0, lastTime = 0;
 K.onUpdate(() => frameCounter++);
-K.loop(0.1, () => {
+setInterval(() => {
     const now = K.time();
     const fps = frameCounter / (now - lastTime);
     if (isNaN(fps)) {
@@ -24,7 +24,7 @@ K.loop(0.1, () => {
     if (fps < 20) FPSIndicator.color = K.RED;
     else if (fps < 30) FPSIndicator.color = K.YELLOW;
     else FPSIndicator.color = K.GREEN;
-});
+}, 100);
 
 const countIndicator = UI.add([
     K.text("counting objects...", { size: 8 / SCALE }),
