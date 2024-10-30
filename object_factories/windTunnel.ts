@@ -13,8 +13,8 @@ export function windTunnel() {
         }),
         wind(),
         K.outline(0),
-        // these are set by wind comp
-        K.areaEffector({ forceAngle: 0, forceMagnitude: 0 }),
+        // this is set by wind comp
+        K.areaEffector({ force: K.vec2(0) }),
         "raycastIgnore" as Tag,
     ];
 }
