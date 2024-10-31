@@ -386,14 +386,14 @@ export const MParser: {
     merge() {
         const w = this.world!;
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", /**, "conveyor"/**/];
+        const allowedTags = ["wall", "barrier", "conveyor"];
         for (var tag of allowedTags) {
             const tiles: { [pos: string]: GameObj<AreaComp | MergeableComp | PosComp> } = {};
             // get original tiles in a grid
             for (var x = 0; x < w.numColumns(); x++)
                 for (var y = 0; y < w.numRows(); y++) {
                     const obj = w.getAt(K.vec2(x, y))[0] as typeof tiles[keyof typeof tiles] | undefined;
-                    if (obj && obj.is(tag)) tiles[c2k(x, y)] = obj;
+                    if (obj && obj.is("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid
