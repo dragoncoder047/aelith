@@ -1,5 +1,4 @@
 import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -12,7 +11,6 @@ import { ContinuationComp } from "./continuationCore";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
-
 
 export type CDEComps =
     | PosComp
@@ -49,6 +47,7 @@ export interface ContinuationTrapComp extends Comp {
     prepare(): void
     capture(): void
     peekCapture(): ContinuationData
+    getPlayerPosData(): Vec2
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
@@ -133,7 +132,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
             this.hint.data.radius = this.radius.toString();
             this.zoop.outline.color = this.color;
-            this.zoop.pos = this.worldPos()!;
+            this.zoop.pos = this.getPlayerPosData();
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
@@ -199,14 +198,17 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {
             // Capture all of the objects
             const data: ContinuationData = {
-                playerPos: (this.data?.prepare === "throw" ? this.worldPos()! : player.worldPos()!),
+                playerPos: this.getPlayerPosData(),
                 capturedRadius: this.radius,
                 objects: []
             };
             if (this.radius > 0) {
                 // find all the objects
+                const circle = new K.Circle(data.playerPos, this.radius);
                 const foundObjects = K.get<CDEComps>("machine", { recursive: true })
-                    .filter(obj => obj.worldPos()!.dist(data.playerPos) <= this.radius)
+                    .filter(obj =>
+                        obj.worldArea?.().collides(circle)
+                        ?? obj.worldPos()!.dist(data.playerPos) < this.radius)
                     .concat(player.inventory.filter(x => x.is("body")) as any);
                 for (var obj of foundObjects) {
                     const e: ContinuationDataEntry = {
@@ -223,6 +225,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 }
             }
             return data;
+        },
+        getPlayerPosData(this: GameObj<ContinuationComp | PosComp>) {
+            return this.data?.prepare === "throw" ? this.worldPos()! : player.worldPos()!;
         },
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
