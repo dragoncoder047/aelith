@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -207,7 +207,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 const circle = new K.Circle(data.playerPos, this.radius);
                 const foundObjects = K.get<CDEComps>("machine", { recursive: true })
                     .filter(obj =>
-                        obj.worldArea?.().collides(circle)
+                        ((obj as unknown as GameObj<OpacityComp>).opacity === 0
+                            // If opacity is 0, it's a wind tunnel or something else, must use distance to pos
+                            // else just let's see if it collides
+                            ? undefined
+                            : obj.worldArea?.().collides(circle))
                         ?? obj.worldPos()!.dist(data.playerPos) < this.radius)
                     .concat(player.inventory.filter(x => x.is("body")) as any);
                 for (var obj of foundObjects) {

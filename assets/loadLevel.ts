@@ -14,9 +14,6 @@ K.load((async () => {
         wildcardTile: (cmd, pos) => MParser.process(cmd, pos),
     }) as GameObj<LevelComp | PosComp>;
 
-    MParser.build();
-    MParser.merge();
-
     const playerPositions = MParser.world!.get("playerPosition") as GameObj<PosComp>[];
     if (playerPositions.length === 0)
         throw new SyntaxError(`need a @ in WORLD_FILE`);
@@ -31,6 +28,11 @@ K.load((async () => {
     // prevent superfast scroll on load
     K.camPos(player.worldPos()!);
 
-    K.onLoad(doStartup);
+    MParser.merge();
 
 })().catch(err => K.onUpdate(() => { throw err; })));
+
+K.onLoad(() => {
+    MParser.build();
+    doStartup();
+});
