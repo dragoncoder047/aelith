@@ -6,16 +6,16 @@ import { continuation } from "../object_factories/continuation";
 import { textNote } from "../object_factories/text";
 import { player, PlayerInventoryItem } from "../player";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { ButtonComp } from "./button";
 import { ContinuationComp } from "./continuationCore";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
+import { CollisionerComp } from "./collisioner";
 
 export type CDEComps =
     | PosComp
     | BodyComp
-    | ButtonComp
+    | CollisionerComp
     | TogglerComp
     | InvisibleTriggerComp
     | AreaComp;
@@ -97,12 +97,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
-            this.on("inactive", () => {
-                this.hint.hidden = this.zoop.hidden = true;
-            });
-            this.on("active", () => {
-                this.hint.hidden = this.zoop.hidden = false;
-            });
             this.hint.t = "";
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
@@ -124,9 +118,13 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.flipX = player.flipX;
 
             if (this.enabled && this === player.holdingItem) {
+                this.hint.hidden = false;
                 if (this.isPreparing) this.hint.t = this.data?.prepareHint!;
                 else this.hint.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
-            } else this.hint.t = "";
+            } else {
+                this.hint.hidden = true;
+                this.zoop.hidden = true;
+            }
 
             this.hint.color = this.color.lighten(50);
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);

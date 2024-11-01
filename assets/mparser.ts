@@ -258,14 +258,16 @@ export const MParser: {
             const size = this.stack.pop() as number;
             this.stack.push(size * TILE_SIZE);
         },
-        // invisible trigger setup command
+        // invisible trigger setup command: (I string -- I)
         v() {
             const s = this.stack.pop() as string;
             const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
             obj.setup(s);
             this.stack.push(s);
         },
-        // squirrel command: obj name 1 -- or name 0 -- obj
+        // squirrel command:
+        // obj name 1 --
+        // name 0 -- obj
         // pushes to stacks
         q() {
             const push = !!this.stack.pop();

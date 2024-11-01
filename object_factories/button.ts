@@ -6,6 +6,7 @@ import { spriteToggle } from "../components/spriteToggle";
 import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { collisioner } from "../components/collisioner";
 
 export function button() {
     return [
@@ -15,6 +16,7 @@ export function button() {
         ...machine({ offset: K.vec2(0, 3), friction: FRICTION }),
         K.body({ isStatic: true }),
         buttonComp(),
+        collisioner(),
         clicky(),
         "noCollideWithTail" as Tag,
     ];

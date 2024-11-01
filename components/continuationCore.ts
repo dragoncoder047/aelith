@@ -99,17 +99,17 @@ export function continuationCore(
                 }
                 obj.togglerState = e.togglerState!;
                 obj.triggered = e.triggeredState!;
-                // If it is a button that *was* stomped by a box when captured, but
-                // isn't stomped currently, the following happens when the continuation is
+                // If it is a button or laser that *was* triggered by a box when captured, but
+                // isn't triggered currently, the following happens when the continuation is
                 // invoked:
-                // 1. The box is moved back, so that it is colliding with the button.
-                // 2. The button state is surreptitiously restored by the continuation.
-                // 3. On the next frame, the button notices that it got stomped, and toggles
-                //    state - turning off wrongly.
-                // To prevent #3 from occuring, the button is told to ignore collisions for
+                // 1. The box is moved back, so that it is triggering the button or laser.
+                // 2. The button/laser state is surreptitiously restored by the continuation.
+                // 3. On the next frame, the button/laser notices that it got triggered, and toggles
+                //    state - undoing the continuation invocation.
+                // To prevent #3 from occuring, the button/laser is told to ignore new triggers for
                 // 5 physics frames (0.1 seconds) after being restored.
-                if (obj.is("button"))
-                    obj.ignoreCollisionsFrames = 5;
+                if (obj.is("collisioner"))
+                    obj.ignoreTriggerTimeout = 5;
             }
             if (!this.data!.reusable) this.destroy();
         },

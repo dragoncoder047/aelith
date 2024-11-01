@@ -20,4 +20,4 @@ K.setLanguages(["en", "es"]);
 window.playerFollower = player.camFollower!;
 
 // @ts-ignore
-window.openSesame = (id: string) => K.get<LinkComp>("linked", { recursive: true })[0]!.broadcast("toggle");
+window.openSesame = (id: string) => (K.get<LinkComp>("linked", { recursive: true }).find(x => x.tag === id) ?? { broadcast() { throw "nothing with id " + id; } }).broadcast("toggle");
