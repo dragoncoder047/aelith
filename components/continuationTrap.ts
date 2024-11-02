@@ -97,7 +97,12 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
-            this.hint.t = "";
+            this.on("inactive", () => {
+                this.hint.hidden = this.zoop.hidden = true;
+            });
+            this.on("active", () => {
+                this.hint.hidden = this.zoop.hidden = false;
+            });
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
@@ -121,10 +126,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.hint.hidden = false;
                 if (this.isPreparing) this.hint.t = this.data?.prepareHint!;
                 else this.hint.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
-            } else {
-                this.hint.hidden = true;
-                this.zoop.hidden = true;
-            }
+            } else this.hint.hidden = true;
 
             this.hint.color = this.color.lighten(50);
             this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);

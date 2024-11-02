@@ -119,14 +119,10 @@ export const MParser: {
                 link = n;
                 n = this.stack.pop() as number;
             };
-            const grp: GameObj<LinkComp>[] = [];
             for (var i = 0; i < n; i++) {
-                var item = this.stack.pop() as GameObj<LinkComp>;
+                var item = this.stack.at(-1 - i) as GameObj<LinkComp>;
                 item.tag = link;
-                grp.push(item);
             }
-            while (grp.length > 0)
-                this.stack.push(grp.pop());
         },
         // define command: value name --
         d() {
@@ -272,14 +268,15 @@ export const MParser: {
         q() {
             const push = !!this.stack.pop();
             const name = this.stack.pop() as string;
-            if (!(name in this.vars)) this.vars[name] = [];
+            if (!(name in this.vars) && push) this.vars[name] = [];
+            else if (!(name in this.vars) && !push) throw new Error("can't squirrel from " + name);
             if (push) this.vars[name].push(this.stack.pop());
             else this.stack.push(this.vars[name].pop());
         },
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
-            console.log(`${object.tags} tags`, object);
+            console.log(`${object.tags} tags`, object, MParser);
             this.stack.push(object);
         }
     },

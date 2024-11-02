@@ -1,4 +1,3 @@
-import { KEventController } from "kaplay";
 import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
@@ -36,8 +35,8 @@ const countIndicator = UI.add([
 var objectCount = 0;
 function updateObjectCount() {
     countIndicator.text = objectCount + " objects";
-    if (objectCount > 250) countIndicator.color = K.RED;
-    else if (objectCount > 150) countIndicator.color = K.YELLOW;
+    if (objectCount > 1000) countIndicator.color = K.RED;
+    else if (objectCount > 300) countIndicator.color = K.YELLOW;
     else countIndicator.color = K.GREEN;
 }
 
