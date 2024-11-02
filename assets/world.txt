@@ -88,7 +88,7 @@
         %   %
         %   %
         %   %%%%%%%%%%%%%%%%%
-        %                  T%(name)(yield)sz
-        %S  CCCCCCCCCCCCCCCC%17g(direction)1ns16z180rz
+        %                  T% (name)(yield)sz
+        %S  CCCCCCCCCCCCCCCC% 17g(direction)1ns16z180rz
          ###################%
       N(t)(&msg.fellOut)s(width)12bs16nn0nmz
