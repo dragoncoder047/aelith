@@ -1,4 +1,5 @@
 import * as esbuild from "esbuild";
+import p from "./package.json";
 
 /** @type {esbuild.BuildOptions} */
 const config = {
@@ -13,7 +14,7 @@ const config = {
         ".txt": "text",
         ".woff": "dataurl"
     },
-    entryPoints: ["main.ts"],
+    entryPoints: [p.main],
     format: "esm",
     target: "esnext",
     treeShaking: true,
