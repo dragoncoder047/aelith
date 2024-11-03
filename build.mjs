@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import p from "./package.json";
+import p from "./package.json" with { type: "json" };
 
 /** @type {esbuild.BuildOptions} */
 const config = {
