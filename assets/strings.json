@@ -88,7 +88,9 @@
         "completedFirstChallenge": "That was easy,\nwasn't it?",
         "noMoreHelp": "There are more bugs, but I can't help you with them. Good luck!",
         "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
-        "slightlyDifferent": "This one behaves slightly differently... probably a good thing!"
+        "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
+        "secret": "[special]shh, secret[/special]",
+        "powerful": "this one is [special]extremely powerful![/special]"
     },
     "es": {
         "controls": {
@@ -172,6 +174,8 @@
         "completedFirstChallenge": "Eso fue fácil, ¿no?",
         "noMoreHelp": "Hay más errores, pero no puedo ayudarte con ellos. ¡Buena suerte!",
         "fellOut": "Bueno, ahora estás en un aprieto...\n¡Las continuaciones son tus amigas!",
-        "slightlyDifferent": "Este se comporta de manera ligeramente diferente... ¡Probablemente algo bueno!"
+        "slightlyDifferent": "Este se comporta de manera ligeramente diferente... ¡Probablemente algo bueno!",
+        "secret": "[special]shh, secreto[/special]",
+        "powerful": "Este es [special]¡extremadamente poderoso![/special]"
     }
 }
