@@ -1,4 +1,4 @@
-# debugger;
+# debugger
 
 A puzzle platformer game.
 
@@ -12,6 +12,14 @@ A puzzle platformer game.
 6. if you get a white screen of death check browser console for errors:
     * "assignment to readonly property" from kaplay.ts &rarr; use Chrome not Safari (see kaplayjs/kaplay#289)
     * "xxx is only available in secure origins" &rarr; go to chrome://flags/#unsafely-treat-insecure-origin-as-secure and add <http://localhost:8000>
+
+## TODOs
+
+* [ ] Add a LICENSE for code and art
+* [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
+  * [ ] How to refer to objects in-memory in serialized form?
+* [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
+  * [ ] Connect to Newgrounds for cloud save and medals?
 
 ## Dev notes follow
 
@@ -36,10 +44,6 @@ Game premise: Something went wrong in the computer system, and a debugger has be
 * `call/cc` -- most powerful continuation trap; can be used infinite number of times and has a controllable radius of effect
 * `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die (TODO: When do they die??) or mess up
 
-### Levels Mechanics Ideas
-
-3 basic mechanics of continuations: used of teleporting yourself, glitching machines, and cloning objects
-
 #### Machine types
 
 * Controls
@@ -56,5 +60,3 @@ Game premise: Something went wrong in the computer system, and a debugger has be
   * [ ] Generic box
   * [ ] Tower computer
   * [ ] Battery
-
-<!-- cSpell: ignore kaplay kaplayjs setjmp zzfx -->
