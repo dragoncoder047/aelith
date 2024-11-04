@@ -13,7 +13,11 @@ export function button() {
         K.sprite("button"),
         spriteToggle(),
         nudge(0, 12),
-        ...machine({ offset: K.vec2(0, 3), friction: FRICTION }),
+        ...machine({
+            offset: K.vec2(0, 3),
+            friction: FRICTION,
+            collisionIgnore: ["continuation-trap"]
+        }),
         K.body({ isStatic: true }),
         buttonComp(),
         collisioner(),
