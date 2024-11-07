@@ -262,15 +262,16 @@ export const MParser: {
             this.stack.push(s);
         },
         // squirrel command:
-        // obj name 1 --
-        // name 0 -- obj
-        // pushes to stacks
+        // obj name 1 -- (push to stack)
+        // name 0 -- obj (pop from stack)
+        // name 2 -- obj obj obj n (pop all from stack)
         q() {
-            const push = !!this.stack.pop();
+            const op = this.stack.pop() as 0 | 1 | 2;
             const name = this.stack.pop() as string;
-            if (!(name in this.vars) && push) this.vars[name] = [];
-            else if (!(name in this.vars) && !push) throw new Error("can't squirrel from " + name);
-            if (push) this.vars[name].push(this.stack.pop());
+            if (!(name in this.vars) && op === 1) this.vars[name] = [];
+            else if (!(name in this.vars) && op !== 1) throw new Error("can't squirrel from " + name);
+            if (op === 1) this.vars[name].push(this.stack.pop());
+            else if (op === 2) this.stack.push(...this.vars[name], this.vars[name].length);
             else this.stack.push(this.vars[name].pop());
         },
         // debug command: logs the top object
