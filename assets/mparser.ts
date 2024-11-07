@@ -337,22 +337,29 @@ export const MParser: {
                         const code = this.commandQueue.pop();
                         if (typeof code !== "string") throw new Error("BUG: cleanBuffer() not string!");
                         this.commandQueue.push(() => {
+                            // The decoding function
                             this.parenStack = [];
                             this.buffer = undefined;
                             const oLen = this.commandQueue.length;
-                            for (var i = 0; i < code.length; i++) {
-                                this.process(code[i]!);
-                            }
+                            for (var i = 0; i < code.length; i++) this.process(code[i]!);
                             if (this.parenStack.length > 0) throw new Error("BUG: mismatched parens should have been handled by now");
                             if (this.commandQueue.length === oLen && code != "") throw new Error("BUG: Lambda is not empty string but there are no code");
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
+                            // procSource is the commands of this function
                             this.commandQueue.unshift(() => {
+                                // The function that puts the lambda on the stack
                                 this.stack.push(() => {
+                                    // The lambda itself
+
+                                    // ops are in reverse order since they go on the front like a backended stack
                                     this.commandQueue.unshift(() => {
+                                        // pop the scope off
                                         this.vars = Object.getPrototypeOf(this.vars);
                                     });
+                                    // do the proc commands
                                     this.commandQueue = procSource.concat(this.commandQueue);
                                     this.commandQueue.unshift(() => {
+                                        // put a new scope on
                                         this.vars = Object.create(this.vars);
                                     });
                                 });
