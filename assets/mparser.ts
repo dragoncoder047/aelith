@@ -278,6 +278,31 @@ export const MParser: {
             const object = this.stack.pop() as GameObj;
             console.log(`${object.tags} tags`, object, MParser);
             this.stack.push(object);
+        },
+        // call/cc
+        // *MAGIC!!*
+        // function -- value
+        // function gets a continuation function on the stack
+        // actually this function is rigged to error
+        c() {
+            (undefined as unknown as () => void)();
+            const func = this.stack.pop() as (typeof MParser)["commands"][string];
+            const save = {
+                stack: this.stack.slice(),
+                commands: this.commandQueue.slice(),
+                scope: this.vars,
+            }
+            this.commandQueue.unshift(func); // Run the func when we return
+            this.stack.push(() => {
+                // This is the function that invokes the continuation
+                const invokedWith = this.stack.pop();
+                // restore state
+                this.stack = save.stack;
+                this.commandQueue = save.commands;
+                this.vars = save.scope;
+                // push the value invoked with
+                this.stack.push(invokedWith);
+            });
         }
     },
     /**
