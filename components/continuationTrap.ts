@@ -48,6 +48,7 @@ export interface ContinuationTrapComp extends Comp {
     capture(): void
     peekCapture(): ContinuationData
     getPlayerPosData(): Vec2
+    blinkenlights(): void
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
@@ -85,7 +86,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.layer("ui"),
             zoop(),
         ]),
-        add(this: GameObj<ContinuationTrapComp | NamedComp>) {
+        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp>) {
             this.on("invoke", () => {
                 if (this.isPreparing) this.capture();
                 else this.prepare();
@@ -104,12 +105,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.hint.hidden = this.zoop.hidden = false;
             });
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
+            this.blinkenlights();
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
-            const p = (a: string) => { if (this.hasAnim(a) && this.getCurAnim()?.name !== a) this.play(a); }
-            if (this.enabled) p("ready");
-            else p("disabled");
-
             if (this.data?.prepare === "throw") {
                 if (!this.isPreparing) {
                     if (this === player.holdingItem)
@@ -235,6 +233,16 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         },
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
+        },
+        blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
+            var min = 0, max = 0;
+            const anim = this.getAnim(this.enabled ? "ready" : "disabled");
+            if (anim && typeof anim !== "number") {
+                min = anim.from
+                max = anim.to
+            }
+            this.frame = K.randi(min, max + 1);
+            K.wait(K.rand(0.2, 1), () => this.blinkenlights());
         }
     };
 }
