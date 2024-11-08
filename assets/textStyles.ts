@@ -22,15 +22,6 @@ export const styles: TextComp["textStyles"] = {
     stderr: {
         color: K.RED.lighten(100),
     },
-    gamename: {
-        color: K.Color.fromHex(trapTypes["call/cc"].color),
-    },
-    green: {
-        color: K.Color.fromHex(trapTypes.assert.color),
-    },
-    blue: {
-        color: K.Color.fromHex(trapTypes.throw.color),
-    },
     special(i, _ch) {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),
@@ -38,3 +29,8 @@ export const styles: TextComp["textStyles"] = {
         };
     }
 };
+
+// add all the continuation colors
+for (var name of Object.getOwnPropertyNames(trapTypes) as (keyof typeof trapTypes)[]) {
+    styles[name] = { color: K.Color.fromHex(trapTypes[name].color) };
+}
