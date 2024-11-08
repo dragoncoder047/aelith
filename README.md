@@ -15,7 +15,6 @@ A puzzle platformer game.
 
 ## TODOs
 
-* [ ] Add a LICENSE for code and art
 * [ ] Add security camera "firewall" with laser device
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
