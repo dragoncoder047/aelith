@@ -146,9 +146,19 @@ export const MParser: {
         i() {
             const pName = this.stack.pop() as string;
             const proc = this.vars[pName];
-            if (proc === undefined)
-                throw new ReferenceError("undefined: " + pName);
+            if (typeof proc !== "function")
+                throw new ReferenceError(pName + " is not a function: " + proc);
+            // ops are in reverse order since they go on the front like a backended stack
+            this.commandQueue.unshift(() => {
+                // pop the scope off
+                this.vars = Object.getPrototypeOf(this.vars);
+            });
+            // do the proc commands
             this.commandQueue.unshift(proc);
+            this.commandQueue.unshift(() => {
+                // put a new scope on
+                this.vars = Object.create(this.vars);
+            });
         },
         // loop command: code n -- *anything
         l() {
@@ -350,19 +360,7 @@ export const MParser: {
                             this.commandQueue.unshift(() => {
                                 // The function that puts the lambda on the stack
                                 this.stack.push(() => {
-                                    // The lambda itself
-
-                                    // ops are in reverse order since they go on the front like a backended stack
-                                    this.commandQueue.unshift(() => {
-                                        // pop the scope off
-                                        this.vars = Object.getPrototypeOf(this.vars);
-                                    });
-                                    // do the proc commands
                                     this.commandQueue = procSource.concat(this.commandQueue);
-                                    this.commandQueue.unshift(() => {
-                                        // put a new scope on
-                                        this.vars = Object.create(this.vars);
-                                    });
                                 });
                             });
                         });
