@@ -19,6 +19,7 @@ A puzzle platformer game.
 * [ ] Add security camera "firewall" with laser device
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
+    * [ ] Ones that don't exist, when savegame is loaded initially at start?
 * [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
   * [ ] Connect to Newgrounds for cloud save and medals?
 
