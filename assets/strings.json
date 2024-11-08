@@ -89,8 +89,10 @@
         "noMoreHelp": "There are more bugs, but I can't help you with them. Good luck!",
         "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
         "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
-        "secret": "[special]shh, secret[/special]",
-        "powerful": "this one is [special]extremely powerful![/special]"
+        "secret": "[special]shh, secret?[/special]",
+        "noSecret": "well, you found nothing\n\nmaybe the game will be updated...",
+        "powerful": "this one is [special]extremely powerful![/special]",
+        "congrats": "[special]CONGRATULATIONS![/special] you have reached the end of the game so far!!"
     },
     "es": {
         "controls": {
@@ -175,7 +177,9 @@
         "noMoreHelp": "Hay más errores, pero no puedo ayudarte con ellos. ¡Buena suerte!",
         "fellOut": "Bueno, ahora estás en un aprieto...\n¡Las continuaciones son tus amigas!",
         "slightlyDifferent": "Este se comporta de manera ligeramente diferente... ¡Probablemente algo bueno!",
-        "secret": "[special]shh, secreto[/special]",
-        "powerful": "Este es [special]¡extremadamente poderoso![/special]"
+        "secret": "[special]shh, ¿secreto?[/special]",
+        "noSecret": "bueno, no encontraste nada\n\ntal vez el juego se actualice...",
+        "powerful": "este es [special]¡extremadamente poderoso![/special]",
+        "congrats": "[special]¡FELICIDADES![/special] ¡has llegado al final del juego hasta ahora!"
     }
 }
