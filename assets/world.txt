@@ -5,16 +5,16 @@
  stretches 1 tile downwards, triggers once on collide with player]
 {(1+y)e(1 s onCollide|player)v}(invisibleinit)d
 
-          T(name)(yield)sz                                             %                                                  Xz
- %%%%%%%%%D%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% D (bd)1q (bd2)1q
+          T(name)(yield)sz                                             %                                                                      Xz
+ %%%%%%%%%D%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  (bd2)1q            D (bd)1q
 %                          %                                                                                             %
 %                          %                                      N                                                      % (t)(&gamename)s(textSize)8as(width)24bs0n16nmz
 %                          %                                         N                                                   % (t)()s(width)20bs3bn0m(startupText)d
 %                          %                          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %
 %                          %                       =                   @     <                                        %  %
-%                          %                       =                         <                               MI       %  % 2g(invisibleinit)iz(t)(&msg.congrats)sz
+%                          %                       =                         <                               M      I %  % 2g(invisibleinit)iz(t)(&msg.congrats)s(width)10bsz
 %                          %                       =                         <                                        %  %
-%                          %                 N     =                  M     I<M                                     = %  % 2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)vz (t)(&msg.move)s0n1bm(1 p onGround)vz [climbing N] (t)(&msg.climb)sz
+%                          %                 N     =                  M     I<M                                   Az= %  % 2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)vz (t)(&msg.move)s0n1bm(1 p onGround)vz [climbing N] (t)(&msg.climb)sz
 %                          %                       =################################################################=##  %
 %                          %                       =################################################################=##  %
 %                          %                       =################################################################=##  %
@@ -71,7 +71,7 @@
         %   %                                  %                                                                         %
         %   %                                   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %   %                                                                                                         N   (t)(&msg.secret)s0n1nbmz
-        %   %                                                                                                             B (bd2)0q2g2z
+        %   %                                                                                                                                 B (bd2)0q2g2z
         %   %
         %   %
         %   %

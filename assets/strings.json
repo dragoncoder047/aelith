@@ -92,7 +92,7 @@
         "secret": "[special]shh, secret?[/special]",
         "noSecret": "well, you found nothing\n\nmaybe the game will be updated...",
         "powerful": "this one is [special]extremely powerful![/special]",
-        "congrats": "[special]CONGRATULATIONS![/special] you have reached the end of the game so far!!"
+        "congrats": "[special]CONGRATULATIONS![/special]\nyou have reached the end of the game so far!!"
     },
     "es": {
         "controls": {
@@ -180,6 +180,6 @@
         "secret": "[special]shh, ¿secreto?[/special]",
         "noSecret": "bueno, no encontraste nada\n\ntal vez el juego se actualice...",
         "powerful": "este es [special]¡extremadamente poderoso![/special]",
-        "congrats": "[special]¡FELICIDADES![/special] ¡has llegado al final del juego hasta ahora!"
+        "congrats": "[special]¡FELICIDADES![/special]\n¡has llegado al final del juego hasta ahora!"
     }
 }
