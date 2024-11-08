@@ -261,7 +261,7 @@ export const MParser: {
             const s = this.stack.pop() as string;
             const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
             obj.setup(s);
-            this.stack.push(s);
+            this.stack.push(obj);
         },
         // squirrel command:
         // obj name 1 -- (push to stack)
