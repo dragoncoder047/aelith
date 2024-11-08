@@ -16,6 +16,7 @@ A puzzle platformer game.
 ## TODOs
 
 * [ ] Add a LICENSE for code and art
+* [ ] Add security camera "firewall" with laser device
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
 * [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
@@ -49,12 +50,12 @@ Game premise: Something went wrong in the computer system, and a debugger has be
 * Controls
   * [X] Lever
   * [X] Button
-  * [ ] Laser / laser sensor
+  * [ ] Laser / laser sensor "firewall"
 * Effectors
   * [X] Doors
   * [X] Conveyor belts
   * [ ] Moving ladders
-  * [ ] mirrors
+  * [ ] mirrors ??
   * [X] Lights (decorations)
 * Block art
   * [ ] Generic box
