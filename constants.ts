@@ -59,7 +59,7 @@ export const CONVEYOR_SPEED = 128;
 /**
  * Force of the fans.
  */
-export const WIND_FORCE = 600;
+export const WIND_FORCE = 1000;
 
 /**
  * Physical friction for all moving objects
