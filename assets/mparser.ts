@@ -22,6 +22,7 @@ import { popupTextNote } from "../object_factories/popupText";
 import { textNote } from "../object_factories/text";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
+import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -69,6 +70,7 @@ export const MParser: {
         "@": playerPosition,
         "#": wall,
         "%": barrier,
+        "<": rightDestroyBarrier,
         "=": ladder,
     },
     vars: {},
@@ -166,7 +168,7 @@ export const MParser: {
                 while (objects.length > 0) this.stack.push(objects.pop());
             });
             for (var i = 0; i < n; i++) {
-                const obj = this.stack.pop() as GameObj
+                const obj = this.stack.pop() as GameObj;
                 objects.push(obj);
                 this.commandQueue.unshift(() => {
                     const o = this.stack.pop();
@@ -268,16 +270,15 @@ export const MParser: {
         q() {
             const op = this.stack.pop() as 0 | 1 | 2;
             const name = this.stack.pop() as string;
-            if (!(name in this.vars) && op === 1) this.vars[name] = [];
-            else if (!(name in this.vars) && op !== 1) throw new Error("can't squirrel from " + name);
+            if (!(name in this.vars)) this.vars[name] = [];
             if (op === 1) this.vars[name].push(this.stack.pop());
-            else if (op === 2) this.stack.push(...this.vars[name], this.vars[name].length);
+            else if (op === 2) this.stack.push(...this.vars[name].toReversed(), this.vars[name].length);
             else this.stack.push(this.vars[name].pop());
         },
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
-            console.log(`${object.tags} tags`, object, MParser);
+            console.log(`${object?.tags} tags`, object);
             this.stack.push(object);
         },
         // call/cc
@@ -393,10 +394,10 @@ export const MParser: {
             if (cmd in this.commands) {
                 this.commandQueue.push(this.commands[cmd]!);
             }
-            else if (pos != undefined && cmd in this.fixedTiles) {
+            else if (pos !== undefined && cmd in this.fixedTiles) {
                 return this.fixedTiles[cmd]!.call(this);
             }
-            else if (pos != undefined && cmd in this.spawners) {
+            else if (pos !== undefined && cmd in this.spawners) {
                 this.commandQueue.push(pos);
                 var rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
@@ -405,7 +406,7 @@ export const MParser: {
                 rv.push(cmd);
                 return rv;
             }
-            else throw ReferenceError("unknown command " + cmd);
+            else throw new ReferenceError("unknown command " + cmd);
         }
     },
     /**

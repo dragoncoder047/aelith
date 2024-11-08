@@ -6,6 +6,8 @@ import { MParser } from "./mparser";
 import { doStartup } from "../startup";
 import { worldFileSrc } from ".";
 
+var hadError = false;
+
 K.load((async () => {
     MParser.world = K.addLevel(worldFileSrc.split("\n"), {
         tileWidth: TILE_SIZE,
@@ -30,9 +32,14 @@ K.load((async () => {
 
     MParser.merge();
 
-})().catch(err => K.onUpdate(() => { throw err; })));
+})().catch(err => {
+    console.error("load error", err);
+    K.onLoad(() => { throw err; });
+    hadError = true;
+}));
 
 K.onLoad(() => {
+    if (hadError) return;
     MParser.build();
     doStartup();
 });
