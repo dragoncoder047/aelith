@@ -90,3 +90,6 @@ export const TERMINAL_VELOCITY = 800;
  * Player jump force
  */
 export const JUMP_FORCE = 300;
+
+export const MODIFY_SPEED = 5;
+
