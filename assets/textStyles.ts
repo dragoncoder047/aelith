@@ -6,9 +6,10 @@ import { TILE_SIZE } from "../constants";
 export const styles: TextComp["textStyles"] = {
     cursor(_i, _ch) {
         return {
-            opacity: Math.round(K.wave(0, 1, K.time() * 2 * Math.PI)),
+            // @ts-expect-error
+            ...styles.blink(),
             color: K.GREEN,
-        }
+        };
     },
     command: {
         color: K.YELLOW,
@@ -26,6 +27,11 @@ export const styles: TextComp["textStyles"] = {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),
             pos: K.vec2(0, K.wave(-TILE_SIZE / 40, TILE_SIZE / 40, K.time() * Math.PI * 2 - i)),
+        };
+    },
+    blink(_, __) {
+        return {
+            opacity: Math.round(K.wave(0, 1, K.time() * 2 * Math.PI)),
         };
     }
 };
