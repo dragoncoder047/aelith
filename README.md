@@ -16,6 +16,7 @@ A puzzle platformer game.
 ## TODOs
 
 * [ ] Add security camera "firewall" with laser device
+* [ ] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc (TODO: add rumble effects?)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
