@@ -32,5 +32,5 @@ export const styles: TextComp["textStyles"] = {
 
 // add all the continuation colors
 for (var name of Object.getOwnPropertyNames(trapTypes) as (keyof typeof trapTypes)[]) {
-    styles[name] = { color: K.Color.fromHex(trapTypes[name].color) };
+    styles[name.replace(/[^\w]/g, "")] = { color: K.Color.fromHex(trapTypes[name].color) };
 }
