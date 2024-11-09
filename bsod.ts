@@ -21,7 +21,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: K.sub("&msg.gameErrored").replaceAll(/(?<!\\)\[/g, "\\["),
+        text: K.sub("&msg.gameErrored").replace(/(?<!\\)\[/g, "\\["),
         font: "sans-serif",
         width: K.width() * 2 / 3,
         size: K.height() / 36,
@@ -31,7 +31,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: K.sub("&msg.gameErrorDetails").replaceAll(/(?<!\\)\[/g, "\\["),
+        text: K.sub("&msg.gameErrorDetails").replace(/(?<!\\)\[/g, "\\["),
         font: "sans-serif",
         width: K.width() * 2 / 3,
         size: K.height() / 48,
@@ -41,7 +41,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: String(error instanceof Error ? error.stack : error).replaceAll(/(?<!\\)\[/g, "\\["),
+        text: String(error instanceof Error ? error.stack : error).replace(/(?<!\\)\[/g, "\\["),
         font: "monospace",
         width: K.width() * 2 / 3,
         size: K.height() / 56,
