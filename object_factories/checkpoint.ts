@@ -24,6 +24,7 @@ export function checkpoint() {
                 });
             }
         } as Comp,
-        "raycastIgnore" as Tag
+        "raycastIgnore" as Tag,
+        "checkpoint" as Tag
     ];
 }

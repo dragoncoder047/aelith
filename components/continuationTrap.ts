@@ -211,6 +211,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                             ? undefined
                             : obj.worldArea?.().collides(circle))
                         ?? obj.worldPos()!.dist(data.playerPos) < this.radius)
+                    .filter(obj => !obj.is("checkpoint"))
                     .concat(player.inventory.filter(x => x.is("body")) as any);
                 for (var obj of foundObjects) {
                     const e: ContinuationDataEntry = {
