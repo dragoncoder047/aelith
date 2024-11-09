@@ -116,6 +116,12 @@
         "width": 32,
         "height": 64
     },
+    "antivirus": {
+        "x": 0,
+        "y": 228,
+        "width": 32,
+        "height": 16
+    },
     "continuation": {
         "x": 32,
         "y": 254,
