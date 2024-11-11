@@ -2,7 +2,6 @@ import { AreaComp, Comp, GameObj, StateComp } from "kaplay";
 import { TogglerComp } from "./toggler";
 import { player } from "../player";
 import { LinkComp } from "./linked";
-import { K } from "../init";
 
 export interface InvisibleTriggerComp extends Comp {
     setup(s: string): void

@@ -1,4 +1,4 @@
-import { AreaComp, Comp, GameObj, KEventController, LayerComp, Vec2 } from "kaplay";
+import { AreaComp, Comp, GameObj, LayerComp } from "kaplay";
 import { player, PlayerInventoryItem } from "../player";
 
 export interface GrabbableComp extends Comp {

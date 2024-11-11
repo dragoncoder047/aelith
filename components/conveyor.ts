@@ -1,5 +1,4 @@
 import { Comp, GameObj, SpriteComp /*, SurfaceEffectorComp */, StateComp } from "kaplay";
-import { CONVEYOR_SPEED } from "../constants";
 import { K } from "../init";
 type SurfaceEffectorComp = ReturnType<typeof K.surfaceEffector>; // why is this necessary??
 

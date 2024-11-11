@@ -8,7 +8,6 @@ import {
     TimerComp
 } from "kaplay";
 import { LinkComp } from "./linked";
-import { K } from "../init";
 
 export interface CollisionerComp extends Comp {
     onDelay: number,
