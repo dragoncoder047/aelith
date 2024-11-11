@@ -1,10 +1,11 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, Tag, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
 import { TogglerComp } from "../components/toggler";
 import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { antivirus } from "../object_factories/antivirus";
 import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
 import { button } from "../object_factories/button";
@@ -19,10 +20,10 @@ import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
 import { playerPosition } from "../object_factories/playerPosition";
 import { popupTextNote } from "../object_factories/popupText";
+import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { textNote } from "../object_factories/text";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
-import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -61,7 +62,8 @@ export const MParser: {
         M: popupTextNote,
         I: invisibleTrigger,
         T: continuationTrap,
-        A: checkpoint
+        A: checkpoint,
+        V: antivirus,
     },
     /**
      * Commands that spawn a tile that isn't configurable.
@@ -151,12 +153,14 @@ export const MParser: {
             // ops are in reverse order since they go on the front like a backended stack
             this.commandQueue.unshift(() => {
                 // pop the scope off
+                console.groupEnd();
                 this.vars = Object.getPrototypeOf(this.vars);
             });
             // do the proc commands
             this.commandQueue.unshift(proc);
             this.commandQueue.unshift(() => {
                 // put a new scope on
+                console.group(pName);
                 this.vars = Object.create(this.vars);
             });
         },
@@ -164,6 +168,7 @@ export const MParser: {
         l() {
             const times = this.stack.pop() as number;
             const code = this.stack.pop() as string;
+            console.log("loop", code, times, "times");
             for (var i = 0; i < times; i++) {
                 this.commandQueue.unshift(code);
             }
@@ -274,13 +279,13 @@ export const MParser: {
             this.stack.push(obj);
         },
         // squirrel command:
-        // obj name 1 -- (push to stack)
         // name 0 -- obj (pop from stack)
-        // name 2 -- obj obj obj n (pop all from stack)
+        // obj name 1 -- (push to stack)
+        // name 2 -- obj* len (copy all from stack -- doesn't pop)
         q() {
             const op = this.stack.pop() as 0 | 1 | 2;
             const name = this.stack.pop() as string;
-            if (!(name in this.vars)) this.vars[name] = [];
+            if (!Array.isArray(this.vars[name])) this.vars[name] = [];
             if (op === 1) this.vars[name].push(this.stack.pop());
             else if (op === 2) this.stack.push(...this.vars[name].toReversed(), this.vars[name].length);
             else this.stack.push(this.vars[name].pop());
@@ -326,7 +331,7 @@ export const MParser: {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
-            if ((cmd == "(" || cmd == "{") && typeof this.buffer !== "string") this.buffer = "";
+            if ((cmd == "(" || cmd == "{") && typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
         }
         if (this.parenStack.length > 0) {
             const popParen = (p: string) => {
@@ -356,6 +361,7 @@ export const MParser: {
                             if (this.parenStack.length > 0) throw new Error("BUG: mismatched parens should have been handled by now");
                             if (this.commandQueue.length === oLen && code != "") throw new Error("BUG: Lambda is not empty string but there are no code");
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
+                            console.log("processed lambda", code, procSource);
                             // procSource is the commands of this function
                             this.commandQueue.unshift(() => {
                                 // The function that puts the lambda on the stack
@@ -369,7 +375,7 @@ export const MParser: {
                 }
             }
             if ((oldLen > 0 || this.parenStack.length > 1) && this.parenStack[0] !== "[") {
-                if (typeof this.buffer !== "string") this.buffer = "";
+                if (typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
                 this.buffer += cmd;
             }
             return;
@@ -380,10 +386,7 @@ export const MParser: {
         }
         else if (/\d/.test(cmd)) {
             // it's a digit
-            if (typeof this.buffer !== "number") {
-                this.cleanBuffer();
-                this.buffer = 0;
-            }
+            if (typeof this.buffer !== "number") this.cleanBuffer(), this.buffer = 0;
             this.buffer = 10 * this.buffer + parseInt(cmd);
         }
         else {
@@ -490,6 +493,7 @@ export const MParser: {
                 this.stack.push(cmd);
             else {
                 K.debug.error("bad command: " + cmd);
+                console.error("bad command", cmd);
                 throw new Error("bad command: " + cmd);
             }
         }

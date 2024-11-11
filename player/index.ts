@@ -5,6 +5,7 @@ import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { HoldOffsetComp } from "../components/holdOffset";
+import { actuallyRaycast, ballistics } from "../utils";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
@@ -369,26 +370,4 @@ for (var i = 0; i < numTailSegments; i++) {
         "raycastIgnore",
     ]);
     pos = pos.add(K.vec2(0, sz));
-}
-
-
-//------------------------------------------------------------
-
-function actuallyRaycast(objects: GameObj<AreaComp>[], origin: Vec2, direction: Vec2, distance: number) {
-    direction = direction.unit().scale(distance);
-    var result: RaycastResult = null;
-    for (var obj of objects) {
-        const wa = obj.worldArea();
-        const thisResult = wa.raycast(origin, direction);
-        if (thisResult === null) continue;
-        if (result === null || thisResult.fraction < result.fraction) {
-            result = thisResult;
-            result.object = obj;
-        }
-    }
-    return result;
-}
-
-function ballistics(pos: Vec2, vel: Vec2, t: number) {
-    return pos.add(vel.scale(t)).add(K.getGravityDirection().scale(K.getGravity() * t * t / 2));
 }

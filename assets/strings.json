@@ -70,6 +70,10 @@
                 "modify": "&control.modify.verb&control.modify.space&control.modify.name to change the capture radius.\nCurrent radius: &radius"
             }
         },
+        "antivirus": {
+            "allClear": "System is clean",
+            "detected": "Rogue software detected!"
+        },
         "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
         "gameErrorDetails": "You can search for the error online:",
         "wrongWayLeft": "&arrow.left Go that way",
@@ -157,6 +161,10 @@
                 "captureThrown": "Presiona &control.invoke de nuevo para capturar una continuación desde allí",
                 "modify": "&control.modify.verb&control.modify.space&control.modify.name para cambiar el radio de captura.\nRadio actual: &radius"
             }
+        },
+        "antivirus": {
+            "allClear": "Sistema está limpio",
+            "detected": "¡Programas malvados detectados!"
         },
         "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",
         "gameErrorDetails": "Puede buscar el error en Internet:",

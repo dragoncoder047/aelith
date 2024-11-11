@@ -9,7 +9,7 @@ type NestedStrings = {
 
 export interface DynamicTextComp extends Comp {
     t: string
-    data: Record<string, string>
+    data: NestedStrings
 }
 
 export interface KAPLAYDynamicTextPlugin {

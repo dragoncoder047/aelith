@@ -4,12 +4,8 @@ import trapTypes from "./trapTypes.json";
 import { TILE_SIZE } from "../constants";
 
 export const styles: TextComp["textStyles"] = {
-    cursor(_i, _ch) {
-        return {
-            // @ts-expect-error
-            ...styles.blink(),
-            color: K.GREEN,
-        };
+    cursor: {
+        color: K.GREEN,
     },
     command: {
         color: K.YELLOW,
@@ -31,7 +27,7 @@ export const styles: TextComp["textStyles"] = {
     },
     blink(_, __) {
         return {
-            opacity: Math.round(K.wave(0, 1, K.time() * 2 * Math.PI)),
+            opacity: K.wave(0, 1, K.time() * 3 * Math.PI) > 0.3 ? 1 : 0,
         };
     }
 };
