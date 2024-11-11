@@ -1,4 +1,4 @@
-import { AreaComp, Color, Comp, GameObj, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
+import { AreaComp, BodyComp, Color, Comp, GameObj, OffScreenComp, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -21,13 +21,14 @@ export interface AntivirusComp extends Comp {
     laserColor: Color | string,
     rayHit: RaycastResult
     sweepy(): void
+    isOffensive(obj: GameObj | undefined): boolean
 }
 
-export function antivirus(offState = "off", onState = "on"): AntivirusComp {
+export function antivirus(): AntivirusComp {
     var tweener: TweenController | undefined = undefined;
     return {
         id: "antivirus",
-        require: ["rotate", "linked", "state", "toggler", "timer"],
+        require: ["rotate", "linked", "state", "toggler", "timer", "offscreen"],
         disallowedContinuations: [],
         alertMessage: "&msg.antivirus.detected",
         allClearMessage: "&msg.antivirus.allClear",
@@ -36,33 +37,34 @@ export function antivirus(offState = "off", onState = "on"): AntivirusComp {
         alertTextObj: undefined,
         sweepAngleRange: [-10, -30],
         maxDistance: TILE_SIZE * 100,
-        sweepSpeed: 6,
+        sweepSpeed: 20,
         laserColor: K.BLUE,
         rayHit: null,
         add(this: GameObj<TogglerComp | TimerComp | StateComp | AntivirusComp | RotateComp>) {
-            this.onStateEnter(offState, () => this.sweepy());
+            this.onStateEnter(this.falseState, () => this.sweepy());
         },
         sweepy(this: GameObj<TimerComp | AntivirusComp | RotateComp>) {
             var [from, to] = this.sweepAngleRange;
             if (Math.abs(this.angle - from) > Math.abs(this.angle - to))
                 [from, to] = [to, from];
             tweener = this.tween(
-                from, to,
-                Math.abs(from - to) / this.sweepSpeed,
+                this.angle, to,
+                Math.abs(this.angle - to) / this.sweepSpeed,
                 val => this.angle = val,
                 K.easings.easeInOutSine);
             tweener.onEnd(() => this.sweepy());
         },
-        update(this: GameObj<TimerComp | TogglerComp | AntivirusComp | RotateComp | PosComp | LinkComp>) {
+        update(this: GameObj<TimerComp | TogglerComp | AntivirusComp | RotateComp | PosComp | LinkComp | OffScreenComp>) {
+            if (this.sweepAngleRange[1] < this.sweepAngleRange[0]) this.sweepAngleRange = [this.sweepAngleRange[1], this.sweepAngleRange[0]];
             if (this.togglerState) {
                 if (tweener) tweener.cancel();
                 tweener = undefined;
                 // point at player
-                this.angle = this.worldPos()!.sub(player.worldPos()!).angle();
+                this.angle = this.worldPos()!.sub((this.rayHit?.object ?? player).worldPos()!).angle();
                 // show alert text
                 if (this.alertTextObj) {
                     this.alertTextObj.t = style(this.alertMessage,
-                        [player.inventory.find(x => this.disallowedContinuations.some(c => x.name === c))?.name]
+                        [((player.inventory.find(x => this.isOffensive(x)) ?? this.rayHit?.object) as any)?.name]
                             .filter(x => x !== undefined)
                             .concat(this.additionalStyles)
                             .map(t => t.replace(/[^\w]/g, "")));
@@ -72,18 +74,33 @@ export function antivirus(offState = "off", onState = "on"): AntivirusComp {
                     this.alertTextObj.t = style(this.allClearMessage, this.allClearStyles);
                 }
             }
-            // do raycast only to player
-            this.rayHit = actuallyRaycast(
-                MParser.world!.get<AreaComp>(["area"])
-                    .concat([player])
-                    .filter((x: any) => !player.inventory.includes(x))
-                    .filter((x: any) => x !== this),
-                this.worldPos()!, K.LEFT.rotate(this.angle), this.maxDistance);
-            if (this.rayHit !== null
-                && this.rayHit.object === player
-                && player.inventory.some(x => this.disallowedContinuations.some(c => x.name === c))) {
-                if (!this.togglerState) this.broadcast(this.toggleMsg);
-            } else if (this.togglerState) this.broadcast(this.toggleMsg);
+            if (this.isOffScreen()) {
+                this.rayHit = null;
+                return;
+            }
+            // do raycast to things
+            const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area"])
+                .concat([player])
+                .filter((x: any) => x !== this);
+            const sdt = Math.pow(this.maxDistance * 1.5, 2);
+            const offensiveObjects = objects
+                .filter(o => this.isOffensive(o));
+            const obstacles = objects
+                .filter(x => x.isStatic)
+            const r = (objects: GameObj<AreaComp>[], a: number) =>
+                this.rayHit = actuallyRaycast(objects,
+                    this.worldPos()!, K.LEFT.rotate(a), this.maxDistance);
+            for (var o of offensiveObjects) {
+                if (player.inventory.includes(o as any)) o = player;
+                if (o.worldPos()!.sdist(this.worldPos()!) > sdt) continue;
+                this.rayHit = r(obstacles.concat([o]), this.worldPos()!.sub(o.worldPos()!).angle());
+                if (this.rayHit !== null && this.isOffensive(this.rayHit.object)) {
+                    if (!this.togglerState) this.broadcast(this.toggleMsg);
+                    return;
+                }
+            }
+            this.rayHit = r(objects, this.angle);
+            if (this.togglerState) this.broadcast(this.toggleMsg);
         },
         draw(this: GameObj<AntivirusComp | SpriteComp | PosComp>) {
             if (typeof this.laserColor === "string") this.laserColor = K.Color.fromHex(this.laserColor);
@@ -95,12 +112,15 @@ export function antivirus(offState = "off", onState = "on"): AntivirusComp {
                     color: this.laserColor
                 });
             }
-        }
+        },
+        isOffensive(obj) {
+            if (!obj) return false;
+            if (obj === player) return player.inventory.some(item => this.isOffensive(item));
+            return this.disallowedContinuations.some(c => obj.name === c)
+        },
     }
 }
 
 function style(t: string, ss: string[]): string {
-    const out = `${ss.map(s => `[${s}]`).join("")}${t}${ss.toReversed().map(s => `[/${s}]`).join("")}`;
-    console.log(out);
-    return out;
+    return `${ss.map(s => `[${s}]`).join("")}${t}${ss.toReversed().map(s => `[/${s}]`).join("")}`;
 }

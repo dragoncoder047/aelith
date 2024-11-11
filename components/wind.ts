@@ -24,7 +24,7 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
                     && (obj as GameObj<BodyComp>).curPlatform() !== null) {
                     (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
                     (obj as GameObj<BodyComp>).jump(Number.EPSILON);
-                } else if (this.force.isZero() && obj.is("player")) console.log("blah");
+                }
             });
         },
         update(this: GameObj<WindComp | AreaEffectorComp | StateComp>) {

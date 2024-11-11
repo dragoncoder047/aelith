@@ -153,14 +153,12 @@ export const MParser: {
             // ops are in reverse order since they go on the front like a backended stack
             this.commandQueue.unshift(() => {
                 // pop the scope off
-                console.groupEnd();
                 this.vars = Object.getPrototypeOf(this.vars);
             });
             // do the proc commands
             this.commandQueue.unshift(proc);
             this.commandQueue.unshift(() => {
                 // put a new scope on
-                console.group(pName);
                 this.vars = Object.create(this.vars);
             });
         },
@@ -168,7 +166,6 @@ export const MParser: {
         l() {
             const times = this.stack.pop() as number;
             const code = this.stack.pop() as string;
-            console.log("loop", code, times, "times");
             for (var i = 0; i < times; i++) {
                 this.commandQueue.unshift(code);
             }
@@ -361,7 +358,6 @@ export const MParser: {
                             if (this.parenStack.length > 0) throw new Error("BUG: mismatched parens should have been handled by now");
                             if (this.commandQueue.length === oLen && code != "") throw new Error("BUG: Lambda is not empty string but there are no code");
                             const procSource = this.commandQueue.splice(oLen, this.commandQueue.length - oLen);
-                            console.log("processed lambda", code, procSource);
                             // procSource is the commands of this function
                             this.commandQueue.unshift(() => {
                                 // The function that puts the lambda on the stack
