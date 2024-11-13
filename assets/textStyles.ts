@@ -19,6 +19,18 @@ export const styles: TextComp["textStyles"] = {
     stderr: {
         color: K.RED.lighten(100),
     },
+    red: {
+        color: K.RED,
+    },
+    green: {
+        color: K.GREEN,
+    },
+    yellow: {
+        color: K.YELLOW,
+    },
+    blue: {
+        color: K.BLUE,
+    },
     special(i, _ch) {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),
