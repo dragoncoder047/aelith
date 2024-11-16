@@ -4,8 +4,17 @@ import trapTypes from "./trapTypes.json";
 import { TILE_SIZE } from "../constants";
 
 export const styles: TextComp["textStyles"] = {
-    cursor: {
-        color: K.GREEN,
+    cursor(_, __) {
+        return {
+            color: K.GREEN,
+            opacity: Math.round(K.wave(0, 1, K.time() * 3 * Math.PI)),
+        };
+    },
+    selected(_, __) {
+        return {
+            color: K.MAGENTA,
+            pos: K.vec2(0, K.wave(-TILE_SIZE / 40, TILE_SIZE / 40, K.time() * Math.PI * 2))
+        }
     },
     command: {
         color: K.YELLOW,

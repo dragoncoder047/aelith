@@ -6,6 +6,7 @@ K.layers([
     "text",
     "boxes",
     "continuations",
+    "title",
     "playerTail",
     "player",
     "grabbing",

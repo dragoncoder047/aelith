@@ -1,3 +1,4 @@
+1(testingMode)d
 [a b -- b a]{(1b1a)p}(sw)d
 [N text -- N]{(t)(sw)is(width)10bs0n10nm}(hs)d
 [I -- I]{(1+y)e(1 s onCollide|player)v}(ii)d
@@ -6,10 +7,20 @@
           T(name)(yield)sz                                             %                                                                              Xz
  %%%%%%%%%D%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  (bd2)1q            D (bd)1q
 %                          %                                                                                                     %
-%                          %                                      N                                                              % (t)(&gamename)s(textSize)8as(width)24bs0n16nmz
-%                          %                       =                 N                                                           % (t)()s(width)20bs3bn0m(startupTex)d
+%                          %                                      N                                                              % (t)(&gamename)s(textSize)8as(width)12bs0n16nm(titleText)d
+%                          %                       =                 N                                                           % (t)()s(width)12bs3bn0m(startupText)d
 %                          %                       =                                                                             %
-%                          %                       =  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %
+%                          %                       = %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %
+%                          %                       =                   @     <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
+%                          %                       =                         <                                                %  %
 %                          %                       =                         <                                       M      I %  % 2g(ii)iz(t)(&msg.congrats)s(width)10bsz
 %                          %                       =                         <                                            Az  %  %
 %                          %                 N     =                  M     I<M                                             = %  % 2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)vz (t)(&msg.move)s0n1bm(1 p onGround)vz [climbing N] (t)(&msg.climb)sz

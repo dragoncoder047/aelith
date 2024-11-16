@@ -4,7 +4,7 @@ import { player } from "../player";
 
 // async import
 var getMotionVector: () => Vec2;
-import("../player/controls/impl").then(m => getMotionVector = m.getMotionVector);
+import("../controls").then(m => getMotionVector = m.getMotionVector);
 
 export function throwablePlatformEff() {
     return [

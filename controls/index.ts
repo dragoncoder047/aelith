@@ -1,7 +1,7 @@
 import { AreaComp, Vec2 } from "kaplay";
-import { player } from "..";
-import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, TILE_SIZE, WALK_SPEED } from "../../constants";
-import { K } from "../../init";
+import { player } from "../player";
+import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, TILE_SIZE, WALK_SPEED } from "../constants";
+import { K } from "../init";
 
 // Controls
 
