@@ -10,11 +10,9 @@ export function textNote() {
             align: "left",
             lineSpacing: 1.15,
             styles,
-            transform: {
-                color: K.WHITE.darken(100),
-            }
         }),
         K.opacity(1),
+        K.color(K.WHITE.darken(100)),
         K.timer(),
         K.layer("text"),
         K.dynamicText(),
