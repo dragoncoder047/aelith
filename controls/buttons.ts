@@ -62,4 +62,33 @@ export const CONTROLS: Controls = {
     move_down: {
         keyboard: ["s", "down"],
     },
+    // pause menu controls
+    pause_unpause: {
+        keyboard: ["tab"],
+        gamepad: ["start"],
+    },
+    nav_left: {
+        keyboard: ["a", "left"],
+        gamepad: ["dpad-left"]
+    },
+    nav_up: {
+        keyboard: ["w", "up"],
+        gamepad: ["dpad-up"]
+    },
+    nav_right: {
+        keyboard: ["d", "right"],
+        gamepad: ["dpad-right"]
+    },
+    nav_down: {
+        keyboard: ["s", "down"],
+        gamepad: ["dpad-down"]
+    },
+    nav_select: {
+        keyboard: ["enter"],
+        gamepad: ["rshoulder", "rtrigger", "select"],
+    },
+    nav_back: {
+        keyboard: ["backspace"],
+        gamepad: ["home", "capture"],
+    }
 };

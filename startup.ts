@@ -4,8 +4,8 @@ import { K } from "./init";
 import { DynamicTextComp, NestedStrings } from "./plugins/kaplay-dynamic-text";
 import { musicPlay } from "./assets";
 import { nextFrame } from "./utils";
-import { PtyChunk, PtyComp, Typable, TypableOne } from "./plugins/kaplay-pty";
-import { TILE_SIZE } from "./constants";
+import { PtyChunk, PtyComp, TypableOne } from "./plugins/kaplay-pty";
+import { initPauseMenu } from "./controls/pauseMenu";
 
 type TextChunk = ({
     skipIf?: (vars: NestedStrings) => boolean
@@ -45,17 +45,6 @@ function command(
         },
         workDir,
     };
-}
-function blah() {
-    const out: TextChunk[] = [];
-    for (var i = 0; i < 10; i++) {
-        out.push({
-            value: { text: "\ntesting..........", styles: ["selected"] }
-        });
-    }
-    // @ts-ignore
-    out.at(-1)!.value.delayBefore = 3;
-    return out;
 }
 
 const CHUNKS: TextChunk[] = [
@@ -106,7 +95,6 @@ const CHUNKS: TextChunk[] = [
     },
     command("ls *.core", "4242.core\n", 3, 0.5, true),
     command("gdb pm 4242.core", "&msg.startup.startingDebugger", 0.25, 0.25, undefined),
-    ...blah(),
     {
         value: { text: "" },
         showCursor: true
@@ -134,7 +122,8 @@ export async function doStartup() {
     container.add(title);
     title.pos = K.vec2(0);
 
-    terminal.use(K.pty({ maxLines: 16, cursor: "[cursor]\u2588[/cursor]" }));
+    terminal.use(K.pty({ maxLines: 16, cursor: { text: "\u2588", styles: ["cursor"] } }));
+
     // hide all
     K.get("player").forEach(p => p.hidden = p.paused = true);
     K.get("tail").forEach(p => p.hidden = p.paused = true);
@@ -154,18 +143,18 @@ export async function doStartup() {
         // get vars
         terminal.data = { user: "anonymous" };
         const workDir: PtyChunk = {
-            text: "~",
+            text: "/home/&user",
             styles: ["prompt"]
         };
         terminal.prompt = [
             {
-                text: "&user@dev ",
+                text: "\u250C&user@dev ",
                 styles: ["ident"],
             },
             workDir,
             {
-                text: " $ ",
-                styles: ["prompt"],
+                text: "\n\u2514\u25BA$ ",
+                styles: ["ident"],
             }
         ]
 
@@ -187,6 +176,8 @@ export async function doStartup() {
     // Done typing
     K.get("player").forEach(p => p.hidden = p.paused = false);
     K.get("tail").forEach(p => p.hidden = p.paused = false);
+
+    initPauseMenu(terminal, K.get("player")[0]!.pos);
 
     // Start music
     musicPlay.paused = false;

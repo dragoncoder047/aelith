@@ -22,6 +22,8 @@ K.onUpdate(() => {
     if (!player.hidden) {
         timerValue += K.dt();
         timer.hidden = false;
+    } else {
+        timer.hidden = true;
     }
     timer.text = `${Math.floor(timerValue / 60)}:${(timerValue % 60).toFixed(4)}`.replace(/:(\d)\./, ":0$1.");
 });

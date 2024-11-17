@@ -33,7 +33,7 @@ const btnLeft = UI.add([
     {
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(MARGIN, K.height() - MARGIN
-                + K.height() * +!player.canScrollInventory(-1));
+                + K.height() * +(!player.canScrollInventory(-1) || player.hidden));
         }
     }
 ]);
@@ -51,8 +51,9 @@ const inventory = UI.add([
     K.color(K.GREEN.darken(50)),
     {
         update(this: GameObj<PosComp | TextComp>) {
-            this.pos = K.vec2(MARGIN + btnLeft.pos.x + btnLeft.width,
-                K.height() - MARGIN);
+            this.pos = K.vec2(
+                MARGIN + btnLeft.pos.x + btnLeft.width,
+                -MARGIN + K.height() * (1 + +player.hidden));
         }
     }
 ]);
@@ -67,8 +68,9 @@ const btnRight = UI.add([
     K.color(K.GREEN.darken(127)),
     {
         update(this: GameObj<PosComp | TextComp>) {
-            this.pos = K.vec2(MARGIN + inventory.pos.x + inventory.width,
-                K.height() - MARGIN + K.height() * +!player.canScrollInventory(1));
+            this.pos = K.vec2(
+                MARGIN + inventory.pos.x + inventory.width,
+                -MARGIN + K.height() * (1 + +(!player.canScrollInventory(1) || player.hidden)));
         }
     }
 ]);
