@@ -46,6 +46,7 @@ export const MParser: {
     uid(): string;
 } = {
     world: undefined,
+    // MARK: spawners
     /**
      * Commands that spawn a machine at that particular location.
      */
@@ -65,6 +66,7 @@ export const MParser: {
         A: checkpoint,
         V: antivirus,
     },
+    // MARK: fixedTiles
     /**
      * Commands that spawn a tile that isn't configurable.
      */
@@ -76,21 +78,25 @@ export const MParser: {
         "=": ladder,
     },
     vars: {},
+    // MARK: commands
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
      */
     commands: {
+        // MARK: z (ndrop)
         // drop/done command: things* n? --
         z() {
             const howmany = this.stack.pop();
             if (typeof howmany === "number")
                 this.stack.splice(this.stack.length - howmany, howmany);
         },
+        // MARK: n(egate)
         // negate command: number -- number
         n() {
             this.stack.push(-(this.stack.pop() as number));
         },
+        // MARK: s(et)
         // set property: obj pName value -- obj
         s() {
             const value = this.stack.pop();
@@ -100,6 +106,7 @@ export const MParser: {
             obj[propName] = value;
             this.stack.push(obj);
         },
+        // MARK: r(otate)
         // rotate by degrees: obj degrees -- obj
         r() {
             const degrees = this.stack.pop() as number;
@@ -107,6 +114,7 @@ export const MParser: {
             object.angle += degrees;
             this.stack.push(object);
         },
+        // MARK: m(ove)
         // move: obj x y -- obj
         m() {
             const y = this.stack.pop() as number;
@@ -115,6 +123,7 @@ export const MParser: {
             obj.pos = obj.pos.add(K.vec2(x, y));
             this.stack.push(obj);
         },
+        // MARK: g(roup)
         // group command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
         g() {
             var n = this.stack.pop() as number | string;
@@ -128,6 +137,7 @@ export const MParser: {
                 item.tag = link;
             }
         },
+        // MARK: d(efine)
         // define command: value name --
         d() {
             const pName = this.stack.pop() as string;
@@ -135,6 +145,7 @@ export const MParser: {
             // K.debug.log("define", pName, pContent);
             this.vars[pName] = pContent;
         },
+        // MARK: k (get)
         // get command: name -- value
         // couldn't use g cause it's taken already
         k() {
@@ -144,6 +155,7 @@ export const MParser: {
                 throw new ReferenceError("undefined: " + pName);
             this.stack.push(val);
         },
+        // MARK: i(nvoke)
         // invoke command: *arguments name -- *values
         i() {
             const pName = this.stack.pop() as string;
@@ -162,6 +174,7 @@ export const MParser: {
                 this.vars = Object.create(this.vars);
             });
         },
+        // MARK: l(oop)
         // loop command: code n -- *anything
         l() {
             const times = this.stack.pop() as number;
@@ -170,6 +183,7 @@ export const MParser: {
                 this.commandQueue.unshift(code);
             }
         },
+        // MARK: f(iltered)
         // filtered command: objects* code tag n -- objects*
         f() {
             const n = this.stack.pop() as number;
@@ -198,6 +212,7 @@ export const MParser: {
                 });
             }
         },
+        // MARK: p(artition)
         // partition: objects* partitionStr -- objects*
         p() {
             const partitionString = this.stack.pop() as string;
@@ -223,6 +238,7 @@ export const MParser: {
                 this.stack.push(...objects[group]!);
             }
         },
+        // MARK: t(oggle)
         // toggle command: flips the state of the game object
         t() {
             const obj = this.stack.pop() as GameObj<TogglerComp>;
@@ -230,6 +246,7 @@ export const MParser: {
             // K.onLoad(() => obj.togglerState = !obj.togglerState);
             this.stack.push(obj);
         },
+        // MARK: e(longate)
         // elongate command: stretches the object's area in the specified direction
         // intended to be used for wind tunnels
         e() {
@@ -254,27 +271,31 @@ export const MParser: {
             }
             this.stack.push(obj);
         },
+        // MARK: u(id)
         // push a uid
         u() {
             this.stack.push(this.uid());
         },
+        // MARK: a (fontsize)
         // fontsize command: size -- pixels
         a() {
             const size = this.stack.pop() as number;
             this.stack.push(size * 8 / FONT_SCALE);
         },
+        // MARK: b (tilecount)
         // tilecount command: tiles -- pixels
         b() {
             const size = this.stack.pop() as number;
             this.stack.push(size * TILE_SIZE);
         },
-        // invisible trigger setup command: (I string -- I)
+        // MARK: invisible trigger setup command: (I string -- I)
         v() {
             const s = this.stack.pop() as string;
             const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
             obj.setup(s);
             this.stack.push(obj);
         },
+        // MARK: (s)q(uirrel)
         // squirrel command:
         // name 0 -- obj (pop from stack)
         // obj name 1 -- (push to stack)
@@ -287,13 +308,14 @@ export const MParser: {
             else if (op === 2) this.stack.push(...this.vars[name].toReversed(), this.vars[name].length);
             else this.stack.push(this.vars[name].pop());
         },
+        // MARK: ? (debug)
         // debug command: logs the top object
         "?"() {
             const object = this.stack.pop() as GameObj;
             console.log(`${object?.tags} tags`, object);
             this.stack.push(object);
         },
-        // call/cc
+        // MARK: c(all/cc)
         // *MAGIC!!*
         // function -- value
         // function gets a continuation function on the stack
@@ -324,6 +346,7 @@ export const MParser: {
      */
     buffer: undefined,
     parenStack: [],
+    // MARK: process()
     process(cmd, pos): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
@@ -406,6 +429,7 @@ export const MParser: {
             else throw new ReferenceError("unknown command " + cmd);
         }
     },
+    // MARK: merge()
     /**
      * Merge blocks across horizontally and/or vertically in the world
      * to ensure the player won't snag on the edges, and to prevent excessive lag
@@ -467,6 +491,7 @@ export const MParser: {
             }
         }
     },
+    // MARK: cleanBuffer()
     /**
      * Reset the buffer at the end of a buffer command.
      */
@@ -474,6 +499,7 @@ export const MParser: {
         if (this.buffer !== undefined) this.commandQueue.push(this.buffer);
         this.buffer = undefined;
     },
+    // MARK: build()
     /**
      * Execute the stored commands in the queue, to initialize the machines.
      */
