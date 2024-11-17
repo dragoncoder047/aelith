@@ -15,8 +15,8 @@ A puzzle platformer game.
 
 ## TODOs
 
-* [ ] Add security camera "firewall" with laser device
-* [ ] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc (TODO: add rumble effects?)
+* [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
+  * [ ] add rumble effects for game controller users?
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
@@ -25,7 +25,7 @@ A puzzle platformer game.
 
 ## Dev notes follow
 
-Game premise: Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it.
+Game premise: Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it. Fighting bugs along the way, and finally defeating the final bug in the program
 
 ## Mechanics
 
@@ -51,7 +51,7 @@ Game premise: Something went wrong in the computer system, and a debugger has be
 * Controls
   * [X] Lever
   * [X] Button
-  * [ ] Laser / laser sensor "firewall"
+  * [X] Laser / laser sensor "firewall"
 * Effectors
   * [X] Doors
   * [X] Conveyor belts
