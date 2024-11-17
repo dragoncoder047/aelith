@@ -49,9 +49,7 @@ function command(
 
 const CHUNKS: TextChunk[] = [
     {
-        value: {
-            text: "&msg.startup.pressToBegin",
-        },
+        value: "&msg.startup.pressToBegin",
     },
     {
         value: {
@@ -61,9 +59,7 @@ const CHUNKS: TextChunk[] = [
         showCursor: true
     },
     {
-        value: {
-            text: "&msg.startup.password",
-        },
+        value: "&msg.startup.password",
         clear: true
     },
     {
@@ -82,21 +78,43 @@ const CHUNKS: TextChunk[] = [
         },
         showCursor: true
     },
-    command("./gpt &", "[1] 4242 ./gpt\n&msg.startup.running\n", 1, 1, true),
-    command("./gpt \"&msg.startup.findAnswer\"", "&msg.startup.segfault\n", 1, 2, false),
+    command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] 4242 sudo ./gpt\n", 1, 1, true),
+    command("./gpt --interactive", "", 1, 0.5, false),
     {
-        value: {
-            text: "ai: error: EHOSTDOWN\n",
-            styles: ["stderr"]
-        },
+        value: "connecting...",
     },
     {
-        value: "[1]  + 4242 &msg.startup.segfault  ./gpt\n"
+        value: {
+            text: "connected!\nask AI > ",
+            delayBefore: 1
+        }
+    },
+    {
+        value: {
+            text: "&msg.startup.findAnswer\n",
+            typewriter: true,
+            delayBefore: 1,
+            styles: ["command"]
+        },
+        showCursor: true
+    },
+    {
+        value: {
+            text: "[1]  + 4242 &msg.startup.segfault  sudo ./gpt\n",
+            delayBefore: 2
+        },
+        showCursor: true
+    },
+    {
+        value: {
+            text: "&msg.startup.disconnected\n",
+            styles: ["stderr"]
+        }
     },
     command("ls *.core", "4242.core\n", 3, 0.5, true),
     command("gdb pm 4242.core", "&msg.startup.startingDebugger", 0.25, 0.25, undefined),
     {
-        value: { text: "" },
+        value: "",
         showCursor: true
     }
 ];
@@ -114,8 +132,10 @@ export async function doStartup() {
         K.layer("title"),
     ]);
     const rr = container.add([
+        K.pos(0),
         K.rect(title.width, title.height),
-        K.color(K.BLACK)
+        K.color(K.BLACK),
+        K.area()
     ]);
     rr.color = K.getBackground() ?? rr.color;
     title.destroy();

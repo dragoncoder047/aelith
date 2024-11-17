@@ -122,8 +122,9 @@
             "pressToBegin": "Press ENTER to start...",
             "findAnswer": "find the answer",
             "startingDebugger": "Starting debugger...",
-            "segfault": "Segmentation fault (core dumped)",
-            "running": "Assistant is running"
+            "segfault": "segmentation fault",
+            "running": "Assistant is running",
+            "disconnected": "Fatal error: disconnected!"
         },
         "continuation": {
             "hint": {
@@ -244,8 +245,9 @@
             "pressToBegin": "Presione ENTER para iniciar...",
             "findAnswer": "encontrar la respuesta",
             "startingDebugger": "Inicio del programa de depuración...",
-            "segfault": "Fallo de segmentación (núcleo volcado)",
-            "running": "Asistente está lista"
+            "segfault": "fallo de segmentación",
+            "running": "Asistente está lista",
+            "disconnected": "Error fatal: ¡desconectado!"
         },
         "continuation": {
             "hint": {

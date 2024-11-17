@@ -104,7 +104,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                 id: "pty",
                 require: ["dynamic-text", "text", "pos"],
                 chunks: [],
-                typeDelay: opt?.typeDelay ?? (() => K.rand(0.1, 0.2)),
+                typeDelay: opt?.typeDelay ?? (() => K.rand(0.02, 0.2)),
                 prompt: opt.cmdPrompt,
                 showCursor: false,
                 cursor: opt.cursor ?? "\u2588",
@@ -125,7 +125,8 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     this.chunks.push(chunk);
                     const sound = () => (typeof chunk.sound === "string" ? K.play(chunk.sound) : chunk.sound?.());
                     if (chunk.typewriter) {
-                        const realText = K.sub(chunk.text, this.data);
+                        const textNoSub = chunk.text;
+                        const realText = K.sub(textNoSub, this.data);
                         chunk.text = "";
                         for (var ch of realText) {
                             chunk.text += ch;
@@ -133,6 +134,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                             sound();
                             await Promise.race([cancel, K.wait(this.typeDelay())]);
                         }
+                        chunk.text = textNoSub;
                     } else {
                         redraw(this);
                         sound();

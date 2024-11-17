@@ -22,16 +22,6 @@ window.K = K;
 
 // const oldOnUpdate = K.onUpdate;
 
-// var count = 0;
-// // @ts-ignore
-// K.onUpdate = (...args) => {
-//     K.debug.log("K.onUpdate count", ++count);
-//     // @ts-ignore
-//     const vv = oldOnUpdate(...args);
-//     const oldCancel = vv.cancel;
-//     vv.cancel = () => {
-//         K.debug.log("K.onUpdate count", --count);
-//         oldCancel();
-//     }
-//     return vv;
-// };
+K.onLoadError((which, e) => {
+    throw `Error while loading ${which}: ${e.error?.stack ?? e.error}`;
+});
