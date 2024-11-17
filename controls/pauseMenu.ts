@@ -136,7 +136,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
 
 async function onPaused() {
     K.strings.isPaused = "1";
-    await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 suspended  gdb pm 4242.core\n");
+    await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  gdb pm 4242.core\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
 
@@ -144,7 +144,7 @@ async function onUnpaused() {
     await PAUSE_MENU_OBJ.quitMenu();
     await PAUSE_MENU_OBJ.command(
         { text: "fg %1", styles: ["command"] },
-        "[1]  + 4247 continued  gdb pm 4242.core\n")
+        "[1]  + 4247 &msg.pause.continued  gdb pm 4242.core\n")
     copyPreferences();
     K.strings.isPaused = "0";
 }

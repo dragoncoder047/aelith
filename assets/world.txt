@@ -1,6 +1,6 @@
-(testingMode)d
+1(testingMode)d
 [a b -- b a]{(1b1a)p}(sw)d
-[N text -- N]{(t)(sw)is(width)10bs0n10nm}(hs)d
+[N text -- N]{(t)(sw)is(width)12bs0n10nm}(hs)d
 [I -- I]{(1+y)e(1 s onCollide|player)v}(ii)d
 [x x x n -- [x x x]]{{(v)1q}(sw)il(v)k}(ns)d
 
@@ -23,9 +23,9 @@
 %                          %                       =#######################################################=###################  %
 %                          %                       =#######################################################=###################  %
 %                          %                       =#######################################################=###################  %
-%                          %                       =L        N               M    I #              ########=###################  % [door IM] 2g(ii)iz(width)10bs(t)(&msg.firstDoor)s0n2bnmz [var note] (&msg.variable)(hs)iz [lightbulb left on stack]
+%                          %                       =L     M    I(ii)i2gz     M    I #              ########=###################  % [door IM] 2g(ii)iz(width)10bs(t)(&msg.firstDoor)s0n2bnmz [var note] (&msg.variable)(hs)iz [lightbulb left on stack]
 %                          %                 N     =N                               D        AN    ########=###################  % [A and N] (&msg.firstCheckpoint)(hs)izz [swap 2 notes to be on top] (1b2a)p [L and B N's] (t)(&msg.thisLightbulb)s4n30nmz (t)(&msg.button)sz [D and L]
-%         = S180r=    N    %(sw)i(bb)1q         B  =         M    Xz                              =########=###################  % 0n1bm(t)(&msg.throwable)s(width)6bs(1 p on|grab)vz(1a1b2a)p3g3z(t)(&msg.nothingToSee)sz
+%         = S180r=    N    %(sw)i(bb)1q         B  =      M       Xz                              =########=###################  % 0n1bm(t)(&msg.throwable)s(width)12bs(1 p on|grab)vz(1a1b2a)p3g3z(t)(&msg.nothingToSee)sz
 ##########=######=################################################################################=########=###################  %
 ##########=######=################################################################################=########=###################  %
 ##########=######=D Az I M          ##############################################################=########=###################  % 2g(&msg.slightlyDifferent)(hs)iz(ii)iz (aa)1q
