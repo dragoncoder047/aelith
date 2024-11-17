@@ -225,6 +225,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                 async quitMenu(this: GameObj<PtyMenuComp | PtyComp>) {
                     // only show the final command
                     this.chunks = this.chunks.slice(0, beginLen);
+                    // reset
+                    this.menu = menu;
+                    this.selIdx = 0;
                     this.backStack = [];
                     this.dropChunk(cursorChunks);
                     optionChunks = [];
@@ -311,15 +314,14 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                         case "submenu":
                             this.backStack.push(this.menu);
                             this.menu = this.menu.opts[this.selIdx]!;
-                            this.selIdx = 0;
                             await this.__menuChanged();
                             if (this.menu.type === "action") {
                                 this.dropChunk(cursorChunks);
                                 await this.menu.action();
                                 beginLen = this.chunks.length;
                                 this.menu = this.backStack.pop()!;
-                                await this.__menuChanged();
-                            }
+                            } else this.selIdx = 0;
+                            await this.__menuChanged();
                             break;
                         case "action":
                             throw "unreachable";
@@ -345,9 +347,11 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                         return;
                     }
-                    if (opt?.sounds?.back) this.playSoundCb?.(opt.sounds.back)
+                    if (opt?.sounds?.back) this.playSoundCb?.(opt.sounds.back);
+                    const oldMenu = this.menu;
                     this.menu = this.backStack.pop()!;
-                    this.selIdx = 0;
+                    // @ts-ignore
+                    this.selIdx = this.menu.opts.indexOf(oldMenu);
                     optionChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
                     this.dropChunk(menuChunks);
                     this.dropChunk(cursorChunks);
@@ -375,7 +379,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                             case "select":
                                 throw "bad";
                             case "submenu":
-                                mm = mm.opts.find(m => m.name === part)!;
+                                mm = mm.opts.find(m => m.id === part)!;
                                 break;
                             default:
                                 throw "bad";

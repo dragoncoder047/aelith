@@ -6,14 +6,63 @@
     "gamename": "[callcc]debugger[/callcc];",
     "msg": "&&lang",
     "control": "&msg.controls.&inputType",
+    "button": "&&controllerType.button",
+    "xbox": {
+        "north": "Y",
+        "east": "B",
+        "south": "A",
+        "west": "X",
+        "lshoulder": "LB",
+        "rshoulder": "RB",
+        "ltrigger": "LT",
+        "rtrigger": "RT",
+        "select": "view",
+        "start": "menu"
+    },
+    "ps4": {
+        "north": "\u25b2",
+        "east": "\u25cb",
+        "south": "X",
+        "west": "\u2588",
+        "lshoulder": "L1",
+        "ltrigger": "L2",
+        "rshoulder": "R1",
+        "rtrigger": "R2",
+        "select": "share",
+        "start": "options"
+    },
+    "ps5": {
+        "north": "\u25b2",
+        "east": "\u25cb",
+        "south": "X",
+        "west": "\u2588",
+        "lshoulder": "L1",
+        "ltrigger": "L2",
+        "rshoulder": "R1",
+        "rtrigger": "R2",
+        "select": "create",
+        "start": "options"
+    },
+    "switch": {
+        "north": "X",
+        "east": "A",
+        "south": "B",
+        "west": "Y",
+        "lshoulder": "L",
+        "ltrigger": "ZL",
+        "rshoulder": "R",
+        "rtrigger": "ZR",
+        "select": "-",
+        "start": "+"
+    },
     "en": {
         "controls": {
             "gamepad": {
                 "move": "the left stick",
-                "jump": "A",
+                "jump": "&button.south",
                 "aim": "the right stick",
                 "interact": {
-                    "name": "R2",
+                    "name": "&button.rtrigger",
                     "verb": "press",
                     "space": " "
                 },
@@ -22,12 +71,19 @@
                     "verb": "press",
                     "space": " "
                 },
-                "climb": "L1",
-                "invoke": "R1",
+                "climb": "&button.lshoulder",
+                "invoke": "&button.rshoulder",
                 "modify": {
                     "name": "d-pad up and down",
                     "verb": "Press",
                     "space": " "
+                },
+                "inventory.scroll": "d-pad left or right",
+                "pause": "the &button.start button",
+                "pMenu": {
+                    "switch": "the d-pad",
+                    "select": "&button.rshoulder, &button.rtrigger, or &button.select",
+                    "back": "&button.lshoulder or &button.ltrigger"
                 }
             },
             "keyboard": {
@@ -50,6 +106,13 @@
                     "name": "Scroll",
                     "verb": "",
                     "space": ""
+                },
+                "inventory.scroll": "Z or C",
+                "pause": "tab",
+                "pMenu": {
+                    "switch": "WASD or arrow keys",
+                    "select": "enter",
+                    "back": "backspace"
                 }
             }
         },
@@ -74,10 +137,26 @@
             "allClear": "System is clean",
             "detected": "Rogue software detected!"
         },
+        "pause": {
+            "select": "Select controller type",
+            "ngConnect": "Connect to Newgrounds.com",
+            "setLanguage": "Set display language",
+            "automaticLang": "Autodetect language",
+            "preferences": "Manage preferences",
+            "controllerRumble": "Enable controller rumble",
+            "showSpeedrunTimer": "Show speedrun timer",
+            "restart": "Restart game",
+            "reallyRestart": "Are you sure you want to restart?\nAll progress will be lost!"
+        },
+        "notImplemented": "Not implemented yet, sorry",
         "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
         "gameErrorDetails": "You can search for the error online:",
         "wrongWayLeft": "&arrow.left Go that way",
-        "move": "Use &control.move to move and &control.jump to jump",
+        "controlsIntro": "&msg.bottomControls.&isPaused",
+        "bottomControls": [
+            "Use &control.move to move and &control.jump to jump\nPress &control.pause to open the pause menu",
+            "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
+        ],
         "climb": "You can hold &control.climb and move to climb up a ladder",
         "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
@@ -85,7 +164,7 @@
         "button": "Buttons trigger things while they are pressed",
         "variable": "This is a variable.\nAim with &control.aim and\n&control.interact.verb&control.interact.space&control.interact.name to grab it.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here",
-        "throwable": "You can &control.throw.verb&control.throw.space&control.throw.name to throw the variable again -- the blue line shows where it will go.",
+        "throwable": "You can &control.throw.verb&control.throw.space&control.throw.name to throw the variable again -- the blue line shows where it will go.\nYou can also press &control.inventory.scroll to switch what you are holding.",
         "firstContinuation": "That [assert]green[/assert] thing you are holding? It's a [special]continuation![/special]\nPress &control.invoke to invoke it.",
         "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
         "firstChallenge": "There are a lot of race condition bugs... you'll have to use continuations to get around them.",
@@ -102,10 +181,10 @@
         "controls": {
             "gamepad": {
                 "move": "el joystick izquierdo",
-                "jump": "A",
+                "jump": "el botón &button.south",
                 "aim": "el joystick derecho",
                 "interact": {
-                    "name": "R2",
+                    "name": "&button.rtrigger",
                     "verb": "presiona",
                     "space": " "
                 },
@@ -114,12 +193,19 @@
                     "verb": "presiona",
                     "space": " "
                 },
-                "climb": "L1",
-                "invoke": "R1",
+                "climb": "&button.lshoulder",
+                "invoke": "&button.rshoulder",
                 "modify": {
                     "name": "el d-pad arriba y abajo",
                     "verb": "Presiona",
                     "space": " "
+                },
+                "inventory.scroll": "el d-pad izquierdo o derecho",
+                "pause": "el botón &button.start",
+                "pMenu": {
+                    "switch": "el d-pad",
+                    "select": "&button.rshoulder, &button.rtrigger, o &button.select",
+                    "back": "&button.lshoulder o &button.ltrigger"
                 }
             },
             "keyboard": {
@@ -142,6 +228,13 @@
                     "name": "Desplácese",
                     "verb": "",
                     "space": ""
+                },
+                "inventory.scroll": "Z o C",
+                "pause": "la tecla TAB",
+                "pMenu": {
+                    "switch": "WASD o teclas de flecha",
+                    "select": "enter",
+                    "back": "la tecla retroceso"
                 }
             }
         },
@@ -166,10 +259,26 @@
             "allClear": "Sistema está limpio",
             "detected": "¡Programas malvados detectados!"
         },
+        "pause": {
+            "select": "Seleccione el tipo de controlador",
+            "ngConnect": "Inicie sesión en Newgrounds.com",
+            "preferences": "Administrar preferencias",
+            "setLanguage": "Establecer el idioma de visualización",
+            "automaticLang": "Idioma de detección automática",
+            "showSpeedrunTimer": "Mostrar temporizador de speedrun",
+            "controllerRumble": "Habilitar la vibración del controlador",
+            "restart": "Reiniciar el juego",
+            "reallyRestart": "¿Estás seguro de que quieres reiniciar?\n¡Todo el progreso se perderá!"
+        },
+        "notImplemented": "Aún no se ha implementado, lo siento",
         "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",
         "gameErrorDetails": "Puede buscar el error en Internet:",
         "wrongWayLeft": "&arrow.left Ir por ese camino",
-        "move": "Use &control.move para mover y &control.jump para saltar",
+        "controlsIntro": "&msg.bottomControls.&isPaused",
+        "bottomControls": [
+            "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pausa para abrir el menú de pausa",
+            "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
+        ],
         "climb": "Puede mantener presionado &control.climb y moverse para subir por una escalera",
         "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",
         "firstCheckpoint": "&arrow.left ¡Felicidades,\n  tu primer\n  punto de control!",
@@ -177,7 +286,7 @@
         "button": "Los botones activan cosas mientras se presionan",
         "variable": "Esta es una variable.\nApunte con &control.aim y\n&control.interact.verb&control.interact.space&control.interact.name para agarrarla.\n¡Serán muy útiles!",
         "nothingToSee": "Nada que ver por aquí",
-        "throwable": "Puedes &control.throw.verb&control.throw.space&control.throw.name para lanzar la variable de nuevo -- la línea azul muestra dónde irá.",
+        "throwable": "Puedes &control.throw.verb&control.throw.space&control.throw.name para lanzar la variable de nuevo -- la línea azul muestra dónde irá.\nTambién puede presionar &control.inventory.scroll para cambiar lo que está sosteniendo.",
         "firstContinuation": "¿Esa cosa [assert]verde[/assert] que tienes en la mano? ¡Es una [special]continuación![/special]\nPresione &control.invoke para invocarlo.",
         "firstTrap": "¡Con ese dispositivo [throw]azul[/throw], ¡puedes capturar tus propias continuaciones!\nNo seas tímido, ¡agárralo!",
         "firstChallenge": "Hay muchos errores en las condiciones de la carrera... Tendrás que usar continuaciones para sortearlos.",

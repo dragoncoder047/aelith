@@ -91,7 +91,7 @@ const CHUNKS: TextChunk[] = [
         },
     },
     {
-        value: "[1]  + 4242 segmentation fault  ./gpt\n"
+        value: "[1]  + 4242 &msg.startup.segfault  ./gpt\n"
     },
     command("ls *.core", "4242.core\n", 3, 0.5, true),
     command("gdb pm 4242.core", "&msg.startup.startingDebugger", 0.25, 0.25, undefined),

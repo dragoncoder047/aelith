@@ -89,6 +89,6 @@ export const CONTROLS: Controls = {
     },
     nav_back: {
         keyboard: ["backspace"],
-        gamepad: ["home", "capture"],
+        gamepad: ["lshoulder", "ltrigger"],
     }
 };

@@ -2,29 +2,71 @@ import { GameObj, Vec2 } from "kaplay";
 import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { player } from "../player";
 import { K } from "../init";
+import { timer } from "../ui/timer";
+
+// save for autodetect
+const availableLangs = K.langs.slice();
 
 const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
     opts: [
         {
-            id: "setController",
-            name: "switch controller type",
+            id: "set controllerType",
+            name: "&msg.pause.select",
             type: "select",
             opts: [
-                { text: "Xbox            (X Y B A)", value: "xbox" },
-                { text: "Playstation     (\u2588 \u25B2 \u25CB X)", value: "playstation" },
-                { text: "Nintendo Switch (Y X A B)", value: "switch" },
+                { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },
+                { text: "PS5    (&ps5.west &ps5.north &ps5.east &ps5.south, &ps5.select/&ps5.start)", value: "ps5" },
+                { text: "PS4    (&ps4.west &ps4.north &ps4.east &ps4.south, &ps4.select/&ps4.start)", value: "ps4" },
+                { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
             ],
-            selected: 0,
+            selected: 0
         },
         {
-            id: "login",
-            name: "Login to Newgrounds.com",
-            type: "action",
-            async action() {
-                await PAUSE_MENU_OBJ.type({ text: "Not implemented yet, sorry\n", styles: ["stderr"] });
-            }
+            id: "set language",
+            name: "&msg.pause.setLanguage",
+            type: "select",
+            opts: [
+                { text: "&msg.pause.automaticLang", value: availableLangs },
+                { text: "English", value: ["en"] },
+                { text: "Español", value: ["es"] }
+            ],
+            selected: 0
+        },
+        {
+            id: "set",
+            name: "&msg.pause.preferences",
+            type: "select",
+            opts: [
+                // { text: "&msg.pause.controllerRumble", value: "rumble" },
+                { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
+            ],
+            selected: [],
+            multiple: true
+        },
+        // {
+        //     id: "ng-connect",
+        //     name: "&msg.pause.ngConnect",
+        //     type: "action",
+        //     async action() {
+        //         await PAUSE_MENU_OBJ.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
+        //     }
+        // },
+        {
+            id: "restart",
+            name: "&msg.pause.restart",
+            type: "submenu",
+            opts: [
+                {
+                    id: "--yes",
+                    name: "&msg.pause.reallyRestart",
+                    type: "action",
+                    async action() {
+                        window.location.reload();
+                    }
+                }
+            ]
         }
     ]
 }
@@ -41,7 +83,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
         K.get("tail").forEach(p => p.hidden = p.paused = true);
         origCamPos = player.pos;
         K.camPos(pauseCamPos);
-        await K.wait(0.1);
+        await K.wait(0.05);
         // prevent immediate unpause
         pauseListener.paused = false;
         await onPaused();
@@ -55,6 +97,9 @@ export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
         await onUnpaused();
     });
     pauseListener.paused = true;
+    pauseListener.onUpdate(() => {
+        copyPreferences();
+    });
 
     // setup menu
     terminal.use(K.ptyMenu(PAUSE_MENU, {
@@ -85,10 +130,12 @@ export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
     // @ts-expect-error
     PAUSE_MENU_OBJ = terminal;
 
+    K.strings.isPaused = "0";
     copyPreferences();
 }
 
 async function onPaused() {
+    K.strings.isPaused = "1";
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 suspended  gdb pm 4242.core\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
@@ -99,8 +146,11 @@ async function onUnpaused() {
         { text: "fg %1", styles: ["command"] },
         "[1]  + 4247 continued  gdb pm 4242.core\n")
     copyPreferences();
+    K.strings.isPaused = "0";
 }
 
 function copyPreferences() {
-
+    K.strings.controllerType = PAUSE_MENU_OBJ.value("set controllerType");
+    timer.opacity = +PAUSE_MENU_OBJ.value("set").includes("timer");
+    K.langs = PAUSE_MENU_OBJ.value("set language");
 }
