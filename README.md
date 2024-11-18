@@ -55,6 +55,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## Other ideas
 
+* [ ] Add algorithmic choosing songs based on where you are in the game
 * [ ] Add enemy "bugs" that can hurt you?
   * [ ] Final enemy boss?
   * [ ] What happens when player dies?

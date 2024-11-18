@@ -79,7 +79,7 @@ const CHUNKS: TextChunk[] = [
         showCursor: true
     },
     command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] 4242 sudo ./gpt\n", 1, 1, true),
-    command("./gpt --interactive", "", 1, 0.5, false),
+    command("./gpt --interactive", "", 1, 0.5, undefined),
     {
         value: "connecting...",
     },
@@ -94,21 +94,23 @@ const CHUNKS: TextChunk[] = [
             text: "&msg.startup.findAnswer\n",
             typewriter: true,
             delayBefore: 1,
-            styles: ["command"]
+            styles: ["command"],
+            sound: "typing"
         },
         showCursor: true
     },
     {
         value: {
             text: "[1]  + 4242 &msg.startup.segfault  sudo ./gpt\n",
-            delayBefore: 2
+            delayBefore: 2,
         },
         showCursor: true
     },
     {
         value: {
             text: "&msg.startup.disconnected\n",
-            styles: ["stderr"]
+            styles: ["stderr"],
+            sound: "command_fail"
         }
     },
     command("ls *.core", "4242.core\n", 3, 0.5, true),

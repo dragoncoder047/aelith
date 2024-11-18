@@ -103,12 +103,11 @@ export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
 
     // setup menu
     terminal.use(K.ptyMenu(PAUSE_MENU, {
-        playSoundCb: K.debug.log,
         sounds: {
-            switch: "switch",
-            back: "back",
-            doit: "doit",
-            error: "error"
+            switch: "footsteps",
+            back: "switch_off",
+            doit: "climbing",
+            error: "command_fail"
         },
     }));
 

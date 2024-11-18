@@ -21,7 +21,7 @@ export const ALPHA = 0.05;
  */
 export const MARGIN = 20 / SCALE;
 
-export const MUSIC_VOLUME = 0.05;
+export const MUSIC_VOLUME = 0.07;
 
 /**
  * Gravity for platformer
