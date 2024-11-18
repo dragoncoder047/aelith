@@ -1,13 +1,13 @@
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
-import { aaa } from "./aaa";
+import recolorRedShader from "./recolor-red.glsl";
+import { aaa } from "./songs";
 import { sounds } from "./sounds";
 import spritemapDef from "./spritemap.json";
-import strings from "./strings.json";
 import spritemapDataURL from "./spritemap.png";
-import fontDataURL from "./Web437_IBM_EGA_8x8.woff";
-import recolorRedShader from "./recolor-red.glsl";
+import strings from "./strings.json";
 import translateShader from "./translate.glsl";
+import fontDataURL from "./Web437_IBM_EGA_8x8.woff";
 import worldFileSrc from "./world.txt";
 
 

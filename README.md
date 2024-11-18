@@ -13,19 +13,9 @@ A puzzle platformer game.
     * "assignment to readonly property" from kaplay.ts &rarr; use Chrome not Safari (see kaplayjs/kaplay#289)
     * "xxx is only available in secure origins" &rarr; go to chrome://flags/#unsafely-treat-insecure-origin-as-secure and add <http://localhost:8000>
 
-## TODOs
+## Game premise
 
-* [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
-  * [ ] add rumble effects for game controller users?
-* [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
-  * [ ] How to refer to objects in-memory in serialized form?
-    * [ ] Ones that don't exist, when savegame is loaded initially at start?
-* [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
-  * [ ] Connect to Newgrounds for cloud save and medals?
-
-## Dev notes follow
-
-Game premise: Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it. Fighting bugs along the way, and finally defeating the final bug in the program
+Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it. Fighting bugs along the way, and finally defeating the final bug in the program
 
 ## Mechanics
 
@@ -62,3 +52,17 @@ Game premise: Something went wrong in the computer system, and a debugger has be
   * [ ] Generic box
   * [ ] Tower computer
   * [ ] Battery
+
+## Other ideas
+
+* [ ] Add enemy "bugs" that can hurt you?
+  * [ ] Final enemy boss?
+  * [ ] What happens when player dies?
+* [ ] Add new continuation trap type: (NAME/COLOR??) that instead of teleporting player back, teleports stuff to be near the player?
+* [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
+  * [ ] add rumble effects for game controller users?
+* [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
+  * [ ] How to refer to objects in-memory in serialized form?
+    * [ ] Ones that don't exist, when savegame is loaded initially at start?
+* [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
+  * [ ] Connect to Newgrounds for cloud save and medals?

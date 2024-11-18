@@ -156,10 +156,10 @@
         "gameErrorDetails": "You can search for the error online:",
         "wrongWayLeft": "&arrow.left Go that way",
         "controlsIntro": "&msg.bottomControls.&isPaused",
-        "bottomControls": [
-            "Use &control.move to move and &control.jump to jump\nPress &control.pause to open the pause menu",
-            "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
-        ],
+        "bottomControls": {
+            "0": "Use &control.move to move and &control.jump to jump\nPress &control.pause to open the pause menu",
+            "1": "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
+        },
         "climb": "You can hold &control.climb and move to climb up a ladder",
         "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
@@ -281,10 +281,10 @@
         "gameErrorDetails": "Puede buscar el error en Internet:",
         "wrongWayLeft": "&arrow.left Ir por ese camino",
         "controlsIntro": "&msg.bottomControls.&isPaused",
-        "bottomControls": [
-            "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pausa para abrir el menú de pausa",
-            "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
-        ],
+        "bottomControls": {
+            "0": "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pausa para abrir el menú de pausa",
+            "1": "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
+        },
         "climb": "Puede mantener presionado &control.climb y moverse para subir por una escalera",
         "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",
         "firstCheckpoint": "&arrow.left ¡Felicidades,\n  tu primer\n  punto de control!",
