@@ -1,4 +1,4 @@
-import { GameObj, KEventController, PosComp, TextComp } from "kaplay";
+import { GameObj, KEventController, PosComp, TextComp, Vec2 } from "kaplay";
 import { MParser } from "./assets/mparser";
 import { K } from "./init";
 import { DynamicTextComp, NestedStrings } from "./plugins/kaplay-dynamic-text";
@@ -121,7 +121,7 @@ const CHUNKS: TextChunk[] = [
     }
 ];
 
-export async function doStartup() {
+export async function doStartup(firstPos: Vec2) {
     const terminal = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp | PtyComp> | undefined;
     const title = MParser.vars.titleText as GameObj<TextComp | DynamicTextComp | PosComp> | undefined;
     const isTesting = !!MParser.vars.testingMode;
@@ -199,7 +199,7 @@ export async function doStartup() {
     K.get("player").forEach(p => p.hidden = p.paused = false);
     K.get("tail").forEach(p => p.hidden = p.paused = false);
 
-    initPauseMenu(terminal, K.get("player")[0]!.pos);
+    initPauseMenu(terminal, firstPos);
 
     // Start music
     musicPlay.paused = false;
