@@ -76,8 +76,18 @@ export function continuationCore(
             // do restore of captured data
             const p = player.worldPos()!;
             const delta = this.captured.playerPos.sub(p);
-            K.get<PosComp>("tail").forEach(t => t.pos = this.captured.playerPos);
+            const reverseDelta = K.vec2(0);
+
+            if (this.data?.special === "reverseTeleport") {
+                // do move
+                reverseDelta.x = -delta.x;
+                reverseDelta.y = -delta.y;
+                // don't move
+                delta.x = delta.y = 0;
+            }
+
             player.moveBy(delta);
+            K.get<PosComp>("tail").forEach(t => t.pos = player.worldPos()!);
             player.playSound("teleport");
             // K.camPos(K.camPos().add(delta));
             for (var e of this.captured.objects) {
@@ -94,7 +104,7 @@ export function continuationCore(
                         obj.use("machine");
                     }
                     // Update pos and vel
-                    obj.pos = e.pos!.clone();
+                    obj.pos = e.pos!.clone().add(reverseDelta);
                     obj.vel = K.vec2(0);
                 }
                 obj.togglerState = e.togglerState!;

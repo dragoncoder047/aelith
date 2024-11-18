@@ -81,7 +81,8 @@ export function antivirus(): AntivirusComp {
             // do raycast to things
             const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area"])
                 .concat([player])
-                .filter((x: any) => x !== this);
+                .filter((x: any) => x !== this)
+                .filter(x => !x.paused);
             const sdt = Math.pow(this.maxDistance * 1.5, 2);
             const offensiveObjects = objects
                 .filter(o => this.isOffensive(o));

@@ -43,6 +43,17 @@
         "prepare": null,
         "special": "recapture"
     },
+    "switch": {
+        "cName": "case",
+        "color": "#ee4466",
+        "radius": 2,
+        "reusable": false,
+        "concurrent": false,
+        "holdTrapHint": null,
+        "prepareHint": null,
+        "prepare": null,
+        "special": "reverseTeleport"
+    },
     "call/cc": {
         "cName": "k",
         "color": "#aa22ff",

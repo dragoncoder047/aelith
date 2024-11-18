@@ -59,7 +59,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 * [ ] Add enemy "bugs" that can hurt you?
   * [ ] Final enemy boss?
   * [ ] What happens when player dies?
-* [ ] Add new continuation trap type: (NAME/COLOR??) that instead of teleporting player back, teleports stuff to be near the player?
+* [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
 * [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
   * [ ] add rumble effects for game controller users?
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
