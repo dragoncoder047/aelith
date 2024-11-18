@@ -1,5 +1,6 @@
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
+import { playMusic } from "./music";
 import recolorRedShader from "./recolor-red.glsl";
 import { aaa, bbb, ccc } from "./songs";
 import { sounds } from "./sounds";
@@ -23,8 +24,7 @@ K.loadZzFXM("bbb", bbb);
 K.loadZzFXM("ccc", ccc);
 
 // Start music in background
-// TODO: play bbb and ccc too
-export const musicPlay = K.play("aaa", {
+export const musicPlay = playMusic({
     loop: true,
     volume: MUSIC_VOLUME,
     paused: true,
