@@ -1,7 +1,7 @@
 import { AreaComp, Comp, GameObj, KAPLAYCtx, PosComp, TextComp, Vec2 } from "kaplay";
 import { DynamicTextComp, KAPLAYDynamicTextPlugin } from "./kaplay-dynamic-text";
 
-
+// MARK: PtyChunk
 export type PtyChunk = {
     text: string
     styles?: string[]
@@ -13,6 +13,7 @@ export type PtyChunk = {
 export type TypableOne = string | PtyChunk;
 export type Typable = TypableOne | TypableOne[];
 
+// MARK: PtyComp
 export interface PtyComp extends Comp {
     chunks: PtyChunk[]
     maxLines: number | undefined
@@ -27,6 +28,7 @@ export interface PtyComp extends Comp {
     styleChunk(chunk: PtyChunk, style: string, add: boolean): void
 }
 
+// MARK: PtyCompOpt
 export interface PtyCompOpt {
     text?: TypableOne
     typeDelay?(): number
@@ -35,6 +37,7 @@ export interface PtyCompOpt {
     cursor?: Typable
 }
 
+// MARK: PtyMenuComp
 export interface PtyMenuComp extends Comp {
     beginMenu(): Promise<void>
     quitMenu(): Promise<void>
@@ -54,6 +57,7 @@ export interface PtyMenuComp extends Comp {
     __updateSelected(): Promise<void>
 }
 
+// MARK: PtyMenu
 export type PtyMenu = {
     name?: string
     id: string,
@@ -77,6 +81,7 @@ export type PtyMenu = {
     selected: number
 })
 
+// MARK: PtyMenuCompOpt
 export interface PtyMenuCompOpt {
     playSoundCb?(sound: string): void
     sounds?: {
@@ -87,6 +92,7 @@ export interface PtyMenuCompOpt {
     },
 }
 
+// MARK: KAPLAYPtyComp
 export interface KAPLAYPtyComp {
     pty(opt: PtyCompOpt): PtyComp
     ptyMenu(menu: PtyMenu, opt?: PtyMenuCompOpt): PtyMenuComp
@@ -94,6 +100,7 @@ export interface KAPLAYPtyComp {
 
 export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp {
     return {
+        // MARK: pty()
         pty(opt) {
             var desiredPos: Vec2;
             const redraw = (obj: GameObj<PtyComp | DynamicTextComp>) => {
@@ -117,6 +124,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     if (this.maxLines !== undefined && this.is("anchor") && ["topleft", "topright"].indexOf((this as any).anchor) !== -1)
                         throw new Error("anchor must be top if maxLines is used");
                 },
+                // MARK: type()
                 async type(this: GameObj<PtyComp | DynamicTextComp | TextComp>, chunk, cancel) {
                     if (chunk === undefined) return;
                     chunk = this.toChunks(chunk)[0]!;
@@ -149,6 +157,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                         }
                     }
                 },
+                // MARK: command()
                 async command(this: GameObj<PtyComp | DynamicTextComp>, cmdText, output, cancel) {
                     if (typeof cmdText === "string") cmdText = { text: cmdText, typewriter: true };
                     if (this.prompt) {
@@ -193,6 +202,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                 }
             }
         },
+        // MARK: ptyMenu()
         ptyMenu(menu, opt = {}) {
             var disabled = true;
             var beginLen = 0;
@@ -211,6 +221,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                 ptrText: "\u001a",
                 playSoundCb: opt.playSoundCb ?? K.play,
                 get disabled() { return disabled; },
+                // MARK: beginMenu()
                 async beginMenu(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (!disabled) throw new Error("already began!");
                     this.backStack = [];
@@ -222,8 +233,11 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     }
                     disabled = false;
                     beginLen = this.chunks.length;
+                    // save for quitMenu() later
+                    menu = this.menu;
                     await this.__menuChanged();
                 },
+                // MARK: quitMenu()
                 async quitMenu(this: GameObj<PtyMenuComp | PtyComp>) {
                     // only show the final command
                     this.chunks = this.chunks.slice(0, beginLen);
@@ -239,6 +253,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     await this.command(commandChunks, "");
                     commandChunks = [];
                 },
+                // MARK: __menuChanged()
                 async __menuChanged(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     this.chunks = this.chunks.slice(0, beginLen);
@@ -279,6 +294,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     }
                     await this.command(commandChunks.concat(cursorChunks), outChunks);
                 },
+                // MARK: __updateSelected()
                 async __updateSelected(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     switch (this.menu.type) {
@@ -310,6 +326,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                             throw new Error("Unknown menu type " + (this.menu as any).type);
                     }
                 },
+                // MARK: doit()
                 async doit(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     switch (this.menu.type) {
@@ -343,6 +360,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     }
                     if (opt?.sounds?.doit) this.playSoundCb?.(opt.sounds.doit)
                 },
+                // MARK: back()
                 async back(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     if (this.backStack.length === 0) {
