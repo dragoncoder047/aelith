@@ -69,6 +69,10 @@ export function continuationCore(
             });
         },
         invoke(this: GameObj<ContinuationComp>) {
+            if (this.type === "assert") {
+                // assertion: heal fully
+                player.heal(Infinity);
+            }
             if (this.data?.special === "recapture") {
                 // Capture a continuation from right here so the player can go back.
                 this.trappedBy.capture();
@@ -107,6 +111,7 @@ export function continuationCore(
                     obj.pos = e.pos!.clone().add(reverseDelta);
                     obj.vel = K.vec2(0);
                 }
+                if (e.bugState) obj.enterState(e.bugState);
                 obj.togglerState = e.togglerState!;
                 obj.triggered = e.triggeredState!;
                 // If it is a button or laser that *was* triggered by a box when captured, but

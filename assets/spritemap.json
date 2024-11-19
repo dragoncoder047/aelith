@@ -171,5 +171,25 @@
                 "to": 1
             }
         }
+    },
+    "bug": {
+        "x": 97,
+        "y": 239,
+        "width": 124,
+        "height": 30,
+        "sliceX": 4,
+        "sliceY": 2,
+        "anims": {
+            "walk": {
+                "from": 0,
+                "to": 3,
+                "speed": 8,
+                "loop": true
+            },
+            "sleep": {
+                "from": 4,
+                "to": 4
+            }
+        }
     }
 }

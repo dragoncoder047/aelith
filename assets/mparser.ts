@@ -8,6 +8,7 @@ import { K } from "../init";
 import { antivirus } from "../object_factories/antivirus";
 import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
+import { bugger } from "../object_factories/bugger";
 import { button } from "../object_factories/button";
 import { checkpoint } from "../object_factories/checkpoint";
 import { continuationTrap } from "../object_factories/continuationTrapGun";
@@ -29,6 +30,7 @@ import { windTunnel } from "../object_factories/windTunnel";
  * Main parser handler for level map data (in WORLD_FILE).
  */
 export const MParser: {
+    pausePos: Vec2,
     world: GameObj<LevelComp | PosComp> | undefined,
     spawners: { [x: string]: (this: typeof MParser) => CompList<any>; };
     fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; };
@@ -44,7 +46,9 @@ export const MParser: {
     build(): void;
     uid_counter: number,
     uid(): string;
+    pauseWorld(paused: boolean): void
 } = {
+    pausePos: K.vec2(0),
     world: undefined,
     // MARK: spawners
     /**
@@ -65,6 +69,7 @@ export const MParser: {
         T: continuationTrap,
         A: checkpoint,
         V: antivirus,
+        E: bugger
     },
     // MARK: fixedTiles
     /**
@@ -88,8 +93,13 @@ export const MParser: {
         // drop/done command: things* n? --
         z() {
             const howmany = this.stack.pop();
-            if (typeof howmany === "number")
-                this.stack.splice(this.stack.length - howmany, howmany);
+            if (typeof howmany === "number") {
+                for (var i = 0; i < howmany; i++) {
+                    const obj = this.stack.pop();
+                    if (typeof obj.finish === "function") obj.finish();
+                }
+            }
+            else if (typeof howmany.finish === "function") howmany.finish();
         },
         // MARK: n(egate)
         // negate command: number -- number
@@ -531,5 +541,8 @@ export const MParser: {
     uid_counter: 10000,
     uid() {
         return (this.uid_counter++).toString(16);
-    }
+    },
+    pauseWorld(paused) {
+        this.world!.query({hierarchy: "descendants"}).forEach(x => x.paused = paused);
+    },
 };

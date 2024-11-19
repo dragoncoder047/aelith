@@ -9,6 +9,7 @@ import "./controls";
 import "./debugLinkage";
 import { player } from "./player";
 import "./player/states";
+import "./player/health";
 import "./ui";
 
 K.setGravity(GRAVITY);

@@ -4,6 +4,7 @@ import { uiButton } from "../components/uiButton";
 import { MARGIN, SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
+import { healthbar } from "./healthbar";
 
 function updateInventory() {
     if (player.inventory.length === 0) {
@@ -32,7 +33,7 @@ const btnLeft = UI.add([
     K.color(K.GREEN.darken(127)),
     {
         update(this: GameObj<PosComp | TextComp>) {
-            this.pos = K.vec2(MARGIN, K.height() - MARGIN
+            this.pos = K.vec2(MARGIN, K.height() - (MARGIN * 2 + healthbar.height)
                 + K.height() * +(!player.canScrollInventory(-1) || player.hidden));
         }
     }
@@ -53,7 +54,7 @@ const inventory = UI.add([
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(
                 MARGIN + btnLeft.pos.x + btnLeft.width,
-                -MARGIN + K.height() * (1 + +player.hidden));
+                -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +player.hidden));
         }
     }
 ]);
@@ -70,7 +71,7 @@ const btnRight = UI.add([
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(
                 MARGIN + inventory.pos.x + inventory.width,
-                -MARGIN + K.height() * (1 + +(!player.canScrollInventory(1) || player.hidden)));
+                -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +(!player.canScrollInventory(1) || player.hidden)));
         }
     }
 ]);

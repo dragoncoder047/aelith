@@ -151,6 +151,12 @@
             "restart": "Restart game",
             "reallyRestart": "Are you sure you want to restart?\nAll progress will be lost!"
         },
+        "dead": {
+            "complete": "Debugging complete.",
+            "failed": "failed to eliminate all bugs!",
+            "resume": "Resume from a previous checkpoint"
+        },
+        "eekBug": "Eek! A bug!",
         "notImplemented": "Not implemented yet, sorry",
         "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
         "gameErrorDetails": "You can search for the error online:",
@@ -276,13 +282,19 @@
             "restart": "Reiniciar el juego",
             "reallyRestart": "¿Estás seguro de que quieres reiniciar?\n¡Todo el progreso se perderá!"
         },
+        "dead": {
+            "complete": "Depuración completa.",
+            "failed": "¡no se pudo eliminar todos los errores!",
+            "resume": "Reanudar desde un punto de control anterior"
+        },
+        "eekBug": "¡Eek! ¡Un error!",
         "notImplemented": "Aún no se ha implementado, lo siento",
         "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",
         "gameErrorDetails": "Puede buscar el error en Internet:",
         "wrongWayLeft": "&arrow.left Ir por ese camino",
         "controlsIntro": "&msg.bottomControls.&isPaused",
         "bottomControls": {
-            "0": "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pausa para abrir el menú de pausa",
+            "0": "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pause para abrir el menú de pausa",
             "1": "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
         },
         "climb": "Puede mantener presionado &control.climb y moverse para subir por una escalera",

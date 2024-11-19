@@ -3,6 +3,7 @@ import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 import { musicPlay } from "../assets";
+import { uiButton } from "../components/uiButton";
 
 
 const musicButton = UI.add([
@@ -42,10 +43,10 @@ const musicButton = UI.add([
     }
 ]);
 
-musicButton.onClick(() => {
+musicButton.use(uiButton(() => {
     musicButton.enabled = !musicButton.enabled;
     musicPlay.paused = !musicButton.enabled;
-});
+}));
 
 musicButton.hidden = musicButton.paused = true;
 

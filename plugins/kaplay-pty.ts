@@ -364,6 +364,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                 async back(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     if (this.backStack.length === 0) {
+                        K.debug.log("can't go back");
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                         return;
                     }

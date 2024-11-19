@@ -7,7 +7,7 @@ import { nextFrame } from "./utils";
 import { PtyChunk, PtyComp, TypableOne } from "./plugins/kaplay-pty";
 import { initPauseMenu } from "./controls/pauseMenu";
 
-type TextChunk = ({
+export type TextChunk = ({
     skipIf?: (vars: NestedStrings) => boolean
     clear?: boolean
 } & ({
@@ -21,7 +21,7 @@ type TextChunk = ({
     workDir?: string
 }));
 
-function command(
+export function command(
     cmd: string,
     output: string,
     delayBefore: number,
@@ -121,21 +121,40 @@ const CHUNKS: TextChunk[] = [
     }
 ];
 
-export async function doStartup(firstPos: Vec2) {
-    const terminal = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp | PtyComp> | undefined;
+export async function funnyType(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunk[]) {
+    for (var chunk of chunks) {
+        if (chunk.clear) terminal.chunks = [];
+        if (chunk.skipIf && chunk.skipIf(terminal.data)) continue;
+        if (chunk.isCommand) {
+            await terminal.command(
+                chunk.command, chunk.output, jumpWait());
+        }
+        else {
+            terminal.showCursor = !!chunk.showCursor;
+            await terminal.type(chunk.value, jumpWait());
+        }
+    }
+}
+
+export async function doStartup() {
+    const terminal = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp | PtyComp | PosComp> | undefined;
     const title = MParser.vars.titleText as GameObj<TextComp | DynamicTextComp | PosComp> | undefined;
     const isTesting = !!MParser.vars.testingMode;
 
     if (!terminal || !title) throw "Missing critical elements!";
 
-    // TODO: the rect doesn't render. Why?!?
+    const terminalPos = terminal.worldPos()!;
+    terminal.destroy();
+    K.add(terminal);
+    terminal.pos = terminalPos;
+
     const container = K.add([
         K.pos(title.pos),
         K.layer("title"),
     ]);
     const rr = container.add([
         K.pos(0),
-        K.rect(title.width, title.height),
+        K.rect(10, 10), // dummy values
         K.color(K.BLACK),
         K.area()
     ]);
@@ -143,6 +162,13 @@ export async function doStartup(firstPos: Vec2) {
     title.destroy();
     container.add(title);
     title.pos = K.vec2(0);
+    const zz = title.onUpdate(() => {
+        if (title.width > 0 && title.height > 0) {
+            rr.width = title.width;
+            rr.height = title.height;
+            zz.cancel();
+        }
+    });
 
     terminal.use(K.pty({ maxLines: 16, cursor: { text: "\u2588", styles: ["cursor"] } }));
 
@@ -157,7 +183,7 @@ export async function doStartup(firstPos: Vec2) {
 
     do {
         if (isTesting) {
-            CHUNKS.push({ value: { text: "\nTesting mode is enabled. Be careful." }, showCursor: true });
+            CHUNKS.push({ value: { text: "\nTesting mode is enabled. Be careful.\n" }, showCursor: true });
             // @ts-ignore
             jumpWait = () => Promise.resolve();
         }
@@ -178,20 +204,9 @@ export async function doStartup(firstPos: Vec2) {
                 text: "\n\u2514\u25BA$ ",
                 styles: ["ident"],
             }
-        ]
+        ];
 
-        for (var chunk of CHUNKS) {
-            if (chunk.clear) terminal.chunks = [];
-            if (chunk.skipIf && chunk.skipIf(terminal.data)) continue;
-            if (chunk.isCommand) {
-                await terminal.command(
-                    chunk.command, chunk.output, jumpWait());
-            }
-            else {
-                terminal.showCursor = !!chunk.showCursor;
-                await terminal.type(chunk.value, jumpWait());
-            }
-        }
+        await funnyType(terminal, CHUNKS);
 
     } while (false);
 
@@ -199,7 +214,7 @@ export async function doStartup(firstPos: Vec2) {
     K.get("player").forEach(p => p.hidden = p.paused = false);
     K.get("tail").forEach(p => p.hidden = p.paused = false);
 
-    initPauseMenu(terminal, firstPos);
+    initPauseMenu(terminal);
 
     // Start music
     musicPlay.paused = false;

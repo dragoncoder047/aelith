@@ -1,0 +1,84 @@
+import { GameObj } from "kaplay";
+import { player } from ".";
+import { musicPlay } from "../assets";
+import { MParser } from "../assets/mparser";
+import { ContinuationComp } from "../components/continuationCore";
+import { PAUSE_MENU, PAUSE_MENU_OBJ } from "../controls/pauseMenu";
+import { K } from "../init";
+import { PtyMenu } from "../plugins/kaplay-pty";
+import { funnyType, TextChunk } from "../startup";
+
+const deathMessages: TextChunk[] = [
+    {
+        value: "\n&msg.dead.complete\n"
+    },
+    {
+        value: {
+            text: "gdb: error: &msg.dead.failed\n",
+            styles: ["stderr"],
+            sound: "command_fail"
+        }
+    },
+];
+
+const resumeList: PtyMenu[] = [];
+
+const DEATH_MENU: PtyMenu = {
+    id: "sysctl",
+    type: "submenu",
+    opts: [
+        {
+            id: "resume",
+            name: "&msg.dead.resume",
+            type: "submenu",
+            opts: resumeList,
+        },
+        {
+            id: "restart",
+            name: "&msg.pause.restart",
+            type: "action",
+            async action() {
+                window.location.reload();
+            }
+        }
+    ]
+};
+
+player.onHurt(() => {
+    K.play("hurt");
+})
+
+player.onDeath(async () => {
+    musicPlay.paused = true;
+    K.play("die");
+    MParser.pauseWorld(true);
+    player.holdingIndex = -1;
+    player.trigger("update");
+    player.paused = true;
+    await K.tween(1, 0, 2, x => player.opacity = x);
+    K.camPos(MParser.pausePos);
+    await funnyType(PAUSE_MENU_OBJ, deathMessages);
+    PAUSE_MENU_OBJ.menu = DEATH_MENU;
+    K.strings.isPaused = "1";
+    // make resume things
+    const allConts = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
+    const divBy = 5;
+    const thisList = [];
+    for (var i = 0; i < allConts.length; i++) {
+        const thisCont = allConts[i] as unknown as GameObj<ContinuationComp>;
+        const resumeFromThis = makeResumer(thisCont);
+    }
+    await PAUSE_MENU_OBJ.beginMenu();
+});
+
+function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
+    return async () => {
+        await PAUSE_MENU_OBJ.quitMenu();
+        await PAUSE_MENU_OBJ.beginMenu();
+        musicPlay.paused = false;
+        MParser.pauseWorld(false);
+        K.strings.isPaused = "0";
+        PAUSE_MENU_OBJ.backStack.push(PAUSE_MENU); // weirdness of doing it in action()
+        c.invoke();
+    };
+}

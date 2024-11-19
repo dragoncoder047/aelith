@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, TextComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, TextComp, Vec2 } from "kaplay";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -18,6 +18,7 @@ export type CDEComps =
     | CollisionerComp
     | TogglerComp
     | InvisibleTriggerComp
+    | StateComp
     | AreaComp;
 
 export type ContinuationDataEntry = {
@@ -26,6 +27,7 @@ export type ContinuationDataEntry = {
     pos?: Vec2
     togglerState?: boolean
     triggeredState?: boolean
+    bugState?: string
 };
 export type ContinuationData = {
     playerPos: Vec2
@@ -224,6 +226,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                         e.togglerState = obj.togglerState;
                     if (obj.is("invisible-trigger"))
                         e.triggeredState = obj.triggered;
+                    if (obj.is("bug"))
+                        e.bugState = obj.state;
                     data.objects.push(e);
                 }
             }

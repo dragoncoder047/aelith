@@ -1,10 +1,11 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, KEventController, NamedComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { ContinuationTrapComp } from "../components/continuationTrap";
+import { HoldOffsetComp } from "../components/holdOffset";
 import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { HoldOffsetComp } from "../components/holdOffset";
+import { SpringComp } from "../plugins/kaplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
@@ -18,7 +19,7 @@ export interface PlayerComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean
     lookingAt: GameObj<AreaComp> | undefined
     lookingDirection: Vec2 | undefined
-    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController }
+    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void, onEnd(p: () => void): KEventController } | undefined;
     inventory: PlayerInventoryItem[]
     holdingIndex: number
     addToInventory(object: PlayerInventoryItem): void
@@ -42,10 +43,23 @@ function playerComp(): PlayerComp {
         },
         camFollower: undefined,
         footstepsCounter: 0,
-        add(this: GameObj<PlayerComp | PosComp>) {
+        add(this: GameObj<PlayerComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
             this.camFollower = this.onUpdate(() => {
                 K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
+            });
+            var loop: KEventController;
+            var stopFlash: KEventController;
+            this.onHurt(() => {
+                if (loop) loop.cancel();
+                if (stopFlash) stopFlash.cancel();
+                loop = this.onUpdate(() => {
+                    this.opacity = 1 - this.opacity;
+                });
+                stopFlash = this.wait(0.5, () => {
+                    loop.cancel();
+                    this.opacity = 1;
+                });
             });
         },
         _pull2Pos(this: GameObj<PlayerComp | SpriteComp | PosComp>, other) {
@@ -152,6 +166,7 @@ function playerComp(): PlayerComp {
          * @param impactVel Velocity of impact, if provided
          */
         playSound(this: GameObj<PosComp | PlayerComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel = undefined) {
+            if (this.paused) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -287,6 +302,9 @@ export const player = K.add([
     K.layer("player"),
     "player",
     K.pos(0, 0),
+    K.health(16, 16),
+    K.timer(),
+    K.opacity(1),
     K.area({
         /**/
         shape: new K.Polygon([
@@ -368,6 +386,12 @@ for (var i = 0; i < numTailSegments; i++) {
         }),
         "tail",
         "raycastIgnore",
+        {
+            update(this: GameObj<OpacityComp | SpringComp>) {
+                this.hidden = player.hidden || player.opacity === 0;
+                this.drawOpts.opacity = player.opacity;
+            }
+        }
     ]);
     pos = pos.add(K.vec2(0, sz));
 }

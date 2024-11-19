@@ -3,11 +3,13 @@ import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { player } from "../player";
 import { K } from "../init";
 import { timer } from "../ui/timer";
+import { MParser } from "../assets/mparser";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
 
-const PAUSE_MENU: PtyMenu = {
+export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
     opts: [
@@ -71,28 +73,28 @@ const PAUSE_MENU: PtyMenu = {
     ]
 }
 
-export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp>;
+export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
 
-export function initPauseMenu(terminal: GameObj<PtyComp>, pauseCamPos: Vec2) {
+export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // setup pause / unpause controls
-    var origCamPos = pauseCamPos;
+    var origCamPos = player.pos;
     const pauseListener = K.add([]);
     player.onButtonPress("pause_unpause", async () => {
-        K.debug.log("pausing");
         K.get("player").forEach(p => p.hidden = p.paused = true);
         K.get("tail").forEach(p => p.hidden = p.paused = true);
+        MParser.pauseWorld(true);
         origCamPos = player.pos;
-        K.camPos(pauseCamPos);
+        K.camPos(MParser.pausePos);
         await K.wait(0.05);
         // prevent immediate unpause
         pauseListener.paused = false;
         await onPaused();
     });
     pauseListener.onButtonPress("pause_unpause", async () => {
-        K.debug.log("unpausing");
         K.get("player").forEach(p => p.hidden = p.paused = false);
         K.get("tail").forEach(p => p.hidden = p.paused = false);
         pauseListener.paused = true;
+        MParser.pauseWorld(false);
         K.camPos(origCamPos);
         await onUnpaused();
     });
