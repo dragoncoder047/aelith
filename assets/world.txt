@@ -1,4 +1,4 @@
-1(testingMode)d
+(testingMode)d
 [a b -- b a]{(1b1a)p}(sw)d
 [N text -- N]{(t)(sw)is(width)12bs0n10nm}(hs)d
 [I -- I]{(1+y)e(1 s onCollide|player)v}(ii)d
@@ -18,7 +18,7 @@
 %                          %                 N     =              M         I<M                                             = %  % 2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)vz (t)(&msg.controlsIntro)s(width)12bs0n1bm(1 p onGround)vz [climbing N] (t)(&msg.climb)sz
 %                          %                       =###########################################################################  %
 %                          %                       =###########################################################################  %
-%                          %                       =######                                             @                     ##  %
+%                          %                       =######                                                                   ##  %
 %                          %                       =######                                                 =                 ##  %
 %                          %                       =######    E  E   E      E        E                  Ez =   ################  % {(ss)iz}5l
 %                          %                       =#######################################################=###################  %
