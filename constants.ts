@@ -14,7 +14,7 @@ export const FONT_SCALE = 2;
 /**
  * Lowpass filter coefficient on camera pan.
  */
-export const ALPHA = 0.05;
+export const ALPHA = 0.2;
 
 /**
  * Margin for UI components
