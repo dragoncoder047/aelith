@@ -9,7 +9,7 @@ export function bugger(): CompList<any> {
         K.sprite("bug", { anim: "walk" }),
         K.body({ jumpForce: 200 }),
         K.layer("player"),
-        K.state("walking"),
+        K.state("sleeping"),
         ...defaults({
             friction: FRICTION,
             restitution: RESTITUTION,
