@@ -21,7 +21,7 @@ export function bug(): BugComp {
                     if (obj.state === "angry") this.enterState("angry");
                     else if (obj.state === "scared" || this.state === "sleeping") this.enterState("walking");
                 }
-                if (this.state === "sleeping") return;
+                if (this.state === "sleeping" && obj !== player) return;
                 if (coll?.isLeft() || coll?.isRight()) {
                     if (obj === player && this.state === "angry") {
                         player.hurt();
