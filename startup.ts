@@ -175,6 +175,7 @@ export async function doStartup() {
     // hide all
     K.get("player").forEach(p => p.hidden = p.paused = true);
     K.get("tail").forEach(p => p.hidden = p.paused = true);
+    MParser.pauseWorld(true);
 
     // stupid
     // why are these necessary?!?
@@ -213,6 +214,7 @@ export async function doStartup() {
     // Done typing
     K.get("player").forEach(p => p.hidden = p.paused = false);
     K.get("tail").forEach(p => p.hidden = p.paused = false);
+    MParser.pauseWorld(false);
 
     initPauseMenu(terminal);
 
