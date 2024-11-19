@@ -35,7 +35,7 @@ const DEATH_MENU: PtyMenu = {
         },
         {
             id: "restart",
-            name: "&msg.pause.restart",
+            name: "&msg.pause.restart &msg.dead.fromBeginning",
             type: "action",
             async action() {
                 window.location.reload();
@@ -49,24 +49,57 @@ player.onHurt(() => {
 })
 
 player.onDeath(async () => {
+    resumeList.length = 0; // clear in case user died twice
     musicPlay.paused = true;
     K.play("die");
     MParser.pauseWorld(true);
-    player.holdingIndex = -1;
+    player.scrollInventory(-Infinity);
     player.trigger("update");
     player.paused = true;
     await K.tween(1, 0, 2, x => player.opacity = x);
+    K.get("tail").forEach(t => t.paused = true);
     K.camPos(MParser.pausePos);
     await funnyType(PAUSE_MENU_OBJ, deathMessages);
     PAUSE_MENU_OBJ.menu = DEATH_MENU;
     K.strings.isPaused = "1";
     // make resume things
-    const allConts = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
+    const allContinuations = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
     const divBy = 5;
-    const thisList = [];
-    for (var i = 0; i < allConts.length; i++) {
-        const thisCont = allConts[i] as unknown as GameObj<ContinuationComp>;
+    var thisList: PtyMenu[] = [];
+    var lastI = 0;
+    for (var i = 0; i < allContinuations.length; i++) {
+        const thisCont = allContinuations[i] as unknown as GameObj<ContinuationComp>;
         const resumeFromThis = makeResumer(thisCont);
+        thisList.push({
+            id: "" + i,
+            type: "action",
+            name: `&msg.dead.checkpoint #${i + 1}`,
+            action: resumeFromThis,
+        });
+        if (thisList.length % divBy === 0) {
+            resumeList.push({
+                id: "",
+                type: "submenu",
+                name: `&msg.dead.checkpoint #${lastI + 1}-#${i + 1}`,
+                opts: thisList,
+            });
+            thisList = [];
+            lastI = i;
+        }
+    };
+    if (thisList.length > 0) {
+        resumeList.push({
+            id: "",
+            type: "submenu",
+            name: `&msg.dead.checkpoint #${lastI + 1}-#${allContinuations.length}`,
+            opts: thisList,
+        });
+    }
+    if (allContinuations.length <= divBy) {
+        // @ts-ignore
+        const inner: PtyMenu[] = resumeList[0]!.opts;
+        resumeList.length = 0;
+        resumeList.push(...inner);
     }
     await PAUSE_MENU_OBJ.beginMenu();
 });
@@ -74,11 +107,13 @@ player.onDeath(async () => {
 function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         await PAUSE_MENU_OBJ.quitMenu();
-        await PAUSE_MENU_OBJ.beginMenu();
         musicPlay.paused = false;
         MParser.pauseWorld(false);
         K.strings.isPaused = "0";
-        PAUSE_MENU_OBJ.backStack.push(PAUSE_MENU); // weirdness of doing it in action()
+        PAUSE_MENU_OBJ.menu = PAUSE_MENU;
+        player.paused = false;
+        K.get("tail").forEach(t => t.paused = false);
+        player.opacity = 1;
         c.invoke();
     };
 }

@@ -154,7 +154,9 @@
         "dead": {
             "complete": "Debugging complete.",
             "failed": "failed to eliminate all bugs!",
-            "resume": "Resume from a previous checkpoint"
+            "resume": "Resume from a previous checkpoint",
+            "checkpoint": "Checkpoint",
+            "fromBeginning": "from the beginning"
         },
         "eekBug": "Eek! A bug!",
         "notImplemented": "Not implemented yet, sorry",
@@ -285,7 +287,9 @@
         "dead": {
             "complete": "Depuración completa.",
             "failed": "¡no se pudo eliminar todos los errores!",
-            "resume": "Reanudar desde un punto de control anterior"
+            "resume": "Reanudar desde un punto de control anterior",
+            "checkpoint": "Punto de control",
+            "fromBeginning": "desde el principio"
         },
         "eekBug": "¡Eek! ¡Un error!",
         "notImplemented": "Aún no se ha implementado, lo siento",

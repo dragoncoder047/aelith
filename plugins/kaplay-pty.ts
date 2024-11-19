@@ -337,6 +337,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                             if (this.menu.type === "action") {
                                 this.dropChunk(cursorChunks);
                                 await this.menu.action();
+                                if (disabled) break;
                                 beginLen = this.chunks.length;
                                 this.menu = this.backStack.pop()!;
                             } else this.selIdx = 0;
