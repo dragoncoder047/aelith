@@ -44,7 +44,6 @@ export interface PtyMenuComp extends Comp {
     doit(): Promise<void>
     switch(direction: Vec2): Promise<void>
     back(): Promise<void>
-    value(path?: string): any | any[]
     readonly disabled: boolean
     backStack: PtyMenu[] // stuff to go back to
     menu: PtyMenu
@@ -93,12 +92,13 @@ export interface PtyMenuCompOpt {
 }
 
 // MARK: KAPLAYPtyComp
-export interface KAPLAYPtyComp {
+export interface KAPLAYPtyPlugin {
     pty(opt: PtyCompOpt): PtyComp
     ptyMenu(menu: PtyMenu, opt?: PtyMenuCompOpt): PtyMenuComp
+    getValueFromMenu(mm: PtyMenu, path?: string): any | any[] | undefined
 }
 
-export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp {
+export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlugin {
     return {
         // MARK: pty()
         pty(opt) {
@@ -392,26 +392,27 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyComp
                     } else if (opt?.sounds?.switch) this.playSoundCb?.(opt.sounds.switch);
                     await this.__updateSelected();
                 },
-                value(path = "") {
-                    const parts = path.split(".");
-                    var mm = this.backStack[0] ?? this.menu;
-                    for (var part of parts) {
-                        switch (mm.type) {
-                            case "action":
-                            case "select":
-                                throw "bad";
-                            case "submenu":
-                                mm = mm.opts.find(m => m.id === part)!;
-                                break;
-                            default:
-                                throw "bad";
-                        }
-                    }
-                    if (mm.type === "select") {
-                        return mm.multiple ? mm.selected.map(i => (mm as any).opts[i].value) : mm.opts[mm.selected]!.value;
-                    } else throw "bad";
-                },
             }
+        },
+        getValueFromMenu(mm: PtyMenu, path = "") {
+            const parts = path.split(".");
+            for (var part of parts) {
+                if (!mm) break;
+                switch (mm.type) {
+                    case "action":
+                    case "select":
+                        throw "bad";
+                    case "submenu":
+                        mm = mm.opts.find(m => m.id === part)!;
+                        break;
+                    default:
+                        throw "bad";
+                }
+            }
+            if (!mm) return undefined;
+            if (mm.type === "select") {
+                return mm.multiple ? mm.selected.map(i => (mm as any).opts[i].value) : mm.opts[mm.selected]!.value;
+            } else throw "bad";
         },
     }
 }

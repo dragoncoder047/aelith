@@ -3,7 +3,7 @@ import { player } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
 import { ContinuationComp } from "../components/continuationCore";
-import { PAUSE_MENU, PAUSE_MENU_OBJ } from "../controls/pauseMenu";
+import { PAUSE_MENU, PAUSE_MENU_OBJ, pauseListener } from "../controls/pauseMenu";
 import { K } from "../init";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, TextChunk } from "../startup";
@@ -101,18 +101,23 @@ player.onDeath(async () => {
         resumeList.length = 0;
         resumeList.push(...inner);
     }
+    pauseListener.paused = false;
     await PAUSE_MENU_OBJ.beginMenu();
 });
 
 function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
+        pauseListener.paused = true;
         await PAUSE_MENU_OBJ.quitMenu();
         musicPlay.paused = false;
         MParser.pauseWorld(false);
         K.strings.isPaused = "0";
         PAUSE_MENU_OBJ.menu = PAUSE_MENU;
         player.paused = false;
-        K.get("tail").forEach(t => t.paused = false);
+        K.get("tail").forEach(t => {
+            t.paused = false;
+            t.opacity = 1;
+        });
         player.opacity = 1;
         c.invoke();
     };

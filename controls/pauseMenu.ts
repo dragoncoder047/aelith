@@ -75,11 +75,12 @@ export const PAUSE_MENU: PtyMenu = {
 }
 
 export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
+export var pauseListener: GameObj;
 
 export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // setup pause / unpause controls
     var origCamPos = player.pos;
-    const pauseListener = K.add([]);
+    pauseListener = K.add([]);
     player.onButtonPress("pause_unpause", async () => {
         player.hidden = player.paused = true;
         K.get("tail").forEach(p => p.hidden = p.paused = true);
@@ -150,7 +151,7 @@ async function onUnpaused() {
 }
 
 function copyPreferences() {
-    K.strings.controllerType = PAUSE_MENU_OBJ.value("set controllerType");
-    timer.opacity = +PAUSE_MENU_OBJ.value("settings -i").includes("timer");
-    K.langs = PAUSE_MENU_OBJ.value("set language");
+    K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
+    timer.opacity = +K.getValueFromMenu(PAUSE_MENU, "settings -i")?.includes("timer");
+    K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }
