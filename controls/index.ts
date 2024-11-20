@@ -36,7 +36,7 @@ function motionHandler() {
 player.onUpdate(motionHandler);
 
 player.onButtonPress("jump", () => {
-    if (player.isGrounded() && player.state !== "climbing") {
+    if (player.isGrounded() || player.state === "climbing") {
         player.jump();
         player.enterState("jump");
         if (!player.intersectingAny("button"))

@@ -80,11 +80,11 @@ player.onDeath(async () => {
             resumeList.push({
                 id: "",
                 type: "submenu",
-                name: `&msg.dead.checkpoint #${lastI + 1}-#${i + 1}`,
+                name: `&msg.dead.checkpoints #${lastI + 1}-#${i + 1}`,
                 opts: thisList,
             });
             thisList = [];
-            lastI = i;
+            lastI = i + 1;
         }
     };
     if (thisList.length > 0) {
