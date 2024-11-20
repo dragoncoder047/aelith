@@ -95,7 +95,7 @@ player.onDeath(async () => {
             opts: thisList,
         });
     }
-    if (allContinuations.length <= divBy) {
+    if (allContinuations.length > 0 && allContinuations.length <= divBy) {
         // @ts-ignore
         const inner: PtyMenu[] = resumeList[0]!.opts;
         resumeList.length = 0;
