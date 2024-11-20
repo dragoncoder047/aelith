@@ -56,10 +56,12 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## Other ideas
 
-* [ ] Add algorithmic choosing songs based on where you are in the game
-* [ ] Add enemy "bugs" that can hurt you?
+* [ ] Add player head can turn to look at whatever is being looked at
+* [X] Add algorithmic choosing songs based on where you are in the game
+* [X] Add enemy "bugs" that can hurt you?
   * [ ] Final enemy boss?
-  * [ ] What happens when player dies?
+  * [X] What happens when player dies?
+    * They can respawn from a checkpoint
 * [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
 * [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
   * [ ] add rumble effects for game controller users?
