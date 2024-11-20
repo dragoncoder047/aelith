@@ -6,16 +6,24 @@ import { K } from "../init";
 // Controls
 
 export function getMotionVector(): Vec2 {
+    const leftstick = K.getGamepadStick("left");
     return K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
-    ).add(K.getGamepadStick("left").reflect(K.RIGHT)); // y increases downward
+    ).sub(leftstick.slen() > 0.01 ? leftstick : K.vec2(0));
 }
 
 function motionHandler() {
     var xy = getMotionVector();
     const len = xy.len();
     if (len === 0) return;
+    if (player.intersectingAny("ladder") && Math.abs(xy.y) > 0.6) {
+        if (player.state !== "climbing")
+            player.enterState("climbing");
+    } else {
+        if (player.state === "climbing")
+            player.enterState("normal");
+    }
     if (player.state === "normal")
         xy = xy.reject(K.UP).unit().scale(len);
     player.move(xy.scale(WALK_SPEED));
@@ -33,16 +41,6 @@ player.onButtonPress("jump", () => {
         player.enterState("jump");
         if (!player.intersectingAny("button"))
             player.playSound("jump");
-    }
-});
-player.onButtonDown("climb", () => {
-    if (player.intersectingAny("ladder") && player.state !== "climbing") {
-        player.enterState("climbing");
-    }
-});
-player.onButtonRelease("climb", () => {
-    if (player.state === "climbing") {
-        player.enterState("normal");
     }
 });
 player.onButtonPress("throw", () => player.throw());

@@ -18,15 +18,15 @@ export const CONTROLS: Controls = {
     },
     interact: {
         mouse: ["left"],
-        gamepad: ["rtrigger"],
+        gamepad: ["rstick"],
     },
     throw: {
         mouse: ["right"],
-        gamepad: ["rstick"],
+        gamepad: ["rtrigger"],
     },
     invoke: {
         keyboard: ["e", "enter"],
-        gamepad: ["rshoulder"],
+        gamepad: ["north"],
     },
     // inventory controls
     inv_previous: {
@@ -46,10 +46,6 @@ export const CONTROLS: Controls = {
         gamepad: ["dpad-down"],
     },
     // motion controls
-    climb: {
-        keyboard: ["q", "shift"],
-        gamepad: ["lshoulder"],
-    },
     move_left: {
         keyboard: ["a", "left"],
     },
@@ -85,10 +81,10 @@ export const CONTROLS: Controls = {
     },
     nav_select: {
         keyboard: ["enter"],
-        gamepad: ["rshoulder", "rtrigger", "select"],
+        gamepad: ["east", "select"],
     },
     nav_back: {
         keyboard: ["backspace"],
-        gamepad: ["lshoulder", "ltrigger"],
+        gamepad: ["west"],
     }
 };

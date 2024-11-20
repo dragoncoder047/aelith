@@ -6,7 +6,7 @@
     "gamename": "[callcc]debugger[/callcc];",
     "msg": "&&lang",
     "control": "&msg.controls.&inputType",
-    "button": "&&controllerType.button",
+    "button": "&&controllerType",
     "xbox": {
         "north": "Y",
         "east": "B",
@@ -62,17 +62,16 @@
                 "jump": "&button.south",
                 "aim": "the right stick",
                 "interact": {
-                    "name": "&button.rtrigger",
-                    "verb": "press",
-                    "space": " "
-                },
-                "throw": {
                     "name": "the right stick",
                     "verb": "press",
                     "space": " "
                 },
-                "climb": "&button.lshoulder",
-                "invoke": "&button.rshoulder",
+                "throw": {
+                    "name": "&button.rtrigger",
+                    "verb": "press",
+                    "space": " "
+                },
+                "invoke": "&button.north",
                 "modify": {
                     "name": "d-pad up and down",
                     "verb": "Press",
@@ -82,8 +81,8 @@
                 "pause": "the &button.start button",
                 "pMenu": {
                     "switch": "the d-pad",
-                    "select": "&button.rshoulder, &button.rtrigger, or &button.select",
-                    "back": "&button.lshoulder or &button.ltrigger"
+                    "select": "&button.east or &button.select",
+                    "back": "&button.west"
                 }
             },
             "keyboard": {
@@ -100,7 +99,6 @@
                     "verb": "",
                     "space": ""
                 },
-                "climb": "Q or shift",
                 "invoke": "E or enter",
                 "modify": {
                     "name": "Scroll",
@@ -168,7 +166,6 @@
             "0": "Use &control.move to move and &control.jump to jump\nPress &control.pause to open the pause menu",
             "1": "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
         },
-        "climb": "You can hold &control.climb and move to climb up a ladder",
         "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
@@ -195,17 +192,16 @@
                 "jump": "el botón &button.south",
                 "aim": "el joystick derecho",
                 "interact": {
-                    "name": "&button.rtrigger",
-                    "verb": "presiona",
-                    "space": " "
-                },
-                "throw": {
                     "name": "el joystick derecho",
                     "verb": "presiona",
                     "space": " "
                 },
-                "climb": "&button.lshoulder",
-                "invoke": "&button.rshoulder",
+                "throw": {
+                    "name": "&button.rtrigger",
+                    "verb": "presiona",
+                    "space": " "
+                },
+                "invoke": "&button.north",
                 "modify": {
                     "name": "el d-pad arriba y abajo",
                     "verb": "Presiona",
@@ -215,8 +211,8 @@
                 "pause": "el botón &button.start",
                 "pMenu": {
                     "switch": "el d-pad",
-                    "select": "&button.rshoulder, &button.rtrigger, o &button.select",
-                    "back": "&button.lshoulder o &button.ltrigger"
+                    "select": "&button.east o &button.select",
+                    "back": "&button.west"
                 }
             },
             "keyboard": {
@@ -233,7 +229,6 @@
                     "verb": "haga",
                     "space": " "
                 },
-                "climb": "Q o mayús",
                 "invoke": "E or enter",
                 "modify": {
                     "name": "Desplácese",
@@ -301,7 +296,6 @@
             "0": "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pause para abrir el menú de pausa",
             "1": "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
         },
-        "climb": "Puede mantener presionado &control.climb y moverse para subir por una escalera",
         "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",
         "firstCheckpoint": "&arrow.left ¡Felicidades,\n  tu primer\n  punto de control!",
         "thisLightbulb": "&arrow.up Así\n  bombilla",
