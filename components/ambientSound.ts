@@ -32,7 +32,7 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
                 this.cur = undefined;
                 const recurse = (sound: string) => {
                     this.cur = player.playSound(sound, undefined, this.worldPos()!);
-                    this.cur.onEnd(() => recurse(mainSound));
+                    this.cur?.onEnd(() => recurse(mainSound));
                 };
                 recurse(startup || mainSound);
             });
