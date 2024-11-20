@@ -147,14 +147,14 @@ function playerComp(): PlayerComp {
                 K.drawLine({
                     p1: this.fromWorld(this.headPosWorld),
                     p2: this.fromWorld(rcr.point),
-                    width: 1 / SCALE,
+                    width: 2 / SCALE,
                     color: K.WHITE.darken(200)
                 });
             } else if (this.holdingItem?.is("throwable") && this.throwImpulse) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
                 K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
-                    width: 1 / SCALE,
+                    width: 2 / SCALE,
                     color: K.BLUE.darken(127),
                 });
             }
