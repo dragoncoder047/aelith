@@ -67,6 +67,9 @@ export function continuationCore(
                 player.holdingIndex = player.inventory.indexOf(this);
                 player.trigger("inventoryChange");
             });
+            if (this.data?.special === "reverseTeleport") {
+                this.worldMarker.destroy();
+            }
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.type === "assert") {
@@ -129,6 +132,7 @@ export function continuationCore(
             if (!this.data!.reusable) this.destroy();
         },
         draw(this: GameObj<PosComp | ContinuationComp>) {
+            if (this.data?.special === "reverseTeleport") return;
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
             if (this.worldMarker.isOffScreen())  {
