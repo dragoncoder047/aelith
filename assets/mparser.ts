@@ -69,7 +69,7 @@ export const MParser: {
         T: continuationTrap,
         A: checkpoint,
         V: antivirus,
-        E: bugger
+        R: bugger
     },
     // MARK: fixedTiles
     /**
