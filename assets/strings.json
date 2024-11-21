@@ -112,7 +112,7 @@
                 "inventory.scroll": "Z or C",
                 "pause": "tab",
                 "pMenu": {
-                    "switch": "WASD or arrow keys",
+                    "switch": "WASD or &arrow.left&arrow.right&arrow.up&arrow.down",
                     "select": "enter",
                     "back": "backspace"
                 }
