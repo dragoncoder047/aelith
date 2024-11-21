@@ -51,6 +51,7 @@ player.onGround(() => {
 });
 
 player.onHurt(() => {
+    K.shake();
     K.play("hurt");
 })
 
