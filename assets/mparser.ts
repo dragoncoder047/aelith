@@ -55,21 +55,21 @@ export const MParser: {
      * Commands that spawn a machine at that particular location.
      */
     spawners: {
-        L: light,
-        S: lever,
+        A: checkpoint,
         B: button,
         C: conveyor,
-        X: box,
-        W: windTunnel,
-        F: fan,
-        D: door,
-        N: textNote,
+        D: door, // E
+        F: fan, // G, H
+        I: invisibleTrigger, // J, K
+        L: light,
         M: popupTextNote,
-        I: invisibleTrigger,
-        T: continuationTrap,
-        A: checkpoint,
+        N: textNote, // O, P, Q
+        R: bugger,
+        S: lever,
+        T: continuationTrap, // U
         V: antivirus,
-        R: bugger
+        W: windTunnel,
+        X: box, // Y, Z
     },
     // MARK: fixedTiles
     /**
