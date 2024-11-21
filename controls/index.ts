@@ -1,16 +1,19 @@
 import { AreaComp, Vec2 } from "kaplay";
-import { player } from "../player";
-import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, TILE_SIZE, WALK_SPEED } from "../constants";
+import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
+import { player } from "../player";
 
 // Controls
 
 export function getMotionVector(): Vec2 {
-    const leftstick = K.getGamepadStick("left");
-    return K.vec2(
+    const leftstickRaw = K.getGamepadStick("left").reflect(K.RIGHT);
+    const leftstick = leftstickRaw.slen() > 0.01 ? leftstickRaw : K.vec2(0);
+    const keystick = K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
-    ).sub(leftstick.slen() > 0.01 ? leftstick : K.vec2(0));
+    );
+    const factor = K.isButtonDown("sprint") ? SPRINT_FACTOR : 1;
+    return leftstick.add(keystick).scale(factor);
 }
 
 function motionHandler() {
@@ -25,7 +28,7 @@ function motionHandler() {
             player.enterState("normal");
     }
     if (player.state === "normal")
-        xy = xy.reject(K.UP).unit().scale(len);
+        xy = xy.reject(K.UP);
     player.move(xy.scale(WALK_SPEED));
     if (xy.x > 0)
         player.flipX = true;

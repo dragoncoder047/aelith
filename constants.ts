@@ -51,6 +51,8 @@ export const FOOTSTEP_INTERVAL = 0.125;
  */
 export const WALK_SPEED = 128;
 
+export const SPRINT_FACTOR = 1.5;
+
 /**
  * Maximum speed (pixels/sec) at which a conveyor moves objects
  */

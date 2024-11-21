@@ -1,7 +1,9 @@
 {
     "arrow": {
         "left": "\u001b",
-        "up": "\u0018"
+        "up": "\u0018",
+        "right": "\u001a",
+        "down": "\u0019"
     },
     "gamename": "[callcc]debugger[/callcc];",
     "msg": "&&lang",
@@ -59,6 +61,7 @@
         "controls": {
             "gamepad": {
                 "move": "the left stick",
+                "sprint": "the left stick",
                 "jump": "&button.south",
                 "aim": "the right stick",
                 "interact": {
@@ -86,7 +89,8 @@
                 }
             },
             "keyboard": {
-                "move": "WASD or arrow keys",
+                "move": "WASD or &arrow.left&arrow.right&arrow.up&arrow.down",
+                "sprint": "shift",
                 "jump": "space",
                 "aim": "the mouse",
                 "interact": {
@@ -163,7 +167,7 @@
         "wrongWayLeft": "&arrow.left Go that way",
         "controlsIntro": "&msg.bottomControls.&isPaused",
         "bottomControls": {
-            "0": "Use &control.move to move and &control.jump to jump\nPress &control.pause to open the pause menu",
+            "0": "Use &control.move to move, &control.jump to jump, and &control.sprint to sprint\nPress &control.pause to open the pause menu",
             "1": "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
         },
         "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
@@ -189,6 +193,7 @@
         "controls": {
             "gamepad": {
                 "move": "el joystick izquierdo",
+                "sprint": "el joystick izquierdo",
                 "jump": "el botón &button.south",
                 "aim": "el joystick derecho",
                 "interact": {
@@ -216,9 +221,10 @@
                 }
             },
             "keyboard": {
-                "move": "WASD o teclas de flecha",
+                "move": "WASD o &arrow.left&arrow.right&arrow.up&arrow.down",
+                "sprint": "la tecla mayús",
                 "jump": "la tecla espacio",
-                "aim": "el ratón de computadora",
+                "aim": "el ratón",
                 "interact": {
                     "name": "clic izquierdo",
                     "verb": "haga",
@@ -238,7 +244,7 @@
                 "inventory.scroll": "Z o C",
                 "pause": "la tecla TAB",
                 "pMenu": {
-                    "switch": "WASD o teclas de flecha",
+                    "switch": "WASD o &arrow.left&arrow.right&arrow.up&arrow.down",
                     "select": "enter",
                     "back": "la tecla retroceso"
                 }
@@ -293,7 +299,7 @@
         "wrongWayLeft": "&arrow.left Ir por ese camino",
         "controlsIntro": "&msg.bottomControls.&isPaused",
         "bottomControls": {
-            "0": "Utilice &control.move para mover y &control.jump para saltar\nPresione &control.pause para abrir el menú de pausa",
+            "0": "Utilice &control.move para mover, &control.jump para saltar, y &control.sprint para correr\nPresione &control.pause para abrir el menú de pausa",
             "1": "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
         },
         "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",

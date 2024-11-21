@@ -46,6 +46,10 @@ export const CONTROLS: Controls = {
         gamepad: ["dpad-down"],
     },
     // motion controls
+    sprint: {
+        keyboard: ["shift"],
+        gamepad: ["lstick"],
+    },
     move_left: {
         keyboard: ["a", "left"],
     },
