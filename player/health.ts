@@ -7,6 +7,7 @@ import { PAUSE_MENU, PAUSE_MENU_OBJ, pauseListener } from "../controls/pauseMenu
 import { K } from "../init";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, TextChunk } from "../startup";
+import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
 
 const deathMessages: TextChunk[] = [
     {
@@ -43,6 +44,11 @@ const DEATH_MENU: PtyMenu = {
         }
     ]
 };
+
+player.onGround(() => {
+    if (player.vel.y > FALL_DAMAGE_THRESHOLD)
+        player.hurt(K.map(player.vel.y - FALL_DAMAGE_THRESHOLD, 0, TERMINAL_VELOCITY, 0, MAX_FALL_DAMAGE));
+});
 
 player.onHurt(() => {
     K.play("hurt");

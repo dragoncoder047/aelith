@@ -93,3 +93,6 @@ export const JUMP_FORCE = 300;
 
 export const MODIFY_SPEED = 5;
 
+export const FALL_DAMAGE_THRESHOLD = 300;
+
+export const MAX_FALL_DAMAGE = 5;
