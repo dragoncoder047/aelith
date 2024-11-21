@@ -361,7 +361,7 @@ export const MParser: {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
-            if ((cmd == "(" || cmd == "{") && typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
+            if (typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
         }
         if (this.parenStack.length > 0) {
             const popParen = (p: string) => {
@@ -372,14 +372,13 @@ export const MParser: {
             };
             if (cmd == "]" || cmd == ")" || cmd == "}") {
                 popParen(cmd);
-                if (this.parenStack.length == 0) {
+                if (this.parenStack.length === 0) {
+                    this.cleanBuffer();
                     if (cmd === ")") {
-                        this.cleanBuffer();
                         const string = this.commandQueue.pop() as string;
                         this.commandQueue.push(decodeURIComponent(string));
                     }
                     else if (cmd === "}") {
-                        this.cleanBuffer();
                         const code = this.commandQueue.pop();
                         if (typeof code !== "string") throw new Error("BUG: cleanBuffer() not string!");
                         this.commandQueue.push(() => {
@@ -399,11 +398,14 @@ export const MParser: {
                                 });
                             });
                         });
+                    } else {
+                        // it's a comment; throw it out
+                        this.commandQueue.pop();
                     }
                     return;
                 }
             }
-            if ((oldLen > 0 || this.parenStack.length > 1) && this.parenStack[0] !== "[") {
+            if ((oldLen > 0 || this.parenStack.length > 1)) {
                 if (typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
                 this.buffer += cmd;
             }
