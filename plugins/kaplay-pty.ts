@@ -331,6 +331,10 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     if (disabled) return;
                     switch (this.menu.type) {
                         case "submenu":
+                            if (this.menu.opts.length === 0) {
+                                if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
+                                return;
+                            }
                             this.backStack.push(this.menu);
                             this.menu = this.menu.opts[this.selIdx]!;
                             await this.__menuChanged();
@@ -365,7 +369,6 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 async back(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (disabled) return;
                     if (this.backStack.length === 0) {
-                        K.debug.log("can't go back");
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                         return;
                     }

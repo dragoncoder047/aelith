@@ -11,7 +11,7 @@ export function getMotionVector(): Vec2 {
     const keystick = K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
-    );
+    ).unit();
     const factor = K.isButtonDown("sprint") ? SPRINT_FACTOR : 1;
     return leftstick.add(keystick).scale(factor);
 }

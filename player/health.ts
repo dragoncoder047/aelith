@@ -68,6 +68,7 @@ player.onDeath(async () => {
     await funnyType(PAUSE_MENU_OBJ, deathMessages);
     PAUSE_MENU_OBJ.menu = DEATH_MENU;
     K.strings.isPaused = "1";
+    MParser.world!.trigger("update");
     // make resume things
     const allContinuations = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
     const divBy = 5;
@@ -97,7 +98,7 @@ player.onDeath(async () => {
         resumeList.push({
             id: "",
             type: "submenu",
-            name: `&msg.dead.checkpoint #${lastI + 1}-#${allContinuations.length}`,
+            name: `&msg.dead.checkpoints #${lastI + 1}-#${allContinuations.length}`,
             opts: thisList,
         });
     }
