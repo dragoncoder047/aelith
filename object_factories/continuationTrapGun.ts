@@ -11,7 +11,7 @@ export function continuationTrap() {
         K.sprite("continuation_trap"),
         K.body({ maxVelocity: TERMINAL_VELOCITY }),
         ...defaults({
-            scale: (TILE_SIZE - 4) / TILE_SIZE,
+            scale: K.vec2((TILE_SIZE - 4) / TILE_SIZE, 1),
             friction: FRICTION / 8,
             restitution: RESTITUTION
         }),
