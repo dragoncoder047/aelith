@@ -116,6 +116,12 @@
         "width": 32,
         "height": 64
     },
+    "door_half": {
+        "x": 0,
+        "y": 254,
+        "width": 32,
+        "height": 32
+    },
     "antivirus": {
         "x": 0,
         "y": 238,

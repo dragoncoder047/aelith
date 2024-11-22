@@ -25,6 +25,7 @@ import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { textNote } from "../object_factories/text";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
+import { trapdoor } from "../object_factories/trapdoor";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -66,7 +67,8 @@ export const MParser: {
         N: textNote, // O, P, Q
         R: bugger,
         S: lever,
-        T: continuationTrap, // U
+        T: continuationTrap,
+        U: trapdoor,
         V: antivirus,
         W: windTunnel,
         X: box, // Y, Z
