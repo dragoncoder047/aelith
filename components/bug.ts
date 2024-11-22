@@ -32,7 +32,7 @@ export function bug(): BugComp {
                         this.moveDir *= -1;
                     }
                     if (obj === player) this.enterState("angry");
-                    if (obj.is("bug") && ((coll?.isRight() && this.moveDir > 0) || obj.state === "sleeping"))
+                    if (obj.is("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
                         this.jump();
                 } else if (coll?.isTop() && !obj.is("bug") && !obj.isStatic) {
                     this.enterState("scared");
@@ -40,12 +40,10 @@ export function bug(): BugComp {
             });
             this.onFallOff(() => {
                 if (this.state === "sleeping") return;
-                this.play("sleep");
-                if (this.isFalling()) {
-                    this.moveDir *= -1;
-                    this.jump();
-                    this.applyImpulse(K.RIGHT.scale(this.moveDir * 10));
-                }
+                this.play("stand");
+                this.moveDir *= -1;
+                this.jump();
+                this.applyImpulse(K.RIGHT.scale(this.moveDir * 10));
             });
             this.onGround(() => {
                 if (this.state !== "sleeping") this.play("walk");
@@ -62,7 +60,7 @@ export function bug(): BugComp {
             });
             this.onStateEnter("sleeping", () => {
                 this.moveDir = 0;
-                this.play("sleep");
+                this.play("stand");
             });
             this.onStateEnd("sleeping", () => {
                 this.moveDir = this.flipX ? -1 : 1;

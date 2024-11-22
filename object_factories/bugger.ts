@@ -12,7 +12,7 @@ export function bugger(): CompList<any> {
         K.state("sleeping"),
         ...defaults({
             friction: FRICTION,
-            restitution: RESTITUTION,
+            restitution: 0,
             collisionIgnore: ["tail", "continuation-trap"],
             scale: K.vec2(7 / 8, 1)
         }),
