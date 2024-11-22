@@ -1,5 +1,5 @@
 import { GameObj, PosComp, AreaComp, Comp, SpriteComp, BodyComp, StateComp, ShaderComp, TimerComp, SpriteAnim } from "kaplay";
-import { FOOTSTEP_INTERVAL, TILE_SIZE, WALK_SPEED } from "../constants";
+import { FOOTSTEP_INTERVAL, WALK_SPEED } from "../constants";
 import { player } from "../player";
 import { K } from "../init";
 
