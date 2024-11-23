@@ -17,6 +17,7 @@ export function continuation(
         K.shader("recolor-red", {
             u_targetcolor: K.RED,
         }),
+        K.offscreen({ hide: true }),
         K.anchor("center"),
         K.pos(captured.playerPos),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),

@@ -10,6 +10,7 @@ export function barrier() {
         K.opacity(0),
         mergeable(),
         ...defaults({ friction: FRICTION }),
+        K.offscreen({ hide: true }),
         "barrier",
     ]
 }
