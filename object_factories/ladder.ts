@@ -7,6 +7,7 @@ export function ladder() {
     return [
         K.sprite("ladder"),
         ...defaults(),
+        K.offscreen({ hide: true }),
         // override default with smaller shape to make
         // falling-off-the-ladder have more realistic bounds
         K.area({ scale: 1.0 / TILE_SIZE }),

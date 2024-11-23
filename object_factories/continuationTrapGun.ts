@@ -18,6 +18,7 @@ export function continuationTrap() {
         K.shader("recolor-red", {
             u_targetcolor: K.RED,
         }),
+        K.offscreen({ hide: true }),
         trap("capture"),
         K.layer("boxes"),
         grabbable(),
