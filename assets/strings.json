@@ -150,6 +150,8 @@
             "preferences": "Edit gameplay settings",
             "controllerRumble": "Enable controller rumble",
             "showSpeedrunTimer": "Show speedrun timer",
+            "playBgMusic": "Play background music",
+            "playSfx": "Play sound effects",
             "restart": "Restart game",
             "reallyRestart": "Are you sure you want to restart?\nAll progress will be lost!"
         },
@@ -280,6 +282,8 @@
             "preferences": "Editar la configuración del juego",
             "setLanguage": "Establecer el idioma de visualización",
             "automaticLang": "Idioma de detección automática",
+            "playBgMusic": "Reproducir música de fondo",
+            "playSfx": "Reproducir efectos de sonido",
             "showSpeedrunTimer": "Mostrar temporizador de speedrun",
             "controllerRumble": "Habilitar la vibración del controlador",
             "restart": "Reiniciar el juego",

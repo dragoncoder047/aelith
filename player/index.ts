@@ -10,7 +10,9 @@ import { actuallyRaycast, ballistics } from "../utils";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
+// MARK: PlayerComp
 export interface PlayerComp extends Comp {
+    sfxEnabled: boolean
     readonly holdingItem: PlayerInventoryItem | undefined
     readonly headPosWorld: Vec2
     _pull2Pos(other: PlayerInventoryItem): void
@@ -35,6 +37,7 @@ export interface PlayerComp extends Comp {
 
 function playerComp(): PlayerComp {
     return {
+        sfxEnabled: true,
         get headPosWorld() {
             return (this as unknown as GameObj<PosComp>).worldPos()!.add(K.UP.scale(TILE_SIZE * 2 / 3));
         },
@@ -43,6 +46,7 @@ function playerComp(): PlayerComp {
         },
         camFollower: undefined,
         footstepsCounter: 0,
+        // MARK: add()
         add(this: GameObj<PlayerComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
             this.camFollower = this.onUpdate(() => {
@@ -62,6 +66,7 @@ function playerComp(): PlayerComp {
                 });
             });
         },
+        // MARK: _pull2Pos()
         _pull2Pos(this: GameObj<PlayerComp | SpriteComp | PosComp>, other) {
             if (!other) return;
             if (other.is("continuation-trap") && (other as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) return;
@@ -70,6 +75,7 @@ function playerComp(): PlayerComp {
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
             other.moveTo(this.worldPos()!.add(other.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
         },
+        // MARK: update()
         update(this: GameObj<PlayerComp | PosComp | BodyComp | SpriteComp>) {
             // hide all inventory items
             this.inventory.forEach(item => item.paused = item.hidden = true);
@@ -90,6 +96,7 @@ function playerComp(): PlayerComp {
         },
         lookingAt: undefined,
         lookingDirection: K.LEFT,
+        // MARK: draw()
         draw(this: GameObj<PosComp | PlayerComp>) {
             // find targeted object
             var rcr: RaycastResult = null;
@@ -159,6 +166,7 @@ function playerComp(): PlayerComp {
                 });
             }
         },
+        // MARK: playSound()
         /**
          * Play sound, but spatial relative to the player
          * @param opt Standard options
@@ -167,6 +175,7 @@ function playerComp(): PlayerComp {
          */
         playSound(this: GameObj<PosComp | PlayerComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel = undefined) {
             if (this.paused) return;
+            if (!this.sfxEnabled) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;

@@ -22,18 +22,18 @@ const deathMessages: TextChunk[] = [
     },
 ];
 
-const resumeList: PtyMenu[] = [];
+const resumeEntry: PtyMenu = {
+    id: "resume",
+    name: "&msg.dead.resume",
+    type: "submenu",
+    opts: [],
+};
 
 const DEATH_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
     opts: [
-        {
-            id: "resume",
-            name: "&msg.dead.resume",
-            type: "submenu",
-            opts: resumeList,
-        },
+        resumeEntry,
         {
             id: "restart",
             name: "&msg.pause.restart &msg.dead.fromBeginning",
@@ -56,7 +56,7 @@ player.onHurt(() => {
 })
 
 player.onDeath(async () => {
-    resumeList.length = 0; // clear in case user died twice
+    resumeEntry.opts = []; // clear in case user died twice
     musicPlay.paused = true;
     K.play("die");
     MParser.pauseWorld(true);
@@ -73,41 +73,44 @@ player.onDeath(async () => {
     // make resume things
     const allContinuations = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
     const divBy = 5;
-    var thisList: PtyMenu[] = [];
-    var lastI = 0;
-    for (var i = 0; i < allContinuations.length; i++) {
-        const thisCont = allContinuations[i] as unknown as GameObj<ContinuationComp>;
-        const resumeFromThis = makeResumer(thisCont);
-        thisList.push({
-            id: "" + i,
-            type: "action",
-            name: `&msg.dead.checkpoint #${i + 1}`,
-            action: resumeFromThis,
-        });
-        if (thisList.length % divBy === 0) {
-            resumeList.push({
+    if (allContinuations.length === 0) {
+        resumeEntry.hidden = true;
+    } else {
+        resumeEntry.hidden = false;
+        var thisList: PtyMenu[] = [];
+        var lastI = 0;
+        for (var i = 0; i < allContinuations.length; i++) {
+            const thisCont = allContinuations[i] as unknown as GameObj<ContinuationComp>;
+            const resumeFromThis = makeResumer(thisCont);
+            thisList.push({
+                id: "" + i,
+                type: "action",
+                name: `&msg.dead.checkpoint #${i + 1}`,
+                action: resumeFromThis,
+            });
+            if (thisList.length % divBy === 0) {
+                resumeEntry.opts.push({
+                    id: "",
+                    type: "submenu",
+                    name: `&msg.dead.checkpoints #${lastI + 1}-#${i + 1}`,
+                    opts: thisList,
+                });
+                thisList = [];
+                lastI = i + 1;
+            }
+        };
+        if (thisList.length > 0) {
+            resumeEntry.opts.push({
                 id: "",
                 type: "submenu",
-                name: `&msg.dead.checkpoints #${lastI + 1}-#${i + 1}`,
+                name: `&msg.dead.checkpoints #${lastI + 1}-#${allContinuations.length}`,
                 opts: thisList,
             });
-            thisList = [];
-            lastI = i + 1;
         }
-    };
-    if (thisList.length > 0) {
-        resumeList.push({
-            id: "",
-            type: "submenu",
-            name: `&msg.dead.checkpoints #${lastI + 1}-#${allContinuations.length}`,
-            opts: thisList,
-        });
-    }
-    if (allContinuations.length > 0 && allContinuations.length <= divBy) {
-        // @ts-ignore
-        const inner: PtyMenu[] = resumeList[0]!.opts;
-        resumeList.length = 0;
-        resumeList.push(...inner);
+        if (allContinuations.length > 0 && allContinuations.length <= divBy) {
+            // @ts-expect-error
+            resumeEntry.opts = resumeEntry.opts[0]!.opts;
+        }
     }
     pauseListener.paused = false;
     await PAUSE_MENU_OBJ.beginMenu();

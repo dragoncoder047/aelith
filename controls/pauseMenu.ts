@@ -5,6 +5,7 @@ import { K } from "../init";
 import { timer } from "../ui/timer";
 import { MParser } from "../assets/mparser";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { musicPlay } from "../assets";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -41,20 +42,23 @@ export const PAUSE_MENU: PtyMenu = {
             name: "&msg.pause.preferences",
             type: "select",
             opts: [
-                // { text: "&msg.pause.controllerRumble", value: "rumble" },
+                { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true },
                 { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
+                { text: "&msg.pause.playBgMusic", value: "music" },
+                { text: "&msg.pause.playSfx", value: "sfx" },
             ],
-            selected: [],
+            selected: [0, 1, 2, 3],
             multiple: true
         },
-        // {
-        //     id: "ng-connect",
-        //     name: "&msg.pause.ngConnect",
-        //     type: "action",
-        //     async action() {
-        //         await PAUSE_MENU_OBJ.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
-        //     }
-        // },
+        {
+            id: "ng-connect",
+            name: "&msg.pause.ngConnect",
+            type: "action",
+            async action() {
+                await PAUSE_MENU_OBJ.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
+            },
+            hidden: true
+        },
         {
             id: "restart",
             name: "&msg.pause.restart",
@@ -70,7 +74,7 @@ export const PAUSE_MENU: PtyMenu = {
                     }
                 }
             ]
-        }
+        },
     ]
 }
 
@@ -152,7 +156,11 @@ async function onUnpaused() {
 }
 
 function copyPreferences() {
+    if (PAUSE_MENU_OBJ.topMenu !== PAUSE_MENU) return;
     K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
-    timer.opacity = +K.getValueFromMenu(PAUSE_MENU, "settings -i")?.includes("timer");
+    const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i");
+    timer.opacity = +switches?.includes("timer");
+    musicPlay.paused = !switches?.includes("music");
+    player.sfxEnabled = switches?.includes("sfx");
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }

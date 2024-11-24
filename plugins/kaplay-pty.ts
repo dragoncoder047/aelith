@@ -46,6 +46,7 @@ export interface PtyMenuComp extends Comp {
     back(): Promise<void>
     readonly disabled: boolean
     backStack: PtyMenu[] // stuff to go back to
+    readonly topMenu: PtyMenu
     menu: PtyMenu
     selIdx: number
     selStyle: string
@@ -60,7 +61,8 @@ export interface PtyMenuComp extends Comp {
 export type PtyMenu = {
     name?: string
     id: string,
-    styles?: string[]
+    styles?: string[],
+    hidden?: boolean
 } & ({
     type: "submenu"
     opts: PtyMenu[]
@@ -70,12 +72,12 @@ export type PtyMenu = {
     action(): PromiseLike<void>,
 } & Object) | {
     type: "select"
-    opts: { text: Typable, value: any }[]
+    opts: { text: Typable, value: any, hidden?: boolean }[]
     multiple: true
     selected: number[]
 } | {
     type: "select"
-    opts: { text: Typable, value: any }[]
+    opts: { text: Typable, value: any, hidden?: boolean }[]
     multiple?: false
     selected: number
 })
@@ -207,13 +209,14 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
             var disabled = true;
             var beginLen = 0;
             var optionChunks: { select: PtyChunk, chunks: PtyChunk[] }[] = [];
-            var menuChunks: PtyChunk[] = [];
+            var menuChunks: { select: PtyChunk, chunks: PtyChunk[] }[] = [];
             var cursorChunks: PtyChunk[] = [];
             var commandChunks: PtyChunk[] = [];
             return {
                 id: "pty-menu",
                 require: ["pty"],
                 backStack: [],
+                get topMenu() { return menu; },
                 menu: menu,
                 selIdx: 0,
                 selStyle: "selected",
@@ -230,6 +233,12 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             await this.type("\n");
                             break;
                         }
+                    }
+                    if (this.menu.type !== "action") {
+                        this.selIdx = K.clamp(
+                            this.selIdx,
+                            this.menu.opts.findIndex(x => !x.hidden),
+                            this.menu.opts.findLastIndex(x => !x.hidden));
                     }
                     disabled = false;
                     beginLen = this.chunks.length;
@@ -266,14 +275,21 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         case "submenu":
                             // remove old cursor stuff
                             this.dropChunk(cursorChunks);
-                            for (var i = 0; i < this.menu.opts.length; i++) {
+                            for (var i = 0, vi = 0; i < this.menu.opts.length; i++) {
+                                const opt = this.menu.opts[i]!;
+                                const s = {
+                                    text: "",
+                                };
                                 const c = {
-                                    text: this.menu.opts[i]!.name ?? this.menu.opts[i]!.id,
-                                    styles: this.menu.opts[i]!.styles
+                                    text: opt.hidden ? "" : (opt.name ?? opt.id),
+                                    styles: opt.styles
                                 }
-                                outChunks.push(c);
-                                menuChunks.push(c);
-                                if (((i + 1) % (this.menu.numColumns ?? 1)) === 0) outChunks.push({ text: "\n" });
+                                outChunks.push(s, c);
+                                menuChunks.push({ select: s, chunks: [c] });
+                                if (!opt.hidden) {
+                                    vi++;
+                                    if ((vi % (this.menu.numColumns ?? 1)) === 0) outChunks.push({ text: "\n" });
+                                }
                             };
                             await this.__updateSelected();
                             break;
@@ -282,8 +298,10 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             break;
                         case "select":
                             for (var i = 0; i < this.menu.opts.length; i++) {
+                                const opt = this.menu.opts[i]!;
                                 const si = { text: "" };
-                                const c = [{ text: " " }, ...this.toChunks(this.menu.opts[i]!.text), { text: "\n" }];
+                                const c = [{ text: " " }, ...this.toChunks(opt.text), { text: "\n" }];
+                                if (opt.hidden) c.length = 0;
                                 outChunks.push(si, ...c);
                                 optionChunks.push({ select: si, chunks: c });
                             };
@@ -299,8 +317,12 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     if (disabled) return;
                     switch (this.menu.type) {
                         case "submenu":
-                            for (var i = 0; i < this.menu.opts.length; i++)
-                                this.styleChunk(menuChunks[i]!, this.selStyle, i === this.selIdx);
+                            for (var i = 0; i < this.menu.opts.length; i++) {
+                                const { select: siChunk, chunks: textChunks } = menuChunks[i]!;
+                                siChunk.text = this.menu.opts[i]!.hidden ? "" : (this.selIdx === i ? this.ptrText : " ".repeat(this.ptrText.length)) + " ";
+                                this.styleChunk(siChunk, this.selStyle, i === this.selIdx);
+                                textChunks.forEach(c => this.styleChunk(c, this.selStyle, this.selIdx === i));
+                            }
                             break;
                         case "action":
                             // no output
@@ -310,7 +332,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 const { select: siChunk, chunks: textChunks } = optionChunks[i]!;
                                 this.styleChunk(siChunk, this.selStyle, i === this.selIdx);
                                 var st = i === this.selIdx ? this.ptrText : " ".repeat(this.ptrText.length);
-                                if (this.menu.multiple) {
+                                if (this.menu.opts[i]!.hidden) {
+                                    st = "";
+                                } else if (this.menu.multiple) {
                                     st += `[${this.menu.selected.includes(i) ? "*" : " "}]`;
                                 } else {
                                     st += `(${this.menu.selected === i ? "*" : " "})`;
@@ -344,7 +368,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 if (disabled) break;
                                 beginLen = this.chunks.length;
                                 this.menu = this.backStack.pop()!;
-                            } else this.selIdx = 0;
+                            } else {
+                                this.selIdx = this.menu.opts.findIndex(x => !x.hidden);
+                            }
                             await this.__menuChanged();
                             break;
                         case "action":
@@ -378,17 +404,25 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     // @ts-ignore
                     this.selIdx = this.menu.opts.indexOf(oldMenu);
                     optionChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
-                    this.dropChunk(menuChunks);
+                    menuChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
                     this.dropChunk(cursorChunks);
                     await this.__menuChanged();
                 },
+                // MARK: switch()
                 async switch(direction) {
                     if (disabled) return;
                     direction = direction.toAxis();
                     const origIndex = this.selIdx;
                     if (this.menu.type !== "action") {
                         this.selIdx += direction.x + ((this.menu as any).numColumns ?? 1) * direction.y;
-                        this.selIdx = K.clamp(this.selIdx, 0, this.menu.opts.length - 1);
+                        // skip over hidden entries
+                        while (this.menu.opts[this.selIdx]?.hidden)
+                            this.selIdx += direction.x + direction.y;
+                        // clamp to valid range of entries (account for hidden ones at end)
+                        this.selIdx = K.clamp(
+                            this.selIdx,
+                            this.menu.opts.findIndex(x => !x.hidden),
+                            this.menu.opts.findLastIndex(x => !x.hidden));
                     }
                     if (origIndex === this.selIdx) {
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
