@@ -289,6 +289,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 if (!opt.hidden) {
                                     vi++;
                                     if ((vi % (this.menu.numColumns ?? 1)) === 0) outChunks.push({ text: "\n" });
+                                    else outChunks.push({ text: " " });
                                 }
                             };
                             await this.__updateSelected();
