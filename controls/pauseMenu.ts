@@ -156,7 +156,7 @@ async function onUnpaused() {
     K.strings.isPaused = "0";
 }
 
-function copyPreferences() {
+export function copyPreferences() {
     if (PAUSE_MENU_OBJ.topMenu !== PAUSE_MENU) return;
     K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
     const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i");

@@ -1,4 +1,4 @@
-import { GameObj, LevelComp, PosComp, Vec2 } from "kaplay";
+import { GameObj, LevelComp, PosComp } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";

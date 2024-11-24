@@ -3,7 +3,7 @@ import { player } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
 import { ContinuationComp } from "../components/continuationCore";
-import { PAUSE_MENU, PAUSE_MENU_OBJ, pauseListener } from "../controls/pauseMenu";
+import { copyPreferences, PAUSE_MENU, PAUSE_MENU_OBJ, pauseListener } from "../controls/pauseMenu";
 import { K } from "../init";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, TextChunk } from "../startup";
@@ -123,10 +123,10 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         pauseListener.paused = true;
         await PAUSE_MENU_OBJ.quitMenu();
-        musicPlay.paused = false;
         MParser.pauseWorld(false);
         K.strings.isPaused = "0";
         PAUSE_MENU_OBJ.menu = PAUSE_MENU;
+        copyPreferences();
         player.paused = false;
         player.hidden = false;
         c.invoke();
