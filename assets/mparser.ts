@@ -98,10 +98,10 @@ export const MParser: {
             if (typeof howmany === "number") {
                 for (var i = 0; i < howmany; i++) {
                     const obj = this.stack.pop();
-                    if (typeof obj.finish === "function") obj.finish();
+                    if (typeof obj?.finish === "function") obj.finish();
                 }
             }
-            else if (typeof howmany.finish === "function") howmany.finish();
+            else if (typeof howmany?.finish === "function") howmany.finish();
         },
         // MARK: n(egate)
         // negate command: number -- number
@@ -320,13 +320,6 @@ export const MParser: {
             else if (op === 2) this.stack.push(...this.vars[name].toReversed(), this.vars[name].length);
             else this.stack.push(this.vars[name].pop());
         },
-        // MARK: ? (debug)
-        // debug command: logs the top object
-        "?"() {
-            const object = this.stack.pop() as GameObj;
-            console.log(`${object?.tags} tags`, object);
-            this.stack.push(object);
-        },
         // MARK: c(all/cc)
         // *MAGIC!!*
         // function -- value
@@ -351,6 +344,20 @@ export const MParser: {
                 // push the value invoked with
                 this.stack.push(invokedWith);
             });
+        },
+        // MARK: ? (debug)
+        // debug command: logs the top object
+        "?"() {
+            const object = this.stack.at(-1) as GameObj;
+            console.log(`${object?.tags} tags`, object);
+        },
+        // MARK: ! (debug)
+        // check length of stack here
+        "!"() {
+            console.log(this.stack.length, this.stack.slice());
+            for (var i = 0; i < this.stack.length; i++) {
+                console.log(i, ":", this.stack[i]?.tags);
+            }
         }
     },
     /**
