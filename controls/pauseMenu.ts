@@ -1,4 +1,4 @@
-import { GameObj, Vec2 } from "kaplay";
+import { GameObj } from "kaplay";
 import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { player } from "../player";
 import { K } from "../init";
@@ -6,6 +6,7 @@ import { timer } from "../ui/timer";
 import { MParser } from "../assets/mparser";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { musicPlay } from "../assets";
+import { nextFrame } from "../utils";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -90,7 +91,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         K.get("tail").forEach(p => p.hidden = p.paused = true);
         origCamPos = player.pos;
         K.camPos(MParser.pausePos);
-        await K.wait(0.05);
+        await nextFrame();
         // prevent immediate unpause
         pauseListener.paused = false;
         await onPaused();
