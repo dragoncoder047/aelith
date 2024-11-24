@@ -10,11 +10,8 @@ export const styles: TextComp["textStyles"] = {
             opacity: Math.round(K.wave(0, 1, K.time() * 3 * Math.PI)),
         };
     },
-    selected(_, __) {
-        return {
-            color: K.MAGENTA,
-            pos: K.vec2(0, K.wave(-TILE_SIZE / 40, TILE_SIZE / 40, K.time() * Math.PI * 2))
-        }
+    selected: {
+        color: K.MAGENTA,
     },
     command: {
         color: K.YELLOW,
@@ -28,6 +25,7 @@ export const styles: TextComp["textStyles"] = {
     stderr: {
         color: K.RED.lighten(100),
     },
+    // XXX: these 4 are not used
     red: {
         color: K.RED,
     },

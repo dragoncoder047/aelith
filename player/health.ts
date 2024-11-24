@@ -39,6 +39,7 @@ const DEATH_MENU: PtyMenu = {
             name: "&msg.pause.restart &msg.dead.fromBeginning",
             type: "action",
             async action() {
+                await PAUSE_MENU_OBJ.quitMenu();
                 window.location.reload();
             }
         }
