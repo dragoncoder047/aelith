@@ -65,6 +65,8 @@ player.onDeath(async () => {
     player.trigger("update");
     player.paused = true;
     await K.tween(1, 0, 2, x => player.opacity = x);
+    player.hidden = true;
+    player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
     K.camPos(MParser.pausePos);
     await funnyType(PAUSE_MENU_OBJ, deathMessages);
@@ -126,11 +128,7 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
         K.strings.isPaused = "0";
         PAUSE_MENU_OBJ.menu = PAUSE_MENU;
         player.paused = false;
-        K.get("tail").forEach(t => {
-            t.paused = false;
-            t.opacity = 1;
-        });
-        player.opacity = 1;
+        player.hidden = false;
         c.invoke();
     };
 }
