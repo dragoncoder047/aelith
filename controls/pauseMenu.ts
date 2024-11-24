@@ -16,14 +16,27 @@ export const PAUSE_MENU: PtyMenu = {
     type: "submenu",
     opts: [
         {
+            id: "settings -i",
+            name: "&msg.pause.preferences",
+            type: "select",
+            opts: [
+                { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true },
+                { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
+                { text: "&msg.pause.playBgMusic", value: "music" },
+                { text: "&msg.pause.playSfx", value: "sfx" },
+            ],
+            selected: [0, 1, 2, 3],
+            multiple: true
+        },
+        {
             id: "set controllerType",
             name: "&msg.pause.select",
             type: "select",
             opts: [
                 { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },
+                { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
                 { text: "PS5    (&ps5.west &ps5.north &ps5.east &ps5.south, &ps5.select/&ps5.start)", value: "ps5" },
                 { text: "PS4    (&ps4.west &ps4.north &ps4.east &ps4.south, &ps4.select/&ps4.start)", value: "ps4" },
-                { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
             ],
             selected: 0
         },
@@ -37,19 +50,6 @@ export const PAUSE_MENU: PtyMenu = {
                 { text: "Español", value: ["es"] }
             ],
             selected: 0
-        },
-        {
-            id: "settings -i",
-            name: "&msg.pause.preferences",
-            type: "select",
-            opts: [
-                { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true },
-                { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
-                { text: "&msg.pause.playBgMusic", value: "music" },
-                { text: "&msg.pause.playSfx", value: "sfx" },
-            ],
-            selected: [0, 1, 2, 3],
-            multiple: true
         },
         {
             id: "ng-connect",
