@@ -37,7 +37,7 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
         // @ts-expect-error
         spring(opts = {}) {
             if (!opts.other) throw new Error("need other on spring");
-            if (!opts.other.is("body")) throw new Error("other needs to be a body");
+            if (!opts.other.has("body")) throw new Error("other needs to be a body");
             opts.drawOpts = Object.assign({ width: 2, color: K.WHITE }, opts.drawOpts);
             return {
                 id: "spring",

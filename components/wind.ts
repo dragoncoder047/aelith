@@ -20,7 +20,7 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
             this.onCollideUpdate(obj => {
                 if (!this.force.isZero()
                     && this.force.y < 0
-                    && obj.is(["body", "pos"])
+                    && obj.has(["body", "pos"])
                     && (obj as GameObj<BodyComp>).curPlatform() !== null) {
                     (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
                     (obj as GameObj<BodyComp>).jump(Number.EPSILON);

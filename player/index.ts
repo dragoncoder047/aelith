@@ -69,9 +69,9 @@ function playerComp(): PlayerComp {
         // MARK: _pull2Pos()
         _pull2Pos(this: GameObj<PlayerComp | SpriteComp | PosComp>, other) {
             if (!other) return;
-            if (other.is("continuation-trap") && (other as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) return;
+            if (other.has("continuation-trap") && (other as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) return;
             other.vel = K.vec2(0);
-            const offset = other.is("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
+            const offset = other.has("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
             other.moveTo(this.worldPos()!.add(other.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
         },
@@ -218,7 +218,7 @@ function playerComp(): PlayerComp {
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
-            if (obj.is("platformEffector"))
+            if (obj.has("platformEffector"))
                 (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
         },
         grab(this: GameObj<PlayerComp>, obj) {
@@ -252,7 +252,7 @@ function playerComp(): PlayerComp {
                 return;
             };
             this.removeFromInventory(obj);
-            if (obj.is("platformEffector"))
+            if (obj.has("platformEffector"))
                 [...this.inventory, this].forEach(item =>
                     (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(item));
             this.trigger("drop", obj);
@@ -335,7 +335,7 @@ export const player = K.add([
     {
         draw(this: GameObj<PosComp | PlayerComp>) {
             const h = this.holdingItem;
-            if (h && (!h.is("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
+            if (h && (!h.has("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
                 // draw the item again on top
                 K.pushTransform();
                 K.pushMatrix(this.transform.inverse); // weird math

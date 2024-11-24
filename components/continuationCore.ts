@@ -103,12 +103,12 @@ export function continuationCore(
                 else
                     player.addToInventory(e.obj as any);
                 var obj = e.obj;
-                if (e.obj.is("body") && !e.obj.isStatic) {
+                if (e.obj.has("body") && !e.obj.isStatic) {
                     if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius
-                        && e.obj.is("cloneable")) {
+                        && e.obj.has("cloneable")) {
                         // It is out of range, clone it
                         obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
-                        obj.use("machine");
+                        obj.tag("machine");
                     }
                     // Update pos and vel
                     obj.pos = e.pos!.clone().add(reverseDelta);
@@ -126,7 +126,7 @@ export function continuationCore(
                 //    state - undoing the continuation invocation.
                 // To prevent #3 from occuring, the button/laser is told to ignore new triggers for
                 // 5 physics frames (0.1 seconds) after being restored.
-                if (obj.is("collisioner"))
+                if (obj.has("collisioner"))
                     obj.ignoreTriggerTimeout = 5;
             }
             if (!this.data!.reusable) this.destroy();

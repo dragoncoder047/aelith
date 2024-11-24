@@ -17,7 +17,7 @@ export function bug(): BugComp {
         footstepsCounter: 0,
         add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp | TimerComp | SpriteComp>) {
             this.onCollide((obj, coll) => {
-                if (obj.is("bug")) {
+                if (obj.has("bug")) {
                     if (obj.state === "angry") this.enterState("angry");
                     else if (obj.state === "scared" || this.state === "sleeping") this.enterState("walking");
                 }
@@ -32,9 +32,9 @@ export function bug(): BugComp {
                         this.moveDir *= -1;
                     }
                     if (obj === player) this.enterState("angry");
-                    if (obj.is("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
+                    if (obj.has("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
                         this.jump();
-                } else if (coll?.isTop() && !obj.is("bug") && !obj.isStatic) {
+                } else if (coll?.isTop() && !obj.has("bug") && !obj.isStatic) {
                     this.enterState("scared");
                 }
             });

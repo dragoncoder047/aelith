@@ -114,10 +114,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 if (!this.isPreparing) {
                     if (this === player.holdingItem)
                         this.flipX = player.flipX;
-                    if (!this.is("throwable")) this.use("throwable");
+                    if (!this.is("throwable")) this.tag("throwable");
                 }
                 else if (this.isPreparing) {
-                    if (this.is("throwable")) this.unuse("throwable");
+                    if (this.is("throwable")) this.untag("throwable");
                 }
             } else if (this === player.holdingItem)
                 this.flipX = player.flipX;
@@ -161,7 +161,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 const willCapture = this.peekCapture();
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
-                    if ((e.obj as any).is("invisible-trigger")) continue;
+                    if ((e.obj as any).has("invisible-trigger")) continue;
                     if (e.inPlayerInventory) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox)
@@ -214,19 +214,19 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                             : obj.worldArea?.().collides(circle))
                         ?? obj.worldPos()!.dist(data.playerPos) < this.radius)
                     .filter(obj => !obj.is("checkpoint"))
-                    .concat(player.inventory.filter(x => x.is("body")) as any);
+                    .concat(player.inventory.filter(x => x.has("body")) as any);
                 for (var obj of foundObjects) {
                     const e: ContinuationDataEntry = {
                         obj,
                         inPlayerInventory: player.inventory.includes(obj as any),
                     };
-                    if (obj.is("body") && !obj.isStatic)
+                    if (obj.has("body") && !obj.isStatic)
                         e.pos = (e.inPlayerInventory ? data.playerPos : obj.pos).clone();
-                    if (obj.is("toggler"))
+                    if (obj.has("toggler"))
                         e.togglerState = obj.togglerState;
-                    if (obj.is("invisible-trigger"))
+                    if (obj.has("invisible-trigger"))
                         e.triggeredState = obj.triggered;
-                    if (obj.is("bug"))
+                    if (obj.has("bug"))
                         e.bugState = obj.state;
                     data.objects.push(e);
                 }

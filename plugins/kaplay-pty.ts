@@ -121,9 +121,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 add(this: GameObj<PtyComp | AreaComp | PosComp>) {
                     if (opt?.text) this.type(opt.text);
                     // this.onClick(() => this.processClick(K.fromScreen(K.mousePos())));
-                    if (this.is("offscreen")) this.unuse("offscreen");
+                    if (this.has("offscreen")) this.unuse("offscreen");
                     desiredPos = this.pos;
-                    if (this.maxLines !== undefined && this.is("anchor") && ["topleft", "topright"].indexOf((this as any).anchor) !== -1)
+                    if (this.maxLines !== undefined && this.has("anchor") && ["topleft", "topright"].indexOf((this as any).anchor) !== -1)
                         throw new Error("anchor must be top if maxLines is used");
                 },
                 // MARK: type()

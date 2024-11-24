@@ -468,7 +468,7 @@ export const MParser: {
             for (var x = 0; x < w.numColumns(); x++)
                 for (var y = 0; y < w.numRows(); y++) {
                     const obj = w.getAt(K.vec2(x, y))[0] as typeof tiles[keyof typeof tiles] | undefined;
-                    if (obj && obj.is("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
+                    if (obj && obj.has("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid

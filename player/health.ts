@@ -74,7 +74,7 @@ player.onDeath(async () => {
     K.strings.isPaused = "1";
     MParser.world!.trigger("update");
     // make resume things
-    const allContinuations = player.inventory.filter(x => x.is("continuation") && x.name === "assert");
+    const allContinuations = player.inventory.filter(x => x.has("continuation") && x.name === "assert");
     const divBy = 5;
     if (allContinuations.length === 0) {
         resumeEntry.hidden = true;
