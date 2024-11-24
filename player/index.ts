@@ -50,7 +50,7 @@ function playerComp(): PlayerComp {
         add(this: GameObj<PlayerComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
             this.camFollower = this.onUpdate(() => {
-                K.camPos(K.camPos().lerp(this.worldPos()!, ALPHA));
+                K.setCamPos(K.getCamPos().lerp(this.worldPos()!, ALPHA));
             });
             var loop: KEventController;
             var stopFlash: KEventController;

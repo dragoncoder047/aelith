@@ -68,7 +68,7 @@ player.onDeath(async () => {
     player.hidden = true;
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
-    K.camPos(MParser.pausePos);
+    K.setCamPos(MParser.pausePos);
     await funnyType(PAUSE_MENU_OBJ, deathMessages);
     PAUSE_MENU_OBJ.menu = DEATH_MENU;
     K.strings.isPaused = "1";

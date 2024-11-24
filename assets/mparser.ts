@@ -146,7 +146,7 @@ export const MParser: {
             };
             for (var i = 0; i < n; i++) {
                 var item = this.stack.at(-1 - i) as GameObj<LinkComp>;
-                item.tag = link;
+                item.linkGroup = link;
             }
         },
         // MARK: d(efine)

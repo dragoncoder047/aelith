@@ -14,6 +14,7 @@ export const K = kaplay({
     background: "#000000",
     buttons: CONTROLS,
     font: "IBM Mono",
+    tagsAsComponents: true,
     plugins: [kaplayZzFX, kaplayZzFXM, kaplaySprings, kaplayDynamicStrings, kaplayPTY],
 });
 

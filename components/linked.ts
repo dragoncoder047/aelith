@@ -2,7 +2,7 @@ import { Comp, GameObj, KEventController } from "kaplay";
 
 export interface LinkComp extends Comp {
     readonly idTag: string,
-    tag: string,
+    linkGroup: string,
     broadcast(msg: string): void,
     onMessage(cb: (msg: string) => void): KEventController,
 }
@@ -12,14 +12,14 @@ export interface LinkComp extends Comp {
  * @param tag ID of linked objects
  */
 export function linked(tag: string): LinkComp {
-    var closure__tag = tag;
+    var _grp = tag;
     return {
         id: "linked",
-        get idTag() { return "__linkid_" + closure__tag; },
-        get tag() { return closure__tag; },
-        set tag(newTag) {
-            (this as unknown as GameObj).unuse(this.idTag); // cSpell: ignore unuse
-            closure__tag = newTag;
+        get idTag() { return "__linkid_" + _grp; },
+        get linkGroup() { return _grp; },
+        set linkGroup(newTag) {
+            (this as unknown as GameObj).unuse(this.idTag);
+            _grp = newTag;
             (this as unknown as GameObj).use(this.idTag);
         },
         add(this: GameObj) {

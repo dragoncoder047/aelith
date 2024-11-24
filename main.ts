@@ -21,4 +21,4 @@ window.playerFollower = player.camFollower!;
 window.player = player;
 
 // @ts-ignore
-window.openSesame = (id: string) => (K.get<LinkComp>("linked", { recursive: true }).find(x => x.tag === id) ?? { broadcast() { throw "nothing with id " + id; } }).broadcast("toggle");
+window.openSesame = (id: string) => (K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === id) ?? { broadcast() { throw "nothing with id " + id; } }).broadcast("toggle");
