@@ -26,7 +26,7 @@ export const CONTROLS: Controls = {
     },
     invoke: {
         keyboard: ["e", "enter"],
-        gamepad: ["north"],
+        gamepad: ["east"],
     },
     // inventory controls
     inv_previous: {

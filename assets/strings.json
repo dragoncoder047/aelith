@@ -74,7 +74,7 @@
                     "verb": "press",
                     "space": " "
                 },
-                "invoke": "&button.north",
+                "invoke": "&button.east",
                 "modify": {
                     "name": "d-pad up and down",
                     "verb": "Press",
@@ -208,7 +208,7 @@
                     "verb": "presiona",
                     "space": " "
                 },
-                "invoke": "&button.north",
+                "invoke": "&button.east",
                 "modify": {
                     "name": "el d-pad arriba y abajo",
                     "verb": "Presiona",
