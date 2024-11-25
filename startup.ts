@@ -219,7 +219,7 @@ export async function doStartup() {
     initPauseMenu(terminal);
 
     // Start music
-    musicPlay.paused = false;
+    musicPlay.paused = isTesting; // will be false if not testing mode
 
 };
 
