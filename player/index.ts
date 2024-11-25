@@ -106,7 +106,7 @@ function playerComp(): PlayerComp {
                 this.lookingAt = undefined;
                 if (!this.lookingDirection) break;
 
-                const allObjects = K.get<AreaComp>("area", { recursive: true })
+                const allObjects = K.get<AreaComp>("area", { recursive: true, only: "comps" })
                     .filter(x => !(this.inventory as any[]).includes(x)
                         && x.collisionIgnore.every(t => !this.is(t))
                         && !x.is("raycastIgnore")
@@ -114,7 +114,7 @@ function playerComp(): PlayerComp {
 
                 // First raycast only the objects we are interested in
                 rcr = actuallyRaycast(
-                    allObjects.filter(x => x.is("interactable") || x.is("grabbable")),
+                    allObjects.filter(x => x.is("interactable") || x.has("grabbable")),
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
@@ -128,7 +128,7 @@ function playerComp(): PlayerComp {
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
-                if (!(rcr.object.is("interactable") || rcr.object.is("grabbable"))) break;
+                if (!(rcr.object.is("interactable") || rcr.object.has("grabbable"))) break;
                 this.lookingAt = rcr.object as GameObj<AreaComp>;
 
             } while (false);
