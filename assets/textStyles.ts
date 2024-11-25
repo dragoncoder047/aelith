@@ -3,12 +3,15 @@ import { K } from "../init";
 import trapTypes from "./trapTypes.json";
 import { TILE_SIZE } from "../constants";
 
-export const styles: TextComp["textStyles"] = {
+export const STYLES: TextComp["textStyles"] = {
     cursor(_, __) {
         return {
             color: K.GREEN,
             opacity: Math.round(K.wave(0, 1, K.time() * 3 * Math.PI)),
         };
+    },
+    gamename: {
+        color: K.rgb("#aa22ff"),
     },
     selected: {
         color: K.MAGENTA,
@@ -53,5 +56,5 @@ export const styles: TextComp["textStyles"] = {
 
 // add all the continuation colors
 for (var name of Object.getOwnPropertyNames(trapTypes) as (keyof typeof trapTypes)[]) {
-    styles[name.replace(/[^\w]/g, "")] = { color: K.Color.fromHex(trapTypes[name].color) };
+    STYLES[name.replace(/[^\w]/g, "")] = { color: K.rgb(trapTypes[name].color).lighten(100), };
 }

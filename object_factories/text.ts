@@ -1,6 +1,6 @@
 import { K } from "../init";
 import { FONT_SCALE, TILE_SIZE } from "../constants";
-import { styles } from "../assets/textStyles";
+import { STYLES } from "../assets/textStyles";
 
 export function textNote() {
     return [
@@ -9,7 +9,7 @@ export function textNote() {
             width: TILE_SIZE * 4,
             align: "left",
             lineSpacing: 1.15,
-            styles,
+            styles: STYLES,
         }),
         K.opacity(1),
         K.color(K.WHITE.darken(100)),

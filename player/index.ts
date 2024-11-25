@@ -1,12 +1,15 @@
 import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
+import { STYLES } from "../assets/textStyles";
 import { ContinuationTrapComp } from "../components/continuationTrap";
 import { HoldOffsetComp } from "../components/holdOffset";
 import { thudder } from "../components/thudder";
-import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { SpringComp } from "../plugins/kaplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";
+import { ControllableComp } from "../components/controllable";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
@@ -33,6 +36,8 @@ export interface PlayerComp extends Comp {
     scrollInventory(dir: number): void
     canScrollInventory(dir: number): boolean
     lookAt(pos: Vec2 | undefined): void
+    controlText: GameObj<DynamicTextComp>
+    addControlText(text: string, styles?: string[]): void
 }
 
 function playerComp(): PlayerComp {
@@ -86,6 +91,24 @@ function playerComp(): PlayerComp {
                 if (this.curPlatform() === h) this.jump(1);
                 h.paused = h.hidden = false;
                 this._pull2Pos(h);
+            }
+            // update control text
+            this.controlText.t = "";
+            this.addControlText("&msg.ctlHint.pause.open");
+            this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
+            if (this.inventory.length > 0)
+                this.addControlText("&msg.ctlHint.switchItem");
+            if (this.lookingAt?.has("grabbable"))
+                this.addControlText("&msg.ctlHint.look    &msg.ctlHint.grab");
+            else if (this.holdingItem?.is("throwable"))
+                this.addControlText("&msg.ctlHint.aim    &msg.ctlHint.throw");
+            else this.addControlText("&msg.ctlHint.look");
+            if (this.lookingAt?.is("interactable"))
+                this.addControlText("&msg.ctlHint.interact");
+            if (this.holdingItem?.has("controllable")) {
+                for (var c of (this.holdingItem as unknown as GameObj<ControllableComp>).controls) {
+                    if (!c.hidden) this.addControlText(c.hint, c.styles);
+                }
             }
         },
         /**
@@ -211,6 +234,7 @@ function playerComp(): PlayerComp {
                 },
             };
         },
+        // MARK: inventory
         inventory: [],
         holdingIndex: -1,
         addToInventory(this: GameObj<PlayerComp>, obj) {
@@ -301,6 +325,28 @@ function playerComp(): PlayerComp {
             this.lookingDirection = pos.sub(this.headPosWorld);
             if (this.lookingDirection.x < 0) this.flipX = false;
             else if (this.lookingDirection.x > 0) this.flipX = true;
+        },
+        // MARK: note object
+        controlText: K.add([
+            K.dynamicText(),
+            K.text("", {
+                size: 12 / SCALE,
+                align: "center",
+                styles: STYLES,
+                lineSpacing: 1.15,
+            }),
+            K.fixed(),
+            K.anchor("bot"),
+            K.pos(),
+            K.layer("ui"),
+            {
+                update(this: GameObj<PosComp>) {
+                    this.pos = K.vec2(K.center().x, K.height() - MARGIN)
+                }
+            }
+        ]),
+        addControlText(text, styles = []) {
+            this.controlText.t = `\n${styles.map(t => `[${t}]`).join("")}${text.replace(/(?<!\\)[\[\]\\]/g, "\\$1")}${styles.toReversed().map(t => `[/${t}]`).join("")}` + this.controlText.t;
         },
     };
 }

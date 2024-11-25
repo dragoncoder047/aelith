@@ -5,9 +5,47 @@
         "right": "\u001a",
         "down": "\u0019"
     },
-    "gamename": "[callcc]debugger[/callcc];",
+    "gamename": "[gamename]debugger[/gamename];",
     "msg": "&&lang",
-    "control": "&msg.controls.&inputType",
+    "control": "&c.&inputType",
+    "c": {
+        "gamepad": {
+            "move": "(lstick)",
+            "sprint": "(lstick)",
+            "jump": "(&button.south)",
+            "aim": "(rstick)",
+            "look": "(rstick)",
+            "interact": "(&msg.press rstick)",
+            "throw": "\\[&button.rtrigger]",
+            "invoke": "(&button.east)",
+            "modify": "\\[d-pad]",
+            "inventory.scroll": "\\[d-pad]",
+            "pause": "(&button.start)",
+            "pMenu": {
+                "switch": "\\[d-pad]",
+                "select": "(&button.east)/(&button.select)",
+                "back": "(&button.west)"
+            }
+        },
+        "keyboard": {
+            "move": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
+            "sprint": "\\[shift]",
+            "jump": "\\[space]",
+            "aim": "\\[mouse]",
+            "look": "\\[mouse]",
+            "interact": "\\[left click]",
+            "throw": "\\[right click]",
+            "invoke": "\\[E]/\\[enter]",
+            "modify": "\\[scroll]",
+            "inventory.scroll": "\\[Z]/\\[C]",
+            "pause": "\\[tab]",
+            "pMenu": {
+                "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
+                "select": "\\[enter]",
+                "back": "\\[back]"
+            }
+        }
+    },
     "button": "&&controllerType",
     "xbox": {
         "north": "Y",
@@ -58,66 +96,6 @@
         "start": "+"
     },
     "en": {
-        "controls": {
-            "gamepad": {
-                "move": "the left stick",
-                "sprint": "the left stick",
-                "jump": "&button.south",
-                "aim": "the right stick",
-                "interact": {
-                    "name": "the right stick",
-                    "verb": "press",
-                    "space": " "
-                },
-                "throw": {
-                    "name": "&button.rtrigger",
-                    "verb": "press",
-                    "space": " "
-                },
-                "invoke": "&button.east",
-                "modify": {
-                    "name": "d-pad up and down",
-                    "verb": "Press",
-                    "space": " "
-                },
-                "inventory.scroll": "d-pad left or right",
-                "pause": "the &button.start button",
-                "pMenu": {
-                    "switch": "the d-pad",
-                    "select": "&button.east or &button.select",
-                    "back": "&button.west"
-                }
-            },
-            "keyboard": {
-                "move": "WASD or &arrow.left&arrow.right&arrow.up&arrow.down",
-                "sprint": "shift",
-                "jump": "space",
-                "aim": "the mouse",
-                "interact": {
-                    "name": "left click",
-                    "verb": "",
-                    "space": ""
-                },
-                "throw": {
-                    "name": "right click",
-                    "verb": "",
-                    "space": ""
-                },
-                "invoke": "E or enter",
-                "modify": {
-                    "name": "Scroll",
-                    "verb": "",
-                    "space": ""
-                },
-                "inventory.scroll": "Z or C",
-                "pause": "tab",
-                "pMenu": {
-                    "switch": "WASD or &arrow.left&arrow.right&arrow.up&arrow.down",
-                    "select": "enter",
-                    "back": "backspace"
-                }
-            }
-        },
         "startup": {
             "password": "Password for &user: ",
             "loggedInOK": "Logged in!",
@@ -128,12 +106,31 @@
             "running": "Assistant is running",
             "disconnected": "Fatal error: disconnected!"
         },
+        "ctlHint": {
+            "move": "&control.move move",
+            "jump": "&control.jump jump",
+            "aim": "&control.aim aim",
+            "throw": "&control.throw throw",
+            "look": "&control.look look",
+            "grab": "&control.interact grab",
+            "interact": "&control.interact interact",
+            "switchItem": "&control.inventory.scroll switch item",
+            "pause": {
+                "open": "&control.pause pause game",
+                "switch": "&control.pMenu.switch switch",
+                "select": "&control.pMenu.select select",
+                "back": "&control.pMenu.back back"
+            }
+        },
         "continuation": {
             "hint": {
-                "default": "Press &control.invoke to capture a continuation",
-                "throw": "Press &control.invoke to toss the continuation trap",
-                "captureThrown": "Press &control.invoke again to capture a continuation from there",
-                "modify": "&control.modify.verb&control.modify.space&control.modify.name to change the capture radius.\nCurrent radius: &radius"
+                "default": "&control.invoke capture a continuation",
+                "throw": "&control.invoke toss continuation trap",
+                "captureThrown": "&control.invoke capture continuation from there",
+                "modify": "&control.modify change capture radius",
+                "invoke": {
+                    "default": "&control.invoke invoke continuation"
+                }
             }
         },
         "antivirus": {
@@ -167,18 +164,12 @@
         "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
         "gameErrorDetails": "You can search for the error online:",
         "wrongWayLeft": "&arrow.left Go that way",
-        "controlsIntro": "&msg.bottomControls.&isPaused",
-        "bottomControls": {
-            "0": "Use &control.move to move, &control.jump to jump, and &control.sprint to sprint\nPress &control.pause to open the pause menu",
-            "1": "Use &control.pMenu.switch to switch options, &control.pMenu.select to select, and &control.pMenu.back to go back\nPress &control.pause to return to the game"
-        },
         "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
         "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
         "thisLightbulb": "&arrow.up Like this\n  lightbulb",
         "button": "Buttons trigger things while they are pressed",
-        "variable": "This is a variable.\nAim with &control.aim and &control.interact.verb&control.interact.space&control.interact.name to grab it.\nThese will be very useful!",
+        "variable": "This is a variable.\nThese will be very useful!",
         "nothingToSee": "Nothing to see over here",
-        "throwable": "You can &control.throw.verb&control.throw.space&control.throw.name to throw the variable again -- the blue line shows where it will go.\nYou can also press &control.inventory.scroll to switch what you are holding.",
         "firstContinuation": "That [assert]green[/assert] thing you are holding? It's a [special]continuation![/special]\nPress &control.invoke to invoke it.",
         "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
         "firstChallenge": "There are a lot of race condition bugs... you'll have to use continuations to get around them.",
@@ -192,66 +183,6 @@
         "congrats": "[special]CONGRATULATIONS![/special]\nyou have reached the end of the game so far!!"
     },
     "es": {
-        "controls": {
-            "gamepad": {
-                "move": "el joystick izquierdo",
-                "sprint": "el joystick izquierdo",
-                "jump": "el botón &button.south",
-                "aim": "el joystick derecho",
-                "interact": {
-                    "name": "el joystick derecho",
-                    "verb": "presiona",
-                    "space": " "
-                },
-                "throw": {
-                    "name": "&button.rtrigger",
-                    "verb": "presiona",
-                    "space": " "
-                },
-                "invoke": "&button.east",
-                "modify": {
-                    "name": "el d-pad arriba y abajo",
-                    "verb": "Presiona",
-                    "space": " "
-                },
-                "inventory.scroll": "el d-pad izquierdo o derecho",
-                "pause": "el botón &button.start",
-                "pMenu": {
-                    "switch": "el d-pad",
-                    "select": "&button.east o &button.select",
-                    "back": "&button.west"
-                }
-            },
-            "keyboard": {
-                "move": "WASD o &arrow.left&arrow.right&arrow.up&arrow.down",
-                "sprint": "la tecla mayús",
-                "jump": "la tecla espacio",
-                "aim": "el ratón",
-                "interact": {
-                    "name": "clic izquierdo",
-                    "verb": "haga",
-                    "space": " "
-                },
-                "throw": {
-                    "name": "clic derecho",
-                    "verb": "haga",
-                    "space": " "
-                },
-                "invoke": "E or enter",
-                "modify": {
-                    "name": "Desplácese",
-                    "verb": "",
-                    "space": ""
-                },
-                "inventory.scroll": "Z o C",
-                "pause": "la tecla TAB",
-                "pMenu": {
-                    "switch": "WASD o &arrow.left&arrow.right&arrow.up&arrow.down",
-                    "select": "enter",
-                    "back": "la tecla retroceso"
-                }
-            }
-        },
         "startup": {
             "password": "Contraseña para &user: ",
             "loggedInOK": "¡Has iniciado sesión!",
@@ -262,12 +193,31 @@
             "running": "Asistente está lista",
             "disconnected": "Error fatal: ¡desconectado!"
         },
+        "ctlHint": {
+            "move": "&control.move mover",
+            "jump": "&control.jump saltar",
+            "aim": "&control.aim apuntar",
+            "throw": "&control.throw lanzar",
+            "look": "&control.look ver",
+            "grab": "&control.interact agarrar",
+            "interact": "&control.interact interactuar",
+            "switchItem": "&control.inventory.scroll cambia lo que tienes",
+            "pause": {
+                "open": "&control.pause pausar juego",
+                "switch": "&control.pMenu.switch cambiar las opciones",
+                "select": "&control.pMenu.select seleccionar",
+                "back": "&control.pMenu.back volver al anterior"
+            }
+        },
         "continuation": {
             "hint": {
-                "default": "Presiona &control.invoke para capturar una continuación",
-                "throw": "Presiona &control.invoke para lanzar la trampa de continuación",
-                "captureThrown": "Presiona &control.invoke de nuevo para capturar una continuación desde allí",
-                "modify": "&control.modify.verb&control.modify.space&control.modify.name para cambiar el radio de captura.\nRadio actual: &radius"
+                "default": "&control.invoke capturar una continuación",
+                "throw": "&control.invoke lanzar trampa de continuación",
+                "captureThrown": "&control.invoke capturar una continuación desde allí",
+                "modify": "&control.modify cambiar el radio de captura",
+                "invoke": {
+                    "default": "&control.invoke invocar continuación"
+                }
             }
         },
         "antivirus": {
@@ -301,18 +251,12 @@
         "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",
         "gameErrorDetails": "Puede buscar el error en Internet:",
         "wrongWayLeft": "&arrow.left Ir por ese camino",
-        "controlsIntro": "&msg.bottomControls.&isPaused",
-        "bottomControls": {
-            "0": "Utilice &control.move para mover, &control.jump para saltar, y &control.sprint para correr\nPresione &control.pause para abrir el menú de pausa",
-            "1": "Utilice &control.pMenu.switch para cambiar las opciones, &control.pMenu.select para seleccionar, y &control.pMenu.back para volver al menú anterior\nPresione &control.pause para volver al juego"
-        },
         "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",
         "firstCheckpoint": "&arrow.left ¡Felicidades,\n  tu primer\n  punto de control!",
         "thisLightbulb": "&arrow.up Así\n  bombilla",
         "button": "Los botones activan cosas mientras se presionan",
-        "variable": "Esta es una variable.\nApunte con &control.aim y &control.interact.verb&control.interact.space&control.interact.name para agarrarla.\n¡Serán muy útiles!",
+        "variable": "Esta es una variable.\n¡Serán muy útiles!",
         "nothingToSee": "Nada que ver por aquí",
-        "throwable": "Puedes &control.throw.verb&control.throw.space&control.throw.name para lanzar la variable de nuevo -- la línea azul muestra dónde irá.\nTambién puede presionar &control.inventory.scroll para cambiar lo que está sosteniendo.",
         "firstContinuation": "¿Esa cosa [assert]verde[/assert] que tienes en la mano? ¡Es una [special]continuación![/special]\nPresione &control.invoke para invocarlo.",
         "firstTrap": "¡Con ese dispositivo [throw]azul[/throw], ¡puedes capturar tus propias continuaciones!\nNo seas tímido, ¡agárralo!",
         "firstChallenge": "Hay muchos errores en las condiciones de la carrera... Tendrás que usar continuaciones para sortearlos.",

@@ -5,6 +5,7 @@ import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { CloneableComp } from "./cloneable";
+import { controllable, ControllableComp } from "./controllable";
 
 export interface ContinuationComp extends Comp {
     type: keyof typeof contTypes
@@ -49,7 +50,6 @@ export function continuationCore(
                 u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
             }),
             "worldMarker" as Tag,
-            "interactable" as Tag,
         ]),
         get data() {
             return contTypes[this.type];
@@ -58,18 +58,20 @@ export function continuationCore(
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
+            this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => this.invoke());
             this.name = this.data!.cName;
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.worldMarker.hidden = true;
-            this.worldMarker.on("interact", () => {
-                player.holdingIndex = player.inventory.indexOf(this);
-                player.trigger("inventoryChange");
-            });
             if (this.data?.special === "reverseTeleport") {
                 this.worldMarker.destroy();
             }
+        },
+        update(this: GameObj<ContinuationComp | ControllableComp>) {
+            this.controls[0]!.hint = this.data?.invokeHint ?? "&msg.continuation.hint.invoke.default";
+            this.controls[0]!.styles = [this.trappedBy.name];
+            debugger;
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.type === "assert") {
@@ -135,7 +137,7 @@ export function continuationCore(
             if (this.data?.special === "reverseTeleport") return;
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
-            if (this.worldMarker.isOffScreen())  {
+            if (this.worldMarker.isOffScreen()) {
                 const doubledScreenRect = new K.Rect(K.vec2(-K.width(), -K.height()), K.width() * 2, K.height() * 2);
                 const out = new K.Line(K.vec2(), K.vec2());
                 const clipped = new K.Line(p1, p2);

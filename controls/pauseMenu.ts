@@ -142,7 +142,10 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
 }
 
 async function onPaused() {
-    K.strings.isPaused = "1";
+    player.controlText.t = "";
+    player.addControlText("&msg.ctlHint.pause.back");
+    player.addControlText("&msg.ctlHint.pause.select");
+    player.addControlText("&msg.ctlHint.pause.switch");
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  gdb pm 4242.core\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
@@ -153,7 +156,6 @@ async function onUnpaused() {
         { text: "fg %1", styles: ["command"] },
         "[1]  + 4247 &msg.pause.continued  gdb pm 4242.core\n")
     copyPreferences();
-    K.strings.isPaused = "0";
 }
 
 export function copyPreferences() {

@@ -11,6 +11,7 @@ import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
 import { CollisionerComp } from "./collisioner";
+import { controllable, ControllableComp } from "./controllable";
 
 export type CDEComps =
     | PosComp
@@ -44,7 +45,6 @@ export interface ContinuationTrapComp extends Comp {
     readonly shouldShowWillCapture: boolean
     readonly color: Color
     radius: number
-    hint: GameObj<TextComp | ColorComp | DynamicTextComp | PosComp>
     zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
     prepare(): void
     capture(): void
@@ -75,12 +75,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         get shouldShowWillCapture() {
             return (this.data?.prepare === "editRadius") ? this.isPreparing : ((this as any) === player.holdingItem);
         },
-        hint: K.add([
-            K.pos(),
-            ...textNote(),
-            K.anchor("center"),
-            K.color(K.RED),
-        ]) as ContinuationTrapComp["hint"],
         zoop: K.add([
             K.pos(),
             K.circle(zoopRadius(Infinity), { fill: false }),
@@ -89,6 +83,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             zoop(),
         ]),
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp>) {
+            this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
                 if (this.isPreparing) this.capture();
                 else this.prepare();
@@ -100,16 +95,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
-            this.on("inactive", () => {
-                this.hint.hidden = this.zoop.hidden = true;
-            });
-            this.on("active", () => {
-                this.hint.hidden = this.zoop.hidden = false;
-            });
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
             this.blinkenlights();
         },
-        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
+        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
             if (this.data?.prepare === "throw") {
                 if (!this.isPreparing) {
                     if (this === player.holdingItem)
@@ -122,15 +111,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             } else if (this === player.holdingItem)
                 this.flipX = player.flipX;
 
-            if (this.enabled && this === player.holdingItem) {
-                this.hint.hidden = false;
-                if (this.isPreparing) this.hint.t = this.data?.prepareHint!;
-                else this.hint.t = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
-            } else this.hint.hidden = true;
+            if (this.isPreparing) this.controls[0]!.hint = this.data?.prepareHint!;
+            else this.controls[0]!.hint = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
+            this.controls[0]!.styles = [this.name];
+            this.controls[0]!.hidden = !this.enabled;
 
-            this.hint.color = this.color.lighten(50);
-            this.hint.pos = player.worldPos()!.add(0, TILE_SIZE * 2);
-            this.hint.data.radius = this.radius.toString();
             this.zoop.outline.color = this.color;
             this.zoop.pos = this.getPlayerPosData();
             this.uniform!.u_targetcolor = this.color;
@@ -240,14 +225,15 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
         },
         blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
-            var min = 0, max = 0;
+            var min = 0, max = 0, dly = K.rand(0.2, 1);
             const anim = this.getAnim(this.enabled ? "ready" : "disabled");
             if (anim && typeof anim !== "number") {
-                min = anim.from
-                max = anim.to
+                min = anim.from;
+                max = anim.to;
             }
+            if (!this.enabled) dly = 0.05;
             this.frame = K.randi(min, max + 1);
-            K.wait(K.rand(0.2, 1), () => this.blinkenlights());
+            K.wait(dly, () => this.blinkenlights());
         }
     };
 }
