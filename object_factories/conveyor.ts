@@ -1,3 +1,4 @@
+import { Tag } from "kaplay";
 import { ambiance } from "../components/ambientSound";
 import { conveyor as conveyorComp } from "../components/conveyor";
 import { mergeable } from "../components/mergeable";
@@ -18,5 +19,6 @@ export function conveyor() {
         K.surfaceEffector({ speed: 0, forceScale: Number.MAX_VALUE }),
         nudge(0, 8),
         ambiance("conveyor_running"),
+        "conveyor" as Tag,
     ]
 }
