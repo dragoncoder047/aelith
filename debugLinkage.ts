@@ -10,10 +10,10 @@ K.add([{
         const groups = new Map<string, GameObj<LinkComp | PosComp>[]>;
         const names: string[] = [];
         for (var obj of allObjs) {
-            if (groups.has(obj.tag)) groups.get(obj.tag)!.push(obj);
+            if (groups.has(obj.linkGroup)) groups.get(obj.linkGroup)!.push(obj);
             else {
-                names.push(obj.tag);
-                groups.set(obj.tag, [obj]);
+                names.push(obj.linkGroup);
+                groups.set(obj.linkGroup, [obj]);
             }
         }
         for (var i = 0; i < names.length; i++) {
