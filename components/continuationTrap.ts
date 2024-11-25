@@ -96,7 +96,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.isPreparing = false;
             });
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
-            this.blinkenlights();
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
             if (this.data?.prepare === "throw") {
@@ -127,6 +126,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 }
                 else this.zoop.hidden = true;
             }
+            this.blinkenlights();
         },
         prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
             if (!this.enabled) return;
@@ -224,16 +224,23 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
         },
-        blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
-            var min = 0, max = 0, dly = K.rand(0.2, 1);
-            const anim = this.getAnim(this.enabled ? "ready" : "disabled");
-            if (anim && typeof anim !== "number") {
-                min = anim.from;
-                max = anim.to;
-            }
-            if (!this.enabled) dly = 0.05;
-            this.frame = K.randi(min, max + 1);
-            K.wait(dly, () => this.blinkenlights());
-        }
+        blinkenlights: (() => {
+            var blinkTimeout = 0;
+            return function (this: GameObj<SpriteComp | ContinuationTrapComp>) {
+                if (blinkTimeout > 0) {
+                    blinkTimeout -= K.dt();
+                    return;
+                }
+                var min = 0, max = 0;
+                const anim = this.getAnim(this.enabled ? "ready" : "disabled");
+                if (anim && typeof anim !== "number") {
+                    min = anim.from;
+                    max = anim.to;
+                }
+                if (!this.enabled) blinkTimeout = 0;
+                else blinkTimeout = K.rand(0.2, 1);
+                this.frame = K.randi(min, max + 1);
+            };
+        })(),
     };
 }

@@ -77,7 +77,7 @@
         "radius": 1.79e+308,
         "reusable": true,
         "holdTrapHint": null,
-        "invokeHint": null,
+        "invokeHint": "&msg.continuation.hint.invoke.assert",
         "concurrent": false,
         "prepareHint": null,
         "prepare": null,
