@@ -90,7 +90,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         player.hidden = player.paused = true;
         K.get("tail").forEach(p => p.hidden = p.paused = true);
         origCamPos = player.pos;
-        K.camPos(MParser.pausePos);
+        K.setCamPos(MParser.pausePos);
         await nextFrame();
         // prevent immediate unpause
         pauseListener.paused = false;
@@ -101,7 +101,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         K.get("player").forEach(p => p.hidden = p.paused = false);
         K.get("tail").forEach(p => p.hidden = p.paused = false);
         pauseListener.paused = true;
-        K.camPos(origCamPos);
+        K.setCamPos(origCamPos);
         await onUnpaused();
     });
     pauseListener.paused = true;

@@ -27,7 +27,7 @@ K.load((async () => {
     // remove player position things
     playerPositions.forEach(K.destroy);
     // prevent superfast scroll on load
-    K.camPos(player.worldPos()!);
+    K.setCamPos(player.worldPos()!);
 
     MParser.merge();
 

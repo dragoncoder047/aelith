@@ -1,6 +1,6 @@
 import { K } from "./init";
 
-K.layers([
+K.setLayers([
     "background",
     "world",
     "text",
