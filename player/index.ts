@@ -340,8 +340,12 @@ function playerComp(): PlayerComp {
             K.pos(),
             K.layer("ui"),
             {
-                update(this: GameObj<PosComp>) {
-                    this.pos = K.vec2(K.center().x, K.height() - MARGIN)
+                add(this: GameObj<PosComp>) {
+                    const func = () => {
+                        this.pos = K.vec2(K.center().x, K.height() - MARGIN);
+                    };
+                    K.onResize(func);
+                    func();
                 }
             }
         ]),

@@ -10,8 +10,12 @@ export const timer = UI.add([
     K.pos(),
     K.opacity(1),
     {
-        update(this: GameObj<PosComp>) {
-            this.pos = K.vec2(K.width() - MARGIN, MARGIN);
+        add(this: GameObj<PosComp>) {
+            const func = () => {
+                this.pos = K.vec2(K.width() - MARGIN, MARGIN);
+            };
+            K.onResize(func);
+            func();
         }
     }
 ]);

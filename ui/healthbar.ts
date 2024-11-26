@@ -12,8 +12,12 @@ export const healthbar = UI.add([
     K.color(K.GREEN),
     K.area(),
     {
-        update(this: GameObj<PosComp>) {
-            this.pos = K.vec2(MARGIN, K.height() * (1 + +player.hidden) - MARGIN);
+        add(this: GameObj<PosComp>) {
+            const func = () => {
+                this.pos = K.vec2(MARGIN, K.height() * (1 + +player.hidden) - MARGIN);
+            };
+            K.onResize(func);
+            func();
         },
         showHealth(this: GameObj<PosComp | TextComp | ColorComp>,
             health: number, maxHealth: number) {
@@ -26,7 +30,7 @@ export const healthbar = UI.add([
         }
     }
 ]);
-healthbar.use(uiButton(() => {}));
+healthbar.use(uiButton(() => { }));
 
 player.onUpdate(() => {
     healthbar.showHealth(player.hp(), player.maxHP()!);
