@@ -48,7 +48,9 @@ export const PAUSE_MENU: PtyMenu = {
             opts: [
                 { text: "&msg.pause.automaticLang", value: availableLangs },
                 { text: "English", value: ["en"] },
-                { text: "Español", value: ["es"] }
+                { text: "Español", value: ["es"] },
+                { text: "Deutsch", value: ["de"] },
+                { text: "日本語", value: ["ja"] }
             ],
             selected: 0
         },

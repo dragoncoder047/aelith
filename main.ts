@@ -13,7 +13,7 @@ import "./player/health";
 import "./ui";
 
 K.setGravity(GRAVITY);
-K.setLanguages(["en", "es"]);
+K.setLanguages(["en", "es", "de", "ja"]);
 
 // @ts-ignore
 window.playerFollower = player.camFollower!;

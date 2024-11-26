@@ -272,5 +272,183 @@
         "noSecret": "bueno, no encontraste nada\n\ntal vez el juego se actualice...",
         "powerful": "este es [special]¡extremadamente poderoso![/special]",
         "congrats": "[special]¡FELICIDADES![/special]\n¡has llegado al final del juego hasta ahora!"
+    },
+    "de": {
+        "startup": {
+            "password": "Passwort für &user: ",
+            "loggedInOK": "Angemeldet!",
+            "pressToBegin": "Drücken Sie die Eingabetaste, um zu starten...",
+            "findAnswer": "Antwort suchen",
+            "startingDebugger": "Debugger wird gestartet...",
+            "segfault": "Segmentierungsfehler",
+            "running": "Assistent läuft",
+            "disconnected": "Schwerwiegender Fehler: Verbindung getrennt!"
+        },
+        "ctlHint": {
+            "move": "&control.move bewegen",
+            "jump": "&control.jump springen",
+            "aim": "&control.aim zielen",
+            "throw": "&control.throw werfen",
+            "look": "&control.look schauen",
+            "grab": "&control.interact greifen",
+            "interact": "&control.interact interagieren",
+            "switchItem": "&control.inventory.scroll Gegenstand wechseln",
+            "pause": {
+                "open": "&control.pause Spiel pausieren",
+                "switch": "&control.pMenu.switch wechseln",
+                "select": "&control.pMenu.select auswählen",
+                "back": "&control.pMenu.back zurück"
+            }
+        },
+        "continuation": {
+            "hint": {
+                "default": "&control.invoke Fortsetzung erfassen",
+                "throw": "&control.invoke Fortsetzung werfen Falle",
+                "captureThrown": "&control.invoke Fortsetzung der Erfassung von dort aus aufrufen",
+                "modify": "&control.modify Erfassungsradius ändern",
+                "invoke": {
+                    "default": "&control.invoke Fortsetzung aufrufen",
+                    "assert": "&control.invoke Checkpoint aufrufen"
+                }
+            }
+        },
+        "antivirus": {
+            "allClear": "System ist sauber",
+            "detected": "Rogue-Code erkannt!"
+        },
+        "pause": {
+            "suspended": "suspendiert",
+            "continued": "Fortsetzung",
+            "select": "Controllertyp",
+            "ngConnect": "Mit Newgrounds.com verbinden",
+            "setLanguage": "Sprache",
+            "automaticLang": "Sprache automatisch erkennen",
+            "preferences": "Optionen",
+            "controllerRumble": "Controller-Rumble aktivieren",
+            "showSpeedrunTimer": "Speedrun-Timer anzeigen",
+            "showControlHints": "Steuerungshinweise anzeigen",
+            "playBgMusic": "Hintergrundmusik abspielen",
+            "playSfx": "Soundeffekte abspielen",
+            "restart": "Spiel neu starten",
+            "reallyRestart": "Möchten Sie wirklich neu starten?\n Alle Fortschritte gehen verloren!"
+        },
+        "dead": {
+            "complete": "Debugging abgeschlossen.",
+            "failed": "Fehler beim Beheben aller Fehler!",
+            "resume": "Von einem vorherigen Checkpoint aus fortfahren",
+            "checkpoint": "Checkpoint",
+            "fromBeginning": "von Anfang an"
+        },
+        "eekBug": "Ihhh! Ein Fehler!",
+        "notImplemented": "Noch nicht implementiert, tut mir leid",
+        "gameErrored": "Im Spiel ist ein Problem aufgetreten, das nicht behoben werden konnte, und es muss nun neu gestartet werden.",
+        "gameErrorDetails": "Sie können online nach dem Fehler suchen:",
+        "wrongWayLeft": "&arrow.left Gehen Sie dort entlang",
+        "firstDoor": "Um die Tür zu öffnen, müssen Sie die Taste\ndrücken und gedrückt halten...\nwenn Sie das nur könnten...",
+        "firstCheckpoint": "&arrow.left Glückwunsch,\n  Ihr erster\n  Checkpoint!",
+        "thisLightbulb": "&arrow.up ...wie diese\n  Glühbirne",
+        "button": "Tasten lösen Dinge aus, wenn sie gedrückt werden...",
+        "variable": "Das ist eine Variable.\nDie werden sehr nützlich sein!",
+        "nothingToSee": "Hier gibt es nichts zu sehen",
+        "firstContinuation": "Das [assert]grüne[/assert] Ding, das du da hältst?\nEs ist eine [special]Fortsetzung![/special]\nLos, ruf es auf!",
+        "firstTrap": "Mit diesem [throw]blauen[/throw] Gerät kannst du deine eigenen Fortsetzungen erfassen!\nSeien Sie nicht schüchtern – schnapp es dir!",
+        "firstChallenge": "Es gibt viele Race-Condition-Bugs... Sie müssen Fortsetzungen verwenden, um sie zu umgehen.",
+        "completedFirstChallenge": "Das war einfach,\nnicht wahr?",
+        "noMoreHelp": "Es gibt noch mehr Bugs, aber bei denen kann ich Ihnen nicht helfen. Viel Glück!",
+        "fellOut": "Nun, jetzt steckst du in der Klemme...\nFortsetzungen sind dein Freund!",
+        "slightlyDifferent": "Dieses hier verhält sich etwas anders... wahrscheinlich eine gute Sache!",
+        "secret": "[special]psst, geheim?[/special]",
+        "noSecret": "also, du hast nichts gefunden\n\nvielleicht wird das Spiel aktualisiert...",
+        "powerful": "dieses hier ist [special]extrem mächtig![/special]",
+        "congrats": "[special]HERZLICHEN GLÜCKWUNSCH![/special]\ndu hast bisher das Ende des Spiels erreicht!!"
+    },
+    "ja": {
+        "startup": {
+            "password": "&user のパスワード: ",
+            "loggedInOK": "ログインしました!",
+            "pressToBegin": "開始するには ENTER を押してください...",
+            "findAnswer": "答えを見つける",
+            "startingDebugger": "デバッガーを起動しています...",
+            "segfault": "セグメンテーション エラー",
+            "running": "アシスタントが実行中です",
+            "disconnected": "致命的なエラー: 切断されました!"
+        },
+        "ctlHint": {
+            "move": "&control.move 移動",
+            "jump": "&control.jump ジャンプ",
+            "aim": "&control.aim 狙い",
+            "throw": "&control.throw 投げる",
+            "look": "&control.look 見る",
+            "grab": "&control.interact つかむ",
+            "interact": "&control.interact やりとりする",
+            "switchItem": "&control.inventory.scroll アイテムを切り替える",
+            "pause": {
+                "open": "&control.pause ゲームを一時停止する",
+                "switch": "&control.pMenu.switch 切り替える",
+                "select": "&control.pMenu.select 選択する",
+                "back": "&control.pMenu.back 戻る"
+            }
+        },
+        "continuation": {
+            "hint": {
+                "default": "&control.invoke キャプチャ継続",
+                "throw": "&control.invoke 投げる 継続トラップ",
+                "captureThrown": "&control.invoke そこからキャプチャ継続",
+                "modify": "&control.modify キャプチャ半径の変更",
+                "invoke": {
+                    "default": "&control.invoke 継続の呼び出し",
+                    "assert": "&control.invoke チェックポイントの呼び出し"
+                }
+            }
+        },
+        "antivirus": {
+            "allClear": "システムはクリーンです",
+            "detected": "不正なコードが検出されました!"
+        },
+        "pause": {
+            "suspended": "一時停止",
+            "continued": "続き",
+            "select": "コントローラー タイプ",
+            "ngConnect": "Newgrounds.com に接続",
+            "setLanguage": "言語",
+            "automaticLang": "言語を自動検出",
+            "preferences": "オプション",
+            "controllerRumble": "コントローラーの振動を有効にする",
+            "showSpeedrunTimer": "スピードラン タイマーを表示する",
+            "showControlHints": "コントロール ヒントを表示する",
+            "playBgMusic": "バックグラウンド ミュージックを再生する",
+            "playSfx": "サウンド エフェクトを再生する",
+            "restart": "ゲームを再起動する",
+            "reallyRestart": "再起動してもよろしいですか?\n すべての進行状況が失われます!"
+        },
+        "dead": {
+            "complete": "デバッグが完了しました。",
+            "failed": "すべてのバグを除去できませんでした!",
+            "resume": "前のチェックポイントから再開します",
+            "checkpoint": "チェックポイント",
+            "fromBeginning": "最初から"
+        },
+        "eekBug": "きゃー!バグです!",
+        "notImplemented": "まだ実装されていません。申し訳ありません",
+        "gameErrored": "ゲームで処理できない問題が発生したため、再起動する必要があります。",
+        "gameErrorDetails": "エラーはオンラインで検索できます:",
+        "wrongWayLeft": "&arrow.left そちらへ進んでください",
+        "firstDoor": "ドアを開けるには、ボタンを押し続ける必要があります...\nそれができればいいのですが...",
+        "firstCheckpoint": "&arrow.left おめでとうございます、\n  最初の\n  チェックポイントです!",
+        "thisLightbulb": "&arrow.up ...この電球のように",
+        "button": "ボタンは押されている間、何かをトリガーします...",
+        "variable": "これは変数です。\nこれは非常に便利です!",
+        "nothingToSee": "こちらには何も表示されません",
+        "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続です![/special]\nさあ、呼び出してください!",
+        "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続をキャプチャできます!\n遠慮せずにつかんでください!",
+        "firstChallenge": "競合状態のバグがたくさんあります...それらを回避するには継続を使用する必要があります。",
+        "completedFirstChallenge": "簡単でしたね?",
+        "noMoreHelp": "バグは他にもありますが、それらについてはお手伝いできません。頑張ってください!",
+        "fellOut": "さて、あなたは今困った状況に陥っています...\n継続はあなたの味方です!",
+        "slightlyDifferent": "これは少し動作が異なります...おそらく良いことです!",
+        "secret": "[special]シーッ、秘密?[/special]",
+        "noSecret": "ええと、何も見つかりませんでした\n\nゲームは更新されるかもしれません...",
+        "powerful": "これは[special]非常に強力です![/special]",
+        "congrats": "[special]おめでとうございます![/special]\n今のところゲームの最後まで到達しました!!"
     }
 }
