@@ -419,7 +419,7 @@
             "playBgMusic": "バックグラウンド ミュージックを再生する",
             "playSfx": "サウンド エフェクトを再生する",
             "restart": "ゲームを再起動する",
-            "reallyRestart": "再起動してもよろしいですか?\n すべての進行状況が失われます!"
+            "reallyRestart": "再起動してもよろしいですか?\n  すべての進行状況が失われます!"
         },
         "dead": {
             "complete": "デバッグが完了しました。",
@@ -434,10 +434,10 @@
         "gameErrorDetails": "エラーはオンラインで検索できます:",
         "wrongWayLeft": "&arrow.left そちらへ進んでください",
         "firstDoor": "ドアを開けるには、ボタンを押し続ける必要があります...\nそれができればいいのですが...",
-        "firstCheckpoint": "&arrow.left おめでとうございます、\n  最初の\n  チェックポイントです!",
+        "firstCheckpoint": "&arrow.left おめでとうございます、\n  最初のチェックポイントです!",
         "thisLightbulb": "&arrow.up ...この電球のように",
         "button": "ボタンは押されている間、何かをトリガーします...",
-        "variable": "これは変数です。\nこれは非常に便利です!",
+        "variable": "        これは変数です。\n        これは非常に便利です!",
         "nothingToSee": "こちらには何も表示されません",
         "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続装置です![/special]\nさあ、呼び出してください!",
         "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続装置をキャプチャできます!\n遠慮せずにつかんでください!",
