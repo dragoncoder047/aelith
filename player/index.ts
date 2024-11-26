@@ -78,7 +78,7 @@ function playerComp(): PlayerComp {
             other.vel = K.vec2(0);
             const offset = other.has("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
-            other.moveTo(this.worldPos()!.add(other.transform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
+            other.moveTo(this.worldPos()!.add(other.worldTransform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
         },
         // MARK: update()
         update(this: GameObj<PlayerComp | PosComp | BodyComp | SpriteComp>) {
@@ -388,8 +388,8 @@ export const player = K.add([
             if (h && (!h.has("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
                 // draw the item again on top
                 K.pushTransform();
-                K.pushMatrix(this.transform.inverse); // weird math
-                K.pushTranslate(h.parent ? h.parent.transform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
+                K.pushMatrix(this.localTransform.inverse); // weird math
+                K.pushTranslate(h.parent ? h.parent.worldTransform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
                 K.pushTranslate(this.worldPos()!.sub(h.worldPos()!));
                 h.draw();
                 K.popTransform();
