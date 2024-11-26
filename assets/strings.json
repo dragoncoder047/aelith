@@ -42,7 +42,7 @@
             "pMenu": {
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",
-                "back": "\\[back]"
+                "back": "\\[backspace]"
             }
         }
     },
@@ -108,6 +108,7 @@
         },
         "ctlHint": {
             "move": "&control.move move",
+            "sprint": "&control.sprint sprint",
             "jump": "&control.jump jump",
             "aim": "&control.aim aim",
             "throw": "&control.throw throw",
@@ -197,6 +198,7 @@
         },
         "ctlHint": {
             "move": "&control.move mover",
+            "sprint": "&control.sprint correr",
             "jump": "&control.jump saltar",
             "aim": "&control.aim apuntar",
             "throw": "&control.throw lanzar",
@@ -239,7 +241,7 @@
             "playSfx": "Reproducir efectos de sonido",
             "showSpeedrunTimer": "Mostrar reloj de speedrun",
             "showControlHints": "Mostrar sugerencias de control",
-            "controllerRumble": "Habilitar la vibración del controlador",
+            "controllerRumble": "Habilitar vibración del controlador",
             "restart": "Reiniciar el juego",
             "reallyRestart": "¿Estás seguro de que quieres reiniciar?\n  ¡Todo el progreso se perderá!"
         },
@@ -286,6 +288,7 @@
         },
         "ctlHint": {
             "move": "&control.move bewegen",
+            "sprint": "&control.sprint laufen",
             "jump": "&control.jump springen",
             "aim": "&control.aim zielen",
             "throw": "&control.throw werfen",
@@ -330,7 +333,7 @@
             "playBgMusic": "Hintergrundmusik abspielen",
             "playSfx": "Soundeffekte abspielen",
             "restart": "Spiel neu starten",
-            "reallyRestart": "Möchten Sie wirklich neu starten?\n Alle Fortschritte gehen verloren!"
+            "reallyRestart": "Möchten Sie wirklich neu starten?\n  Alle Fortschritte gehen verloren!"
         },
         "dead": {
             "complete": "Debugging abgeschlossen.",
@@ -351,7 +354,7 @@
         "variable": "Das ist eine Variable.\nDie werden sehr nützlich sein!",
         "nothingToSee": "Hier gibt es nichts zu sehen",
         "firstContinuation": "Das [assert]grüne[/assert] Ding, das du da hältst?\nEs ist eine [special]Fortsetzung![/special]\nLos, ruf es auf!",
-        "firstTrap": "Mit diesem [throw]blauen[/throw] Gerät kannst du deine eigenen Fortsetzungen erfassen!\nSeien Sie nicht schüchtern – schnapp es dir!",
+        "firstTrap": "Mit diesem [throw]blauen[/throw] Gerät kannst du deine eigenen Fortsetzungen erfassen!\nSeien Sie nicht schüchtern - schnapp es dir!",
         "firstChallenge": "Es gibt viele Race-Condition-Bugs... Sie müssen Fortsetzungen verwenden, um sie zu umgehen.",
         "completedFirstChallenge": "Das war einfach,\nnicht wahr?",
         "noMoreHelp": "Es gibt noch mehr Bugs, aber bei denen kann ich Ihnen nicht helfen. Viel Glück!",
@@ -375,6 +378,7 @@
         },
         "ctlHint": {
             "move": "&control.move 移動",
+            "sprint": "&control.sprint スプリント",
             "jump": "&control.jump ジャンプ",
             "aim": "&control.aim 狙い",
             "throw": "&control.throw 投げる",
