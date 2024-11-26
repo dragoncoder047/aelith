@@ -94,7 +94,7 @@ function playerComp(): PlayerComp {
             }
             // update control text
             this.controlText.t = "";
-            this.addControlText("&msg.ctlHint.pause.open");
+            this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
             this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
             if (this.inventory.length > 0)
                 this.addControlText("&msg.ctlHint.switchItem");
