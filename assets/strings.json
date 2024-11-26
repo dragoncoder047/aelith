@@ -391,12 +391,12 @@
         },
         "continuation": {
             "hint": {
-                "default": "&control.invoke キャプチャ継続",
-                "throw": "&control.invoke 投げる 継続トラップ",
-                "captureThrown": "&control.invoke そこからキャプチャ継続",
+                "default": "&control.invoke キャプチャ継続装置",
+                "throw": "&control.invoke 投げる 継続装置トラップ",
+                "captureThrown": "&control.invoke そこから継続装置を捕獲する",
                 "modify": "&control.modify キャプチャ半径の変更",
                 "invoke": {
-                    "default": "&control.invoke 継続の呼び出し",
+                    "default": "&control.invoke 継続装置の呼び出し",
                     "assert": "&control.invoke チェックポイントの呼び出し"
                 }
             }
@@ -439,12 +439,12 @@
         "button": "ボタンは押されている間、何かをトリガーします...",
         "variable": "これは変数です。\nこれは非常に便利です!",
         "nothingToSee": "こちらには何も表示されません",
-        "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続です![/special]\nさあ、呼び出してください!",
-        "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続をキャプチャできます!\n遠慮せずにつかんでください!",
-        "firstChallenge": "競合状態のバグがたくさんあります...それらを回避するには継続を使用する必要があります。",
+        "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続装置です![/special]\nさあ、呼び出してください!",
+        "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続装置をキャプチャできます!\n遠慮せずにつかんでください!",
+        "firstChallenge": "競合状態のバグがたくさんあります...それらを回避するには継続装置を使用する必要があります。",
         "completedFirstChallenge": "簡単でしたね?",
         "noMoreHelp": "バグは他にもありますが、それらについてはお手伝いできません。頑張ってください!",
-        "fellOut": "さて、あなたは今困った状況に陥っています...\n継続はあなたの味方です!",
+        "fellOut": "さて、あなたは今困った状況に陥っています...\n継続装置はあなたの味方です!",
         "slightlyDifferent": "これは少し動作が異なります...おそらく良いことです!",
         "secret": "[special]シーッ、秘密?[/special]",
         "noSecret": "ええと、何も見つかりませんでした\n\nゲームは更新されるかもしれません...",
