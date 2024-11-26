@@ -95,6 +95,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("thrown", () => {
                 this.isPreparing = false;
             });
+            this.on("inactive", () => {
+                this.zoop.hidden = true;
+            });
             K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
