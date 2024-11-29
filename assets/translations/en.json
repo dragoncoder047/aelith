@@ -1,0 +1,90 @@
+{
+    "startup": {
+        "password": "Password for &user: ",
+        "loggedInOK": "Logged in!",
+        "pressToBegin": "Press ENTER to start...",
+        "findAnswer": "find the answer",
+        "startingDebugger": "Starting debugger...",
+        "segfault": "segmentation fault",
+        "running": "Assistant is running",
+        "disconnected": "Fatal error: disconnected!"
+    },
+    "ctlHint": {
+        "move": "&control.move move",
+        "sprint": "&control.sprint sprint",
+        "jump": "&control.jump jump",
+        "aim": "&control.aim aim",
+        "throw": "&control.throw throw",
+        "look": "&control.look look",
+        "grab": "&control.interact grab",
+        "interact": "&control.interact interact",
+        "switchItem": "&control.inventory.scroll switch item",
+        "pause": {
+            "open": "&control.pause pause game",
+            "switch": "&control.pMenu.switch switch",
+            "select": "&control.pMenu.select select",
+            "back": "&control.pMenu.back back"
+        }
+    },
+    "continuation": {
+        "hint": {
+            "default": "&control.invoke capture a continuation",
+            "throw": "&control.invoke toss continuation trap",
+            "captureThrown": "&control.invoke capture continuation from there",
+            "modify": "&control.modify change capture radius",
+            "invoke": {
+                "default": "&control.invoke invoke continuation",
+                "assert": "&control.invoke invoke checkpoint"
+            }
+        }
+    },
+    "antivirus": {
+        "allClear": "System is clean",
+        "detected": "Rogue code detected!"
+    },
+    "pause": {
+        "suspended": "suspended",
+        "continued": "continued",
+        "select": "Controller type",
+        "ngConnect": "Connect to Newgrounds.com",
+        "setLanguage": "Language",
+        "automaticLang": "Autodetect language",
+        "preferences": "Options",
+        "controllerRumble": "Enable controller rumble",
+        "showSpeedrunTimer": "Show speedrun timer",
+        "showControlHints": "Show control hints",
+        "playBgMusic": "Play background music",
+        "playSfx": "Play sound effects",
+        "restart": "Restart game",
+        "reallyRestart": "Are you sure you want to restart?\n  All progress will be lost!"
+    },
+    "dead": {
+        "complete": "Debugging complete.",
+        "failed": "failed to eliminate all bugs!",
+        "resume": "Resume from a previous checkpoint",
+        "checkpoint": "Checkpoint",
+        "fromBeginning": "from the beginning"
+    },
+    "eekBug": "Eek! A bug!",
+    "notImplemented": "Not implemented yet, sorry",
+    "gameErrored": "The game ran into a problem that it couldn't handle, and now it needs to be restarted.",
+    "gameErrorDetails": "You can search for the error online:",
+    "wrongWayLeft": "&arrow.left Go that way",
+    "firstDoor": "To open the door, you will need to press\nand hold the button...\nif only you could do that...",
+    "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
+    "thisLightbulb": "&arrow.up ...like this\n  lightbulb",
+    "button": "Buttons trigger things while they are pressed...",
+    "variable": "This is a variable.\nThese will be very useful!",
+    "nothingToSee": "Nothing to see over here",
+    "firstContinuation": "That [assert]green[/assert] thing you are holding?\nIt's a [special]continuation![/special]\nGo on, invoke it!",
+    "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
+    "firstChallenge": "There are a lot of race condition bugs... you'll have to use continuations to get around them.",
+    "completedFirstChallenge": "That was easy,\nwasn't it?",
+    "noMoreHelp": "There are more bugs, but I can't help you with them. Good luck!",
+    "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
+    "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
+    "secret": "[special]shh, secret?[/special]",
+    "noSecret": "well, you found nothing\n\nmaybe the game will be updated...",
+    "powerful": "this one is [special]extremely powerful![/special]",
+    "congrats": "[special]CONGRATULATIONS![/special]\nyou have reached the end of the game so far!!"
+}
