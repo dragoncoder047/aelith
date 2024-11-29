@@ -71,7 +71,6 @@ export function continuationCore(
         update(this: GameObj<ContinuationComp | ControllableComp>) {
             this.controls[0]!.hint = this.data?.invokeHint ?? "&msg.continuation.hint.invoke.default";
             this.controls[0]!.styles = [this.trappedBy.name];
-            debugger;
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.type === "assert") {
