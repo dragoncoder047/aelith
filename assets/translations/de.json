@@ -29,8 +29,8 @@
     "continuation": {
         "hint": {
             "default": "&control.invoke Fortsetzung erfassen",
-            "throw": "&control.invoke Fortsetzung werfen Falle",
-            "captureThrown": "&control.invoke Fortsetzung der Erfassung von dort aus aufrufen",
+            "throw": "&control.invoke Fortsetzungsfalle werfen",
+            "captureThrown": "&control.invoke Erfassen Sie von dort aus eine Fortsetzung",
             "modify": "&control.modify Erfassungsradius ändern",
             "invoke": {
                 "default": "&control.invoke Fortsetzung aufrufen",
@@ -59,7 +59,7 @@
         "reallyRestart": "Möchten Sie wirklich neu starten?\n  Alle Fortschritte gehen verloren!"
     },
     "dead": {
-        "complete": "Debugging abgeschlossen.",
+        "complete": "Debuggen abgeschlossen.",
         "failed": "Fehler beim Beheben aller Fehler!",
         "resume": "Von einem vorherigen Checkpoint aus fortfahren",
         "checkpoint": "Checkpoint",
@@ -81,7 +81,7 @@
     "firstChallenge": "Es gibt viele Race-Condition-Bugs... Sie müssen Fortsetzungen verwenden, um sie zu umgehen.",
     "completedFirstChallenge": "Das war einfach,\nnicht wahr?",
     "noMoreHelp": "Es gibt noch mehr Bugs, aber bei denen kann ich Ihnen nicht helfen. Viel Glück!",
-    "fellOut": "Nun, jetzt steckst du in der Klemme...\nFortsetzungen sind dein Freund!",
+    "fellOut": "Nun, jetzt stecken Sie in der Klemme...\nFortsetzungen sind Ihr Freund!",
     "slightlyDifferent": "Dieses hier verhält sich etwas anders... wahrscheinlich eine gute Sache!",
     "secret": "[special]psst, geheim?[/special]",
     "noSecret": "also, du hast nichts gefunden\n\nvielleicht wird das Spiel aktualisiert...",

@@ -54,7 +54,7 @@
         "showSpeedrunTimer": "スピードラン タイマーを表示する",
         "showControlHints": "コントロール ヒントを表示する",
         "playBgMusic": "バックグラウンド ミュージックを再生する",
-        "playSfx": "サウンド エフェクトを再生する",
+        "playSfx": "効果音を再生する",
         "restart": "ゲームを再起動する",
         "reallyRestart": "再起動してもよろしいですか?\n  すべての進行状況が失われます!"
     },
@@ -75,7 +75,7 @@
     "thisLightbulb": "&arrow.up ...この電球のように",
     "button": "ボタンは押されている間、何かをトリガーします...",
     "variable": "        これは変数です。\n        これは非常に便利です!",
-    "nothingToSee": "こちらには何も表示されません",
+    "nothingToSee": "ここには何も見られません",
     "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続装置です![/special]\nさあ、呼び出してください!",
     "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続装置をキャプチャできます!\n遠慮せずにつかんでください!",
     "firstChallenge": "競合状態のバグがたくさんあります...それらを回避するには継続装置を使用する必要があります。",
