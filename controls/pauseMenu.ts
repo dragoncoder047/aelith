@@ -86,6 +86,10 @@ export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
 export var pauseListener: GameObj;
 
 export function initPauseMenu(terminal: GameObj<PtyComp>) {
+    // sync testing mode for music
+    if (musicPlay.paused)
+        // @ts-ignore
+        PAUSE_MENU.opts[0].selected.splice(3, 1);
     // setup pause / unpause controls
     var origCamPos = player.pos;
     pauseListener = K.add([]);
