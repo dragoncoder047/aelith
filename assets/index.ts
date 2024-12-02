@@ -6,12 +6,12 @@ import { aaa, bbb, ccc } from "./songs";
 import { sounds } from "./sounds";
 import spritemapDef from "./spritemap.json";
 import spritemapDataURL from "./spritemap.png";
-import strings from "./translations/index.json";
+import translateShader from "./translate.glsl";
+import deStrings from "./translations/de.json";
 import enStrings from "./translations/en.json";
 import esStrings from "./translations/es.json";
-import deStrings from "./translations/de.json";
+import strings from "./translations/index.json";
 import jaStrings from "./translations/ja.json";
-import translateShader from "./translate.glsl";
 import fontDataURL from "./Web437_IBM_EGA_8x8.woff";
 import worldFileSrc from "./world.txt";
 
