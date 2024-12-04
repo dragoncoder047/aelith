@@ -50,6 +50,7 @@ export function continuationCore(
                 u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
             }),
             "worldMarker" as Tag,
+            "raycastIgnore" as Tag,
         ]),
         get data() {
             return contTypes[this.type];
@@ -99,25 +100,29 @@ export function continuationCore(
             player.playSound("teleport");
             // K.setCamPos(K.getCamPos().add(delta));
             for (var e of this.captured.objects) {
-                if (!e.inPlayerInventory)
-                    player.removeFromInventory(e.obj as any);
-                else
-                    player.addToInventory(e.obj as any);
                 var obj = e.obj;
+                const canClone = e.obj.has("cloneable");
+                const shouldClone = (
+                    this.data?.special !== "reverseTeleport"
+                    && (player.inventory.includes(e.obj as any) ? this.captured.playerPos : e.obj.pos)
+                        .dist(this.captured.playerPos) > this.captured.capturedRadius)
                 if (e.obj.has("body") && !e.obj.isStatic) {
-                    if (e.obj.pos.dist(this.captured.playerPos) > this.captured.capturedRadius
-                        && e.obj.has("cloneable")) {
+                    if (shouldClone && canClone) {
                         // It is out of range, clone it
                         obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
                         obj.tag("machine");
                     }
                     // Update pos and vel
-                    obj.pos = e.pos!.clone().add(reverseDelta);
+                    obj.pos = e.pos!.add(reverseDelta);
                     obj.vel = K.vec2(0);
                 }
                 if (e.bugState) obj.enterState(e.bugState);
                 obj.togglerState = e.togglerState!;
                 obj.triggered = e.triggeredState!;
+                if (!e.inPlayerInventory)
+                    player.removeFromInventory(obj as any);
+                else
+                    player.addToInventory(obj as any);
                 // If it is a button or laser that *was* triggered by a box when captured, but
                 // isn't triggered currently, the following happens when the continuation is
                 // invoked:
