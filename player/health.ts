@@ -129,6 +129,7 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
         copyPreferences();
         player.paused = false;
         player.hidden = false;
+        K.get("tail").forEach(t => t.paused = false);
         c.invoke();
     };
 }

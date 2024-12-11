@@ -105,7 +105,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     });
     pauseListener.onButtonPress("pause_unpause", async () => {
         if (PAUSE_MENU_OBJ.menu !== PAUSE_MENU) return;
-        K.get("player").forEach(p => p.hidden = p.paused = false);
+        player.hidden = player.paused = false;
         K.get("tail").forEach(p => p.hidden = p.paused = false);
         pauseListener.paused = true;
         K.setCamPos(origCamPos);
