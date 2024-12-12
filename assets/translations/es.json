@@ -65,6 +65,7 @@
         "checkpoint": "Punto de control",
         "fromBeginning": "desde el principio"
     },
+    "press": "presione",
     "eekBug": "¡Eek! ¡Un error!",
     "notImplemented": "Aún no se ha implementado, lo siento",
     "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",

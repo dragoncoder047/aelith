@@ -65,6 +65,7 @@
         "checkpoint": "Checkpoint",
         "fromBeginning": "von Anfang an"
     },
+    "press": "drücken",
     "eekBug": "Ihhh! Ein Fehler!",
     "notImplemented": "Noch nicht implementiert, tut mir leid",
     "gameErrored": "Im Spiel ist ein Problem aufgetreten, das nicht behoben werden konnte, und es muss nun neu gestartet werden.",

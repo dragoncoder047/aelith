@@ -65,6 +65,7 @@
         "checkpoint": "チェックポイント",
         "fromBeginning": "最初から"
     },
+    "press": "を押す",
     "eekBug": "きゃー!バグです!",
     "notImplemented": "まだ実装されていません。申し訳ありません",
     "gameErrored": "ゲームで処理できない問題が発生したため、再起動する必要があります。",
