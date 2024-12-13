@@ -24,6 +24,11 @@
             "switch": "&control.pMenu.switch 切り替える",
             "select": "&control.pMenu.select 選択する",
             "back": "&control.pMenu.back 戻る"
+        },
+        "viewInfo": "&control.info 検査",
+        "manpage": {
+            "scroll": "&control.manpage.scroll 続きを表示",
+            "exit": "&control.manpage.exit 閉じる"
         }
     },
     "continuation": {

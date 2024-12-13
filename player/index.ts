@@ -2,14 +2,16 @@ import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp
 import { MParser } from "../assets/mparser";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationTrapComp } from "../components/continuationTrap";
+import { ControllableComp } from "../components/controllable";
 import { HoldOffsetComp } from "../components/holdOffset";
+import { LoreComp } from "../components/lore";
+import { manpage, ManpageComp } from "../components/manpage";
 import { thudder } from "../components/thudder";
 import { ALPHA, FRICTION, INTERACT_DISTANCE, JUMP_FORCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, RESTITUTION, SCALE, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { SpringComp } from "../plugins/kaplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";
-import { ControllableComp } from "../components/controllable";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
@@ -38,6 +40,8 @@ export interface PlayerComp extends Comp {
     lookAt(pos: Vec2 | undefined): void
     controlText: GameObj<DynamicTextComp>
     addControlText(text: string, styles?: string[]): void
+    manpage: GameObj<ManpageComp> | undefined
+    recalculateManpage(): void
 }
 
 function playerComp(): PlayerComp {
@@ -94,21 +98,35 @@ function playerComp(): PlayerComp {
             }
             // update control text
             this.controlText.t = "";
-            this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
-            this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
-            if (this.inventory.length > 0)
-                this.addControlText("&msg.ctlHint.switchItem");
-            if (this.lookingAt?.has("grabbable"))
-                this.addControlText("&msg.ctlHint.look    &msg.ctlHint.grab");
-            else if (this.holdingItem?.is("throwable"))
-                this.addControlText("&msg.ctlHint.aim    &msg.ctlHint.throw");
-            else this.addControlText("&msg.ctlHint.look");
-            if (this.lookingAt?.is("interactable"))
-                this.addControlText("&msg.ctlHint.interact");
-            if (this.holdingItem?.has("controllable")) {
-                for (var c of (this.holdingItem as unknown as GameObj<ControllableComp>).controls) {
-                    if (!c.hidden) this.addControlText(c.hint, c.styles);
+            if (this.manpage!.hidden) {
+                this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
+                this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
+                if (this.inventory.length > 0) {
+                    if (this.holdingItem?.has("lore")) {
+                        if ((this.holdingItem! as unknown as GameObj<LoreComp>).loreViewed)
+                            this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
+                        else
+                            this.addControlText("&msg.ctlHint.switchItem    [special]&msg.ctlHint.viewInfo[/special]");
+                    }
+                    else
+                        this.addControlText("&msg.ctlHint.switchItem");
                 }
+                if (this.lookingAt?.has("grabbable"))
+                    this.addControlText("&msg.ctlHint.look    &msg.ctlHint.grab");
+                else if (this.holdingItem?.is("throwable"))
+                    this.addControlText("&msg.ctlHint.aim    &msg.ctlHint.throw");
+                else this.addControlText("&msg.ctlHint.look");
+                if (this.lookingAt?.is("interactable"))
+                    this.addControlText("&msg.ctlHint.interact");
+                if (this.holdingItem?.has("controllable")) {
+                    for (var c of (this.holdingItem as unknown as GameObj<ControllableComp>).controls) {
+                        if (!c.hidden) this.addControlText(c.hint, c.styles);
+                    }
+                }
+            } else {
+                this.addControlText("&msg.ctlHint.manpage.exit");
+                if (this.manpage!.needsToScroll)
+                    this.addControlText("&msg.ctlHint.manpage.scroll");
             }
         },
         /**
@@ -350,8 +368,20 @@ function playerComp(): PlayerComp {
             }
         ]),
         addControlText(text, styles = []) {
-            this.controlText.t = `\n${styles.map(t => `[${t}]`).join("")}${text.replace(/(?<!\\)[\[\]\\]/g, "\\$1")}${styles.toReversed().map(t => `[/${t}]`).join("")}` + this.controlText.t;
+            this.controlText.t = `\n${styles.map(t => `[${t}]`).join("")}${text}${styles.toReversed().map(t => `[/${t}]`).join("")}` + this.controlText.t;
         },
+
+        // MARK: manpage
+        manpage: undefined,
+        recalculateManpage() {
+            this.manpage!.sprite = this.holdingItem;
+            if (this.holdingItem && this.holdingItem.has("lore")) {
+                const oo = this.holdingItem as unknown as GameObj<LoreComp>;
+                this.manpage!.section = `${oo.lore.secName}(${oo.lore.section})`;
+                this.manpage!.body = oo.lore.body!;
+                oo.loreViewed = true;
+            }
+        }
     };
 }
 
@@ -403,6 +433,11 @@ player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersect
 
 // @ts-expect-error
 window.player = player;
+
+// get manpage
+player.manpage = player.add([manpage(), K.layer("ui")]);
+K.loadBean();
+player.manpage.sprite = K.add([K.sprite("bean")]);
 
 //------------------------------------------------------------
 

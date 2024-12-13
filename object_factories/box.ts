@@ -8,6 +8,7 @@ import { K } from "../init";
 import { machine } from "./machine";
 import { throwablePlatformEff } from "./throwablePlatformEff";
 import { holdOffset } from "../components/holdOffset";
+import { lore } from "../components/lore";
 
 /**
  * Components for a moveable, grabbable box.
@@ -43,5 +44,10 @@ export function box(): CompList<any> {
         randomFrame(),
         ...throwablePlatformEff(),
         cloneable((orig: GameObj<any>) => [...box(), K.pos((orig as any).pos)], ["frame"]),
+        lore({
+            body: "&msg.lore.box.body",
+            secName: "&msg.lore.box.secName",
+            section: "&msg.lore.box.section",
+        }),
     ];
 }

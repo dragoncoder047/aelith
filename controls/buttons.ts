@@ -28,6 +28,10 @@ export const CONTROLS: Controls = {
         keyboard: ["e", "enter"],
         gamepad: ["east"],
     },
+    view_info: {
+        gamepad: ["north"],
+        keyboard: ["x"],
+    },
     // inventory controls
     inv_previous: {
         keyboard: ["z"],

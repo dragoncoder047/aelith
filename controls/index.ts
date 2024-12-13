@@ -2,6 +2,7 @@ import { AreaComp, Vec2 } from "kaplay";
 import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
+import { nextFrame } from "../utils";
 
 // Controls
 
@@ -35,38 +36,61 @@ function motionHandler() {
     else if (xy.x < 0)
         player.flipX = false;
 }
+export const MANPAGE_CLOSED_HANDLERS = [
+    player.onUpdate(motionHandler),
 
-player.onUpdate(motionHandler);
+    player.onButtonPress("jump", () => {
+        if (player.isGrounded() || player.state === "climbing") {
+            player.jump();
+            player.enterState("jump");
+            if (!player.intersectingAny("button"))
+                player.playSound("jump");
+        }
+    }),
+    player.onButtonPress("throw", () => player.throw()),
+    player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")),
+    player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")),
+    player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)),
+    player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)),
+    player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))),
 
-player.onButtonPress("jump", () => {
-    if (player.isGrounded() || player.state === "climbing") {
-        player.jump();
-        player.enterState("jump");
-        if (!player.intersectingAny("button"))
-            player.playSound("jump");
+    // Mouse looking
+    player.onMouseMove(mousePos => {
+        if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
+            player.lookAt(undefined);
+        // toWorld is darn bugged kaplayjs/kaplay#325
+        else player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
+    }),
+    player.onGamepadStick("right", xy => {
+        player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
+    }),
+
+    // Inventory
+    player.onButtonPress("inv_previous", () => player.scrollInventory(-1)),
+    player.onButtonPress("inv_next", () => player.scrollInventory(1)),
+
+    player.onButtonPress("view_info", () => showManpage(true)),
+];
+
+const MANPAGE_OPEN_HANDLERS = [
+    player.onButtonDown("invoke_increment", () => player.manpage!.scrollPos += K.dt() * MODIFY_SPEED),
+    player.onButtonDown("invoke_decrement", () => player.manpage!.scrollPos -= K.dt() * MODIFY_SPEED),
+    player.onScroll(xy => player.manpage!.scrollPos += xy.y / 2),
+    player.onButtonPress("view_info", () => showManpage(false)),
+];
+
+export async function showManpage(isShown: boolean) {
+    if (!(player.holdingItem?.has("lore"))) isShown = false;
+    K.debug.log("showManpage", isShown);
+    player.manpage!.hidden = !isShown;
+    if (isShown) {
+        player.recalculateManpage();
     }
-});
-player.onButtonPress("throw", () => player.throw());
-player.onButtonPress("interact", () => player.lookingAt?.trigger("interact"));
-player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke"));
-player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED));
-player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED));
-player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED))));
-
-// Mouse looking
-player.onMouseMove(mousePos => {
-    if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
-        player.lookAt(undefined);
-    // toWorld is darn bugged kaplayjs/kaplay#325
-    else player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
-});
-player.onGamepadStick("right", xy => {
-    player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
-});
-
-// Inventory
-player.onButtonPress("inv_previous", () => player.scrollInventory(-1));
-player.onButtonPress("inv_next", () => player.scrollInventory(1));
+    await nextFrame();
+    MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = isShown);
+    MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = !isShown);
+}
+K.onLoad(() => showManpage(false));
 
 // Footsteps sound effects when walking
 player.onUpdate(() => {

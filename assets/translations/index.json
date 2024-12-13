@@ -1,4 +1,5 @@
 {
+    "tab": "    ",
     "arrow": {
         "left": "\u001b",
         "up": "\u0018",
@@ -15,6 +16,7 @@
             "jump": "(&button.south)",
             "aim": "(rstick)",
             "look": "(rstick)",
+            "info": "(&button.north)",
             "interact": "(&msg.press rstick)",
             "throw": "\\[&button.rtrigger]",
             "invoke": "(&button.east)",
@@ -25,6 +27,10 @@
                 "switch": "\\[d-pad]",
                 "select": "(&button.east)/(&button.select)",
                 "back": "(&button.west)"
+            },
+            "manpage": {
+                "scroll": "\\[d-pad]",
+                "exit": "(&button.north)"
             }
         },
         "keyboard": {
@@ -33,6 +39,7 @@
             "jump": "\\[space]",
             "aim": "\\[mouse]",
             "look": "\\[mouse]",
+            "info": "\\[X]",
             "interact": "\\[left click]",
             "throw": "\\[right click]",
             "invoke": "\\[E]/\\[enter]",
@@ -43,6 +50,10 @@
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",
                 "back": "\\[backspace]"
+            },
+            "manpage": {
+                "scroll": "\\[scroll]",
+                "exit": "\\[X]"
             }
         }
     },

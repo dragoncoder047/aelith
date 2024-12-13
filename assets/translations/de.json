@@ -24,6 +24,11 @@
             "switch": "&control.pMenu.switch wechseln",
             "select": "&control.pMenu.select auswählen",
             "back": "&control.pMenu.back zurück"
+        },
+        "viewInfo": "&control.info untersuchen",
+        "manpage": {
+            "scroll": "&control.manpage.scroll mehr anzeigen",
+            "exit": "&control.manpage.exit schließen"
         }
     },
     "continuation": {
