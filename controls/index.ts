@@ -24,7 +24,7 @@ function motionHandler() {
         if (player.state !== "climbing")
             player.enterState("climbing");
     } else {
-        if (player.state === "climbing")
+        if (player.state === "climbing" && !player.intersectingAny("ladder"))
             player.enterState("normal");
     }
     if (player.state === "normal")
