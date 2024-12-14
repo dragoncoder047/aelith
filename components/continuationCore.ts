@@ -1,5 +1,5 @@
 import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp, Tag, OffScreenComp } from "kaplay";
-import contTypes from "../assets/trapTypes.json";
+import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";

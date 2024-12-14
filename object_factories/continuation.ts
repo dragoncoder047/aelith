@@ -1,5 +1,5 @@
 import { GameObj } from "kaplay";
-import continuationTypes from "../assets/trapTypes.json";
+import continuationTypes from "../assets/trapTypes.json" with { type: "json" };
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationData, ContinuationTrapComp } from "../components/continuationTrap";
 import { K } from "../init";
