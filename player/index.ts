@@ -377,8 +377,9 @@ function playerComp(): PlayerComp {
             this.manpage!.sprite = this.holdingItem;
             if (this.holdingItem && this.holdingItem.has("lore")) {
                 const oo = this.holdingItem as unknown as GameObj<LoreComp>;
-                this.manpage!.section = `${oo.lore.secName}(${oo.lore.section})`;
-                this.manpage!.body = oo.lore.body!;
+                this.manpage!.section = `${oo.lore?.secName}(${oo.lore?.section})`;
+                this.manpage!.body = String(oo.lore?.body!);
+                this.manpage!.header = String(oo.lore?.header!);
                 oo.loreViewed = true;
             }
         }

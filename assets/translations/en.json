@@ -9,6 +9,22 @@
         "running": "Assistant is running",
         "disconnected": "Fatal error: disconnected!"
     },
+    "lore": {
+        "box": {
+            "header": "Memory Management",
+            "section": "1",
+            "secName": "MEM",
+            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a program to run\n\n[b]DESCRIPTION\n&tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It is not tied to any particular program. It may be inserted into any program by throwing it in, and can even be inserted into the currently-running process (which appears to be: [b]&startupDebuggerCmd[/b]).\n\n"
+        },
+        "continuation": {
+            "throw": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "THROW",
+                "body": "[b]NAME\n&tab[/b][throw]throw[/throw] - return to a previous location in the program\n\n[b]SYNOPSIS\n&tabthrow[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\n[b]DESCRIPTION[/b]\n&tab[b]throw[/b] is a tool to easily return to a previous position in a debugging workflow while modifying as little as possible.\n\n[b]HISTORY\n&tabthrow[/b] was originally written as a way for a program to signal to the debugger that something has gone wrong and \"throw\" control back to the human operator. Exactly which programming language implemented it first, no one knows.\n\n[b]NOTES[/b]\n&tabThis [b]throw[/b] is specially designed to be usable by the [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to interactively debug exceptional situations.\n\n[b]CAVEATS[/b]\n&tab[b]throw[/b] saves the system state to the file [b]/tmp/agdb/catch[/b]. Because of this it is only possible to capture the system state once using [b]throw[/b]. It must be restored first before another snapshot is saved."
+            }
+        }
+    },
     "ctlHint": {
         "move": "&control.move move",
         "sprint": "&control.sprint sprint",
@@ -25,7 +41,7 @@
             "select": "&control.pMenu.select select",
             "back": "&control.pMenu.back back"
         },
-        "viewInfo": "&control.info Inspect",
+        "viewInfo": "&control.info inspect",
         "manpage": {
             "scroll": "&control.manpage.scroll view more",
             "exit": "&control.manpage.exit close"

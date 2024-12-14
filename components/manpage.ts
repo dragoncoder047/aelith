@@ -18,10 +18,10 @@ export interface ManpageComp extends Comp {
 export function manpage(): ManpageComp {
     return {
         id: "manpage",
-        section: "CTRAP(47)",
-        header: "Continuation Device",
+        section: "undefined",
+        header: "undefined",
         size: 16 / FONT_SCALE,
-        body: "DEFINITION\n    Foo bar.\n\nUSAGE\n    Foo baz.\n\n",
+        body: "undefined",
         bg: K.BLACK.lighten(20),
         scrollPos: 0,
         margin: 10 / SCALE,
@@ -54,10 +54,11 @@ export function manpage(): ManpageComp {
                 size: this.size,
                 align: "left",
                 lineSpacing: 2,
-                pos: K.vec2(0, toppos + (this.sprite ? this.sprite.height + 2 * this.margin : 0)).add(topLeft),
+                pos: K.vec2(0, toppos + (this.sprite ? this.sprite.height + this.margin : 0)).add(topLeft),
                 styles: STYLES,
                 color: K.WHITE.darken(100),
                 anchor: "topleft",
+                width: theWidth,
             });
             const maxScroll = Math.max(0, midTxt.height - theHeight + botTxt.height + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
@@ -78,8 +79,9 @@ export function manpage(): ManpageComp {
                 if (this.sprite)
                     K.drawSprite({
                         ...this.sprite,
-                        pos: K.vec2(0, toppos + this.margin),
-                        anchor: "center",
+                        pos: K.vec2(theWidth / 2, toppos).add(topLeft),
+                        anchor: "top",
+                        flipX: false,
                     });
             }, () => {
                 // bounding rect
@@ -106,7 +108,7 @@ export function manpage(): ManpageComp {
             }));
             K.drawFormattedText(K.formatText({
                 ...secTxt.opt,
-                text: this.header,
+                text: K.sub(this.header),
                 pos: topLeft.add(theWidth / 2, 0),
                 anchor: "top"
             }));

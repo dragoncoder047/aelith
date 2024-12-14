@@ -9,7 +9,13 @@
         "invokeHint": null,
         "prepare": null,
         "prepareHint": null,
-        "special": null
+        "special": null,
+        "lore": {
+            "header": "&msg.lore.continuation.throw.header",
+            "section": "&msg.lore.continuation.throw.section",
+            "secName": "&msg.lore.continuation.throw.secName",
+            "body": "&msg.lore.continuation.throw.body"
+        }
     },
     "setjmp": {
         "cName": "longjmp",
@@ -21,7 +27,13 @@
         "invokeHint": null,
         "prepareHint": null,
         "prepare": null,
-        "special": null
+        "special": null,
+        "lore": {
+            "header": "&msg.lore.continuation.setjmp.header",
+            "section": "&msg.lore.continuation.setjmp.section",
+            "secName": "&msg.lore.continuation.setjmp.secName",
+            "body": "&msg.lore.continuation.setjmp.body"
+        }
     },
     "async": {
         "cName": "await",
@@ -33,7 +45,13 @@
         "invokeHint": null,
         "prepareHint": "&msg.continuation.hint.captureThrown",
         "prepare": "throw",
-        "special": null
+        "special": null,
+        "lore": {
+            "header": "&msg.lore.continuation.async.header",
+            "section": "&msg.lore.continuation.async.section",
+            "secName": "&msg.lore.continuation.async.secName",
+            "body": "&msg.lore.continuation.async.body"
+        }
     },
     "yield": {
         "cName": "next",
@@ -45,7 +63,13 @@
         "invokeHint": null,
         "prepareHint": null,
         "prepare": null,
-        "special": "recapture"
+        "special": "recapture",
+        "lore": {
+            "header": "&msg.lore.continuation.yield.header",
+            "section": "&msg.lore.continuation.yield.section",
+            "secName": "&msg.lore.continuation.yield.secName",
+            "body": "&msg.lore.continuation.yield.body"
+        }
     },
     "switch": {
         "cName": "case",
@@ -57,7 +81,13 @@
         "invokeHint": null,
         "prepareHint": null,
         "prepare": null,
-        "special": "reverseTeleport"
+        "special": "reverseTeleport",
+        "lore": {
+            "header": "&msg.lore.continuation.switch.header",
+            "section": "&msg.lore.continuation.switch.section",
+            "secName": "&msg.lore.continuation.switch.secName",
+            "body": "&msg.lore.continuation.switch.body"
+        }
     },
     "call/cc": {
         "cName": "k",
@@ -69,7 +99,13 @@
         "invokeHint": null,
         "prepareHint": "&msg.continuation.hint.modify",
         "prepare": "editRadius",
-        "special": null
+        "special": null,
+        "lore": {
+            "header": "&msg.lore.continuation.callcc.header",
+            "section": "&msg.lore.continuation.callcc.section",
+            "secName": "&msg.lore.continuation.callcc.secName",
+            "body": "&msg.lore.continuation.callcc.body"
+        }
     },
     "assert": {
         "cName": "assert",
@@ -81,6 +117,12 @@
         "concurrent": false,
         "prepareHint": null,
         "prepare": null,
-        "special": null
+        "special": null,
+        "lore": {
+            "header": "",
+            "section": "",
+            "secName": "",
+            "body": ""
+        }
     }
 }

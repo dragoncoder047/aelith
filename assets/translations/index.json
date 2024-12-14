@@ -105,5 +105,6 @@
         "rtrigger": "ZR",
         "select": "-",
         "start": "+"
-    }
+    },
+    "startupDebuggerCmd": "agdb pm 4242.core"
 }

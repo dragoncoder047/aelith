@@ -153,7 +153,7 @@ async function onPaused() {
     player.addControlText("&msg.ctlHint.pause.back");
     player.addControlText("&msg.ctlHint.pause.select");
     player.addControlText("&msg.ctlHint.pause.switch");
-    await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  gdb pm 4242.core\n");
+    await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  agdb pm 4242.core\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
 
@@ -161,7 +161,7 @@ async function onUnpaused() {
     await PAUSE_MENU_OBJ.quitMenu();
     await PAUSE_MENU_OBJ.command(
         { text: "fg %1", styles: ["command"] },
-        "[1]  + 4247 &msg.pause.continued  gdb pm 4242.core\n")
+        "[1]  + 4247 &msg.pause.continued  agdb pm 4242.core\n")
     copyPreferences();
 }
 

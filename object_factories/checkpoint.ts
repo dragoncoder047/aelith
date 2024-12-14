@@ -4,6 +4,7 @@ import { K } from "../init";
 import { defaults } from "./default";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
+import { lore } from "../components/lore";
 
 export function checkpoint() {
     return [
@@ -17,6 +18,7 @@ export function checkpoint() {
         trap("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
+        lore(),
         {
             add(this: GameObj<AreaComp | ContinuationTrapComp>) {
                 this.onCollide("player", () => {

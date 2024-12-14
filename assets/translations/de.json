@@ -9,6 +9,22 @@
         "running": "Assistent läuft",
         "disconnected": "Schwerwiegender Fehler: Verbindung getrennt!"
     },
+    "lore": {
+        "box": {
+            "header": "Speicherverwaltung",
+            "section": "1",
+            "secName": "MEM",
+            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - neuen Speicher zuweisen, um die Ausführung eines Programms zu ermöglichen\n\n[b]BESCHREIBUNG\n&tabvar[/b], [b]const[/b] und [b]let[/b] weisen einen Speicherblock zu. Es ist nicht an ein bestimmtes Programm gebunden. Es kann in jedes Programm eingefügt werden, indem es hineingeworfen wird, und kann sogar in den aktuell laufenden Prozess eingefügt werden (der wie folgt aussieht: [b]&startupDebuggerCmd[/b]).\n\n"
+        },
+        "continuation": {
+            "throw": {
+                "header": "Debugging-Tools",
+                "section": "4",
+                "secName": "THROW",
+                "body": "[b]NAME\n&tab[/b][throw]throw[/throw] - Zurück zu einer vorherigen Position im Programm\n\n[b]SYNOPSIS\n&tabthrow[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\n[b]BESCHREIBUNG[/b]\n&tab[b]throw[/b] ist ein Tool, um einfach zu einer vorherigen Position in einem Debugging-Workflow zurückzukehren und dabei so wenig Änderungen wie möglich vorzunehmen.\n\n[b]HISTORY\n&tabthrow[/b] wurde ursprünglich geschrieben, damit ein Programm dem Debugger signalisieren kann, dass etwas schiefgelaufen ist und die Kontrolle an den menschlichen Bediener zurückgeben kann. Welche Programmiersprache es genau zuerst implementiert hat, weiß niemand.\n\n[b]ANMERKUNGEN[/b]\n&tabDieser [b]throw[/b] ist speziell für die Verwendung durch das Tool [b]agdb[/b] (das derzeit ausgeführt wird: [b]true[/b]) konzipiert, um Ausnahmesituationen interaktiv debuggen zu können.\n\n[b]FALLSTRICKE[/b]\n&tab[b]throw[/b] speichert den Systemstatus in der Datei [b]/tmp/agdb/catch[/b]. Aus diesem Grund ist es nur möglich, den Systemstatus einmal mit [b]throw[/b] zu erfassen. Er muss zuerst wiederhergestellt werden, bevor ein weiterer Snapshot gespeichert wird."
+            }
+        }
+    },
     "ctlHint": {
         "move": "&control.move bewegen",
         "sprint": "&control.sprint laufen",

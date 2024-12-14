@@ -48,6 +48,7 @@ export function box(): CompList<any> {
             body: "&msg.lore.box.body",
             secName: "&msg.lore.box.secName",
             section: "&msg.lore.box.section",
+            header: "&msg.lore.box.header",
         }),
     ];
 }

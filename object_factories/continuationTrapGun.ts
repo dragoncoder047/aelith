@@ -1,6 +1,7 @@
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
+import { lore } from "../components/lore";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
@@ -25,5 +26,6 @@ export function continuationTrap() {
         holdOffset(K.vec2(-TILE_SIZE / 6, -TILE_SIZE / 12)),
         K.named("{undefined}"),
         ...throwablePlatformEff(),
+        lore(),
     ];
 }

@@ -75,17 +75,15 @@ export const MANPAGE_CLOSED_HANDLERS = [
 const MANPAGE_OPEN_HANDLERS = [
     player.onButtonDown("invoke_increment", () => player.manpage!.scrollPos += K.dt() * MODIFY_SPEED),
     player.onButtonDown("invoke_decrement", () => player.manpage!.scrollPos -= K.dt() * MODIFY_SPEED),
-    player.onScroll(xy => player.manpage!.scrollPos += xy.y / 2),
+    player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
     player.onButtonPress("view_info", () => showManpage(false)),
 ];
 
 export async function showManpage(isShown: boolean) {
     if (!(player.holdingItem?.has("lore"))) isShown = false;
-    K.debug.log("showManpage", isShown);
     player.manpage!.hidden = !isShown;
-    if (isShown) {
-        player.recalculateManpage();
-    }
+    if (isShown) player.recalculateManpage();
+    await nextFrame();
     await nextFrame();
     MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = isShown);
     MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = !isShown);

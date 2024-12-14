@@ -15,7 +15,7 @@ const deathMessages: TextChunk[] = [
     },
     {
         value: {
-            text: "gdb: error: &msg.dead.failed\n",
+            text: "agdb: error: &msg.dead.failed\n",
             styles: ["stderr"],
             sound: "command_fail"
         }

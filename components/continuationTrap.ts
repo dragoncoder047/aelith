@@ -1,17 +1,16 @@
-import { AreaComp, BodyComp, CircleComp, Color, ColorComp, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, TextComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, Vec2 } from "kaplay";
 import trapTypes from "../assets/trapTypes.json";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { continuation } from "../object_factories/continuation";
-import { textNote } from "../object_factories/text";
 import { player, PlayerInventoryItem } from "../player";
-import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { CollisionerComp } from "./collisioner";
 import { ContinuationComp } from "./continuationCore";
+import { controllable, ControllableComp } from "./controllable";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
+import { LoreComp } from "./lore";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
-import { CollisionerComp } from "./collisioner";
-import { controllable, ControllableComp } from "./controllable";
 
 export type CDEComps =
     | PosComp
@@ -56,7 +55,7 @@ export interface ContinuationTrapComp extends Comp {
 export function trap(soundOnCapture: string): ContinuationTrapComp {
     return {
         id: "continuation-trap",
-        require: ["sprite", "pos", "named", "shader"],
+        require: ["sprite", "pos", "named", "shader", "lore"],
         captured: [],
         isPreparing: false,
         radius: 0,
@@ -82,7 +81,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.layer("ui"),
             zoop(),
         ]),
-        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp>) {
+        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
                 if (this.isPreparing) this.capture();
@@ -98,7 +97,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("inactive", () => {
                 this.zoop.hidden = true;
             });
-            K.wait(0.1, () => this.radius = this.data!.radius * TILE_SIZE);
+            K.wait(0.1, () => {
+                this.radius = this.data!.radius * TILE_SIZE;
+                this.lore = this.data!.lore;
+            });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
             if (this.data?.prepare === "throw") {
@@ -123,7 +125,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
-                if (this.shouldShowWillCapture && this.radius > 0) {
+                if (this.shouldShowWillCapture && this.radius > 0 && player.manpage!.hidden) {
                     this.zoop.hidden = false;
                     this.zoop.radius = zoopRadius(this.radius);
                 }
