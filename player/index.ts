@@ -346,7 +346,7 @@ function playerComp(): PlayerComp {
         },
         // MARK: note object
         controlText: K.add([
-            K.dynamicText(),
+            K.dynamicText(""),
             K.text("", {
                 size: 12 / SCALE,
                 align: "center",
