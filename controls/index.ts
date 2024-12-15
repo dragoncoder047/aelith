@@ -96,12 +96,11 @@ function motionHandler2() {
 const MANPAGE_OPEN_HANDLERS = [
     player.onUpdate(motionHandler2),
     player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
-    player.onButtonPress("view_info", () => (K.debug.log("foo"), showManpage(false))),
+    player.onButtonPress("view_info", () => showManpage(false)),
 ];
 
 export async function showManpage(isShown: boolean) {
     if (!(player.holdingItem?.has("lore"))) isShown = false;
-    K.debug.log("showManpage", isShown);
     player.manpage!.hidden = !isShown;
     if (isShown) player.recalculateManpage();
     await nextFrame();
