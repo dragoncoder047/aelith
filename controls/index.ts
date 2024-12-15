@@ -70,17 +70,38 @@ export const MANPAGE_CLOSED_HANDLERS = [
     player.onButtonPress("inv_next", () => player.scrollInventory(1)),
 
     player.onButtonPress("view_info", () => showManpage(true)),
+
+    // Footsteps sound effects when walking
+    player.onUpdate(() => {
+        var xy = getMotionVector();
+        if (player.state == "normal") {
+            if (xy.x === 0)
+                xy = xy.reject(K.getGravityDirection());
+            if (!player.isGrounded()) return;
+        }
+        if (player.state === "climbing" || player.state === "normal")
+            player.footstepsCounter += K.dt() * xy.len();
+        if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
+            player.footstepsCounter = 0;
+            player.playSound(player.state === "normal" ? "footsteps" : "climbing");
+        }
+    }),
 ];
 
+function motionHandler2() {
+    if (player.manpage!.needsToScroll)
+        player.manpage!.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED * 20;
+}
+
 const MANPAGE_OPEN_HANDLERS = [
-    player.onButtonDown("invoke_increment", () => player.manpage!.scrollPos += K.dt() * MODIFY_SPEED),
-    player.onButtonDown("invoke_decrement", () => player.manpage!.scrollPos -= K.dt() * MODIFY_SPEED),
+    player.onUpdate(motionHandler2),
     player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
-    player.onButtonPress("view_info", () => showManpage(false)),
+    player.onButtonPress("view_info", () => (K.debug.log("foo"), showManpage(false))),
 ];
 
 export async function showManpage(isShown: boolean) {
     if (!(player.holdingItem?.has("lore"))) isShown = false;
+    K.debug.log("showManpage", isShown);
     player.manpage!.hidden = !isShown;
     if (isShown) player.recalculateManpage();
     await nextFrame();
@@ -89,19 +110,3 @@ export async function showManpage(isShown: boolean) {
     MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = !isShown);
 }
 K.onLoad(() => showManpage(false));
-
-// Footsteps sound effects when walking
-player.onUpdate(() => {
-    var xy = getMotionVector();
-    if (player.state == "normal") {
-        if (xy.x === 0)
-            xy = xy.reject(K.getGravityDirection());
-        if (!player.isGrounded()) return;
-    }
-    if (player.state === "climbing" || player.state === "normal")
-        player.footstepsCounter += K.dt() * xy.len();
-    if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
-        player.footstepsCounter = 0;
-        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
-    }
-});

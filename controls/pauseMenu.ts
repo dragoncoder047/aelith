@@ -7,6 +7,7 @@ import { MParser } from "../assets/mparser";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { musicPlay } from "../assets";
 import { nextFrame } from "../utils";
+import { showManpage } from ".";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -144,7 +145,6 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // @ts-expect-error
     PAUSE_MENU_OBJ = terminal;
 
-    K.strings.isPaused = "0";
     copyPreferences();
 }
 
@@ -163,6 +163,7 @@ async function onUnpaused() {
         { text: "fg %1", styles: ["command"] },
         "[1]  + 4247 &msg.pause.continued  agdb pm 4242.core\n")
     copyPreferences();
+    await showManpage(false);
 }
 
 export function copyPreferences() {

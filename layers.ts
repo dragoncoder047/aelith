@@ -11,4 +11,5 @@ K.setLayers([
     "player",
     "grabbing",
     "ui",
+    "manpage",
 ], "world");

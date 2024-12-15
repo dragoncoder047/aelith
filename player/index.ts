@@ -435,11 +435,6 @@ player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersect
 // @ts-expect-error
 window.player = player;
 
-// get manpage
-player.manpage = player.add([manpage(), K.layer("ui")]);
-K.loadBean();
-player.manpage.sprite = K.add([K.sprite("bean")]);
-
 //------------------------------------------------------------
 
 // add tail

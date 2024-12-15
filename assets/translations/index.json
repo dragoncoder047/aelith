@@ -29,7 +29,7 @@
                 "back": "(&button.west)"
             },
             "manpage": {
-                "scroll": "\\[d-pad]",
+                "scroll": "(lstick)",
                 "exit": "(&button.north)"
             }
         },
@@ -52,7 +52,7 @@
                 "back": "\\[backspace]"
             },
             "manpage": {
-                "scroll": "\\[scroll]",
+                "scroll": "\\[scroll]/\\[WS]/\\[&arrow.up&arrow.down]",
                 "exit": "\\[X]"
             }
         }

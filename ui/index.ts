@@ -6,3 +6,4 @@ export const UI = K.add([K.fixed(), K.layer("ui")]);
 import("./stats");
 import("./inventory");
 import("./timer");
+import("./playerManpage");
