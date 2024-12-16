@@ -9,22 +9,6 @@
         "running": "Asistente está lista",
         "disconnected": "Error fatal: ¡desconectado!"
     },
-    "lore": {
-        "box": {
-            "header": "Gestión de Memoria",
-            "section": "1",
-            "secName": "MEM",
-            "body": "[b]NOMBRE\n&tabvar[/b], [b]const[/b], [b]let[/b] - asignan nueva memoria para permitir que se ejecute un programa\n\n[b]DESCRIPCIÓN\n&tabvar[/b], [b]const[/b] y [b]let[/b] asignan un fragmento de memoria. No está vinculado a ningún programa en particular. Puede insertarse en cualquier programa lanzándolo, e incluso puede insertarse en el proceso que se está ejecutando actualmente (que parece ser: [b]&startupDebuggerCmd[/b]).\n\n"
-        },
-        "continuation": {
-            "throw": {
-                "header": "Ayudas para Depuración",
-                "section": "4",
-                "secName": "THROW",
-                "body": "[b]NOMBRE\n&tab[/b][throw]throw[/throw] - volver a una ubicación anterior en el programa\n\n[b]SINOPSIS\n&tabthrow[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\n[b]DESCRIPCIÓN[/b]\n&tab[b]throw[/b] es una herramienta para volver fácilmente a una posición anterior en un flujo de trabajo de depuración mientras se modifica lo menos posible.\n\n[b]HISTORIAL\n&tabthrow[/b] se escribió originalmente como una forma para que un programa le señalara al depurador que algo salió mal y \"devolviera\" el control al operador humano. Nadie sabe exactamente qué lenguaje de programación lo implementó primero.\n\n[b]NOTAS[/b]\n&tabEste [b]throw[/b] está especialmente diseñado para que lo pueda usar la herramienta [b]agdb[/b] (que se está ejecutando actualmente: [b]true[/b]) para poder depurar situaciones excepcionales de forma interactiva.\n\n[b]ADVERTENCIAS[/b]\n&tab[b]throw[/b] guarda el estado del sistema en el archivo [b]/tmp/agdb/catch[/b]. Debido a esto, solo es posible capturar el estado del sistema una vez usando [b]throw[/b]. Debe restaurarse primero antes de guardar otra instantánea."
-            }
-        }
-    },
     "ctlHint": {
         "move": "&control.move mover",
         "sprint": "&control.sprint correr",

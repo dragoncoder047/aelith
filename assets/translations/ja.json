@@ -9,22 +9,6 @@
         "running": "アシスタントが実行中です",
         "disconnected": "致命的なエラー: 切断されました!"
     },
-    "lore": {
-        "box": {
-            "header": "メモリ管理",
-            "section": "1",
-            "secName": "MEM",
-            "body": "[b]名前\n&tabvar[/b]、[b]const[/b]、[b]let[/b] - プログラムを実行できるように新しいメモリを割り当てます\n\n[b]説明\n&tabvar[/b]、[b]const[/b]、[b]let[/b] はメモリのチャンクを割り当てます。特定のプログラムに結び付けられることはありません。スローインすることで任意のプログラムに挿入でき、現在実行中のプロセス ([b]&startupDebuggerCmd[/b] のように見えます) に挿入することもできます。\n\n"
-        },
-        "continuation": {
-            "throw": {
-                "header": "デバッグ ツール",
-                "section": "4",
-                "secName": "THROW",
-                "body": "[b]名前\n&tab[/b][throw]throw[/throw] - プログラムの前の位置に戻ります\n\n[b]概要\n&tabthrow[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\n[b]説明[/b]\n&tab[b]throw[/b] は、変更を最小限にしながら、デバッグ ワークフローの前の位置へ簡単に戻ることができるツールです。\n\n[b]履歴\n&tabthrow[/b] は、プログラムが何か問題が発生したことをデバッガーに通知し、制御を人間のオペレーターに \"スロー\" する手段として最初に作成されました。どのプログラミング言語が最初にこれを実装したかは、誰にもわかりません。\n\n[b]注意[/b]\n&tabこの [b]throw[/b] は、例外的な状況を対話的にデバッグできるように [b]agdb[/b] ツール (現在実行中: [b]true[/b]) で使用できるように特別に設計されています。\n\n[b]注意[/b]\n&tab[b]throw[/b] は、システム状態をファイル [b]/tmp/agdb/catch[/b] に保存します。このため、[b]throw[/b] を使用してシステム状態をキャプチャできるのは 1 回だけです。別のスナップショットを保存する前に、まず復元する必要があります。"
-            }
-        }
-    },
     "ctlHint": {
         "move": "&control.move 移動",
         "sprint": "&control.sprint スプリント",
