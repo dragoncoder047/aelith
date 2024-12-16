@@ -41,6 +41,10 @@ export const STYLES: TextComp["textStyles"] = {
     blue: {
         color: K.BLUE,
     },
+    b: {
+        color: K.WHITE,
+        override: true
+    },
     special(i, _ch) {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),

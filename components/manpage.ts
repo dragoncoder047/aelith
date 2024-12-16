@@ -59,6 +59,7 @@ export function manpage(): ManpageComp {
                 color: K.WHITE.darken(100),
                 anchor: "topleft",
                 width: theWidth,
+                indentAll: true
             });
             const maxScroll = Math.max(0, midTxt.height - theHeight + botTxt.height + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
