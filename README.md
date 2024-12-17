@@ -56,10 +56,18 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## Other ideas
 
+* [ ] Finish writing man pages for all the types of continuations
+* [ ] Fix the async continuation to arm and capture separately, so you can use the same control to throw it while it is armed
+  * [ ] New sprite for trigger token `Promise`
+* [ ] Revise gamepad controls for interacting
+  * [ ] More like Minecraft controls?
+* [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture
+* [ ] New sprite for "target" and "holding" ends of continuation
 * [ ] Add player head can turn to look at whatever is being looked at
 * [X] Add algorithmic choosing songs based on where you are in the game
+  * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
 * [X] Add enemy "bugs" that can hurt you?
-  * [ ] Final enemy boss?
+  * [ ] ~~Final enemy boss?~~
   * [X] What happens when player dies?
     * They can respawn from a checkpoint
 * [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
