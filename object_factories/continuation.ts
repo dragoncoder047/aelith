@@ -4,6 +4,7 @@ import { continuationCore } from "../components/continuationCore";
 import { ContinuationData, ContinuationTrapComp } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
+import { lore, LoreComp } from "../components/lore";
 import { FRICTION, RESTITUTION, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
@@ -12,7 +13,7 @@ import { throwablePlatformEff } from "./throwablePlatformEff";
 export function continuation(
     type: keyof typeof continuationTypes,
     captured: ContinuationData,
-    trap: GameObj<ContinuationTrapComp>
+    trap: GameObj<ContinuationTrapComp | LoreComp>
 ) {
     return [
         K.sprite("continuation_invoker"),
@@ -45,5 +46,6 @@ export function continuation(
         ...throwablePlatformEff(),
         grabbable(),
         "continuation" as Tag,
+        lore(trap.lore),
     ];
 }

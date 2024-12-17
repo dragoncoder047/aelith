@@ -12,6 +12,7 @@ import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { SpringComp } from "../plugins/kaplay-springs";
 import { actuallyRaycast, ballistics } from "../utils";
+import { ContinuationComp } from "../components/continuationCore";
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
 
@@ -103,7 +104,7 @@ function playerComp(): PlayerComp {
                 this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
                 if (this.inventory.length > 0) {
                     if (this.holdingItem?.has("lore")) {
-                        if ((this.holdingItem! as unknown as GameObj<LoreComp>).loreViewed)
+                        if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
                             this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
                         else
                             this.addControlText("&msg.ctlHint.switchItem    [special]&msg.ctlHint.viewInfo[/special]");
@@ -375,14 +376,14 @@ function playerComp(): PlayerComp {
         // MARK: manpage
         manpage: undefined,
         recalculateManpage() {
-            this.manpage!.sprite = this.holdingItem;
+            this.manpage!.sprite = (this.holdingItem?.has("continuation") ? (this.holdingItem as any as GameObj<ContinuationComp>).trappedBy : this.holdingItem) as any;
             this.manpage!.scrollPos = 0;
             if (this.holdingItem && this.holdingItem.has("lore")) {
                 const oo = this.holdingItem as unknown as GameObj<LoreComp>;
                 this.manpage!.section = `${oo.lore?.secName}(${oo.lore?.section})`;
                 this.manpage!.body = String(oo.lore?.body!);
                 this.manpage!.header = String(oo.lore?.header!);
-                oo.loreViewed = true;
+                oo.lore.seen = true;
             }
         }
     };

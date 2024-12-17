@@ -173,6 +173,21 @@
             }
         }
     },
+    "promise": {
+        "x": 16,
+        "y": 318,
+        "width": 32,
+        "height": 16,
+        "sliceX": 2,
+        "anims": {
+            "normal": {
+                "from": 0,
+                "to": 1,
+                "loop": true,
+                "speed": 60
+            }
+        }
+    },
     "checkpoint": {
         "x": 224,
         "y": 222,

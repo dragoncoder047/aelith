@@ -100,7 +100,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
             K.wait(0.1, () => {
                 this.radius = this.data!.radius * TILE_SIZE;
-                this.lore = this.data!.lore;
+                this.lore = { seen: false, ...this.data!.lore };
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {

@@ -119,10 +119,10 @@
         "prepare": null,
         "special": null,
         "lore": {
-            "header": "",
-            "section": "",
-            "secName": "",
-            "body": ""
+            "header": "&msg.lore.continuation.assert.header",
+            "section": "&msg.lore.continuation.assert.section",
+            "secName": "&msg.lore.continuation.assert.secName",
+            "body": "&msg.lore.continuation.assert.body"
         }
     }
 }

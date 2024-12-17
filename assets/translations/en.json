@@ -21,7 +21,43 @@
                 "header": "Debugging Tools",
                 "section": "4",
                 "secName": "THROW",
-                "body": "[b]NAME\n&tab[/b][throw]throw[/throw] - return to a previous location in the program\n\n[b]SYNOPSIS\n&tabthrow[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\n[b]DESCRIPTION[/b]\n&tab[b]throw[/b] is a tool to easily return to a previous position in a debugging workflow while modifying as little as possible.\n\n[b]HISTORY\n&tabthrow[/b] was originally written as a way for a program to signal to the debugger that something has gone wrong and \"throw\" control back to the human operator. Exactly which programming language implemented it first, no one knows.\n\n[b]NOTES[/b]\n&tabThis [b]throw[/b] is specially designed to be usable by the [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to interactively debug exceptional situations.\n\n[b]CAVEATS[/b]\n&tab[b]throw[/b] saves the system state to the file [b]/tmp/agdb/catch[/b]. Because of this it is only possible to capture the system state once using [b]throw[/b]. It must be restored first before another snapshot is saved."
+                "body": "NAME\n&tab[throw]throw[/throw] - return to a previous location in the program\n\nSYNOPSIS\n&tab[b]throw[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\nDESCRIPTION\n&tab[b]throw[/b] is a tool to instantly return to a previous position in a debugging workflow while modifying nothing about the program's current state.\n\nNOTES\n&tabThis [b]throw[/b] is specially designed to be usable by the [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to interactively debug exceptional situations.\n\nCAVEATS\n&tab[b]throw[/b] saves the system state to the file [b]/tmp/agdb/catch[/b]. Because of this it is only possible to capture the system state once using [b]throw[/b]. It must be restored first before another snapshot is saved.\n\nHISTORY\n&tab[b]throw[/b] was originally written as a way for a program to signal to the debugger that something has gone wrong and \"throw\" control back to the human operator. Exactly which programming language implemented it first, no one knows."
+            },
+            "setjmp": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "SETJMP",
+                "body": "NAME\n&tab[setjmp]setjmp[/setjmp] - break out of deeply nested functions\n\nSYNOPSIS\n&tab[b]setjmp[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\nDESCRIPTION\n&tab[b]setjmp[/b] is a tool that allows the program to exit quickly from an exceptional situation via continuations. When invoked via [setjmp]longjmp[/setjmp], it jumps back to the place it was captured from -- no matter how many stack frames it must jump through -- and then restores the value of local variables.\n\nCAVEATS\n&tab[b]setjmp[/b] can only unwind the call stack, so trying to capture a second continuation while one is still active is undefined behavior. To prevent this from happening, when [setjmp]setjmp[/setjmp] detects that a continuation has already been captured, it turns off until the existing continuation is invoked.\n\n&tabAdditionally, if a local variable can not be found when the [setjmp]longjmp[/setjmp] is called, [setjmp]setjmp[/setjmp] will attempt to re-create it. This is a relatively new addition, and has not been debugged thouroughly, so using [setjmp]setjmp[/setjmp] in this manner may cause additional glitches.\n\nHISTORY\n&tab[b]setjmp[/b] was introduced by the [b]C89[/b] standard. While no other programming language implements [b]setjmp[/b] under the same name, other programming languages do setjmp'ing in their C implementations to implement other exotic control flow structures."
+            },
+            "yield": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "YIELD",
+                "body": "NAME\n&tab[yield]yield[/yield] - switch back and forth between two locations in a program"
+            },
+            "async": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "ASYNC",
+                "body": "NAME\n&tab[async]async[/async] - defer capturing a continuation"
+            },
+            "switch": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "SWITCH",
+                "body": "NAME\n&tab[switch]switch[/switch] - copy previous state to the current point in the program"
+            },
+            "callcc": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "CALL/CC",
+                "body": "NAME\n&tab[callcc]call/cc[/callcc] - debug the debugger"
+            },
+            "assert": {
+                "header": "Debugging Tools",
+                "section": "4",
+                "secName": "ASSERT",
+                "body": "NAME\n&tab[assert]assert[/assert] - reset the system to a known, safe state"
             }
         }
     },

@@ -83,6 +83,7 @@ export function manpage(): ManpageComp {
                         pos: K.vec2(theWidth / 2, toppos).add(topLeft),
                         anchor: "top",
                         flipX: false,
+                        frame: 0,
                     });
             }, () => {
                 // bounding rect
