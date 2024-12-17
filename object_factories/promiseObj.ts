@@ -18,7 +18,6 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
         K.offscreen({ hide: true }),
         K.anchor("center"),
         K.pos(),
-        K.named("promise"),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
         ...defaults({
             collisionIgnore: ["tail"],

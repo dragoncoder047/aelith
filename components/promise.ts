@@ -11,7 +11,7 @@ export interface PromiseComp extends Comp {
     controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
     readonly color: Color
-    readonly name: string
+    readonly type: string
 }
 
 export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
@@ -19,17 +19,18 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
         id: "promise",
         require: ["shader"],
         controlling,
-        name: controlling.name,
+        type: controlling.name,
         get data() {
-            return contTypes[this.name as any as keyof typeof contTypes];
+            return contTypes[this.type as any as keyof typeof contTypes];
         },
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
-        add(this: GameObj<PromiseComp | ShaderComp | ControllableComp>) {
+        add(this: GameObj<PromiseComp | ShaderComp | ControllableComp | NamedComp>) {
             this.use(controllable([{ hint: "&msg.continuation.hint.promise" }]));
-            this.controls[0]!.styles = [this.name];
-            this.use(K.named(this.data!.pName!));
+            this.controls[0]!.styles = [this.type];
+            if (this.data!.pName !== null)
+                this.use(K.named(this.data!.pName!));
             this.on("invoke", () => {
                 player.removeFromInventory(this as any);
                 this.destroy();
