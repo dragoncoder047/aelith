@@ -375,6 +375,7 @@ function playerComp(): PlayerComp {
         manpage: undefined,
         recalculateManpage() {
             this.manpage!.sprite = this.holdingItem;
+            this.manpage!.scrollPos = 0;
             if (this.holdingItem && this.holdingItem.has("lore")) {
                 const oo = this.holdingItem as unknown as GameObj<LoreComp>;
                 this.manpage!.section = `${oo.lore?.secName}(${oo.lore?.section})`;
