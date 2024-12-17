@@ -82,7 +82,7 @@ function playerComp(): PlayerComp {
             other.vel = K.vec2(0);
             const offset = other.has("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
-            other.moveTo(this.worldPos()!.add(other.worldTransform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
+            other.moveTo(this.worldPos()!.add((other as any).worldTransform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
         },
         // MARK: update()
         update(this: GameObj<PlayerComp | PosComp | BodyComp | SpriteComp>) {
@@ -154,8 +154,9 @@ function playerComp(): PlayerComp {
                         && !x.paused);
 
                 // First raycast only the objects we are interested in
+                const interesting = allObjects.filter(x => x.is("interactable") || x.has("grabbable"));
                 rcr = actuallyRaycast(
-                    allObjects.filter(x => x.is("interactable") || x.has("grabbable")),
+                    interesting,
                     this.headPosWorld,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
@@ -280,7 +281,7 @@ function playerComp(): PlayerComp {
             obj.paused = obj.hidden = false;
             if (obj.exists()) {
                 obj.trigger("inactive");
-                obj.moveTo(this.worldPos()!.sub(obj.parent!.worldPos()!));
+                obj.moveTo(this.worldPos()!.sub(obj.parent?.worldPos?.()! ?? K.vec2(0)));
             }
             this.inventory.splice(i, 1);
             if (this.holdingIndex >= i)
@@ -420,7 +421,7 @@ export const player = K.add([
             if (h && (!h.has("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
                 // draw the item again on top
                 K.pushTransform();
-                K.pushMatrix(this.localTransform.inverse); // weird math
+                K.pushMatrix((this as any).localTransform.inverse); // weird math
                 K.pushTranslate(h.parent ? h.parent.worldTransform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
                 K.pushTranslate(this.worldPos()!.sub(h.worldPos()!));
                 h.draw();

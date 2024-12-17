@@ -1,11 +1,13 @@
-import { GameObj } from "kaplay";
+import { BodyComp, GameObj, RotateComp } from "kaplay";
 import continuationTypes from "../assets/trapTypes.json" with { type: "json" };
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationData, ContinuationTrapComp } from "../components/continuationTrap";
+import { grabbable } from "../components/grabbable";
+import { holdOffset } from "../components/holdOffset";
+import { FRICTION, RESTITUTION, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
-import { holdOffset } from "../components/holdOffset";
-import { TILE_SIZE } from "../constants";
+import { throwablePlatformEff } from "./throwablePlatformEff";
 
 export function continuation(
     type: keyof typeof continuationTypes,
@@ -13,7 +15,7 @@ export function continuation(
     trap: GameObj<ContinuationTrapComp>
 ) {
     return [
-        K.sprite("continuation", { anim: "spin" }),
+        K.sprite("continuation_invoker"),
         K.shader("recolor-red", {
             u_targetcolor: K.RED,
         }),
@@ -21,8 +23,26 @@ export function continuation(
         K.anchor("center"),
         K.pos(captured.playerPos),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
-        ...defaults(),
+        ...defaults({
+            shape: new K.Circle(K.vec2(0), 8),
+            collisionIgnore: ["tail"],
+            friction: FRICTION,
+            restitution: RESTITUTION,
+        }),
+        K.body(),
         K.named("{undefined}"),
         continuationCore(type, captured, trap),
+        {
+            add(this: GameObj<BodyComp>) {
+                this.onBeforePhysicsResolve(coll => {
+                    if (coll.target.is("player")) coll.preventResolution();
+                });
+            },
+            update(this: GameObj<RotateComp>) {
+                this.angle += 360 * K.dt();
+            }
+        },
+        ...throwablePlatformEff(),
+        grabbable(),
     ];
 }

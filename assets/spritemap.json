@@ -128,7 +128,7 @@
         "width": 32,
         "height": 16
     },
-    "continuation": {
+    "continuation_target": {
         "x": 32,
         "y": 254,
         "width": 64,
@@ -144,6 +144,12 @@
             }
         }
     },
+    "continuation_invoker": {
+        "x": 0,
+        "y": 318,
+        "width": 16,
+        "height": 16
+    },
     "continuation_trap": {
         "x": 32,
         "y": 299,
@@ -158,6 +164,12 @@
             "disabled": {
                 "from": 8,
                 "to": 8
+            },
+            "armed": {
+                "from": 7,
+                "to": 8,
+                "loop": true,
+                "speed": 4
             }
         }
     },

@@ -1,13 +1,14 @@
-import { Color, Comp, GameObj, NamedComp, OpacityComp, PosComp, ShaderComp, SpriteComp, Tag, OffScreenComp } from "kaplay";
+import { Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player, PlayerInventoryItem } from "../player";
-import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { CloneableComp } from "./cloneable";
+import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
 
 export interface ContinuationComp extends Comp {
+    timestamp: number
     type: keyof typeof contTypes
     trappedBy: GameObj//<ContinuationTrapComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
@@ -18,16 +19,6 @@ export interface ContinuationComp extends Comp {
     activate(): void,
 }
 
-const indexMap = new Map<number, number>();
-const counterMap = new Map<string, number>();
-function getIndex(obj: GameObj<ContinuationComp>): number {
-    if (indexMap.has(obj.id!)) return indexMap.get(obj.id!)!;
-    const counter = (counterMap.get(obj.type) ?? 0) + 1;
-    counterMap.set(obj.type, counter);
-    indexMap.set(obj.id!, counter);
-    return counter;
-}
-
 export function continuationCore(
     type: keyof typeof contTypes,
     captured: ContinuationData,
@@ -36,11 +27,12 @@ export function continuationCore(
     return {
         id: "continuation",
         require: ["sprite", "pos", "shader", "named"],
+        timestamp: Date.now(),
         type,
         captured,
         trappedBy: trap,
         worldMarker: K.add([
-            K.sprite("continuation", { anim: "spin" }),
+            K.sprite("continuation_target", { anim: "spin" }),
             K.pos(captured.playerPos),
             K.layer("continuations"),
             K.anchor("center"),
@@ -64,6 +56,7 @@ export function continuationCore(
             this.name = this.data!.cName;
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
+            this.paused = true;
             this.worldMarker.hidden = true;
             if (this.data?.special === "reverseTeleport") {
                 this.worldMarker.destroy();
@@ -137,8 +130,9 @@ export function continuationCore(
             }
             if (!this.data!.reusable) this.destroy();
         },
-        draw(this: GameObj<PosComp | ContinuationComp>) {
+        draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.data?.special === "reverseTeleport") return;
+            K.pushRotate(-this.angle);
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);
             if (this.worldMarker.isOffScreen()) {
@@ -160,6 +154,7 @@ export function continuationCore(
                 opacity: 0.5,
                 color: this.color
             });
+            K.popTransform();
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {
             player.removeFromInventory(this);
@@ -167,6 +162,7 @@ export function continuationCore(
         },
         activate(this: GameObj<OpacityComp | ContinuationComp>) {
             this.worldMarker.hidden = this.hidden = false;
+            this.paused = false;
         },
         inspect() {
             return `captured ${this.captured.objects.length} objects`

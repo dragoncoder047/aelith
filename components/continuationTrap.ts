@@ -1,4 +1,5 @@
 import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, Vec2 } from "kaplay";
+import { MParser } from "../assets/mparser";
 import trapTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
