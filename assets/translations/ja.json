@@ -34,8 +34,6 @@
     "continuation": {
         "hint": {
             "default": "&control.invoke キャプチャ継続装置",
-            "throw": "&control.invoke 投げる 継続装置トラップ",
-            "captureThrown": "&control.invoke そこから継続装置を捕獲する",
             "modify": "&control.modify キャプチャ半径の変更",
             "invoke": {
                 "default": "&control.invoke 継続装置の呼び出し",

@@ -1,15 +1,16 @@
 import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
 import trapTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { continuation } from "../object_factories/continuation";
+import { promiseObj } from "../object_factories/promiseObj";
 import { player, PlayerInventoryItem } from "../player";
 import { CollisionerComp } from "./collisioner";
 import { ContinuationComp } from "./continuationCore";
 import { controllable, ControllableComp } from "./controllable";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { LoreComp } from "./lore";
+import { PromiseComp } from "./promise";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
 
@@ -41,7 +42,6 @@ export interface ContinuationTrapComp extends Comp {
     captured: GameObj<ContinuationComp>[]
     readonly data: (typeof trapTypes)[keyof typeof trapTypes] | undefined
     readonly enabled: boolean
-    readonly dontMoveToPlayer: boolean
     readonly shouldShowWillCapture: boolean
     readonly color: Color
     radius: number
@@ -54,6 +54,8 @@ export interface ContinuationTrapComp extends Comp {
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
+    var blinkTimeout = 0;
+    var timer = 0;
     return {
         id: "continuation-trap",
         require: ["sprite", "pos", "named", "shader", "lore"],
@@ -65,9 +67,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         },
         get enabled() {
             return this.data?.concurrent || this.captured.length === 0
-        },
-        get dontMoveToPlayer() {
-            return this.isPreparing && this.data?.prepare === "throw";
         },
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
@@ -85,15 +84,15 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
-                if (this.isPreparing) this.capture();
+                if (this.isPreparing) {
+                    if (this.data?.prepare !== "throw")
+                        this.capture();
+                }
                 else this.prepare();
             });
             this.on("modify", (delta: number) => {
                 if (this.isPreparing && this.data?.prepare === "editRadius")
                     this.radius = Math.max(0, this.radius + delta);
-            });
-            this.on("thrown", () => {
-                this.isPreparing = false;
             });
             this.on("inactive", () => {
                 this.zoop.hidden = true;
@@ -104,18 +103,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
-            if (this.data?.prepare === "throw") {
-                if (!this.isPreparing) {
-                    if (this === player.holdingItem)
-                        this.flipX = player.flipX;
-                    if (!this.is("throwable")) this.tag("throwable");
-                }
-                else if (this.isPreparing) {
-                    if (this.is("throwable")) this.untag("throwable");
-                }
-            } else if (this === player.holdingItem)
+            if (this === player.holdingItem)
                 this.flipX = player.flipX;
-
             if (this.isPreparing) this.controls[0]!.hint = this.data?.prepareHint!;
             else this.controls[0]!.hint = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
             this.controls[0]!.styles = [this.name];
@@ -134,7 +123,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             }
             this.blinkenlights();
         },
-        prepare(this: GameObj<ContinuationTrapComp | NamedComp | BodyComp>) {
+        prepare(this: GameObj<ContinuationTrapComp | LoreComp> & PromiseComp["controlling"]) {
             if (!this.enabled) return;
             this.isPreparing = true;
             this.radius = this.data!.radius * TILE_SIZE;
@@ -143,8 +132,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 return;
             }
             if (this.data?.prepare === "throw") {
-                // if we get in this function, I am selected
-                this.applyImpulse(player.throwImpulse!);
+                // give the player a Promise
+                const prom = K.add(promiseObj(this)) as any as PlayerInventoryItem;
+                // player.playSound(soundOnCapture);
+                player.addToInventory(prom);
             }
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
@@ -172,7 +163,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 }
             }
         },
-        capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp>) {
+        capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp | LoreComp>) {
             this.isPreparing = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
@@ -230,23 +221,22 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
         },
-        blinkenlights: (() => {
-            var blinkTimeout = 0;
-            return function (this: GameObj<SpriteComp | ContinuationTrapComp>) {
-                if (blinkTimeout > 0) {
-                    blinkTimeout -= K.dt();
-                    return;
-                }
-                var min = 0, max = 0;
-                const anim = this.getAnim(this.enabled ? "ready" : "disabled");
-                if (anim && typeof anim !== "number") {
-                    min = anim.from;
-                    max = anim.to;
-                }
-                if (!this.enabled) blinkTimeout = 0;
-                else blinkTimeout = K.rand(0.2, 1);
-                this.frame = K.randi(min, max + 1);
-            };
-        })(),
+        blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
+            var min = 0, max = 0;
+            const anim = this.getAnim(this.enabled ? (this.isPreparing ? "armed" : "ready") : "disabled");
+            if (anim && typeof anim !== "number") {
+                min = anim.from;
+                max = anim.to;
+            }
+            if (!this.enabled) blinkTimeout = 0;
+            else if (this.isPreparing) blinkTimeout = 0.4;
+            else blinkTimeout = K.rand(0.2, 1);
+            if (blinkTimeout > timer) {
+                timer += K.dt();
+                return;
+            }
+            timer = 0;
+            this.frame = !this.isPreparing ? K.randi(min, max + 1) : (min + (((this.frame + 1) - min) % (max - min + 1)));
+        },
     };
 }

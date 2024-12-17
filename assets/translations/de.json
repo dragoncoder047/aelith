@@ -34,8 +34,6 @@
     "continuation": {
         "hint": {
             "default": "&control.invoke Fortsetzung erfassen",
-            "throw": "&control.invoke Fortsetzungsfalle werfen",
-            "captureThrown": "&control.invoke Erfassen Sie von dort aus eine Fortsetzung",
             "modify": "&control.modify Erfassungsradius ändern",
             "invoke": {
                 "default": "&control.invoke Fortsetzung aufrufen",

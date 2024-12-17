@@ -86,8 +86,9 @@
     "continuation": {
         "hint": {
             "default": "&control.invoke capture a continuation",
-            "throw": "&control.invoke toss continuation trap",
-            "captureThrown": "&control.invoke capture continuation from there",
+            "throw": "&control.invoke capture a promise",
+            "promise": "&control.invoke capture continuation from there",
+            "usePromise": "Use the promise to invoke remotely",
             "modify": "&control.modify change capture radius",
             "invoke": {
                 "default": "&control.invoke invoke continuation",

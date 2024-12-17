@@ -1,6 +1,7 @@
 {
     "throw": {
         "cName": "catch",
+        "pName": null,
         "color": "#0000ff",
         "radius": 0,
         "reusable": false,
@@ -19,6 +20,7 @@
     },
     "setjmp": {
         "cName": "longjmp",
+        "pName": null,
         "color": "#00ffff",
         "radius": 4,
         "reusable": false,
@@ -37,13 +39,14 @@
     },
     "async": {
         "cName": "await",
+        "pName": "promise",
         "color": "#ff8000",
         "radius": 0,
         "reusable": false,
         "concurrent": false,
         "holdTrapHint": "&msg.continuation.hint.throw",
         "invokeHint": null,
-        "prepareHint": "&msg.continuation.hint.captureThrown",
+        "prepareHint": "&msg.continuation.hint.usePromise",
         "prepare": "throw",
         "special": null,
         "lore": {
@@ -55,6 +58,7 @@
     },
     "yield": {
         "cName": "next",
+        "pName": null,
         "color": "#ffff00",
         "radius": 0,
         "reusable": false,
@@ -73,6 +77,7 @@
     },
     "switch": {
         "cName": "case",
+        "pName": null,
         "color": "#ee4466",
         "radius": 2,
         "reusable": false,
@@ -91,6 +96,7 @@
     },
     "call/cc": {
         "cName": "k",
+        "pName": "fut",
         "color": "#aa22ff",
         "radius": 0,
         "reusable": true,
@@ -109,6 +115,7 @@
     },
     "assert": {
         "cName": "assert",
+        "pName": null,
         "color": "#00ff00",
         "radius": 1.79e+308,
         "reusable": true,

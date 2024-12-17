@@ -79,7 +79,6 @@ function playerComp(): PlayerComp {
         // MARK: _pull2Pos()
         _pull2Pos(this: GameObj<PlayerComp | SpriteComp | PosComp>, other) {
             if (!other) return;
-            if (other.has("continuation-trap") && (other as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer) return;
             other.vel = K.vec2(0);
             const offset = other.has("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
@@ -376,7 +375,7 @@ function playerComp(): PlayerComp {
         // MARK: manpage
         manpage: undefined,
         recalculateManpage() {
-            this.manpage!.sprite = (this.holdingItem?.has("continuation") ? (this.holdingItem as any as GameObj<ContinuationComp>).trappedBy : this.holdingItem) as any;
+            this.manpage!.sprite = (this.holdingItem?.has("continuation") ? (this.holdingItem as any as GameObj<ContinuationComp>).trappedBy : this.holdingItem?.has("promise") ? (this.holdingItem as any).controlling : this.holdingItem) as any;
             this.manpage!.scrollPos = 0;
             if (this.holdingItem && this.holdingItem.has("lore")) {
                 const oo = this.holdingItem as unknown as GameObj<LoreComp>;
@@ -419,7 +418,7 @@ export const player = K.add([
     {
         draw(this: GameObj<PosComp | PlayerComp>) {
             const h = this.holdingItem;
-            if (h && (!h.has("continuation-trap") || !(h as unknown as GameObj<ContinuationTrapComp>).dontMoveToPlayer)) {
+            if (h) {
                 // draw the item again on top
                 K.pushTransform();
                 K.pushMatrix((this as any).localTransform.inverse); // weird math

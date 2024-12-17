@@ -34,8 +34,6 @@
     "continuation": {
         "hint": {
             "default": "&control.invoke capturar una continuación",
-            "throw": "&control.invoke lanzar trampa de continuación",
-            "captureThrown": "&control.invoke capturar una continuación desde allí",
             "modify": "&control.modify cambiar el radio de captura",
             "invoke": {
                 "default": "&control.invoke invocar continuación",
