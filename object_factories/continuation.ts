@@ -1,4 +1,4 @@
-import { BodyComp, GameObj, RotateComp } from "kaplay";
+import { BodyComp, GameObj, RotateComp, Tag } from "kaplay";
 import continuationTypes from "../assets/trapTypes.json" with { type: "json" };
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationData, ContinuationTrapComp } from "../components/continuationTrap";
@@ -44,5 +44,6 @@ export function continuation(
         },
         ...throwablePlatformEff(),
         grabbable(),
+        "continuation" as Tag,
     ];
 }

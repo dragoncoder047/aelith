@@ -16,7 +16,7 @@ export function button() {
         ...machine({
             offset: K.vec2(0, 3),
             friction: FRICTION,
-            collisionIgnore: ["continuation-trap"]
+            collisionIgnore: ["continuation-trap", "continuation"]
         }),
         K.body({ isStatic: true }),
         buttonComp(),
