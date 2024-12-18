@@ -106,7 +106,7 @@ function playerComp(): PlayerComp {
                         if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
                             this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
                         else
-                            this.addControlText("&msg.ctlHint.switchItem    [special]&msg.ctlHint.viewInfo[/special]");
+                            this.addControlText("&msg.ctlHint.switchItem    [rainbow]&msg.ctlHint.viewInfo[/rainbow]");
                     }
                     else
                         this.addControlText("&msg.ctlHint.switchItem");

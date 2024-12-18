@@ -83,15 +83,15 @@
     "button": "ボタンは押されている間、何かをトリガーします...",
     "variable": "        これは変数です。\n        これは非常に便利です!",
     "nothingToSee": "ここには何も見られません",
-    "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [special]継続装置です![/special]\nさあ、呼び出してください!",
+    "firstContinuation": "あなたが持っている [assert]緑色の[/assert] の物ですか?\nそれは [bouncy][rainbow]継続装置です![/rainbow][/bouncy]\nさあ、呼び出してください!",
     "firstTrap": "その [throw]青色の[/throw] デバイスを使用すると、独自の継続装置をキャプチャできます!\n遠慮せずにつかんでください!",
     "firstChallenge": "競合状態のバグがたくさんあります...それらを回避するには継続装置を使用する必要があります。",
     "completedFirstChallenge": "簡単でしたね?",
     "noMoreHelp": "バグは他にもありますが、それらについてはお手伝いできません。頑張ってください!",
     "fellOut": "さて、あなたは今困った状況に陥っています...\n継続装置はあなたの味方です!",
     "slightlyDifferent": "これは少し動作が異なります...おそらく良いことです!",
-    "secret": "[special]シーッ、秘密?[/special]",
+    "secret": "[bouncy][rainbow]シーッ、秘密?[/rainbow][/bouncy]",
     "noSecret": "ええと、何も見つかりませんでした\n\nゲームは更新されるかもしれません...",
-    "powerful": "これは[special]非常に強力です![/special]",
-    "congrats": "[special]おめでとうございます![/special]\n今のところゲームの最後まで到達しました!!"
+    "powerful": "これは[bouncy][rainbow]非常に強力です![/rainbow][/bouncy]",
+    "congrats": "[bouncy][rainbow]おめでとうございます![/rainbow][/bouncy]\n今のところゲームの最後まで到達しました!!"
 }

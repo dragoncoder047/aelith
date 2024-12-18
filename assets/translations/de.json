@@ -83,15 +83,15 @@
     "button": "Tasten lösen Dinge aus, wenn sie gedrückt werden...",
     "variable": "Das ist eine Variable.\nDie werden sehr nützlich sein!",
     "nothingToSee": "Hier gibt es nichts zu sehen",
-    "firstContinuation": "Das [assert]grüne[/assert] Ding, das du da hältst?\nEs ist eine [special]Fortsetzung![/special]\nLos, ruf es auf!",
+    "firstContinuation": "Das [assert]grüne[/assert] Ding, das du da hältst?\nEs ist eine [bouncy][rainbow]Fortsetzung![/rainbow][/bouncy]\nLos, ruf es auf!",
     "firstTrap": "Mit diesem [throw]blauen[/throw] Gerät kannst du deine eigenen Fortsetzungen erfassen!\nSeien Sie nicht schüchtern - schnapp es dir!",
     "firstChallenge": "Es gibt viele Race-Condition-Bugs... Sie müssen Fortsetzungen verwenden, um sie zu umgehen.",
     "completedFirstChallenge": "Das war einfach,\nnicht wahr?",
     "noMoreHelp": "Es gibt noch mehr Bugs, aber bei denen kann ich Ihnen nicht helfen. Viel Glück!",
     "fellOut": "Nun, jetzt stecken Sie in der Klemme...\nFortsetzungen sind Ihr Freund!",
     "slightlyDifferent": "Dieses hier verhält sich etwas anders... wahrscheinlich eine gute Sache!",
-    "secret": "[special]psst, geheim?[/special]",
+    "secret": "[bouncy][rainbow]psst, geheim?[/rainbow][/bouncy]",
     "noSecret": "also, du hast nichts gefunden\n\nvielleicht wird das Spiel aktualisiert...",
-    "powerful": "dieses hier ist [special]extrem mächtig![/special]",
-    "congrats": "[special]HERZLICHEN GLÜCKWUNSCH![/special]\ndu hast bisher das Ende des Spiels erreicht!!"
+    "powerful": "dieses hier ist [bouncy][rainbow]extrem mächtig![/rainbow][/bouncy]",
+    "congrats": "[bouncy][rainbow]HERZLICHEN GLÜCKWUNSCH![/rainbow][/bouncy]\ndu hast bisher das Ende des Spiels erreicht!!"
 }

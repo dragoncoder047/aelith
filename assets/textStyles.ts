@@ -45,9 +45,14 @@ export const STYLES: TextComp["textStyles"] = {
         color: K.WHITE,
         override: true
     },
-    special(i, _ch) {
+    rainbow(i, _ch) {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),
+            override: true
+        };
+    },
+    bouncy(i, _ch) {
+        return {
             pos: K.vec2(0, K.wave(-TILE_SIZE / 40, TILE_SIZE / 40, K.time() * Math.PI * 2 - i)),
         };
     },

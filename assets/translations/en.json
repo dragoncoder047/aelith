@@ -138,15 +138,15 @@
     "button": "Buttons trigger things while they are pressed...",
     "variable": "This is a variable.\nThese will be very useful!",
     "nothingToSee": "Nothing to see over here",
-    "firstContinuation": "That [assert]green[/assert] thing you are holding?\nIt's a [special]continuation![/special]\nGo on, invoke it!",
+    "firstContinuation": "That [assert]green[/assert] thing you are holding?\nIt's a [bouncy][rainbow]continuation![/rainbow][/bouncy]\nGo on, invoke it!",
     "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
     "firstChallenge": "There are a lot of race condition bugs... you'll have to use continuations to get around them.",
     "completedFirstChallenge": "That was easy,\nwasn't it?",
     "noMoreHelp": "There are more bugs, but I can't help you with them. Good luck!",
     "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
     "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
-    "secret": "[special]shh, secret?[/special]",
+    "secret": "[bouncy][rainbow]shh, secret?[/rainbow][/bouncy]",
     "noSecret": "well, you found nothing\n\nmaybe the game will be updated...",
-    "powerful": "this one is [special]extremely powerful![/special]",
-    "congrats": "[special]CONGRATULATIONS![/special]\nyou have reached the end of the game so far!!"
+    "powerful": "this one is [bouncy][rainbow]extremely powerful![/rainbow][/bouncy]",
+    "congrats": "[bouncy][rainbow]CONGRATULATIONS![/rainbow][/bouncy]\nyou have reached the end of the game so far!!"
 }

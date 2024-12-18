@@ -83,15 +83,15 @@
     "button": "Los botones activan cosas mientras se presionan...",
     "variable": "Esta es una variable.\n¡Serán muy útiles!",
     "nothingToSee": "Nada que ver por aquí",
-    "firstContinuation": "¿Esa cosa [assert]verde[/assert] que tienes en la mano?\n¡Es una [special]continuación![/special]\n¡Vamos, invócalo!",
+    "firstContinuation": "¿Esa cosa [assert]verde[/assert] que tienes en la mano?\n¡Es una [bouncy][rainbow]continuación![/rainbow][/bouncy]\n¡Vamos, invócalo!",
     "firstTrap": "¡Con ese dispositivo [throw]azul[/throw], ¡puedes capturar tus propias continuaciones!\nNo seas tímido, ¡agárralo!",
     "firstChallenge": "Hay muchos errores en las condiciones de carrera... tendrás que usar continuaciones para evitarlos.",
     "completedFirstChallenge": "Eso fue fácil, ¿no?",
     "noMoreHelp": "Hay más errores, pero no puedo ayudarte con ellos. ¡Buena suerte!",
     "fellOut": "Bueno, ahora estás en un aprieto...\n¡las continuaciones son tus amigas!",
     "slightlyDifferent": "Este se comporta de manera ligeramente diferente... ¡probablemente algo bueno!",
-    "secret": "[special]shh, ¿secreto?[/special]",
+    "secret": "[bouncy][rainbow]shh, ¿secreto?[/rainbow][/bouncy]",
     "noSecret": "bueno, no encontraste nada\n\ntal vez el juego se actualice...",
-    "powerful": "este es [special]¡extremadamente poderoso![/special]",
-    "congrats": "[special]¡FELICIDADES![/special]\n¡has llegado al final del juego hasta ahora!"
+    "powerful": "este es [bouncy][rainbow]¡extremadamente poderoso![/rainbow][/bouncy]",
+    "congrats": "[bouncy][rainbow]¡FELICIDADES![/rainbow][/bouncy]\n¡has llegado al final del juego hasta ahora!"
 }
