@@ -97,9 +97,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.on("inactive", () => {
                 this.zoop.hidden = true;
             });
-            this.on("dropped", () => {
-                this.zoop.hidden = true;
-            });
             K.wait(0.1, () => {
                 this.radius = this.data!.radius * TILE_SIZE;
                 this.lore = { seen: false, ...this.data!.lore };
@@ -118,7 +115,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
-                if (this.shouldShowWillCapture && this.radius > 0 && player.manpage!.hidden) {
+                if (this.shouldShowWillCapture
+                    && this.radius > 0
+                    && player.manpage!.hidden
+                    && player.inventory.includes(this as any)) {
                     this.zoop.hidden = false;
                     this.zoop.radius = zoopRadius(this.radius);
                 }
