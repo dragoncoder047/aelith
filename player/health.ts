@@ -75,6 +75,7 @@ player.onDeath(async () => {
     MParser.world!.trigger("update");
     // make resume things
     const allContinuations = K.get("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
+    allContinuations.sort((a, b) => a.timestamp - b.timestamp);
     const divBy = 5;
     if (allContinuations.length === 0) {
         resumeEntry.hidden = true;
