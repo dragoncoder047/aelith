@@ -108,4 +108,7 @@ export async function showManpage(isShown: boolean) {
     MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = isShown);
     MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = !isShown);
 }
-K.onLoad(() => showManpage(false));
+const foo = player.onUpdate(() => {
+    showManpage(false);
+    foo.cancel();
+});
