@@ -53,8 +53,11 @@ export interface PtyMenuComp extends Comp {
     cmdStyle: string
     ptrText: string
     playSoundCb(sound: string): void
-    __menuChanged(): Promise<void>
     __updateSelected(): Promise<void>
+    __backAll(): void
+    __redraw(): Promise<void>
+    __submenuRedraw(outChunks: PtyChunk[]): void
+    __selectorRedraw(outChunks: PtyChunk[]): void
 }
 
 // MARK: PtyMenu
@@ -66,7 +69,6 @@ export type PtyMenu = {
 } & ({
     type: "submenu"
     opts: PtyMenu[]
-    numColumns?: number
 } | ({
     type: "action"
     action(): PromiseLike<void>,
@@ -212,6 +214,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
             var menuChunks: { select: PtyChunk, chunks: PtyChunk[] }[] = [];
             var cursorChunks: PtyChunk[] = [];
             var commandChunks: PtyChunk[] = [];
+
             return {
                 id: "pty-menu",
                 require: ["pty"],
@@ -224,6 +227,64 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 ptrText: "\u001a",
                 playSoundCb: opt.playSoundCb ?? K.play,
                 get disabled() { return disabled; },
+                __backAll(this: GameObj<PtyMenuComp | PtyComp>) {
+                    this.chunks = this.chunks.slice(0, beginLen);
+                    this.menu = menu;
+                    this.selIdx = 0;
+                    this.backStack = [];
+                    this.dropChunk(cursorChunks);
+                    optionChunks = [];
+                    menuChunks = [];
+                    cursorChunks = [];
+                    disabled = true;
+                },
+                async __redraw(this: GameObj<PtyMenuComp | PtyComp>) {
+                    if (disabled) return;
+                    this.chunks = this.chunks.slice(0, beginLen);
+                    commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
+                    const outChunks: PtyChunk[] = [];
+                    menuChunks = [];
+                    cursorChunks = this.toChunks(this.cursor);
+                    optionChunks = [];
+
+                    switch (this.menu.type) {
+                        case "submenu":
+                            this.dropChunk(cursorChunks);
+                            this.__submenuRedraw(outChunks);
+                            break;
+                        case "select":
+                            this.__selectorRedraw(outChunks);
+                            break;
+                        case "action":
+                            break;
+                        default:
+                            throw new Error("Unknown menu type " + (this.menu as any).type);
+                    }
+                    await this.__updateSelected();
+                    await this.command(commandChunks.concat(cursorChunks), outChunks);
+                },
+                __submenuRedraw(this: GameObj<PtyMenuComp | PtyComp>, outChunks: PtyChunk[]) {
+                    if (this.menu.type !== "submenu") throw new Error("unreachable");
+                    for (var i = 0; i < this.menu.opts.length; i++) {
+                        const opt = this.menu.opts[i]!;
+                        const s = { text: "" };
+                        const c = { text: opt.hidden ? "" : (opt.name ?? opt.id), styles: opt.styles };
+                        outChunks.push(s, c);
+                        menuChunks.push({ select: s, chunks: [c] });
+                        if (!opt.hidden) outChunks.push({ text: "\n" });
+                    }
+                },
+                __selectorRedraw(this: GameObj<PtyMenuComp | PtyComp>, outChunks: PtyChunk[]) {
+                    if (this.menu.type !== "select") throw new Error("unreachable");
+                    for (var i = 0; i < this.menu.opts.length; i++) {
+                        const opt = this.menu.opts[i]!;
+                        const si = { text: "" };
+                        const c = [{ text: " " }, ...this.toChunks(opt.text), { text: "\n" }];
+                        if (opt.hidden) c.length = 0;
+                        outChunks.push(si, ...c);
+                        optionChunks.push({ select: si, chunks: c });
+                    }
+                },
                 // MARK: beginMenu()
                 async beginMenu(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (!disabled) throw new Error("already began!");
@@ -244,74 +305,13 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     beginLen = this.chunks.length;
                     // save for quitMenu() later
                     menu = this.menu;
-                    await this.__menuChanged();
+                    await this.__redraw();
                 },
                 // MARK: quitMenu()
                 async quitMenu(this: GameObj<PtyMenuComp | PtyComp>) {
-                    // only show the final command
-                    this.chunks = this.chunks.slice(0, beginLen);
-                    // reset
-                    this.menu = menu;
-                    this.selIdx = 0;
-                    this.backStack = [];
-                    this.dropChunk(cursorChunks);
-                    optionChunks = [];
-                    menuChunks = [];
-                    cursorChunks = [];
-                    disabled = true;
+                    this.__backAll();
                     await this.command(commandChunks, "");
                     commandChunks = [];
-                },
-                // MARK: __menuChanged()
-                async __menuChanged(this: GameObj<PtyMenuComp | PtyComp>) {
-                    if (disabled) return;
-                    this.chunks = this.chunks.slice(0, beginLen);
-                    commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
-                    const outChunks: PtyChunk[] = [];
-                    menuChunks = [];
-                    cursorChunks = this.toChunks(this.cursor);
-                    optionChunks = [];
-                    switch (this.menu.type) {
-                        case "submenu":
-                            // remove old cursor stuff
-                            this.dropChunk(cursorChunks);
-                            for (var i = 0, vi = 0; i < this.menu.opts.length; i++) {
-                                const opt = this.menu.opts[i]!;
-                                const s = {
-                                    text: "",
-                                };
-                                const c = {
-                                    text: opt.hidden ? "" : (opt.name ?? opt.id),
-                                    styles: opt.styles
-                                }
-                                outChunks.push(s, c);
-                                menuChunks.push({ select: s, chunks: [c] });
-                                if (!opt.hidden) {
-                                    vi++;
-                                    if ((vi % (this.menu.numColumns ?? 1)) === 0) outChunks.push({ text: "\n" });
-                                    else outChunks.push({ text: " " });
-                                }
-                            };
-                            await this.__updateSelected();
-                            break;
-                        case "action":
-                            // no output
-                            break;
-                        case "select":
-                            for (var i = 0; i < this.menu.opts.length; i++) {
-                                const opt = this.menu.opts[i]!;
-                                const si = { text: "" };
-                                const c = [{ text: " " }, ...this.toChunks(opt.text), { text: "\n" }];
-                                if (opt.hidden) c.length = 0;
-                                outChunks.push(si, ...c);
-                                optionChunks.push({ select: si, chunks: c });
-                            };
-                            await this.__updateSelected();
-                            break;
-                        default:
-                            throw new Error("Unknown menu type " + (this.menu as any).type);
-                    }
-                    await this.command(commandChunks.concat(cursorChunks), outChunks);
                 },
                 // MARK: __updateSelected()
                 async __updateSelected(this: GameObj<PtyMenuComp | PtyComp>) {
@@ -324,9 +324,6 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 this.styleChunk(siChunk, this.selStyle, i === this.selIdx);
                                 textChunks.forEach(c => this.styleChunk(c, this.selStyle, this.selIdx === i));
                             }
-                            break;
-                        case "action":
-                            // no output
                             break;
                         case "select":
                             for (var i = 0; i < this.menu.opts.length; i++) {
@@ -347,6 +344,8 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             await this.type("");
                             this.chunks.pop();
                             break;
+                        case "action":
+                            break;
                         default:
                             throw new Error("Unknown menu type " + (this.menu as any).type);
                     }
@@ -362,7 +361,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             }
                             this.backStack.push(this.menu);
                             this.menu = this.menu.opts[this.selIdx]!;
-                            await this.__menuChanged();
+                            await this.__redraw();
                             if (this.menu.type === "action") {
                                 this.dropChunk(cursorChunks);
                                 await this.menu.action();
@@ -372,10 +371,8 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             } else {
                                 this.selIdx = this.menu.opts.findIndex(x => !x.hidden);
                             }
-                            await this.__menuChanged();
+                            await this.__redraw();
                             break;
-                        case "action":
-                            throw "unreachable";
                         case "select":
                             if (this.menu.multiple) {
                                 if (this.menu.selected?.includes(this.selIdx)) {
@@ -387,6 +384,8 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             }
                             await this.__updateSelected();
                             break;
+                        case "action":
+                            throw "unreachable";
                         default:
                             throw new Error("Unknown menu type " + (this.menu as any).type);
                     }
@@ -407,7 +406,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     optionChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
                     menuChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
                     this.dropChunk(cursorChunks);
-                    await this.__menuChanged();
+                    await this.__redraw();
                 },
                 // MARK: switch()
                 async switch(direction) {
