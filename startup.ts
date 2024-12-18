@@ -81,11 +81,11 @@ const CHUNKS: TextChunk[] = [
     command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] 4242 sudo ./gpt\n", 1, 1, true),
     command("./gpt --interactive", "", 1, 0.5, undefined),
     {
-        value: "connecting...",
+        value: "&msg.startup.connecting",
     },
     {
         value: {
-            text: "connected!\nask AI > ",
+            text: "&msg.startup.connected\n&msg.startup.ai.prompt > ",
             delayBefore: 1
         }
     },
