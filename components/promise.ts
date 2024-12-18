@@ -31,13 +31,13 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
             this.controls[0]!.styles = [this.type];
             if (this.data!.pName !== null)
                 this.use(K.named(this.data!.pName!));
+            this.on("modify", d => this.controlling.trigger("modify", d));
             this.on("invoke", () => {
                 player.removeFromInventory(this as any);
                 this.destroy();
                 this.controlling.capture();
             });
             this.uniform!.u_targetcolor = this.color;
-
         },
         draw(this: GameObj<PosComp | PromiseComp>) {
             if (this.controlling.hidden) return;
