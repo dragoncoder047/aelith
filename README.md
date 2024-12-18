@@ -66,6 +66,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 * [ ] Use firewall somewhere else
 * [ ] Add player head can turn to look at whatever is being looked at
 * [X] Add algorithmic choosing songs based on where you are in the game
+  * [ ] Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
 * [X] Add enemy "bugs" that can hurt you?
   * [ ] ~~Final enemy boss?~~
