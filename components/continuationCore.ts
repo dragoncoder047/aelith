@@ -11,7 +11,7 @@ export interface ContinuationComp extends Comp {
     timestamp: number
     type: keyof typeof contTypes
     trappedBy: GameObj//<ContinuationTrapComp>
-    readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
+    readonly params: ContinuationData["params"]
     readonly color: Color
     captured: ContinuationData
     worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp>
@@ -44,34 +44,38 @@ export function continuationCore(
             "worldMarker" as Tag,
             "raycastIgnore" as Tag,
         ]),
-        get data() {
-            return contTypes[this.type];
+        get params() {
+            return this.captured.params;
         },
         get color() {
-            return K.Color.fromHex(this.data?.color ?? "#ff0000")
+            return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
         },
-        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
+        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp | ControllableComp> & PlayerInventoryItem) {
             this.use(controllable([{ hint: "" }]));
+            this.controls[0]!.styles = [this.trappedBy.name.replace(/[^\w]/g, "")];
             this.on("invoke", () => this.invoke());
-            this.name = this.data!.cName;
+            this.name = contTypes[this.type].cName;
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.paused = true;
             this.worldMarker.hidden = true;
-            if (this.data?.special === "reverseTeleport") {
+            if (this.params.reverseTeleport) {
                 this.worldMarker.destroy();
             }
         },
         update(this: GameObj<ContinuationComp | ControllableComp>) {
-            this.controls[0]!.hint = this.data?.invokeHint ?? "&msg.continuation.hint.invoke.default";
-            this.controls[0]!.styles = [this.trappedBy.name.replace(/[^\w]/g, "")];
+            this.controls[0]!.hint = K.sub(
+                contTypes[this.type].hint ?? "&msg.continuation.hint.invoke.default",
+                {
+                    which: "continuation",
+                });
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.type === "assert") {
                 // assertion: heal fully
                 player.heal(Infinity);
             }
-            if (this.data?.special === "recapture") {
+            if (this.params.recapture) {
                 // Capture a continuation from right here so the player can go back.
                 this.trappedBy.capture();
             }
@@ -80,7 +84,7 @@ export function continuationCore(
             const delta = this.captured.playerPos.sub(p);
             const reverseDelta = K.vec2(0);
 
-            if (this.data?.special === "reverseTeleport") {
+            if (this.params.reverseTeleport) {
                 // do move
                 reverseDelta.x = -delta.x;
                 reverseDelta.y = -delta.y;
@@ -96,9 +100,9 @@ export function continuationCore(
                 var obj = e.obj;
                 const canClone = e.obj.has("cloneable");
                 const shouldClone = (
-                    this.data?.special !== "reverseTeleport"
+                    this.params.reverseTeleport
                     && (player.inventory.includes(e.obj as any) ? this.captured.playerPos : e.obj.pos)
-                        .dist(this.captured.playerPos) > this.captured.capturedRadius)
+                        .dist(this.captured.playerPos) > this.params.radius)
                 if (e.obj.has("body") && !e.obj.isStatic) {
                     if (shouldClone && canClone) {
                         // It is out of range, clone it
@@ -128,10 +132,10 @@ export function continuationCore(
                 if (obj.has("collisioner"))
                     obj.ignoreTriggerTimeout = 5;
             }
-            if (!this.data!.reusable) this.destroy();
+            if (!this.params.reusable) this.destroy();
         },
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
-            if (this.data?.special === "reverseTeleport") return;
+            if (this.params.reverseTeleport) return;
             K.pushRotate(-this.angle);
             const p1 = K.vec2(0, 0);
             const p2 = this.fromWorld(this.worldMarker.worldPos()!);

@@ -33,18 +33,18 @@ export type ContinuationDataEntry = {
 };
 export type ContinuationData = {
     playerPos: Vec2
-    capturedRadius: number
     objects: ContinuationDataEntry[]
+    params: ContinuationTrapComp["params"]
 };
 
 export interface ContinuationTrapComp extends Comp {
-    isPreparing: boolean
+    isDeferring: boolean
     captured: GameObj<ContinuationComp>[]
     readonly data: (typeof trapTypes)[keyof typeof trapTypes] | undefined
     readonly enabled: boolean
-    readonly shouldShowWillCapture: boolean
+    readonly behavior: (typeof trapTypes)[keyof typeof trapTypes]["behavior"] | undefined
+    params: (typeof trapTypes)[keyof typeof trapTypes]["behavior"]
     readonly color: Color
-    radius: number
     zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
     prepare(): void
     capture(): void
@@ -60,19 +60,30 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         id: "continuation-trap",
         require: ["sprite", "pos", "named", "shader", "lore"],
         captured: [],
-        isPreparing: false,
-        radius: 0,
+        isDeferring: false,
+        params: {
+            radius: 0,
+            deferred: false,
+            useSelfPosition: false,
+            recapture: true,
+            reverseTeleport: false,
+
+            // not editable
+            concurrent: false,
+            reusable: false,
+            editable: false,
+        },
         get data() {
             return (trapTypes as any)[(this as any).name!];
         },
         get enabled() {
-            return this.data?.concurrent || this.captured.length === 0
+            return this.behavior?.concurrent || this.captured.length === 0
         },
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
-        get shouldShowWillCapture() {
-            return (this.data?.prepare === "editRadius") ? this.isPreparing : ((this as any) === player.holdingItem);
+        get behavior() {
+            return this.data?.behavior;
         },
         zoop: K.add([
             K.pos(),
@@ -84,29 +95,36 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
-                if (this.isPreparing) {
-                    if (this.data?.prepare !== "throw")
+                if (this.isDeferring) {
+                    if (this.params.deferred)
                         this.capture();
                 }
                 else this.prepare();
             });
+            // TODO: rework this mess
             this.on("modify", (delta: number) => {
-                if (this.isPreparing && this.data?.prepare === "editRadius")
-                    this.radius = Math.max(0, this.radius + delta);
+                if (this.behavior?.editable)
+                    this.params.radius = Math.max(0, this.params.radius + delta);
             });
             this.on("inactive", () => {
                 this.zoop.hidden = true;
             });
             K.wait(0.1, () => {
-                this.radius = this.data!.radius * TILE_SIZE;
+                Object.assign(this.params, this.behavior);
+                this.params.radius = this.params.radius * TILE_SIZE;
                 this.lore = { seen: false, ...this.data!.lore };
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
-            if (this.isPreparing) this.controls[0]!.hint = this.data?.prepareHint!;
-            else this.controls[0]!.hint = this.data?.holdTrapHint ?? "&msg.continuation.hint.default";
+            this.controls[0]!.hint = K.sub(
+                this.data!.hint ?? "&msg.continuation.hint.default",
+                {
+                    which: "trap",
+                    isDeferring: String(this.isDeferring),
+                    willDefer: String(this.params.deferred),
+                });
             this.controls[0]!.styles = [this.name.replace(/[^\w]/g, "")];
             this.controls[0]!.hidden = !this.enabled;
 
@@ -115,12 +133,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
-                if (this.shouldShowWillCapture
-                    && this.radius > 0
+                if (this.params.radius > 0
                     && player.manpage!.hidden
-                    && player.inventory.includes(this as any)) {
+                    && player.inventory.includes(this)) {
                     this.zoop.hidden = false;
-                    this.zoop.radius = zoopRadius(this.radius);
+                    this.zoop.radius = zoopRadius(this.params.radius);
                 }
                 else this.zoop.hidden = true;
             }
@@ -128,21 +145,16 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         },
         prepare(this: GameObj<ContinuationTrapComp | LoreComp> & PromiseComp["controlling"]) {
             if (!this.enabled) return;
-            this.isPreparing = true;
-            this.radius = this.data!.radius * TILE_SIZE;
-            if (!this.data?.prepare) {
-                this.capture();
-                return;
-            }
-            if (this.data?.prepare === "throw") {
+            this.isDeferring = true;
+            if (this.params.deferred) {
                 // give the player a Promise
                 const prom = K.add(promiseObj(this)) as any as PlayerInventoryItem;
                 // player.playSound(soundOnCapture);
                 player.addToInventory(prom);
-            }
+            } else this.capture();
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
-            if (this.shouldShowWillCapture) {
+            if (this.params.radius > 0 && player.inventory.includes(this as any)) {
                 const willCapture = this.peekCapture();
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
@@ -167,14 +179,14 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             }
         },
         capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp | LoreComp>) {
-            this.isPreparing = false;
+            this.isDeferring = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
             const cont = K.add(continuation(this.name! as any, data, this)) as unknown as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
-            this.zoop.radius = zoopRadius(this.radius);
+            this.zoop.radius = zoopRadius(this.params.radius);
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
@@ -184,12 +196,12 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             // Capture all of the objects
             const data: ContinuationData = {
                 playerPos: this.getPlayerPosData(),
-                capturedRadius: this.radius,
+                params: Object.assign({}, this.params),
                 objects: []
             };
-            if (this.radius > 0) {
+            if (this.params.radius > 0) {
                 // find all the objects
-                const circle = new K.Circle(data.playerPos, this.radius);
+                const circle = new K.Circle(data.playerPos, this.params.radius);
                 const foundObjects = K.get<CDEComps>("machine", { recursive: true })
                     .filter(obj =>
                         ((obj as unknown as GameObj<OpacityComp>).opacity === 0
@@ -197,7 +209,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                             // else just let's see if it collides
                             ? undefined
                             : obj.worldArea?.().collides(circle))
-                        ?? obj.worldPos()!.dist(data.playerPos) < this.radius)
+                        ?? obj.worldPos()!.dist(data.playerPos) < this.params.radius)
                     .filter(obj => !obj.is("checkpoint"))
                     .concat(player.inventory.filter(x => x.has("body")) as any);
                 for (var obj of foundObjects) {
@@ -218,28 +230,28 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             }
             return data;
         },
-        getPlayerPosData(this: GameObj<ContinuationComp | PosComp>) {
-            return this.data?.prepare === "throw" ? this.worldPos()! : player.worldPos()!;
+        getPlayerPosData(this: GameObj<ContinuationTrapComp | PosComp>) {
+            return this.params.useSelfPosition ? this.worldPos()! : player.worldPos()!;
         },
         inspect() {
-            return `enabled: ${this.enabled}, radius: ${this.radius}, preparing: ${this.isPreparing}`;
+            return `enabled: ${this.enabled}, radius: ${this.params.radius}, preparing: ${this.isDeferring}`;
         },
         blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
             var min = 0, max = 0;
-            const anim = this.getAnim(this.enabled ? (this.isPreparing ? "armed" : "ready") : "disabled");
+            const anim = this.getAnim(this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled");
             if (anim && typeof anim !== "number") {
                 min = anim.from;
                 max = anim.to;
             }
             if (!this.enabled) blinkTimeout = 0;
-            else if (this.isPreparing) blinkTimeout = 0.4;
+            else if (this.isDeferring) blinkTimeout = 0.4;
             else blinkTimeout = K.rand(0.2, 1);
             if (blinkTimeout > timer) {
                 timer += K.dt();
                 return;
             }
             timer = 0;
-            this.frame = !this.isPreparing ? K.randi(min, max + 1) : (min + (((this.frame + 1) - min) % (max - min + 1)));
+            this.frame = !this.isDeferring ? K.randi(min, max + 1) : (min + (((this.frame + 1) - min) % (max - min + 1)));
         },
     };
 }

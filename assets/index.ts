@@ -19,7 +19,7 @@ import worldFileSrc from "./world.txt";
 // Load assets
 K.loadSpriteAtlas(spritemapDataURL, spritemapDef);
 K.loadZzFXMultiJSON(sounds);
-K.loadStrings(strings);
+K.addStrings(strings);
 K.setLanguages(["en", "es", "de", "ja"]);
 K.strings.en = enStrings;
 K.strings.es = esStrings;
@@ -31,6 +31,18 @@ K.loadShader("translate", undefined, translateShader);
 K.loadZzFXM("aaa", aaa);
 K.loadZzFXM("bbb", bbb);
 K.loadZzFXM("ccc", ccc);
+
+// idk where else to put this
+K.strings.switch = switchData => {
+    const [key, ...caseStrings] = switchData.split("~");
+    const procCases = {} as Record<string, string>;
+    for (var caseStr of caseStrings) {
+        const [caseKey, caseValue] = caseStr.split(":");
+        procCases[caseKey!] = caseValue!;
+    }
+    console.log(key, procCases);
+    return String(procCases[key!]);
+}
 
 // Start music in background
 export const musicPlay = playMusic({

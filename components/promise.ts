@@ -2,16 +2,16 @@ import { Color, Comp, GameObj, NamedComp, OffScreenComp, PosComp, ShaderComp } f
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE } from "../constants";
 import { K } from "../init";
+import { player } from "../player";
 import { ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
-import { player } from "../player";
 
 
 export interface PromiseComp extends Comp {
     controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
     readonly color: Color
-    readonly type: string
+    readonly type: keyof typeof contTypes
 }
 
 export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
@@ -19,7 +19,7 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
         id: "promise",
         require: ["shader"],
         controlling,
-        type: controlling.name,
+        type: controlling.name as keyof typeof contTypes,
         get data() {
             return contTypes[this.type as any as keyof typeof contTypes];
         },
@@ -27,7 +27,7 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
         add(this: GameObj<PromiseComp | ShaderComp | ControllableComp | NamedComp>) {
-            this.use(controllable([{ hint: "&msg.continuation.hint.promise" }]));
+            this.use(controllable([{ hint: "" }]));
             this.controls[0]!.styles = [this.type];
             if (this.data!.pName !== null)
                 this.use(K.named(this.data!.pName!));
@@ -38,6 +38,13 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
                 this.controlling.capture();
             });
             this.uniform!.u_targetcolor = this.color;
+        },
+        update(this: GameObj<ControllableComp | PromiseComp>) {
+            this.controls[0]!.hint = K.sub(
+                contTypes[this.type].hint ?? "&msg.continuation.hint.invoke.default",
+                {
+                    which: "promise",
+                });
         },
         draw(this: GameObj<PosComp | PromiseComp>) {
             if (this.controlling.hidden) return;
