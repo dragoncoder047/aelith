@@ -93,7 +93,7 @@ function subStrings(text: string, vars: NestedStrings): string {
     const { flatStrings, functions } = flatten(vars);
     var changed = 0;
     const anyfun = Object.getOwnPropertyNames(functions).join("|");
-    const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun})).)*?)\\)`, "g") : undefined;
+    const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun}))[\\s\\S])*?)\\)`, "gm") : undefined;
     do {
         for (var key of Object.getOwnPropertyNames(flatStrings)) {
             const rep = `&${key}`;
@@ -107,7 +107,7 @@ function subStrings(text: string, vars: NestedStrings): string {
             if (mm) {
                 const [_, fun, inside] = mm;
                 if (fun! in functions) {
-                    text = text.replace(new RegExp(`\\$${fun}\\(${inside}\\)`, "g"), functions[fun!]!(inside!));
+                    text = text.replace(new RegExp(`\\$${fun}\\(${inside}\\)`, "gm"), functions[fun!]!(inside!));
                 } else throw new Error("bad");
                 changed = 2;
             }
