@@ -40,7 +40,6 @@ K.strings.switch = switchData => {
         const [caseKey, caseValue] = caseStr.split(":");
         procCases[caseKey!] = caseValue!;
     }
-    console.log(key, procCases);
     return String(procCases[key!]);
 }
 

@@ -80,6 +80,15 @@ export const PAUSE_MENU: PtyMenu = {
                 }
             ]
         },
+        {
+            id: "testing",
+            name: "testing testing",
+            type: "range",
+            range: [0, 100],
+            displayRange: [0, 100],
+            value: 40,
+            hidden: true
+        }
     ]
 }
 
@@ -125,6 +134,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
             doit: "climbing",
             error: "command_fail"
         },
+        playSoundCb: sound => player.playSound(sound),
     }));
 
     // setup navigation controls

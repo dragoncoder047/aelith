@@ -58,6 +58,7 @@ export interface PtyMenuComp extends Comp {
     __redraw(): Promise<void>
     __submenuRedraw(outChunks: PtyChunk[]): void
     __selectorRedraw(outChunks: PtyChunk[]): void
+    __rangeRedraw(outChunks: PtyChunk[]): void
 }
 
 // MARK: PtyMenu
@@ -82,7 +83,17 @@ export type PtyMenu = {
     opts: { text: Typable, value: any, hidden?: boolean }[]
     multiple?: false
     selected: number
-})
+} | {
+    type: "range"
+    range: [number, number]
+    displayRange: [number, number]
+    value: number
+} | {
+    type: "string"
+    value: string
+    validator: RegExp
+    invalidMsg: string
+});
 
 // MARK: PtyMenuCompOpt
 export interface PtyMenuCompOpt {
@@ -212,6 +223,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
             var beginLen = 0;
             var optionChunks: { select: PtyChunk, chunks: PtyChunk[] }[] = [];
             var menuChunks: { select: PtyChunk, chunks: PtyChunk[] }[] = [];
+            var rangeChunks: { numstr: PtyChunk, bar: PtyChunk } | undefined = undefined;
             var cursorChunks: PtyChunk[] = [];
             var commandChunks: PtyChunk[] = [];
 
@@ -236,6 +248,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     optionChunks = [];
                     menuChunks = [];
                     cursorChunks = [];
+                    rangeChunks = undefined;
                     disabled = true;
                 },
                 async __redraw(this: GameObj<PtyMenuComp | PtyComp>) {
@@ -243,9 +256,10 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     this.chunks = this.chunks.slice(0, beginLen);
                     commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
                     const outChunks: PtyChunk[] = [];
-                    menuChunks = [];
                     cursorChunks = this.toChunks(this.cursor);
+                    menuChunks = [];
                     optionChunks = [];
+                    rangeChunks = undefined;
 
                     switch (this.menu.type) {
                         case "submenu":
@@ -255,6 +269,11 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         case "select":
                             this.__selectorRedraw(outChunks);
                             break;
+                        case "range":
+                            this.__rangeRedraw(outChunks);
+                            break;
+                        case "string":
+                            throw "TODO: not implemented";
                         case "action":
                             break;
                         default:
@@ -285,6 +304,17 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         optionChunks.push({ select: si, chunks: c });
                     }
                 },
+                __rangeRedraw(this: GameObj<PtyComp | PtyMenuComp | TextComp>, outChunks) {
+                    if (this.menu.type !== "range") throw new Error("unreachable");
+                    const numChunk = { text: "", styles: this.menu.styles };
+                    const barChunk = { text: "", styles: this.menu.styles };
+                    outChunks.push(
+                        { text: `${this.menu.name ?? this.menu.id}\n`, styles: this.menu.styles },
+                        numChunk,
+                        { text: " " },
+                        barChunk);
+                    rangeChunks = { numstr: numChunk, bar: barChunk };
+                },
                 // MARK: beginMenu()
                 async beginMenu(this: GameObj<PtyMenuComp | PtyComp>) {
                     if (!disabled) throw new Error("already began!");
@@ -295,7 +325,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             break;
                         }
                     }
-                    if (this.menu.type !== "action") {
+                    if (this.menu.type === "submenu" || this.menu.type === "select") {
                         this.selIdx = K.clamp(
                             this.selIdx,
                             this.menu.opts.findIndex(x => !x.hidden),
@@ -314,7 +344,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     commandChunks = [];
                 },
                 // MARK: __updateSelected()
-                async __updateSelected(this: GameObj<PtyMenuComp | PtyComp>) {
+                async __updateSelected(this: GameObj<PtyMenuComp | PtyComp | TextComp>) {
                     if (disabled) return;
                     switch (this.menu.type) {
                         case "submenu":
@@ -340,15 +370,28 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 siChunk.text = st;
                                 textChunks.forEach(c => this.styleChunk(c, this.selStyle, st.indexOf("*") !== -1));
                             }
-                            // null op to force refresh
-                            await this.type("");
-                            this.chunks.pop();
                             break;
+                        case "range":
+                            if (!rangeChunks) throw new Error("unreachable");
+                            const numStr = this.menu.value.toString();
+                            // TODO: this only works for monospaced fonts with width==height
+                            // but my font is like that so it works ¯\_(ツ)_/¯
+                            const width = (this.width / this.textSize) - 4 - numStr.length;
+                            const before = Math.floor(K.mapc(this.menu.value, this.menu.displayRange[0], this.menu.displayRange[1], 0, width));
+                            const after = Math.ceil(K.mapc(this.menu.value, this.menu.displayRange[0], this.menu.displayRange[1], width, 0));
+                            rangeChunks.numstr.text = numStr;
+                            rangeChunks.bar.text = `[${"-".repeat(before)}@${"-".repeat(after)}]`;
+                            break;
+                        case "string":
+                            throw "TODO: not implemented";
                         case "action":
                             break;
                         default:
                             throw new Error("Unknown menu type " + (this.menu as any).type);
                     }
+                    // null op to force refresh
+                    await this.type("");
+                    this.chunks.pop();
                 },
                 // MARK: doit()
                 async doit(this: GameObj<PtyMenuComp | PtyComp>) {
@@ -368,7 +411,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 if (disabled) break;
                                 beginLen = this.chunks.length;
                                 this.menu = this.backStack.pop()!;
-                            } else {
+                            } else if (this.menu.type === "submenu" || this.menu.type === "select") {
                                 this.selIdx = this.menu.opts.findIndex(x => !x.hidden);
                             }
                             await this.__redraw();
@@ -383,6 +426,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 this.menu.selected = this.selIdx;
                             }
                             await this.__updateSelected();
+                            break;
+                        case "range":
+                            // nothing to do with this one
                             break;
                         case "action":
                             throw "unreachable";
@@ -412,19 +458,27 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 async switch(direction) {
                     if (disabled) return;
                     direction = direction.toAxis();
-                    const origIndex = this.selIdx;
-                    if (this.menu.type !== "action") {
-                        this.selIdx += direction.x + ((this.menu as any).numColumns ?? 1) * direction.y;
+                    var changed = false;
+                    if (this.menu.type === "submenu" || this.menu.type === "select") {
+                        this.selIdx += direction.y + direction.x;
                         // skip over hidden entries
                         while (this.menu.opts[this.selIdx]?.hidden)
                             this.selIdx += direction.x + direction.y;
-                        // clamp to valid range of entries (account for hidden ones at end)
+                        // clamp to valid range of entries
+                        const old = this.selIdx;
                         this.selIdx = K.clamp(
                             this.selIdx,
+                            // account for hidden ones at ends
                             this.menu.opts.findIndex(x => !x.hidden),
                             this.menu.opts.findLastIndex(x => !x.hidden));
+                        changed = old !== this.selIdx;
                     }
-                    if (origIndex === this.selIdx) {
+                    else if (this.menu.type === "range") {
+                        const old = this.menu.value;
+                        this.menu.value = K.clamp(this.menu.value + direction.x - direction.y, this.menu.range[0], this.menu.range[1]);
+                        changed = old !== this.menu.value;
+                    }
+                    if (!changed) {
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                     } else if (opt?.sounds?.switch) this.playSoundCb?.(opt.sounds.switch);
                     await this.__updateSelected();
