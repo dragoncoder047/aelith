@@ -33,15 +33,17 @@ K.loadZzFXM("bbb", bbb);
 K.loadZzFXM("ccc", ccc);
 
 // idk where else to put this
-K.strings.switch = switchData => {
-    const [key, ...caseStrings] = switchData.split("~");
-    const procCases = {} as Record<string, string>;
-    for (var caseStr of caseStrings) {
-        const [caseKey, caseValue] = caseStr.split(":");
-        procCases[caseKey!] = caseValue!;
+K.strings.fn = {
+    switch(switchData) {
+        const [key, ...caseStrings] = switchData.split("~");
+        const procCases = {} as Record<string, string>;
+        for (var caseStr of caseStrings) {
+            const [caseKey, caseValue] = caseStr.split(":");
+            procCases[caseKey!] = caseValue!;
+        }
+        return String(procCases[key!]);
     }
-    return String(procCases[key!]);
-}
+};
 
 // Start music in background
 export const musicPlay = playMusic({

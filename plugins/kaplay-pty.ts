@@ -460,12 +460,12 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     direction = direction.toAxis();
                     var changed = false;
                     if (this.menu.type === "submenu" || this.menu.type === "select") {
+                        const old = this.selIdx;
                         this.selIdx += direction.y + direction.x;
                         // skip over hidden entries
                         while (this.menu.opts[this.selIdx]?.hidden)
                             this.selIdx += direction.x + direction.y;
                         // clamp to valid range of entries
-                        const old = this.selIdx;
                         this.selIdx = K.clamp(
                             this.selIdx,
                             // account for hidden ones at ends

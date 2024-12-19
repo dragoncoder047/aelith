@@ -100,7 +100,12 @@ const MANPAGE_OPEN_HANDLERS = [
 ];
 
 export async function showManpage(isShown: boolean) {
-    if (!(player.holdingItem?.has("lore"))) isShown = false;
+    var sound: string | undefined = isShown ? "switch_on" : "switch_off";
+    if (!(player.holdingItem?.has("lore"))) {
+        isShown = false;
+        sound = undefined;
+    }
+    if (sound) player.playSound(sound);
     player.manpage!.hidden = !isShown;
     if (isShown) player.recalculateManpage();
     await nextFrame();

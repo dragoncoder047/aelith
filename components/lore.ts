@@ -9,9 +9,9 @@ export interface LoreComp extends Comp {
         seen: boolean
     },
 }
-export function lore(lore: LoreComp["lore"] = { seen: false }): LoreComp {
+export function lore(lore: Omit<LoreComp["lore"], "seen"> = {}): LoreComp {
     return {
         id: "lore",
-        lore,
+        lore: Object.assign({ seen: false }, lore),
     }
 }

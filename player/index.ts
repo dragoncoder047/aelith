@@ -216,7 +216,6 @@ function playerComp(): PlayerComp {
          * @param impactVel Velocity of impact, if provided
          */
         playSound(this: GameObj<PosComp | PlayerComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel = undefined) {
-            if (this.paused) return;
             if (!this.sfxEnabled) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();

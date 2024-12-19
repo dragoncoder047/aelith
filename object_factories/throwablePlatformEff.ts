@@ -1,4 +1,5 @@
 import { Tag, Vec2 } from "kaplay";
+import { thudder } from "../components/thudder";
 import { K } from "../init";
 import { player } from "../player";
 
@@ -18,6 +19,7 @@ export function throwablePlatformEff() {
                 return true;
             },
         }),
+        thudder(),
         "throwable" as Tag,
         "noCollideWithTail" as Tag,
     ];

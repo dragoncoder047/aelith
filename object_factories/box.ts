@@ -36,7 +36,6 @@ export function box(): CompList<any> {
             ]),
         }),
         K.tile({ isObstacle: true }),
-        thudder(),
         grabbable(),
         holdOffset(K.vec2(0)),
         K.layer("boxes"),
