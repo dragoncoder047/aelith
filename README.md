@@ -56,12 +56,13 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## Other ideas
 
-* [ ] Finish writing man pages for all the types of continuations
+* [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
+* [X] Finish writing man pages for all the types of continuations
+  * [ ] Do translations
 * [X] Fix the async continuation to arm and capture separately, so you can use the same control to throw it while it is armed
   * [X] New sprite for trigger token `Promise`
 * [ ] Revise gamepad controls for interacting
   * [ ] More like Minecraft controls?
-* [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture
 * [X] New sprite for "target" and "holding" ends of continuation
 * [ ] Use firewall somewhere else
 * [ ] Add player head can turn to look at whatever is being looked at
