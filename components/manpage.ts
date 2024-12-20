@@ -122,7 +122,16 @@ export function manpage(): ManpageComp {
                 width: theWidth,
                 height: botTxt.height + this.margin,
             });
-            K.drawFormattedText(botTxt);
+            if (this.scrollPos < maxScroll)
+                K.drawFormattedText(botTxt);
+            else {
+                K.drawFormattedText(K.formatText({
+                    ...botTxt.opt,
+                    text: "(END)",
+                    shader: "invert",
+                    uniform: { u_bg_color: K.WHITE },
+                }));
+            }
         }
     }
 }

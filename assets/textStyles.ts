@@ -60,7 +60,7 @@ export const STYLES: TextComp["textStyles"] = {
         return {
             opacity: K.wave(0, 1, K.time() * 3 * Math.PI) > 0.3 ? 1 : 0,
         };
-    }
+    },
 };
 
 // add all the continuation colors
