@@ -179,6 +179,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
 }
 
 async function onPaused() {
+    player.playSound("typing");
     player.controlText.t = "";
     player.addControlText("&msg.ctlHint.pause.back");
     player.addControlText("&msg.ctlHint.pause.select");
@@ -188,6 +189,7 @@ async function onPaused() {
 }
 
 async function onUnpaused() {
+    player.playSound("typing");
     await PAUSE_MENU_OBJ.quitMenu();
     await PAUSE_MENU_OBJ.command(
         { text: "fg %1", styles: ["command"] },

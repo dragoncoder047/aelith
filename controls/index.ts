@@ -100,7 +100,7 @@ const MANPAGE_OPEN_HANDLERS = [
 ];
 
 export async function showManpage(isShown: boolean) {
-    var sound: string | undefined = isShown ? "switch_on" : "switch_off";
+    var sound: string | undefined = "typing";
     if (!(player.holdingItem?.has("lore"))) {
         isShown = false;
         sound = undefined;
