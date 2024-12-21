@@ -106,6 +106,7 @@ export interface PtyMenuCompOpt {
         switch?: string
         back?: string
         error?: string
+        typing?: string
     },
     stringSubmitKey?: Key,
     stringCancelKey?: Key,
@@ -458,8 +459,14 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                     await nextFrame();
                                     await nextFrame();
                                     inputListener.typedText = this.menu.value;
-                                    inputListener.onCharInput(async () => await this.__updateSelected());
-                                    inputListener.onKeyPressRepeat("backspace", async () => await this.__updateSelected());
+                                    inputListener.onCharInput(() => {
+                                        if (opt?.sounds?.typing) this.playSoundCb?.(opt.sounds.typing);
+                                        this.__updateSelected();
+                                    });
+                                    inputListener.onKeyPressRepeat("backspace", () => {
+                                        if (opt?.sounds?.typing) this.playSoundCb?.(opt.sounds.typing);
+                                        this.__updateSelected();
+                                    });
                                     inputListener.onKeyPress(opt.stringCancelKey!, async () => {
                                         if (this.menu.type !== "string") throw new Error("unreachable");
                                         this.menu.value = originalText!;

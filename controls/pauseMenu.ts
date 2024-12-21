@@ -135,7 +135,8 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
             switch: "footsteps",
             back: "switch_off",
             doit: "climbing",
-            error: "command_fail"
+            error: "command_fail",
+            typing: "typing",
         },
         playSoundCb: sound => player.playSound(sound),
     }));
