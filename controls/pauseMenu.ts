@@ -83,10 +83,11 @@ export const PAUSE_MENU: PtyMenu = {
         {
             id: "testing",
             name: "testing testing",
-            type: "range",
-            range: [0, 100],
-            displayRange: [0, 100],
-            value: 40,
+            prompt: "Enter an IP address:",
+            type: "string",
+            value: "0.0.0.0",
+            validator: /^(\d{1,3}\.){3}\d{1,3}$/,
+            invalidMsg: "Invalid IP address",
             hidden: true
         }
     ]
@@ -114,6 +115,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         await onPaused();
     });
     pauseListener.onButtonPress("pause_unpause", async () => {
+        if (K.isCapturingInput()) return;
         if (PAUSE_MENU_OBJ.menu !== PAUSE_MENU) return;
         player.hidden = player.paused = false;
         K.get("tail").forEach(p => p.hidden = p.paused = false);
@@ -124,6 +126,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     pauseListener.paused = true;
     pauseListener.onUpdate(() => {
         copyPreferences();
+        console.log("is capturing input", K.isCapturingInput());
     });
 
     // setup menu
@@ -138,12 +141,28 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     }));
 
     // setup navigation controls
-    pauseListener.onButtonPress("nav_left", () => PAUSE_MENU_OBJ.switch(K.LEFT))
-    pauseListener.onButtonPress("nav_right", () => PAUSE_MENU_OBJ.switch(K.RIGHT))
-    pauseListener.onButtonPress("nav_up", () => PAUSE_MENU_OBJ.switch(K.UP))
-    pauseListener.onButtonPress("nav_down", () => PAUSE_MENU_OBJ.switch(K.DOWN))
-    pauseListener.onButtonPress("nav_select", () => PAUSE_MENU_OBJ.doit())
+    pauseListener.onButtonPress("nav_left", () => {
+        if (K.isCapturingInput()) return;
+        PAUSE_MENU_OBJ.switch(K.LEFT);
+    })
+    pauseListener.onButtonPress("nav_right", () => {
+        if (K.isCapturingInput()) return;
+        PAUSE_MENU_OBJ.switch(K.RIGHT);
+    })
+    pauseListener.onButtonPress("nav_up", () => {
+        if (K.isCapturingInput()) return;
+        PAUSE_MENU_OBJ.switch(K.UP);
+    })
+    pauseListener.onButtonPress("nav_down", () => {
+        if (K.isCapturingInput()) return;
+        PAUSE_MENU_OBJ.switch(K.DOWN);
+    })
+    pauseListener.onButtonPress("nav_select", () => {
+        if (K.isCapturingInput()) return;
+        PAUSE_MENU_OBJ.doit();
+    })
     pauseListener.onButtonPress("nav_back", () => {
+        if (K.isCapturingInput()) return;
         if (PAUSE_MENU_OBJ.backStack.length > 0) PAUSE_MENU_OBJ.back();
         else {
             // trigger an unpause
