@@ -49,7 +49,9 @@
             "pMenu": {
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",
-                "back": "\\[backspace]"
+                "back": "\\[backspace]",
+                "editSubmit": "\\[enter]",
+                "editCancel": "\\[esc]"
             },
             "manpage": {
                 "scroll": "\\[scroll]/\\[WS]/\\[&arrow.up&arrow.down]",
@@ -106,5 +108,6 @@
         "select": "-",
         "start": "+"
     },
-    "startupDebuggerCmd": "agdb pm 4242.core"
+    "startupDebuggerCmd": "agdb pm 4242.core",
+    "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)"
 }

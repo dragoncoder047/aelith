@@ -80,7 +80,9 @@
             "open": "&control.pause pause game",
             "switch": "&control.pMenu.switch switch",
             "select": "&control.pMenu.select select",
-            "back": "&control.pMenu.back back"
+            "back": "&control.pMenu.back back",
+            "editSubmit": "&c.keyboard.pMenu.editSubmit submit",
+            "editCancel": "&c.keyboard.pMenu.editCancel cancel"
         },
         "viewInfo": "&control.info inspect",
         "manpage": {

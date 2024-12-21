@@ -126,7 +126,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     pauseListener.paused = true;
     pauseListener.onUpdate(() => {
         copyPreferences();
-        console.log("is capturing input", K.isCapturingInput());
+        player.controlText.data.stringEditing = String(!!K.isCapturingInput());
     });
 
     // setup menu
@@ -180,10 +180,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
 
 async function onPaused() {
     player.playSound("typing");
-    player.controlText.t = "";
-    player.addControlText("&msg.ctlHint.pause.back");
-    player.addControlText("&msg.ctlHint.pause.select");
-    player.addControlText("&msg.ctlHint.pause.switch");
+    player.controlText.t = "&pauseMenuCtlHint";
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  agdb pm 4242.core\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
