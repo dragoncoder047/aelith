@@ -9,7 +9,7 @@
         "dev:build": "node build.mjs -w",
         "dev:serve": "python3 -m http.server",
         "dev": "pnpm run \"/^dev:.*/\"",
-        "lint": "tsc",
+        "lint": "tsc && node lint_strings.mjs",
         "linecount": "for f in `git ls-files -- '[^.]**.*'`; do enca $f -L none | grep -ie \"UTF-8\\|ASCII\" -q && echo $f || true; done | xargs wc -l"
     },
     "license": "GPL-3.0-only",
