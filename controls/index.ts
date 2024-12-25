@@ -7,7 +7,7 @@ import { nextFrame } from "../utils";
 // Controls
 
 export function getMotionVector(): Vec2 {
-    const leftstickRaw = K.getGamepadStick("left").reflect(K.RIGHT);
+    const leftstickRaw = K.getGamepadStick("left")//.reflect(K.RIGHT);
     const leftstick = leftstickRaw.slen() > 0.01 ? leftstickRaw : K.vec2(0);
     const keystick = K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
