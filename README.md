@@ -57,7 +57,6 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 ## Other ideas
 
 * [ ] Add pause menu option to reflect left stick left or right (Xbox controller seems to be reflected, PS5 isn't)
-* [ ] Fix dynamic text so that it changes to gamepad first if only the stick is used first (possibly bug in Kaplay)
 * [ ] Fix control hints overlapping with health bar
 * [ ] Make gamepad type persistent in localStorage
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
