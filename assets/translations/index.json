@@ -12,16 +12,16 @@
     "c": {
         "gamepad": {
             "move": "(lstick)",
-            "sprint": "(&msg.press lstick)",
+            "sprint": "\\[lstick]",
             "jump": "(&button.south)",
             "aim": "(rstick)",
             "look": "(rstick)",
             "info": "(&button.north)",
-            "interact": "(&msg.press rstick)",
+            "interact": "\\[rstick]",
             "throw": "\\[&button.rtrigger]",
             "invoke": "(&button.east)",
             "modify": "\\[d-pad]",
-            "inventory.scroll": "\\[d-pad]",
+            "inventory.scroll": "\\[&button.lshoulder]/\\[&button.rshoulder]",
             "pause": "(&button.start)",
             "pMenu": {
                 "switch": "\\[d-pad]",

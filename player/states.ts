@@ -7,7 +7,7 @@ MANPAGE_CLOSED_HANDLERS.push(
     player.onStateUpdate("normal", () => {
         if (player.isGrounded() && Math.abs(getMotionVector().x) > Number.EPSILON) {
             if (player.getCurAnim()?.name != "walking") player.play("walking");
-            player.animSpeed = getMotionVector().len();
+            player.animSpeed = Math.abs(getMotionVector().x);
         }
         else {
             if (player.getCurAnim()?.name != "idle") player.play("idle");

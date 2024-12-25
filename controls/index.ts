@@ -62,6 +62,7 @@ export const MANPAGE_CLOSED_HANDLERS = [
         else player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
     }),
     player.onGamepadStick("right", xy => {
+        if (xy.slen() < 0.01) return;
         player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
     }),
 

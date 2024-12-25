@@ -35,11 +35,11 @@ export const CONTROLS: Controls = {
     // inventory controls
     inv_previous: {
         keyboard: ["z"],
-        gamepad: ["dpad-left"]
+        gamepad: ["lshoulder"]
     },
     inv_next: {
         keyboard: ["c"],
-        gamepad: ["dpad-right"]
+        gamepad: ["rshoulder"]
     },
     // inventory mod controls
     invoke_increment: {
