@@ -102,7 +102,7 @@ export function continuationCore(
                 var obj = e.obj;
                 const canClone = e.obj.has("cloneable");
                 const shouldClone = (
-                    this.params.reverseTeleport
+                    !this.params.reverseTeleport
                     && (player.inventory.includes(e.obj as any) ? this.captured.playerPos : e.obj.pos)
                         .dist(this.captured.playerPos) > this.params.radius)
                 if (e.obj.has("body") && !e.obj.isStatic) {
