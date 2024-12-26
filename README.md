@@ -64,8 +64,8 @@ Something went wrong in the computer system, and a debugger has been sent in to 
   * [ ] Do translations
 * [X] Fix the async continuation to arm and capture separately, so you can use the same control to throw it while it is armed
   * [X] New sprite for trigger token `Promise`
-* [ ] Revise gamepad controls for interacting
-  * [ ] More like Minecraft controls?
+* [X] Revise gamepad controls for interacting
+  * [X] More like Minecraft controls?
 * [X] New sprite for "target" and "holding" ends of continuation
 * [ ] Use firewall somewhere else
 * [ ] Add player head can turn to look at whatever is being looked at
@@ -78,7 +78,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
     * They can respawn from a checkpoint
 * [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
 * [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
-  * [ ] add rumble effects for game controller users?
+  * [X] add rumble effects for game controller users?
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
