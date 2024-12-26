@@ -109,7 +109,7 @@ export function continuationCore(
                     if (shouldClone && canClone) {
                         // It is out of range, clone it
                         obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
-                        obj.tag("machine");
+                        e.obj.tags.forEach(t => obj.tag(t));
                     }
                     // Update pos and vel
                     obj.pos = e.pos!.add(reverseDelta);
