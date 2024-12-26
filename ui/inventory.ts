@@ -23,7 +23,7 @@ function updateInventory() {
 }
 
 const btnLeft = UI.add([
-    K.text("\x11", {
+    K.text("\u25C4", {
         size: 32 / SCALE,
     }),
     K.pos(),
@@ -69,7 +69,7 @@ const inventory = UI.add([
     }
 ]);
 const btnRight = UI.add([
-    K.text("\x10", {
+    K.text("\u25BA", {
         size: 32 / SCALE,
     }),
     K.pos(),
