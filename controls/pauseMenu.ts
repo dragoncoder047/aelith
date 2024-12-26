@@ -123,7 +123,6 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         K.setCamPos(origCamPos);
         await onUnpaused();
     });
-    pauseListener.paused = true;
     pauseListener.onUpdate(() => {
         copyPreferences();
         player.controlText.data.stringEditing = String(!!K.isCapturingInput());
@@ -170,7 +169,8 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
             K.pressButton("pause_unpause");
             K.releaseButton("pause_unpause");
         }
-    })
+    });
+    pauseListener.paused = true;
 
     // @ts-expect-error
     PAUSE_MENU_OBJ = terminal;
