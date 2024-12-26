@@ -102,14 +102,13 @@ function playerComp(): PlayerComp {
                 this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
                 this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
                 if (this.inventory.length > 0) {
+                    this.addControlText("&msg.ctlHint.switchItem");
                     if (this.holdingItem?.has("lore")) {
                         if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
-                            this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
+                            this.addControlText("&msg.ctlHint.viewInfo");
                         else
-                            this.addControlText("&msg.ctlHint.switchItem    [rainbow]&msg.ctlHint.viewInfo[/rainbow]");
+                            this.addControlText("[rainbow]&msg.ctlHint.viewInfo[/rainbow]");
                     }
-                    else
-                        this.addControlText("&msg.ctlHint.switchItem");
                 }
                 if (this.lookingAt?.has("grabbable"))
                     this.addControlText("&msg.ctlHint.look    &msg.ctlHint.grab");
