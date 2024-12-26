@@ -64,8 +64,8 @@ export const MANPAGE_CLOSED_HANDLERS = [
     player.onGamepadStick("right", xy => {
         if (xy.slen() < 0.01) return;
         // do squared for better control at low forces
-        xy.x *= Math.abs(xy.x);
-        xy.y *= Math.abs(xy.y);
+        xy.x *= Math.abs(xy.x) ** 2;
+        xy.y *= Math.abs(xy.y) ** 2;
         player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
     }),
 
