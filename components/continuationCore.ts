@@ -93,6 +93,7 @@ export function continuationCore(
             }
 
             player.moveBy(delta);
+            if (!delta.isZero()) player.vel = K.vec2(0);
             K.get<PosComp>("tail").forEach(t => t.pos = player.worldPos()!);
             player.playSound("teleport");
             player.trigger("teleport");
