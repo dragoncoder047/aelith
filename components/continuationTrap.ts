@@ -95,11 +95,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
-                if (this.isDeferring) {
-                    if (this.params.deferred)
-                        this.capture();
-                }
-                else this.prepare();
+                if (!this.params.deferred || !this.isDeferring) this.prepare();
             });
             // TODO: rework this mess
             this.on("modify", (delta: number) => {
