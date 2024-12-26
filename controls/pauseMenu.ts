@@ -8,6 +8,7 @@ import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { musicPlay } from "../assets";
 import { nextFrame } from "../utils";
 import { showManpage } from ".";
+import { detectGamepadType } from "./autodetectGamepad";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -206,3 +207,13 @@ export function copyPreferences() {
     player.controlText.hidden = !switches?.includes("controlHints");
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }
+
+K.onGamepadConnect(g => {
+    const id = navigator.getGamepads()[g.index]!.id;
+    const which = detectGamepadType(id);
+    if (which !== undefined) {
+        // @ts-ignore
+        PAUSE_MENU.opts[1].selected = PAUSE_MENU.opts[1].opts.findIndex(x => x.value === which);
+        copyPreferences();
+    }
+});

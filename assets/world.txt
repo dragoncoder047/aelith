@@ -11,7 +11,7 @@
 %                          %                       =                 N                                                          % (t)()s(width)12bs3bn0m(startupText)d
 %                          %                       =                                                                            %
 %                          %                       = %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                          %                       =                   @  [T]<                                                  % [(name)(async)sz]
+%                          %                       =                   @     <                                                  %
 %                          %                       =                         <                                         M      I % 2g(ii)iz(t)(&msg.congrats)s(width)10bsz
 %                          %                       =                         <                                              Az  %
 %                          %                       =                        I<M                                               = % 2g(t)(&msg.wrongWayLeft)sz(1 s onCollide|player)vz
