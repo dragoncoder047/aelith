@@ -21,7 +21,7 @@ export const PAUSE_MENU: PtyMenu = {
             name: "&msg.pause.preferences",
             type: "select",
             opts: [
-                { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true },
+                { text: "&msg.pause.controllerRumble", value: "rumble" },
                 { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
                 { text: "&msg.pause.showControlHints", value: "controlHints" },
                 { text: "&msg.pause.playBgMusic", value: "music" },
@@ -202,6 +202,7 @@ export function copyPreferences() {
     timer.opacity = +switches?.includes("timer");
     musicPlay.paused = !switches?.includes("music");
     player.sfxEnabled = switches?.includes("sfx");
+    K.rumble.enabled = switches?.includes("rumble");
     player.controlText.hidden = !switches?.includes("controlHints");
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }

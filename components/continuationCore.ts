@@ -95,6 +95,7 @@ export function continuationCore(
             player.moveBy(delta);
             K.get<PosComp>("tail").forEach(t => t.pos = player.worldPos()!);
             player.playSound("teleport");
+            player.trigger("teleport");
             // K.setCamPos(K.getCamPos().add(delta));
             for (var e of this.captured.objects) {
                 var obj = e.obj;

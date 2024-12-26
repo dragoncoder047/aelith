@@ -6,6 +6,7 @@ import { kaplayPTY } from "./plugins/kaplay-pty";
 import { kaplaySprings } from "./plugins/kaplay-springs";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
+import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 
 export const K = kaplay({
     crisp: true,
@@ -19,7 +20,8 @@ export const K = kaplay({
         kaplayZzFXM,
         kaplaySprings,
         kaplayDynamicStrings,
-        kaplayPTY
+        kaplayPTY,
+        kaplayRumble
     ],
 });
 

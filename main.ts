@@ -6,6 +6,7 @@ import "./bsod";
 import type { LinkComp } from "./components/linked";
 import { GRAVITY } from "./constants";
 import "./controls";
+import "./controls/gamepadRumble";
 import "./debugLinkage";
 import { player } from "./player";
 import "./player/states";

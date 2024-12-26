@@ -1,6 +1,7 @@
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
 import { playMusic } from "./music";
+import rumbleEffects from "../assets/rumbleEffects.json";
 import recolorRedShader from "./recolor-red.glsl";
 import { aaa, bbb, ccc } from "./songs";
 import { sounds } from "./sounds";
@@ -19,6 +20,7 @@ import worldFileSrc from "./world.txt";
 
 // Load assets
 K.loadSpriteAtlas(spritemapDataURL, spritemapDef);
+K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
 K.addStrings(strings);
 K.setLanguages(["en", "es", "de", "ja"]);
