@@ -12,12 +12,12 @@
     "c": {
         "gamepad": {
             "move": "(lstick)",
-            "sprint": "\\[lstick]",
+            "sprint": "\\[&button.lstick]",
             "jump": "(&button.south)",
             "aim": "(rstick)",
             "look": "(rstick)",
             "info": "(&button.north)",
-            "interact": "\\[rstick]",
+            "interact": "\\[&button.lstick]",
             "throw": "\\[&button.rtrigger]",
             "invoke": "(&button.east)",
             "modify": "\\[d-pad]",
@@ -70,7 +70,9 @@
         "ltrigger": "LT",
         "rtrigger": "RT",
         "select": "view",
-        "start": "menu"
+        "start": "menu",
+        "lstick": "LS",
+        "rstick": "RS"
     },
     "ps4": {
         "north": "\u25b2",
@@ -82,7 +84,9 @@
         "rshoulder": "R1",
         "rtrigger": "R2",
         "select": "share",
-        "start": "options"
+        "start": "options",
+        "lstick": "L3",
+        "rstick": "R3"
     },
     "ps5": {
         "north": "\u25b2",
@@ -94,7 +98,9 @@
         "rshoulder": "R1",
         "rtrigger": "R2",
         "select": "create",
-        "start": "options"
+        "start": "options",
+        "lstick": "L3",
+        "rstick": "R3"
     },
     "switch": {
         "north": "X",
@@ -106,7 +112,9 @@
         "rshoulder": "R",
         "rtrigger": "ZR",
         "select": "-",
-        "start": "+"
+        "start": "+",
+        "lstick": "LS",
+        "rstick": "RS"
     },
     "startupDebuggerCmd": "agdb pm 4242.core",
     "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)"
