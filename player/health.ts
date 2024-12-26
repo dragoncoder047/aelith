@@ -61,7 +61,7 @@ player.onDeath(async () => {
     musicPlay.paused = true;
     K.play("die");
     MParser.pauseWorld(true);
-    player.scrollInventory(-Infinity);
+    player.scrollInventory(-player.inventory.length);
     player.trigger("update");
     player.paused = true;
     await K.tween(1, 0, 2, x => player.opacity = x);
@@ -117,6 +117,7 @@ player.onDeath(async () => {
         }
     }
     pauseListener.paused = false;
+    player.controlText.t = "&pauseMenuCtlHint";
     await PAUSE_MENU_OBJ.beginMenu();
 });
 
