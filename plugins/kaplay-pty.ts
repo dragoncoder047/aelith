@@ -252,7 +252,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 selIdx: 0,
                 selStyle: "selected",
                 cmdStyle: "command",
-                ptrText: "\u001a",
+                ptrText: "\u2192",
                 playSoundCb: opt.playSoundCb ?? K.play,
                 get disabled() { return disabled; },
                 __backAll(this: GameObj<PtyMenuComp | PtyComp>) {

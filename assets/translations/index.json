@@ -1,10 +1,10 @@
 {
     "tab": "    ",
     "arrow": {
-        "left": "\u001b",
-        "up": "\u0018",
-        "right": "\u001a",
-        "down": "\u0019"
+        "left": "\u2190",
+        "up": "\u2191",
+        "right": "\u2192",
+        "down": "\u2193"
     },
     "gamename": "[gamename]debugger[/gamename];",
     "msg": "&&lang",
