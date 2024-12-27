@@ -32,14 +32,9 @@ const btnLeft = UI.add([
     K.anchor("botleft"),
     K.color(K.GREEN.darken(127)),
     {
-        add(this: GameObj<PosComp | TextComp>) {
-            const func = () => {
-                this.pos = K.vec2(MARGIN, K.height() - (MARGIN * 2 + healthbar.height)
-                    + K.height() * +(!player.canScrollInventory(-1) || player.hidden));
-            };
-            K.onResize(func);
-            player.on("inventoryChange", func);
-            func();
+        update(this: GameObj<PosComp | TextComp>) {
+            this.pos = K.vec2(MARGIN, K.height() - (MARGIN * 2 + healthbar.height)
+                + K.height() * +(!player.canScrollInventory(-1) || player.hidden));
         }
     }
 ]);
@@ -56,15 +51,10 @@ const inventory = UI.add([
     K.anchor("botleft"),
     K.color(K.GREEN.darken(50)),
     {
-        add(this: GameObj<PosComp | TextComp>) {
-            const func = () => {
-                this.pos = K.vec2(
-                    MARGIN + btnLeft.pos.x + btnLeft.width,
-                    -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +player.hidden));
-            };
-            K.onResize(func);
-            player.on("inventoryChange", func);
-            func();
+        update(this: GameObj<PosComp | TextComp>) {
+            this.pos = K.vec2(
+                MARGIN + btnLeft.pos.x + btnLeft.width,
+                -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +player.hidden));
         }
     }
 ]);
@@ -78,15 +68,10 @@ const btnRight = UI.add([
     K.anchor("botleft"),
     K.color(K.GREEN.darken(127)),
     {
-        add(this: GameObj<PosComp | TextComp>) {
-            const func = () => {
-                this.pos = K.vec2(
-                    MARGIN + inventory.pos.x + inventory.width,
-                    -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +(!player.canScrollInventory(1) || player.hidden)));
-            };
-            K.onResize(func);
-            player.on("inventoryChange", func);
-            func();
+        update(this: GameObj<PosComp | TextComp>) {
+            this.pos = K.vec2(
+                MARGIN + inventory.pos.x + inventory.width,
+                -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +(!player.canScrollInventory(1) || player.hidden)));
         }
     }
 ]);

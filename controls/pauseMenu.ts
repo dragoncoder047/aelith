@@ -104,8 +104,11 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         PAUSE_MENU.opts[0].selected.splice(3, 1);
     // setup pause / unpause controls
     var origCamPos = player.pos;
+    var origInventoryIndex = player.holdingIndex;
     pauseListener = K.add([]);
     player.onButtonPress("pause_unpause", async () => {
+        origInventoryIndex = player.holdingIndex;
+        player.scrollInventory(-player.inventory.length);
         player.hidden = player.paused = true;
         K.get("tail").forEach(p => p.hidden = p.paused = true);
         origCamPos = player.pos;
@@ -119,6 +122,7 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         if (K.isCapturingInput()) return;
         if (PAUSE_MENU_OBJ.menu !== PAUSE_MENU) return;
         player.hidden = player.paused = false;
+        player.scrollInventory(origInventoryIndex - player.holdingIndex);
         K.get("tail").forEach(p => p.hidden = p.paused = false);
         pauseListener.paused = true;
         K.setCamPos(origCamPos);

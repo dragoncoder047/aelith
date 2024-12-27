@@ -58,7 +58,6 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ### TODO
 
-* [ ] Fix the bug with stuff falling when player opens pause menu
 * [ ] Add player head can turn to look at whatever is being looked at
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
@@ -90,3 +89,4 @@ Something went wrong in the computer system, and a debugger has been sent in to 
   * [X] More like Minecraft controls?
 * [X] Fix control hints overlapping with health bar
 * [X] Make gamepad type persistent in localStorage -- OR -- autodetect gamepad type
+* [X] Fix the bug with stuff falling when player opens pause menu
