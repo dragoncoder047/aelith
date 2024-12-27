@@ -121,3 +121,22 @@ const foo = player.onUpdate(() => {
     showManpage(false);
     foo.cancel();
 });
+
+K.onGamepadButtonPress("home", async () => {
+    if (K.isFullscreen()) {
+        K.setFullscreen(false);
+    } else {
+        const el = K._k.app.state.canvas;
+        console.log(el);
+        // @ts-ignore
+        await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.() ?? el.mozRequestFullScreen?.() ?? el.msRequestFullscreen?.());
+        // _onFullscreenResized();
+    }
+});
+
+// TODO: why does this not work?
+// function _onFullscreenResized() {
+//     const state = K._k.app.state;
+//     state.lastWidth = state.canvas.offsetWidth;
+//     state.lastHeight = state.canvas.offsetHeight;;
+// }
