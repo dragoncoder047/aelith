@@ -12,7 +12,7 @@
     "c": {
         "gamepad": {
             "move": "(lstick)",
-            "sprint": "\\[&button.lstick]",
+            "sprint": "\\[&button.ltrigger]",
             "jump": "(&button.south)",
             "aim": "(rstick)",
             "look": "(rstick)",

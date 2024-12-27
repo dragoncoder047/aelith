@@ -52,7 +52,7 @@ export const CONTROLS: Controls = {
     // motion controls
     sprint: {
         keyboard: ["shift"],
-        gamepad: ["lstick"],
+        gamepad: ["ltrigger"],
     },
     move_left: {
         keyboard: ["a", "left"],
