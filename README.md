@@ -56,31 +56,36 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## Other ideas
 
-* [ ] Add pause menu option to reflect left stick left or right (Xbox controller seems to be reflected, PS5 isn't)
-* [ ] Fix control hints overlapping with health bar
-* [ ] Make gamepad type persistent in localStorage
+### TODO
+
+* [ ] Add player head can turn to look at whatever is being looked at
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
-* [X] Fix the async continuation to arm and capture separately, so you can use the same control to throw it while it is armed
-  * [X] New sprite for trigger token `Promise`
-* [X] Revise gamepad controls for interacting
-  * [X] More like Minecraft controls?
-* [X] New sprite for "target" and "holding" ends of continuation
 * [ ] Use firewall somewhere else
-* [ ] Add player head can turn to look at whatever is being looked at
 * [X] Add algorithmic choosing songs based on where you are in the game
   * [ ] Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
-* [X] Add enemy "bugs" that can hurt you?
-  * [ ] ~~Final enemy boss?~~
-  * [X] What happens when player dies?
-    * They can respawn from a checkpoint
-* [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
-* [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
-  * [X] add rumble effects for game controller users?
+* [ ] Add pause menu option to reflect left stick left or right (Xbox controller seems to be reflected, PS5 isn't)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
 * [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
   * [ ] Connect to Newgrounds for cloud save and medals?
+
+## DONE
+
+* [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
+  * [X] add rumble effects for game controller users?
+* [X] Add enemy "bugs" that can hurt you?
+  * [ ] ~~Final enemy boss?~~
+  * [X] What happens when player dies?
+    * They can respawn from a checkpoint
+* [X] Add new continuation trap type: that instead of teleporting player back, teleports stuff to be near the player
+* [X] New sprite for "target" and "holding" ends of continuation
+* [X] Fix the async continuation to arm and capture separately, so you can use the same control to throw it while it is armed
+  * [X] New sprite for trigger token `Promise`
+* [X] Revise gamepad controls for interacting
+  * [X] More like Minecraft controls?
+* [X] Fix control hints overlapping with health bar
+* [X] Make gamepad type persistent in localStorage -- OR -- autodetect gamepad type
