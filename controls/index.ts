@@ -94,7 +94,7 @@ export const MANPAGE_CLOSED_HANDLERS = [
 
 function motionHandler2() {
     if (player.manpage!.needsToScroll)
-        player.manpage!.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED * 20;
+        player.manpage!.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED;
 }
 
 const MANPAGE_OPEN_HANDLERS = [

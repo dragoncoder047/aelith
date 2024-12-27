@@ -93,7 +93,7 @@ export const TERMINAL_VELOCITY = 800;
  */
 export const JUMP_FORCE = 300;
 
-export const MODIFY_SPEED = 5;
+export const MODIFY_SPEED = 75;
 
 export const FALL_DAMAGE_THRESHOLD = 300;
 
