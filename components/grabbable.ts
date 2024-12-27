@@ -1,5 +1,6 @@
 import { AreaComp, Comp, GameObj, LayerComp } from "kaplay";
-import { player, PlayerInventoryItem } from "../player";
+import { player } from "../player";
+import { PlayerInventoryItem } from "../player/body";
 
 export interface GrabbableComp extends Comp {
     oldLayer: string,

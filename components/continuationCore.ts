@@ -2,7 +2,8 @@ import { Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, R
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { player, PlayerInventoryItem } from "../player";
+import { player } from "../player";
+import { PlayerInventoryItem } from "../player/body";
 import { CloneableComp } from "./cloneable";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
