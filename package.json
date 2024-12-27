@@ -10,7 +10,8 @@
         "dev:serve": "python3 -m http.server",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc && node lint_strings.mjs",
-        "linecount": "for f in `git ls-files -- '[^.]**.*'`; do enca $f -L none | grep -ie \"UTF-8\\|ASCII\" -q && echo $f || true; done | xargs wc -l"
+        "linecount": "for f in `git ls-files -- '[^.]**.*'`; do enca $f -L none | grep -ie \"UTF-8\\|ASCII\" -q && echo $f || true; done | xargs wc -l",
+        "showip": "ifconfig | grep \"inet \" | grep -Fv 127.0.0.1 | awk '{print $2}'"
     },
     "license": "GPL-3.0-only",
     "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4",
