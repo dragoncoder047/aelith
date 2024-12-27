@@ -9,7 +9,7 @@ function rumbleEffectAndWait(effect: string, controller: KEventController) {
 
 player.onHurt(() => { if (player.hp() > 0) K.rumble("hurt"); });
 player.onDeath(() => K.rumble("died"));
-player.on("grab", () => {
+player.on("inventoryChange", () => {
     if (player.holdingItem?.has("continuation-trap")) K.rumble("get_continuation_trap");
 });
 player.on("getContinuation", () => K.rumble("get_continuation"));
