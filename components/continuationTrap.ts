@@ -187,7 +187,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
-                player.trigger("getContinuation");
             });
         },
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {

@@ -11,8 +11,8 @@ player.onHurt(() => { if (player.hp() > 0) K.rumble("hurt"); });
 player.onDeath(() => K.rumble("died"));
 player.on("inventoryChange", () => {
     if (player.holdingItem?.has("continuation-trap")) K.rumble("get_continuation_trap");
+    if (player.holdingItem?.has("continuation")) K.rumble("get_continuation");
 });
-player.on("getContinuation", () => K.rumble("get_continuation"));
 player.on("teleport", () => K.rumble("teleport"));
 
 const bbk = player.onCollideUpdate("barrier", (_, coll) => {
