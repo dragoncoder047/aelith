@@ -35,7 +35,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 * `yield` -- back-and-forth type; when invoked gives the player a continuation for where they invoked it from so they can go back
 * `switch` -- reverse teleport type: teleports stuff to near you instead of teleporting you
 * `call/cc` -- most powerful continuation trap; can be used infinite number of times and has a controllable radius of effect
-* `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die (TODO: When do they die??) or mess up
+* `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die or mess up
 
 #### Machine types
 
