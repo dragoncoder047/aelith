@@ -10,7 +10,7 @@ export function detectGamepadType(id: string) {
 
     if (id.includes("ps5")
         || id.includes("dualsense")
-        || (vendor === 0x054c && product === 0x0ce6)) // Sony, DS5
+        || (vendor === 0x054c && (product === 0x0ce6 || product === 0x0df2))) // Sony, DS5 / DS5 Edge
         return "ps5";
 
     if (id.includes("xbox") || vendor === 0x045e) // Microsoft
