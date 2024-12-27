@@ -122,6 +122,8 @@ const foo = player.onUpdate(() => {
     foo.cancel();
 });
 
+
+/// xxx: where else to put these?
 K.onGamepadButtonPress("home", async () => {
     if (K.isFullscreen()) {
         K.setFullscreen(false);
@@ -140,3 +142,7 @@ K.onGamepadButtonPress("home", async () => {
 //     state.lastWidth = state.canvas.offsetWidth;
 //     state.lastHeight = state.canvas.offsetHeight;;
 // }
+
+K.onGamepadButtonPress("select", () => {
+    K.debug.inspect = !K.debug.inspect;
+});

@@ -25,8 +25,8 @@
             "pause": "(&button.start)",
             "pMenu": {
                 "switch": "\\[d-pad]",
-                "select": "(&button.east)/(&button.select)",
-                "back": "(&button.west)"
+                "select": "(&button.south)",
+                "back": "(&button.east)"
             },
             "manpage": {
                 "scroll": "(lstick)",

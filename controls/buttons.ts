@@ -89,10 +89,10 @@ export const CONTROLS: Controls = {
     },
     nav_select: {
         keyboard: ["enter"],
-        gamepad: ["east", "select"],
+        gamepad: ["south"],
     },
     nav_back: {
         keyboard: ["backspace"],
-        gamepad: ["west"],
+        gamepad: ["east"],
     }
 };
