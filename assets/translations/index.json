@@ -17,7 +17,7 @@
             "aim": "(rstick)",
             "look": "(rstick)",
             "info": "(&button.north)",
-            "interact": "\\[&button.lstick]",
+            "interact": "\\[&button.rstick]",
             "throw": "\\[&button.rtrigger]",
             "invoke": "(&button.east)",
             "modify": "\\[d-pad]",
