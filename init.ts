@@ -14,6 +14,7 @@ export const K = kaplay({
     scale: SCALE,
     background: "#000000",
     buttons: CONTROLS,
+    touchToMouse: false,
     font: "IBM Mono",
     plugins: [
         kaplayZzFX,
