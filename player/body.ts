@@ -279,7 +279,7 @@ export function playerBody(): PlayerBodyComp {
                 obj.moveTo(this.worldPos()!.sub((obj.parent?.worldPos?.())! ?? K.vec2(0)));
             }
             this.inventory.splice(i, 1);
-            if (this.holdingIndex >= i)
+            if (this.holdingIndex > i)
                 this.holdingIndex--;
             this.trigger("inventoryChange");
         },
