@@ -7,7 +7,7 @@ function rumbleEffectAndWait(effect: string, controller: KEventController) {
     K.rumble(effect).then(() => controller.paused = false);
 }
 
-player.onHurt(() => { if (player.hp() > 0) K.rumble("hurt"); });
+player.onHurt(() => { if (player.hp > 0) K.rumble("hurt"); });
 player.onDeath(() => K.rumble("died"));
 const icc = player.on("inventoryChange", () => {
     if (player.holdingItem?.has("continuation-trap")) K.rumble("get_continuation_trap");

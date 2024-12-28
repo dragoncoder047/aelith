@@ -29,5 +29,5 @@ export const healthbar = UI.add([
 healthbar.use(uiButton(() => { }));
 
 player.onUpdate(() => {
-    healthbar.showHealth(player.hp(), player.maxHP()!);
+    healthbar.showHealth(player.hp, player.maxHP!);
 });

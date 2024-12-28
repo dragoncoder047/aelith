@@ -237,8 +237,10 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             var min = 0, max = 0;
             const anim = this.getAnim(this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled");
             if (anim && typeof anim !== "number") {
-                min = anim.from;
-                max = anim.to;
+                // we know that these use the old style of animation definition
+                // that has a `from` and `to` property
+                min = anim.from!;
+                max = anim.to!;
             }
             if (!this.enabled) blinkTimeout = 0;
             else if (this.isDeferring) blinkTimeout = 0.4;
