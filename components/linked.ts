@@ -18,12 +18,12 @@ export function linked(tag: string): LinkComp {
         get idTag() { return "__linkid_" + _grp; },
         get linkGroup() { return _grp; },
         set linkGroup(newTag) {
-            (this as unknown as GameObj).unuse(this.idTag);
+            (this as unknown as GameObj).untag(this.idTag);
             _grp = newTag;
-            (this as unknown as GameObj).use(this.idTag);
+            (this as unknown as GameObj).tag(this.idTag);
         },
         add(this: GameObj) {
-            this.use(this.idTag);
+            this.tag(this.idTag);
         },
         broadcast(this: GameObj, msg: string) {
             this.query({
