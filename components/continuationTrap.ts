@@ -102,6 +102,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
             this.on("inactive", () => {
                 this.zoop.hidden = true;
+                if (this.params.deferred && this.isDeferring) {
+                    player.holdingIndex = player.inventory.findLastIndex(i => (i as any).controlling === this);
+                }
             });
             K.wait(0.1, () => {
                 Object.assign(this.params, this.behavior);

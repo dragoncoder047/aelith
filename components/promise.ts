@@ -1,4 +1,4 @@
-import { Color, Comp, GameObj, NamedComp, OffScreenComp, PosComp, ShaderComp } from "kaplay";
+import { AreaComp, BodyComp, Color, Comp, GameObj, KEventController, NamedComp, OffScreenComp, PosComp, ShaderComp } from "kaplay";
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE } from "../constants";
 import { K } from "../init";
@@ -8,13 +8,14 @@ import { controllable, ControllableComp } from "./controllable";
 
 
 export interface PromiseComp extends Comp {
-    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp>
+    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
     readonly color: Color
     readonly type: keyof typeof contTypes
 }
 
 export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
+    var _cre: KEventController;
     return {
         id: "promise",
         require: ["shader"],
@@ -38,6 +39,14 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
                 this.controlling.capture();
             });
             this.uniform!.u_targetcolor = this.color;
+            _cre = this.controlling.onCollide((_, col) => {
+                // prevent spurious trigger when it is first thrown, or with non-colliding objects like ladders
+                if (player.inventory.includes(this.controlling as any)
+                    || (this.controlling as any).platformIgnore.has(player)
+                    || col?.target.collisionIgnore.some((t: string) => this.is(t))
+                    || (col?.target && !col.target.has("body"))) return;
+                player.trigger("remoteSense", col?.normal, this.controlling);
+            }) as unknown as KEventController; // because types are wrong. kaplayjs/kaplay#577
         },
         update(this: GameObj<ControllableComp | PromiseComp>) {
             this.controls[0]!.hint = K.sub(
@@ -66,6 +75,9 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
                 opacity: 0.5,
                 color: this.color
             });
-        }
+        },
+        destroy() {
+            _cre?.cancel();
+        },
     }
 }

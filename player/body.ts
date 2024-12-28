@@ -254,8 +254,9 @@ export function playerBody(): PlayerBodyComp {
         addToInventory(this: GameObj<PlayerBodyComp>, obj) {
             if (this.inventory.includes(obj)) return;
             // Put in inventory
+            this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
-            this.scrollInventory(this.inventory.length);
+            this.trigger("inventoryChange");
             if (obj.has("platformEffector"))
                 (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
         },
@@ -279,7 +280,7 @@ export function playerBody(): PlayerBodyComp {
                 obj.moveTo(this.worldPos()!.sub((obj.parent?.worldPos?.())! ?? K.vec2(0)));
             }
             this.inventory.splice(i, 1);
-            if (this.holdingIndex > i)
+            if (this.holdingIndex > i || this.holdingIndex === this.inventory.length)
                 this.holdingIndex--;
             this.trigger("inventoryChange");
         },
@@ -328,7 +329,7 @@ export function playerBody(): PlayerBodyComp {
             this.trigger("inventoryChange");
         },
         canScrollInventory(dir) {
-            return (this.holdingIndex + dir) >= -1 && (this.holdingIndex + dir) < this.inventory.length;
+            return (this.holdingIndex + dir) >= -1 && (this.holdingIndex + dir) < this.inventory.length && this.inventory.length > 0;
         },
         lookAt(this: GameObj<PlayerBodyComp | PosComp | SpriteComp>, pos) {
             if (!pos) {
