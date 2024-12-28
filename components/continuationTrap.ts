@@ -51,12 +51,9 @@ export interface ContinuationTrapComp extends Comp {
     capture(): void
     peekCapture(): ContinuationData
     getPlayerPosData(): Vec2
-    blinkenlights(): void
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
-    var blinkTimeout = 0;
-    var timer = 0;
     return {
         id: "continuation-trap",
         require: ["sprite", "pos", "named", "shader", "lore"],
@@ -138,7 +135,13 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 }
                 else this.zoop.hidden = true;
             }
-            this.blinkenlights();
+
+            const targetAnim = this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
+            if (this.getCurAnim()?.name !== targetAnim) {
+                if (this.hasAnim(targetAnim))
+                    this.play(targetAnim);
+                // if doesn't exist, must be checkpoint type
+            }
         },
         prepare(this: GameObj<ContinuationTrapComp | LoreComp> & PromiseComp["controlling"]) {
             if (!this.enabled) return;
@@ -232,25 +235,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         },
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.params.radius}, preparing: ${this.isDeferring}`;
-        },
-        blinkenlights(this: GameObj<SpriteComp | ContinuationTrapComp>) {
-            var min = 0, max = 0;
-            const anim = this.getAnim(this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled");
-            if (anim && typeof anim !== "number") {
-                // we know that these use the old style of animation definition
-                // that has a `from` and `to` property
-                min = anim.from!;
-                max = anim.to!;
-            }
-            if (!this.enabled) blinkTimeout = 0;
-            else if (this.isDeferring) blinkTimeout = 0.4;
-            else blinkTimeout = K.rand(0.2, 1);
-            if (blinkTimeout > timer) {
-                timer += K.dt();
-                return;
-            }
-            timer = 0;
-            this.frame = !this.isDeferring ? K.randi(min, max + 1) : (min + (((this.frame + 1) - min) % (max - min + 1)));
         },
     };
 }
