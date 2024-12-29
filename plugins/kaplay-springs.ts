@@ -59,7 +59,10 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     }
                 },
                 get actualP2() {
-                    return (this as unknown as GameObj<PosComp>).fromWorld(this.other.toWorld(this.p2));
+                    const flippedP2 = this.p2.clone();
+                    if ((this.other as any).flipX) flippedP2.x *= -1;
+                    if ((this.other as any).flipY) flippedP2.y *= -1;
+                    return (this as unknown as GameObj<PosComp>).fromWorld(this.other.toWorld(flippedP2));
                 },
                 fixedUpdate(this: GameObj<BodyComp | SpringComp>) {
                     const displacement = this.actualP2.sub(this.p1);

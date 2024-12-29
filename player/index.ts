@@ -77,7 +77,7 @@ for (var i = 0; i < numTailSegments; i++) {
         }),
         K.body({
             mass: 0.1,
-            damping: 0.1
+            damping: 2
         }),
         K.spring({
             other: previous as GameObj<BodyComp | PosComp>,
@@ -91,6 +91,56 @@ for (var i = 0; i < numTailSegments; i++) {
                 // @ts-expect-error
                 width: sz,
                 color: tailColor,
+            },
+        }),
+        "tail",
+        "raycastIgnore",
+        {
+            update(this: GameObj<OpacityComp | SpringComp>) {
+                this.hidden = player.hidden || player.opacity === 0;
+                this.drawOpts.opacity = player.opacity;
+            },
+        }
+    ]);
+    pos = pos.add(K.vec2(0, sz));
+}
+
+// Add horn on back of head
+previous = player;
+var pos = K.vec2(0, TILE_SIZE / 2);
+const numHornSegments = 3;
+const maxHornSize = 2.7;
+const hornColor = K.WHITE;
+for (var i = 0; i < numHornSegments; i++) {
+    const sz = K.lerp(1, maxHornSize, (1 - (i / numHornSegments)) ** 2);
+    previous = K.add([
+        K.circle(sz / 2),
+        K.layer("playerTail"),
+        K.opacity(0),
+        K.pos(pos),
+        K.anchor("center"),
+        K.area({
+            collisionIgnore: ["player", "tail", "noCollideWithTail"],
+            friction: FRICTION / 10,
+            restitution: 0,
+        }),
+        K.body({
+            mass: 0.1,
+            damping: 10
+        }),
+        K.spring({
+            other: previous as GameObj<BodyComp | PosComp>,
+            springConstant: 100,
+            springDamping: 100,
+            dampingClamp: 100,
+            length: sz / 3 + (previous?.radius ?? sz / 3),
+            // XXX: parametrize this constant
+            p2: previous === player ? K.vec2(11.2, -25) : K.vec2(0),
+            forceOther: previous !== player,
+            drawOpts: {
+                // @ts-expect-error
+                width: sz,
+                color: hornColor,
             },
         }),
         "tail",
