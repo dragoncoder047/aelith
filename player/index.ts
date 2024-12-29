@@ -1,9 +1,9 @@
-import { BodyComp, GameObj, OpacityComp, PosComp } from "kaplay";
+import { BodyComp, Color, GameObj, PosComp, Vec2 } from "kaplay";
 import { thudder } from "../components/thudder";
 import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { SpringComp } from "../plugins/kaplay-springs";
 import { playerBody, PlayerBodyComp } from "./body";
+import { tail } from "./tail";
 
 export const player = K.add([
     playerBody(),
@@ -51,106 +51,52 @@ export const player = K.add([
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
 
-// @ts-expect-error
-window.player = player;
-
 //------------------------------------------------------------
 
-// add tail
-var previous: GameObj = player;
-var pos = K.vec2(0, TILE_SIZE / 2);
-const numTailSegments = 8;
-const maxTailSize = 4;
-const tailColor = K.WHITE;
-for (var i = 0; i < numTailSegments; i++) {
-    const sz = K.lerp(1, maxTailSize, (1 - (i / numTailSegments)) ** 2);
-    previous = K.add([
-        K.circle(sz / 2),
-        K.layer("playerTail"),
-        K.opacity(0),
-        K.pos(pos),
-        K.anchor("center"),
-        K.area({
-            collisionIgnore: ["player", "tail", "noCollideWithTail"],
-            friction: FRICTION / 10,
-            restitution: 0
-        }),
-        K.body({
-            mass: 0.1,
-            damping: 2
-        }),
-        K.spring({
-            other: previous as GameObj<BodyComp | PosComp>,
-            springConstant: 100,
-            springDamping: 50,
-            dampingClamp: 100,
-            length: sz / 2 + (previous?.radius ?? sz / 2),
-            p2: K.vec2(0, previous === player ? 8 : 0),
-            forceOther: previous !== player,
-            drawOpts: {
-                // @ts-expect-error
-                width: sz,
-                color: tailColor,
-            },
-        }),
-        "tail",
-        "raycastIgnore",
-        {
-            update(this: GameObj<OpacityComp | SpringComp>) {
-                this.hidden = player.hidden || player.opacity === 0;
-                this.drawOpts.opacity = player.opacity;
-            },
-        }
-    ]);
-    pos = pos.add(K.vec2(0, sz));
-}
-
+// Add tail
+addChain(K.vec2(0, 8), 8, 4, K.WHITE, 2, 50, 1 / 2);
 // Add horn on back of head
-previous = player;
-var pos = K.vec2(0, TILE_SIZE / 2);
-const numHornSegments = 3;
-const maxHornSize = 2.7;
-const hornColor = K.WHITE;
-for (var i = 0; i < numHornSegments; i++) {
-    const sz = K.lerp(1, maxHornSize, (1 - (i / numHornSegments)) ** 2);
-    previous = K.add([
-        K.circle(sz / 2),
-        K.layer("playerTail"),
-        K.opacity(0),
-        K.pos(pos),
-        K.anchor("center"),
-        K.area({
-            collisionIgnore: ["player", "tail", "noCollideWithTail"],
-            friction: FRICTION / 10,
-            restitution: 0,
-        }),
-        K.body({
-            mass: 0.1,
-            damping: 10
-        }),
-        K.spring({
-            other: previous as GameObj<BodyComp | PosComp>,
-            springConstant: 100,
-            springDamping: 100,
-            dampingClamp: 100,
-            length: sz / 3 + (previous?.radius ?? sz / 3),
-            // XXX: parametrize this constant
-            p2: previous === player ? K.vec2(11.2, -25) : K.vec2(0),
-            forceOther: previous !== player,
-            drawOpts: {
-                // @ts-expect-error
-                width: sz,
-                color: hornColor,
-            },
-        }),
-        "tail",
-        "raycastIgnore",
-        {
-            update(this: GameObj<OpacityComp | SpringComp>) {
-                this.hidden = player.hidden || player.opacity === 0;
-                this.drawOpts.opacity = player.opacity;
-            }
-        }
-    ]);
-    pos = pos.add(K.vec2(0, sz));
+addChain(K.vec2(11.2, -25), 3, 2.7, K.WHITE, 10, 100, 1 / 3);
+
+
+function addChain(startPos: Vec2, nSeg: number, maxSz: number, color: Color, damping: number, springDamping: number, lenFactor: number) {
+    var previous: GameObj = player;
+    var pos = K.vec2(0, TILE_SIZE / 2);
+    for (var i = 0; i < nSeg; i++) {
+        const sz = K.lerp(1, maxSz, (1 - (i / nSeg)) ** 2);
+        previous = K.add([
+            K.circle(sz / 2),
+            K.layer("playerTail"),
+            K.opacity(0),
+            K.pos(pos),
+            K.anchor("center"),
+            K.area({
+                collisionIgnore: ["player", "tail", "noCollideWithTail"],
+                friction: FRICTION / 10,
+                restitution: 0,
+            }),
+            K.body({
+                mass: 0.1,
+                damping,
+            }),
+            K.spring({
+                other: previous as GameObj<BodyComp | PosComp>,
+                springConstant: 100,
+                springDamping,
+                dampingClamp: 100,
+                length: sz * lenFactor + (previous?.radius ?? sz * lenFactor),
+                p2: previous === player ? startPos : K.vec2(0),
+                forceOther: previous !== player,
+                drawOpts: {
+                    // @ts-expect-error
+                    width: sz,
+                    color,
+                },
+            }),
+            tail(),
+            "tail",
+            "raycastIgnore",
+        ]);
+        pos = pos.add(K.vec2(0, sz));
+    }
 }

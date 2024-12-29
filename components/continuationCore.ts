@@ -7,6 +7,7 @@ import { PlayerInventoryItem } from "../player/body";
 import { CloneableComp } from "./cloneable";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
+import { TailComp } from "../player/tail";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
@@ -95,7 +96,7 @@ export function continuationCore(
 
             player.moveBy(delta);
             if (!delta.isZero()) player.vel = K.vec2(0);
-            K.get<PosComp>("tail").forEach(t => t.pos = player.worldPos()!);
+            K.get<TailComp>("tail").forEach(t => t.restore2Pos());
             player.playSound("teleport");
             player.trigger("teleport");
             // K.setCamPos(K.getCamPos().add(delta));
