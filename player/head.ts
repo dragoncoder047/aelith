@@ -6,6 +6,12 @@ export interface PlayerHeadComp extends Comp {
 }
 
 const HEAD_OFFSET = K.vec2(0, -25);
+const OFFSET_TAB = {
+    idle: [K.vec2(0)],
+    walking: new Array(8).fill(1).map((_, i) => K.vec2(0, i == 2 || i == 6 ? 1 : 0)),
+    jump: new Array(4).fill(1).map((_, i) => K.vec2(0, i + 1)),
+    climbing: new Array(4).fill(1).map(_ => K.vec2(0)),
+} as Record<string, Vec2[]>;
 
 export function playerHead(): PlayerHeadComp {
     return {
@@ -14,7 +20,12 @@ export function playerHead(): PlayerHeadComp {
         fixedUpdate(this: GameObj<PlayerHeadComp | PosComp | SpriteComp | RotateComp | BodyComp>) {
             // track the motion of the body
             const targetPos = HEAD_OFFSET.add(player.pos).add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
-            this.pos = targetPos;
+            var offset = K.vec2(0);
+            const anim = player.getCurAnim();
+            if (anim !== null) {
+                offset = OFFSET_TAB[anim.name]?.[player.animFrame]!;
+            }
+            this.pos = targetPos.add(offset);
             this.vel = K.vec2(0);
 
             // track the rotation of the head
@@ -30,7 +41,7 @@ export function playerHead(): PlayerHeadComp {
             }
 
             // copy the anim
-            if (this.getCurAnim()?.name !== player.getCurAnim()?.name) this.play(player.getCurAnim()!.name);
+            if (this.getCurAnim()?.name !== anim?.name) this.play(anim!.name);
         },
     }
 }
