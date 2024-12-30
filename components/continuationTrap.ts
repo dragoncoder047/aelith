@@ -130,7 +130,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
-                if (this.params.radius > 0
+                if (this.enabled
+                    && this.params.radius > 0
                     && player.manpage!.hidden
                     && player.inventory.includes(this)) {
                     this.zoop.hidden = false;
@@ -193,6 +194,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
+                this.zoop.hidden = true;
             });
         },
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {
