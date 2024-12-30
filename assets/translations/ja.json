@@ -32,10 +32,8 @@
         "manpage": {
             "scroll": "&control.manpage.scroll 続きを表示",
             "exit": "&control.manpage.exit 閉じる"
-        }
-    },
-    "continuation": {
-        "hint": {
+        },
+        "continuation": {
             "default": "&control.invoke キャプチャ継続装置",
             "modify": "&control.modify キャプチャ半径の変更",
             "invoke": {

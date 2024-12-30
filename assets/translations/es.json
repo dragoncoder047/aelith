@@ -32,10 +32,8 @@
         "manpage": {
             "scroll": "&control.manpage.scroll ver más",
             "exit": "&control.manpage.exit cerrar"
-        }
-    },
-    "continuation": {
-        "hint": {
+        },
+        "continuation": {
             "default": "&control.invoke capturar una continuación",
             "modify": "&control.modify cambiar el radio de captura",
             "invoke": {

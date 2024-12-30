@@ -32,10 +32,8 @@
         "manpage": {
             "scroll": "&control.manpage.scroll mehr anzeigen",
             "exit": "&control.manpage.exit schließen"
-        }
-    },
-    "continuation": {
-        "hint": {
+        },
+        "continuation": {
             "default": "&control.invoke Fortsetzung erfassen",
             "modify": "&control.modify Erfassungsradius ändern",
             "invoke": {

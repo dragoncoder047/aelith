@@ -116,7 +116,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
             this.controls[0]!.hint = K.sub(
-                this.data!.hint ?? "&msg.continuation.hint.default",
+                this.data!.hint ?? "&msg.ctlHint.continuation.default",
                 {
                     which: "trap",
                     isDeferring: String(this.isDeferring),

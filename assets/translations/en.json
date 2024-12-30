@@ -37,14 +37,12 @@
                 "section": "4",
                 "secName": "YIELD",
                 "body": "NAME\n&tab[yield]yield[/yield] - switch back and forth between two locations in a program\n\nSYNOPSIS\n&tab[b]yield[/b] [b]--to[/b]=[b]<continuation>[/b]\n\nDESCRIPTION\n&tab[b]yield[/b] is a mechanism that allows the program to stop what it is doing, switch to another task, and then return to the original task. This is useful when two operations must be done in parallel, but they are far apart.\n\nHISTORY\n&tab[b]yield[/b] was introduced in the context of coroutines and generators. It allows a function to return a value and later resume from where it left off. This concept is widely used in languages like Python and JavaScript to handle asynchronous programming and cooperative multitasking."
-
             },
             "async": {
                 "header": "Debugging Tools",
                 "section": "4",
                 "secName": "ASYNC",
                 "body": "NAME\n&tab[async]async[/async], [async]resolve[/async] - defer capturing a continuation\n\nSYNOPSIS\n&tab[b]async[/b] \\[command]\n&tab[b]resolve[/b] <promise>\n\nDESCRIPTION\n&tab[b]async[/b] queues a command in the background, but does not execute it immediately. Instead, it returns a promise that can be used to start the command later using [b]resolve[/b]. This is useful when you want to defer the execution of a command until a later time. Instead of starting the command in the context where it was queued at, the command is started from where the promise was resolved, so the context may be different.\n\nHISTORY\n&tab[b]async[/b] and [b]await[/b] were introduced to simplify asynchronous programming. They allow developers to write asynchronous code that looks synchronous, making it easier to read and maintain. This concept is now a standard feature in many modern programming languages, including JavaScript and Python."
-
             },
             "switch": {
                 "header": "Debugging Tools",
@@ -88,10 +86,8 @@
         "manpage": {
             "scroll": "&control.manpage.scroll view more",
             "exit": "&control.manpage.exit close"
-        }
-    },
-    "continuation": {
-        "hint": {
+        },
+        "continuation": {
             "default": "&control.invoke capture a continuation",
             "throw": "&control.invoke capture a promise",
             "promise": "&control.invoke capture continuation from there",

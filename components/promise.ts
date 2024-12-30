@@ -50,7 +50,7 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
         },
         update(this: GameObj<ControllableComp | PromiseComp>) {
             this.controls[0]!.hint = K.sub(
-                contTypes[this.type].hint ?? "&msg.continuation.hint.invoke.default",
+                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "promise",
                 });

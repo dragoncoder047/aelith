@@ -67,7 +67,7 @@ export function continuationCore(
         },
         update(this: GameObj<ContinuationComp | ControllableComp>) {
             this.controls[0]!.hint = K.sub(
-                contTypes[this.type].hint ?? "&msg.continuation.hint.invoke.default",
+                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "continuation",
                 });
