@@ -32,5 +32,5 @@ window.K = K;
 // const oldOnUpdate = K.onUpdate;
 
 K.onLoadError((which, e) => {
-    throw `Error while loading ${which}: ${e.error?.stack ?? e.error}`;
+    throw `Error while loading ${which}: ${e.error}${e.error?.stack ? `\n\nBacktrace:\n${e.error.stack}` : ""}`;
 });
