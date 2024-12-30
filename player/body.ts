@@ -118,11 +118,14 @@ export function playerBody(): PlayerBodyComp {
         },
         // MARK: fixedUpdate()
         fixedUpdate(this: GameObj<PlayerBodyComp | BodyComp>) {
+            // hide all inventory items
+            this.inventory.forEach(item => item.paused = item.hidden = true);
             // move the grabbing to self
             const h = this.holdingItem;
             if (h !== undefined) {
                 // Clear curPlatform() if I'm standing on it
                 if (this.curPlatform() === h) this.jump(1);
+                h.paused = h.hidden = false;
                 this._pull2Pos(h);
             }
         },
