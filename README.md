@@ -58,7 +58,6 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ### TODO
 
-* [ ] Fix player head lagging behind player body when moving
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
@@ -75,6 +74,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## DONE
 
+* [X] Fix player head lagging behind player body when moving
 * [X] Fix bugs where player head disappears randomly when holding continuation, and horn disappears when invoking continuation
 * [X] Add player head can turn to look at whatever is being looked at
   * [X] Add springy for the head hair/horn

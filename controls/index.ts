@@ -31,6 +31,7 @@ function motionHandler() {
     if (player.state === "normal")
         xy = xy.reject(K.UP);
     player.move(xy.scale(WALK_SPEED));
+    player.head?.move(xy.scale(WALK_SPEED));
     if (xy.x > 0)
         player.flipX = true;
     else if (xy.x < 0)
