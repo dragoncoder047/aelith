@@ -82,17 +82,7 @@ export function playerBody(): PlayerBodyComp {
             other.moveTo(this.worldPos()!.add((other as any).worldTransform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
         },
         // MARK: update()
-        update(this: GameObj<PlayerBodyComp | PosComp | BodyComp | SpriteComp>) {
-            // hide all inventory items
-            this.inventory.forEach(item => item.paused = item.hidden = true);
-            // move the grabbing to self
-            const h = this.holdingItem;
-            if (h !== undefined) {
-                // Clear curPlatform() if I'm standing on it
-                if (this.curPlatform() === h) this.jump(1);
-                h.paused = h.hidden = false;
-                this._pull2Pos(h);
-            }
+        update(this: GameObj<PlayerBodyComp>) {
             // update control text
             this.controlText.t = "";
             if (this.manpage!.hidden) {
@@ -124,6 +114,16 @@ export function playerBody(): PlayerBodyComp {
                 this.addControlText("&msg.ctlHint.manpage.exit");
                 if (this.manpage!.needsToScroll)
                     this.addControlText("&msg.ctlHint.manpage.scroll");
+            }
+        },
+        // MARK: fixedUpdate()
+        fixedUpdate(this: GameObj<PlayerBodyComp | BodyComp>) {
+            // move the grabbing to self
+            const h = this.holdingItem;
+            if (h !== undefined) {
+                // Clear curPlatform() if I'm standing on it
+                if (this.curPlatform() === h) this.jump(1);
+                this._pull2Pos(h);
             }
         },
         /**

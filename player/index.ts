@@ -53,9 +53,10 @@ export const player = K.add([
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
 
-player.head = player.add([
+player.head = K.add([
     playerHead(),
     K.sprite("player_head"),
+    K.layer("player"),
     K.pos(),
     K.body({ isStatic: true }),
     K.area({ shape: new K.Circle(K.vec2(0), 13) }),
@@ -73,6 +74,7 @@ player.head = player.add([
             });
         },
     },
+    "raycastIgnore"
 ]) as any;
 
 //------------------------------------------------------------

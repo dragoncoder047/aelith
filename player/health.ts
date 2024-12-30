@@ -64,7 +64,7 @@ player.onDeath(async () => {
     player.scrollInventory(-player.inventory.length);
     player.trigger("update");
     player.paused = true;
-    await K.tween(1, 0, 2, x => player.opacity = x);
+    await player.fadeOut(2);
     player.hidden = true;
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);

@@ -5,16 +5,16 @@ import { K } from "../init";
 export interface PlayerHeadComp extends Comp {
 }
 
-const NORMAL_POS = K.vec2(0, -25);
+const HEAD_OFFSET = K.vec2(0, -25);
 
 export function playerHead(): PlayerHeadComp {
     return {
         id: "player-head",
         require: ["pos", "sprite", "rotate", "body"],
-        update(this: GameObj<PlayerHeadComp | PosComp | SpriteComp | RotateComp | BodyComp>) {
-            const anim = player.getCurAnim();
+        fixedUpdate(this: GameObj<PlayerHeadComp | PosComp | SpriteComp | RotateComp | BodyComp>) {
             // track the motion of the body
-            this.pos = NORMAL_POS.add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
+            const targetPos = HEAD_OFFSET.add(player.pos).add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
+            this.pos = targetPos;
             this.vel = K.vec2(0);
 
             // track the rotation of the head
@@ -28,6 +28,9 @@ export function playerHead(): PlayerHeadComp {
                 this.flipX = player.flipX;
                 this.flipY = false;
             }
+
+            // copy the anim
+            if (this.getCurAnim()?.name !== player.getCurAnim()?.name) this.play(player.getCurAnim()!.name);
         },
     }
 }
