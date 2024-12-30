@@ -24,3 +24,7 @@ export function ballistics(pos: Vec2, vel: Vec2, t: number) {
     return pos.add(vel.scale(t)).add(K.getGravityDirection().scale(K.getGravity() * t * t / 2));
 }
 
+export function isFirefox() {
+    // @ts-ignore
+    return typeof window.mozInnerScreenX !== 'undefined';
+}

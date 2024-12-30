@@ -59,6 +59,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 ### TODO
 
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
+* [ ] Add warning if browser is Firefox and gamepad, or single Joy-Con
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
 * [ ] Use firewall somewhere else
