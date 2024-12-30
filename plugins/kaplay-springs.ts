@@ -64,7 +64,7 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     if ((this.other as any).flipY) flippedP2.y *= -1;
                     const otherLocalPoint = flippedP2.rotate((this.other as any).angle ?? 0).scale((this.other as any).scale ?? K.vec2(1));
                     const selfLocalPoint = (this as any).fromWorld(this.other.toWorld(otherLocalPoint));
-                    const where = selfLocalPoint.scale(vectorInverse((this as any).scale ?? K.vec2(1))).rotate(-((this as any).angle ?? 0));
+                    const where = selfLocalPoint.scale(((this as any).scale ?? K.vec2(1)).invScale(1)).rotate(-((this as any).angle ?? 0));
                     return where;
                 },
                 fixedUpdate(this: GameObj<BodyComp | SpringComp>) {
@@ -104,8 +104,4 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
             }
         }
     };
-
-    function vectorInverse(v: Vec2): Vec2 {
-        return K.vec2(1 / v.x, 1 / v.y);
-    }
 }
