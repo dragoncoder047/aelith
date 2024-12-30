@@ -3,12 +3,10 @@ import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 
-export function ladder() {
+export function brokenLadder() {
     return [
-        K.sprite("ladder"),
-        // override default with smaller shape to make
-        // falling-off-the-ladder have more realistic bounds
-        ...defaults({ scale: 1.0 / TILE_SIZE }),
+        K.sprite("broken_ladder"),
+        ...defaults({ collisionIgnore: ["*"] }),
         K.offscreen({ hide: true }),
         "ladder" as Tag,
         "raycastIgnore" as Tag,

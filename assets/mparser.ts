@@ -8,6 +8,7 @@ import { K } from "../init";
 import { antivirus } from "../object_factories/antivirus";
 import { barrier } from "../object_factories/barrier";
 import { box } from "../object_factories/box";
+import { brokenLadder } from "../object_factories/brokenLadder";
 import { bugger } from "../object_factories/bugger";
 import { button } from "../object_factories/button";
 import { checkpoint } from "../object_factories/checkpoint";
@@ -23,9 +24,9 @@ import { playerPosition } from "../object_factories/playerPosition";
 import { popupTextNote } from "../object_factories/popupText";
 import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { textNote } from "../object_factories/text";
+import { trapdoor } from "../object_factories/trapdoor";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
-import { trapdoor } from "../object_factories/trapdoor";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -83,6 +84,7 @@ export const MParser: {
         "%": barrier,
         "<": rightDestroyBarrier,
         "=": ladder,
+        "~": brokenLadder
     },
     vars: {},
     // MARK: commands

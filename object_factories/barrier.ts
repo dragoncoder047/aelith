@@ -1,7 +1,8 @@
+import { Tag } from "kaplay";
+import { mergeable } from "../components/mergeable";
 import { FRICTION, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
-import { mergeable } from "../components/mergeable";
 
 export function barrier() {
     return [
@@ -11,6 +12,6 @@ export function barrier() {
         mergeable(),
         ...defaults({ friction: FRICTION }),
         K.offscreen({ hide: true }),
-        "barrier",
+        "barrier" as Tag,
     ]
 }
