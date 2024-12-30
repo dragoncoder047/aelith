@@ -1,29 +1,33 @@
-import { BodyComp, Comp, GameObj, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
+import { BodyComp, CircleComp, Comp, GameObj, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
 import { player } from ".";
 import { K } from "../init";
+import { TailComp } from "./tail";
 
 export interface PlayerHeadComp extends Comp {
+    offset: Vec2
+    offsetTable: Record<string, Vec2[]>
+    hornExcludeRadius: number
 }
-
-const HEAD_OFFSET = K.vec2(0, -25);
-const OFFSET_TAB = {
-    idle: [K.vec2(0)],
-    walking: new Array(8).fill(1).map((_, i) => K.vec2(0, i == 2 || i == 6 ? 1 : 0)),
-    jump: new Array(4).fill(1).map((_, i) => K.vec2(0, i + 1)),
-    climbing: new Array(4).fill(1).map(_ => K.vec2(0)),
-} as Record<string, Vec2[]>;
 
 export function playerHead(): PlayerHeadComp {
     return {
         id: "player-head",
         require: ["pos", "sprite", "rotate", "body"],
+        offset: K.vec2(0, -25),
+        offsetTable: {
+            idle: [K.vec2(0)],
+            walking: new Array(8).fill(1).map((_, i) => K.vec2(0, i == 2 || i == 6 ? 1 : 0)),
+            jump: new Array(4).fill(1).map((_, i) => K.vec2(0, i + 1)),
+            climbing: new Array(4).fill(1).map(_ => K.vec2(0)),
+        },
+        hornExcludeRadius: 12,
         fixedUpdate(this: GameObj<PlayerHeadComp | PosComp | SpriteComp | RotateComp | BodyComp>) {
             // track the motion of the body
-            const targetPos = HEAD_OFFSET.add(player.pos).add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
+            const targetPos = this.offset.add(player.pos).add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
             var offset = K.vec2(0);
             const anim = player.getCurAnim();
             if (anim !== null) {
-                offset = OFFSET_TAB[anim.name]?.[player.animFrame]!;
+                offset = this.offsetTable[anim.name]?.[player.animFrame]!;
             }
             this.pos = targetPos.add(offset);
             this.vel = K.vec2(0);
@@ -42,6 +46,15 @@ export function playerHead(): PlayerHeadComp {
 
             // copy the anim
             if (this.getCurAnim()?.name !== anim?.name) this.play(anim!.name);
+
+            // make sure horn doesn't get close
+            const horns = K.get<TailComp | CircleComp | PosComp>("tail");
+            for (var hornSeg of horns) {
+                const minDist = this.hornExcludeRadius + hornSeg.radius;
+                if (hornSeg.pos.dist(this.pos) < minDist) {
+                    hornSeg.pos = hornSeg.pos.sub(this.pos).unit().scale(minDist).add(this.pos);
+                }
+            }
         },
     }
 }

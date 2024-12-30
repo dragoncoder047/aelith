@@ -59,22 +59,10 @@ player.head = K.add([
     K.layer("player"),
     K.pos(),
     K.body({ isStatic: true }),
-    K.area({ shape: new K.Circle(K.vec2(0), 13) }),
     K.rotate(0),
     K.opacity(1),
     K.anchor("center"),
     copyOpacityOfPlayer(),
-    {
-        add(this: GameObj<BodyComp>) {
-            this.onBeforePhysicsResolve(c => {
-                c.preventResolution();
-                if (!c.target.is("tail")) {
-                    c.preventResolution();
-                }
-            });
-        },
-    },
-    "raycastIgnore"
 ]) as any;
 
 //------------------------------------------------------------
