@@ -58,8 +58,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ### TODO
 
-* [ ] Add player head can turn to look at whatever is being looked at
-  * [X] Add springy for the head hair/horn
+* [ ] Fix bugs where player head disappears randomly when getting continuation, and horn disappears when invoking continuation
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
@@ -76,6 +75,8 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 
 ## DONE
 
+* [X] Add player head can turn to look at whatever is being looked at
+  * [X] Add springy for the head hair/horn
 * [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
   * [X] add rumble effects for game controller users?
 * [X] Add enemy "bugs" that can hurt you?
