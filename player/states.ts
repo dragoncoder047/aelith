@@ -15,6 +15,7 @@ MANPAGE_CLOSED_HANDLERS.push(
         }
     }),
     player.onStateEnter("jump", () => {
+        player.animSpeed = 1;
         player.play("jump", { onEnd() { player.enterState("normal"); } });
     }),
     player.onStateEnter("climbing", () => {
