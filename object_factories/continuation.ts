@@ -26,7 +26,7 @@ export function continuation(
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
         ...defaults({
             shape: new K.Circle(K.vec2(0), 8),
-            collisionIgnore: ["tail", "player"],
+            collisionIgnore: ["tail"],
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
@@ -34,6 +34,11 @@ export function continuation(
         K.named("{undefined}"),
         continuationCore(type, captured, trap),
         {
+            add(this: GameObj<BodyComp>) {
+                this.onBeforePhysicsResolve(coll => {
+                    if (coll.target.is("player")) coll.preventResolution();
+                });
+            },
             update(this: GameObj<RotateComp>) {
                 this.angle += 360 * K.dt();
             }
