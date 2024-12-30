@@ -20,18 +20,11 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
         K.pos(),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
         ...defaults({
-            collisionIgnore: ["tail"],
+            collisionIgnore: ["tail", "player"],
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
         K.body(),
-        {
-            add(this: GameObj<BodyComp>) {
-                this.onBeforePhysicsResolve(coll => {
-                    if (coll.target.is("player")) coll.preventResolution();
-                });
-            },
-        },
         promise(controlling),
         ...throwablePlatformEff(),
         grabbable(),

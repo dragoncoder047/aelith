@@ -4,10 +4,12 @@ import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from 
 import { K } from "../init";
 import { playerBody, PlayerBodyComp } from "./body";
 import { tail } from "./tail";
+import { playerHead } from "./head";
+import { copyOpacityOfPlayer } from "./copyOpacityOfPlayer";
 
 export const player = K.add([
     playerBody(),
-    K.sprite("player"),
+    K.sprite("player_body"),
     K.layer("player"),
     "player",
     K.pos(0, 0),
@@ -51,16 +53,38 @@ export const player = K.add([
 // why is this necessary out here?
 player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersectingAny("button")));
 
+player.head = player.add([
+    playerHead(),
+    K.sprite("player_head"),
+    K.pos(),
+    K.body({ isStatic: true }),
+    K.area({ shape: new K.Circle(K.vec2(0), 13) }),
+    K.rotate(0),
+    K.opacity(1),
+    K.anchor("center"),
+    copyOpacityOfPlayer(),
+    {
+        add(this: GameObj<BodyComp>) {
+            this.onBeforePhysicsResolve(c => {
+                c.preventResolution();
+                if (!c.target.is("tail")) {
+                    c.preventResolution();
+                }
+            });
+        },
+    },
+]) as any;
+
 //------------------------------------------------------------
 
 // Add tail
-addChain(K.vec2(0, 8), 8, 4, K.WHITE, 2, 50, 1 / 2);
+addChain(player, K.vec2(0, 8), 8, 4, K.WHITE, 2, 50, 1 / 2);
 // Add horn on back of head
-addChain(K.vec2(11.2, -25), 3, 2.7, K.WHITE, 10, 100, 1 / 3);
+addChain(player.head!, K.vec2(13, -1), 3, 2.7, K.WHITE, 10, 100, 1 / 3);
 
 
-function addChain(startPos: Vec2, nSeg: number, maxSz: number, color: Color, damping: number, springDamping: number, lenFactor: number) {
-    var previous: GameObj = player;
+function addChain(start: GameObj, startPos: Vec2, nSeg: number, maxSz: number, color: Color, damping: number, springDamping: number, lenFactor: number) {
+    var previous = start;
     var pos = K.vec2(0, TILE_SIZE / 2);
     for (var i = 0; i < nSeg; i++) {
         const sz = K.lerp(1, maxSz, (1 - (i / nSeg)) ** 2);
@@ -85,8 +109,8 @@ function addChain(startPos: Vec2, nSeg: number, maxSz: number, color: Color, dam
                 springDamping,
                 dampingClamp: 100,
                 length: sz * lenFactor + (previous?.radius ?? sz * lenFactor),
-                p2: previous === player ? startPos : K.vec2(0),
-                forceOther: previous !== player,
+                p2: previous === start ? startPos : K.vec2(0),
+                forceOther: previous !== start,
                 drawOpts: {
                     // @ts-expect-error
                     width: sz,
@@ -94,6 +118,7 @@ function addChain(startPos: Vec2, nSeg: number, maxSz: number, color: Color, dam
                 },
             }),
             tail(),
+            copyOpacityOfPlayer(),
             "tail",
             "raycastIgnore",
         ]);

@@ -22,9 +22,5 @@ export function tail(): TailComp {
             this.pos = this.topPos.clone();
             this.vel = K.vec2(0);
         },
-        update(this: GameObj<OpacityComp | SpringComp | PosComp>) {
-            this.hidden = player.hidden || player.opacity === 0;
-            this.drawOpts.opacity = player.opacity;
-        },
     }
 }

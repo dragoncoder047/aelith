@@ -10,6 +10,7 @@ import { TILE_SIZE, ALPHA, INTERACT_DISTANCE, SCALE, TERMINAL_VELOCITY, MAX_THRO
 import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { actuallyRaycast, ballistics } from "../utils";
+import { PlayerHeadComp } from "./head";
 
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
@@ -18,7 +19,7 @@ export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | Name
 export interface PlayerBodyComp extends Comp {
     sfxEnabled: boolean;
     readonly holdingItem: PlayerInventoryItem | undefined;
-    readonly headPosWorld: Vec2;
+    head: GameObj<PosComp | PlayerHeadComp> | undefined
     _pull2Pos(other: PlayerInventoryItem): void;
     camFollower: KEventController | undefined;
     footstepsCounter: number;
@@ -44,10 +45,9 @@ export interface PlayerBodyComp extends Comp {
 }
 export function playerBody(): PlayerBodyComp {
     return {
+        id: "player-body",
         sfxEnabled: true,
-        get headPosWorld() {
-            return (this as unknown as GameObj<PosComp>).worldPos()!.add(K.UP.scale(TILE_SIZE * 2 / 3));
-        },
+        head: undefined,
         get holdingItem() {
             return this.inventory[this.holdingIndex];
         },
@@ -153,7 +153,7 @@ export function playerBody(): PlayerBodyComp {
                 const interesting = allObjects.filter(x => x.is("interactable") || x.has("grabbable"));
                 rcr = actuallyRaycast(
                     interesting,
-                    this.headPosWorld,
+                    this.head!.worldPos()!,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
@@ -162,7 +162,7 @@ export function playerBody(): PlayerBodyComp {
                 // if it is obscured
                 rcr = actuallyRaycast(
                     allObjects,
-                    this.headPosWorld,
+                    this.head!.worldPos()!,
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
@@ -190,7 +190,7 @@ export function playerBody(): PlayerBodyComp {
             if (rcr && this.lookingAt) {
                 // draw line to object being hovered
                 K.drawLine({
-                    p1: this.fromWorld(this.headPosWorld),
+                    p1: this.fromWorld(this.head!.worldPos()!),
                     p2: this.fromWorld(rcr.point),
                     width: 2 / SCALE,
                     color: K.WHITE.darken(200)
@@ -336,7 +336,7 @@ export function playerBody(): PlayerBodyComp {
                 this.lookingDirection = undefined;
                 return;
             }
-            this.lookingDirection = pos.sub(this.headPosWorld);
+            this.lookingDirection = pos.sub(this.head!.worldPos()!);
             if (this.lookingDirection.x < 0) this.flipX = false;
             else if (this.lookingDirection.x > 0) this.flipX = true;
         },

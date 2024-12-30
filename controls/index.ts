@@ -59,14 +59,20 @@ export const MANPAGE_CLOSED_HANDLERS = [
         if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
             player.lookAt(undefined);
         // toWorld is darn bugged kaplayjs/kaplay#325
-        else player.lookAt(K.toWorld(mousePos.scale(1 / SCALE)));
+        else {
+            const lookingWhere = K.toWorld(mousePos.scale(1 / SCALE));
+            player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
+        }
     }),
     player.onGamepadStick("right", xy => {
-        if (xy.slen() < 0.01) return;
-        // do squared for better control at low forces
-        xy.x *= Math.abs(xy.x) ** 2;
-        xy.y *= Math.abs(xy.y) ** 2;
-        player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.headPosWorld));
+        if (K.getLastInputDeviceType() !== "gamepad") return;
+        if (xy.slen() < 0.01) {
+            player.lookAt(undefined);
+            return;
+        }
+        // do cubed for better control at low forces
+        xy = xy.scale(xy.len());
+        player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.head!.worldPos()!));
     }),
 
     // Inventory
