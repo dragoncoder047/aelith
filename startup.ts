@@ -123,21 +123,21 @@ const CHUNKS: TextChunk[] = [
     }
 ];
 
-export async function funnyType(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunk[]) {
+export async function funnyType(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunk[], isTesting: boolean) {
     for (var chunk of chunks) {
         if (chunk.clear) terminal.chunks = [];
         if (chunk.skipIf && chunk.skipIf(terminal.data)) continue;
         if (chunk.isCommand) {
             await terminal.command(
                 chunk.command, chunk.output,
-                chunk.ignoreJumpSkip
+                chunk.ignoreJumpSkip && !isTesting
                     ? new Promise(() => { })
                     : jumpWait());
         }
         else {
             terminal.showCursor = !!chunk.showCursor;
             await terminal.type(chunk.value,
-                chunk.ignoreJumpSkip
+                chunk.ignoreJumpSkip && !isTesting
                     ? new Promise(() => { })
                     : jumpWait());
         }
@@ -215,7 +215,7 @@ export async function doStartup() {
             }
         ];
 
-        await funnyType(terminal, CHUNKS);
+        await funnyType(terminal, CHUNKS, isTesting);
 
     } while (false);
 
