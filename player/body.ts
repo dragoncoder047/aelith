@@ -254,9 +254,8 @@ export function playerBody(): PlayerBodyComp {
         addToInventory(this: GameObj<PlayerBodyComp>, obj) {
             if (this.inventory.includes(obj)) return;
             // Put in inventory
-            this.holdingIndex = this.inventory.length;
             this.inventory.push(obj);
-            this.trigger("inventoryChange");
+            this.scrollInventory(this.inventory.length);
             if (obj.has("platformEffector"))
                 (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
         },
