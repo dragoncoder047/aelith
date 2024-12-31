@@ -29,7 +29,7 @@
             "back": "&control.pMenu.back 戻る"
         },
         "viewInfo": "&control.info 検査",
-        "manpage": {
+        "dialog": {
             "scroll": "&control.dialog.scroll 続きを表示",
             "exit": "&control.dialog.exit 閉じる"
         },

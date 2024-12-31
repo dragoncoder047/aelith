@@ -83,9 +83,10 @@
             "editCancel": "&c.keyboard.pMenu.editCancel cancel"
         },
         "viewInfo": "&control.info inspect",
-        "manpage": {
+        "dialog": {
             "scroll": "&control.dialog.scroll view more",
-            "exit": "&control.dialog.exit close"
+            "exit": "&control.dialog.exit close",
+            "msg.exit": "\\[esc] close"
         },
         "continuation": {
             "default": "&control.invoke capture a continuation",

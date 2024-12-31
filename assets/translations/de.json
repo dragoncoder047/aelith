@@ -29,7 +29,7 @@
             "back": "&control.pMenu.back zurück"
         },
         "viewInfo": "&control.info untersuchen",
-        "manpage": {
+        "dialog": {
             "scroll": "&control.dialog.scroll mehr anzeigen",
             "exit": "&control.dialog.exit schließen"
         },
