@@ -3,14 +3,14 @@
 [N text -- N]{(t)(sw)is(width)12bs0n10nm}(hs)d
 [I -- I]{(1+y)e(1 s onCollide|player)v}(ii)d
 [x x x n -- [x x x]]{{(v)1q}(sw)il(v)k}(ns)d
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                      %
-%                                                      %
-% %%%%%%%%%%T%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%= % (name)(yield)sz
-% %         U(bd)1q          %                       = %            N    % (t)(&gamename)s(textSize)8as(width)12bs0n16nm(titleText)d
-% %                          %                       = %               N % (t)()s(width)12bs3bn0m(startupText)d
-% %                          %                       = %                 %
-% %                          %                       =  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                     %             T    %     <                                                  % (name)(call/cc)sz
+%                                                     %                        <                                                  %
+% %%%%%%%%%%T%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%=%                        <                                                  % (name)(yield)sz
+% %         U(bd)1q          %                       =              N          <                                                  % (t)(&gamename)s(textSize)8as(width)12bs0n16nm(titleText)d
+% %                          %                       =                 N       <                                                  % (t)()s(width)12bs3bn0m(startupText)d
+% %                          %                       =                         <                                                  %
+% %                          %                       =                         <                                                  %
 % %                          %                       =                   @     <                                                  %
 % %                          %                       =                         <                                         M      I % 2g(ii)iz(t)(&msg.congrats)s(width)10bsz
 % %                          %                       =                         <                                              Az  %
@@ -117,11 +117,11 @@
 %%
 %          [1. Demo box and button]       [3. Demo setjmp with doors]
 %          [4. Get box]    [2. Demo doors & throw]     [5. Demo cloning jump over]
-%                            S######S 90nr(sw)i90r
-%                              Dt D 4g4z
+%                            S######S 90nr(sw)i90r          #
+%                              Dt D 4g4z                    #
 %                Xz         =    T   =  (name)(throw)sz     #
 %                           =########=     T(name)(setjmp)sz#
 %                           =  DDt   =                      #                                                %
-%             B             =       S=180r                  #                                                %
+%             B             =       S=180r                Xz#                                                %
  ############################################################################################################
             LLLL (4a1b1a2b)p5g5z3g3z
