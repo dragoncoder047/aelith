@@ -48,13 +48,11 @@ export function manpage(): ManpageComp {
                 styles: STYLES,
                 color: K.WHITE.darken(100),
             });
-            const toppos = -this.scrollPos + secTxt.height + this.margin;
             const midTxt = K.formatText({
                 text: K.sub(this.body),
                 size: this.size,
                 align: "left",
                 lineSpacing: 2,
-                pos: K.vec2(0, toppos + (this.sprite ? this.sprite.height + this.margin : 0)).add(topLeft),
                 styles: STYLES,
                 color: K.WHITE.darken(100),
                 anchor: "topleft",
@@ -64,6 +62,7 @@ export function manpage(): ManpageComp {
             const maxScroll = Math.max(0, midTxt.height - theHeight + botTxt.height + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
             this.scrollPos = K.clamp(this.scrollPos, 0, maxScroll);
+            const toppos = -this.scrollPos + secTxt.height + this.margin;
             // background
             K.drawRect({
                 pos: K.vec2(0),
@@ -75,7 +74,10 @@ export function manpage(): ManpageComp {
             // body
             K.drawMasked(() => {
                 // the text
-                K.drawFormattedText(midTxt);
+                K.drawFormattedText(K.formatText({
+                    ...midTxt.opt,
+                    pos: K.vec2(0, toppos + (this.sprite ? this.sprite.height + this.margin : 0)).add(topLeft),
+                }));
                 // the sprite
                 if (this.sprite)
                     K.drawSprite({
