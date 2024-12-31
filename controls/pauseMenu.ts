@@ -201,7 +201,7 @@ async function onUnpaused() {
 }
 
 export function copyPreferences() {
-    if (PAUSE_MENU_OBJ.topMenu !== PAUSE_MENU) return;
+    if (!PAUSE_MENU_OBJ || PAUSE_MENU_OBJ.topMenu !== PAUSE_MENU) return;
     K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
     const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i");
     timer.opacity = +switches?.includes("timer");
