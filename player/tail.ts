@@ -1,5 +1,4 @@
-import { BodyComp, Comp, GameObj, OpacityComp, PosComp, Vec2 } from "kaplay"
-import { player } from "."
+import { BodyComp, Comp, GameObj, PosComp, Vec2 } from "kaplay"
 import { K } from "../init"
 import { SpringComp } from "../plugins/kaplay-springs"
 
