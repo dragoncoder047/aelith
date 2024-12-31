@@ -28,3 +28,17 @@ export function isFirefox() {
     // @ts-ignore
     return typeof window.mozInnerScreenX !== 'undefined';
 }
+
+export function guessOS() {
+    const a = getUserAgentString().toLowerCase();
+    return a.includes("mac") ? "mac" : a.includes("win") ? "windows" : "linux";
+}
+
+export function isTouchscreen() {
+    return navigator.maxTouchPoints > 0
+}
+
+function getUserAgentString() {
+    // @ts-ignore
+    return navigator.userAgent || navigator.vendor || window.opera;
+}

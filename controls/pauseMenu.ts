@@ -6,9 +6,9 @@ import { timer } from "../ui/timer";
 import { MParser } from "../assets/mparser";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { musicPlay } from "../assets";
-import { nextFrame } from "../utils";
+import { guessOS, isFirefox, isTouchscreen, nextFrame } from "../utils";
 import { showManpage } from ".";
-import { detectGamepadType } from "./autodetectGamepad";
+import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -220,4 +220,19 @@ K.onGamepadConnect(g => {
         PAUSE_MENU.opts[1].selected = PAUSE_MENU.opts[1].opts.findIndex(x => x.value === which);
         copyPreferences();
     }
+    // handle special gamepad types
+    if (isFirefox()) {
+        player.manpage!.data = { os: guessOS() };
+        showManpage(true, "&msg.dialog.firefoxDontWorkWithGamepads", true);
+    } else if (isSingleJoyCon(id)) {
+        showManpage(true, "&msg.dialog.singleJoyConDontHaveEnoughButtons", true);
+    }
+});
+
+K.onLoad(() => {
+    K.wait(0.1, () => {
+        if (isTouchscreen()) {
+            showManpage(true, "&msg.dialog.touchNotSupportedYet", false)
+        }
+    });
 });

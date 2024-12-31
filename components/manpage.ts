@@ -2,6 +2,7 @@ import { Color, Comp, GameObj, SpriteComp } from "kaplay";
 import { STYLES } from "../assets/textStyles";
 import { K } from "../init";
 import { FONT_SCALE, SCALE } from "../constants";
+import { NestedStrings } from "../plugins/kaplay-dynamic-text";
 
 export interface ManpageComp extends Comp {
     section: string
@@ -13,6 +14,7 @@ export interface ManpageComp extends Comp {
     sprite: GameObj<SpriteComp> | undefined
     bg: Color
     needsToScroll: boolean
+    data: NestedStrings
 }
 
 export function manpage(): ManpageComp {
@@ -27,12 +29,13 @@ export function manpage(): ManpageComp {
         margin: 10 / SCALE,
         sprite: undefined,
         needsToScroll: false,
+        data: {},
         draw() {
             const theHeight = K.height() * 5 / 6;
             const theWidth = K.width() * 2 / 3;
             const topLeft = K.vec2(-theWidth / 2, -theHeight / 2);
             const secTxt = K.formatText({
-                text: K.sub(this.section),
+                text: K.sub(this.section, this.data),
                 size: this.size,
                 pos: topLeft,
                 anchor: "topleft",
@@ -49,7 +52,7 @@ export function manpage(): ManpageComp {
                 color: K.WHITE.darken(100),
             });
             const midTxt = K.formatText({
-                text: K.sub(this.body),
+                text: K.sub(this.body, this.data),
                 size: this.size,
                 align: "left",
                 lineSpacing: 2,

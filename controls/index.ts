@@ -117,7 +117,7 @@ const MANPAGE_FORCE_ENTER_OPEN_HANDLERS = [
     player.onKeyPress("escape", () => showManpage(false)),
 ];
 
-export async function showManpage(isShown: boolean, importantMessage?: string) {
+export async function showManpage(isShown: boolean, importantMessage?: string, requireKeyboardToClose?: boolean) {
     var sound: string | undefined = "typing";
     if (!(player.holdingItem?.has("lore")) && importantMessage === undefined) {
         isShown = false;
@@ -145,8 +145,8 @@ export async function showManpage(isShown: boolean, importantMessage?: string) {
     await nextFrame();
     await nextFrame();
     const closedHandlersArePaused = isShown;
-    const openHandlersArePaused = isShown ? importantMessage !== undefined : true;
-    const specialHandlersArePaused = isShown ? importantMessage === undefined : true;
+    const openHandlersArePaused = isShown ? !!requireKeyboardToClose : true;
+    const specialHandlersArePaused = isShown ? !requireKeyboardToClose : true;
     MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = closedHandlersArePaused);
     MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = openHandlersArePaused);
     MANPAGE_FORCE_ENTER_OPEN_HANDLERS.forEach(h => h.paused = specialHandlersArePaused);
