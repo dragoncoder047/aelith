@@ -20,6 +20,7 @@ export interface PlayerBodyComp extends Comp {
     sfxEnabled: boolean;
     readonly holdingItem: PlayerInventoryItem | undefined;
     head: GameObj<PosComp | PlayerHeadComp> | undefined
+    flash(duration?: number): void
     _pull2Pos(other: PlayerInventoryItem): void;
     camFollower: KEventController | undefined;
     footstepsCounter: number;
@@ -44,6 +45,8 @@ export interface PlayerBodyComp extends Comp {
     recalculateManpage(): void;
 }
 export function playerBody(): PlayerBodyComp {
+    var flashLoop: KEventController;
+    var stopFlashWaiter: KEventController;
     return {
         id: "player-body",
         sfxEnabled: true,
@@ -59,18 +62,16 @@ export function playerBody(): PlayerBodyComp {
             this.camFollower = this.onUpdate(() => {
                 K.setCamPos(K.getCamPos().lerp(this.worldPos()!, ALPHA));
             });
-            var loop: KEventController;
-            var stopFlash: KEventController;
-            this.onHurt(() => {
-                if (loop) loop.cancel();
-                if (stopFlash) stopFlash.cancel();
-                loop = this.onUpdate(() => {
-                    this.opacity = 1 - this.opacity;
-                });
-                stopFlash = this.wait(0.5, () => {
-                    loop.cancel();
-                    this.opacity = 1;
-                });
+        },
+        flash(this: GameObj<OpacityComp | TimerComp>, duration = 0.5) {
+            if (flashLoop) flashLoop.cancel();
+            if (stopFlashWaiter) stopFlashWaiter.cancel();
+            flashLoop = this.onUpdate(() => {
+                this.opacity = 1 - this.opacity;
+            });
+            stopFlashWaiter = this.wait(duration, () => {
+                flashLoop.cancel();
+                this.opacity = 1;
             });
         },
         // MARK: _pull2Pos()

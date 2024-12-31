@@ -52,8 +52,11 @@ player.onGround(() => {
 });
 
 player.onHurt(() => {
-    K.shake();
-    K.play("hurt");
+    if (player.hp > 0) {
+        player.flash();
+        K.shake();
+        K.play("hurt");
+    }
 })
 
 player.onDeath(async () => {
@@ -64,12 +67,12 @@ player.onDeath(async () => {
     player.scrollInventory(-player.inventory.length);
     player.trigger("update");
     player.paused = true;
-    await player.fadeOut(2);
+    await K.tween(1, 0, 2, o => player.opacity = o);
     player.hidden = true;
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
     K.setCamPos(MParser.pausePos);
-    await funnyType(PAUSE_MENU_OBJ, deathMessages);
+    await funnyType(PAUSE_MENU_OBJ, deathMessages, false);
     PAUSE_MENU_OBJ.menu = DEATH_MENU;
     K.strings.isPaused = "1";
     MParser.world!.trigger("update");

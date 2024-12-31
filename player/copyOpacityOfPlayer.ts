@@ -10,6 +10,7 @@ export function copyOpacityOfPlayer(): CopyOpacityOfPlayerComp {
         require: ["opacity"],
         update(this: GameObj<OpacityComp | SpringComp | PosComp>) {
             this.hidden = player.hidden || player.opacity === 0;
+            this.opacity = player.opacity;
             if (this.has("spring"))
                 this.drawOpts.opacity = player.opacity;
         },
