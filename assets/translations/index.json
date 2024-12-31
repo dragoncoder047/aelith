@@ -28,7 +28,7 @@
                 "select": "(&button.south)",
                 "back": "(&button.east)"
             },
-            "manpage": {
+            "dialog": {
                 "scroll": "(lstick)",
                 "exit": "(&button.north)"
             }

@@ -30,8 +30,8 @@
         },
         "viewInfo": "&control.info inspeccionar",
         "manpage": {
-            "scroll": "&control.manpage.scroll ver más",
-            "exit": "&control.manpage.exit cerrar"
+            "scroll": "&control.dialog.scroll ver más",
+            "exit": "&control.dialog.exit cerrar"
         },
         "continuation": {
             "default": "&control.invoke capturar una continuación",

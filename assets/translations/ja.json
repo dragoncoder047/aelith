@@ -30,8 +30,8 @@
         },
         "viewInfo": "&control.info 検査",
         "manpage": {
-            "scroll": "&control.manpage.scroll 続きを表示",
-            "exit": "&control.manpage.exit 閉じる"
+            "scroll": "&control.dialog.scroll 続きを表示",
+            "exit": "&control.dialog.exit 閉じる"
         },
         "continuation": {
             "default": "&control.invoke キャプチャ継続装置",
