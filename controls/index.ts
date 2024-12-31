@@ -128,6 +128,7 @@ export async function showManpage(isShown: boolean, importantMessage?: string, r
     if (isShown) {
         MParser.pauseWorld(true);
         player.hidden = true;
+        player.manpage!.data.requiresKeyboard = String(requireKeyboardToClose);
         if (importantMessage === undefined)
             player.recalculateManpage();
         else {

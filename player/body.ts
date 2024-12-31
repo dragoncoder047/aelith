@@ -121,7 +121,7 @@ export function playerBody(): PlayerBodyComp {
                     }
                 }
             } else {
-                if (!(this.manpage!.header)) {
+                if (this.manpage!.data.requiresKeyboard === "true") {
                     this.addControlText("&msg.ctlHint.dialog.msg.exit");
                 } else {
                     this.addControlText("&msg.ctlHint.dialog.exit");
