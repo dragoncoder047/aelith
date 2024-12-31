@@ -9,7 +9,8 @@ import { initPauseMenu } from "./controls/pauseMenu";
 
 export type TextChunk = ({
     skipIf?: (vars: NestedStrings) => boolean
-    clear?: boolean
+    clear?: boolean,
+    ignoreJumpSkip?: boolean
 } & ({
     isCommand?: false
     value: TypableOne
@@ -56,7 +57,8 @@ const CHUNKS: TextChunk[] = [
             text: "",
             delayBefore: () => new Promise(r => K.onKeyDown("enter", () => r()))
         },
-        showCursor: true
+        showCursor: true,
+        ignoreJumpSkip: true
     },
     {
         value: "&msg.startup.password",
@@ -127,11 +129,17 @@ export async function funnyType(terminal: GameObj<PtyComp | DynamicTextComp>, ch
         if (chunk.skipIf && chunk.skipIf(terminal.data)) continue;
         if (chunk.isCommand) {
             await terminal.command(
-                chunk.command, chunk.output, jumpWait());
+                chunk.command, chunk.output,
+                chunk.ignoreJumpSkip
+                    ? new Promise(() => { })
+                    : jumpWait());
         }
         else {
             terminal.showCursor = !!chunk.showCursor;
-            await terminal.type(chunk.value, jumpWait());
+            await terminal.type(chunk.value,
+                chunk.ignoreJumpSkip
+                    ? new Promise(() => { })
+                    : jumpWait());
         }
     }
 }
