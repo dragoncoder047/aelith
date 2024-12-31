@@ -22,5 +22,9 @@ export function tail(): TailComp {
             this.pos = this.topPos.clone();
             this.vel = K.vec2(0);
         },
+        update(this: GameObj<PosComp | TailComp>) {
+            if (isNaN(this.pos.x) || isNaN(this.pos.y))
+                this.restore2Pos();
+        }
     }
 }
