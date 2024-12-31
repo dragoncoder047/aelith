@@ -80,7 +80,7 @@ const CHUNKS: TextChunk[] = [
         },
         showCursor: true
     },
-    command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] 4242 sudo ./gpt\n", 1, 1, true),
+    command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] &startup.pid sudo ./gpt\n", 1, 1, true),
     command("./gpt --interactive", "", 1, 0.5, undefined),
     {
         value: "&msg.startup.connecting",
@@ -103,7 +103,7 @@ const CHUNKS: TextChunk[] = [
     },
     {
         value: {
-            text: "[1]  + 4242 &msg.startup.segfault  sudo ./gpt\n",
+            text: "[1]  + &startup.pid &msg.startup.segfault  sudo ./gpt\n",
             delayBefore: 2,
         },
         showCursor: true
@@ -115,8 +115,8 @@ const CHUNKS: TextChunk[] = [
             sound: "command_fail"
         }
     },
-    command("ls *.core", "4242.core\n", 3, 0.5, true),
-    command("&startupDebuggerCmd", "&msg.startup.startingDebugger", 0.25, 0.25, undefined),
+    command("ls *.core", "&startup.pid.core\n", 3, 0.5, true),
+    command("&startup.cmd", "&msg.startup.startingDebugger", 0.25, 0.25, undefined),
     {
         value: "",
         showCursor: true

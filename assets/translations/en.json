@@ -17,7 +17,7 @@
             "header": "Memory Management",
             "section": "1",
             "secName": "MEM",
-            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a program to run\n\n[b]DESCRIPTION\n&tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It is not tied to any particular program. It may be inserted into any program by throwing it in, and can even be inserted into the currently-running process (which appears to be: [b]&startupDebuggerCmd[/b]).\n\n"
+            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a program to run\n\n[b]DESCRIPTION\n&tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It is not tied to any particular program. It may be inserted into any program by throwing it in, and can even be inserted into the currently-running process (which appears to be: [b]&startup.cmd[/b]).\n\n"
         },
         "continuation": {
             "throw": {
