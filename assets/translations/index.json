@@ -53,7 +53,7 @@
                 "editSubmit": "\\[enter]",
                 "editCancel": "\\[esc]"
             },
-            "manpage": {
+            "dialog": {
                 "scroll": "\\[scroll]/\\[WS]/\\[&arrow.up&arrow.down]",
                 "exit": "\\[X]"
             }
