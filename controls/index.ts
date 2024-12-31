@@ -3,6 +3,7 @@ import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTO
 import { K } from "../init";
 import { player } from "../player";
 import { nextFrame } from "../utils";
+import { MParser } from "../assets/mparser";
 
 // Controls
 
@@ -110,19 +111,45 @@ const MANPAGE_OPEN_HANDLERS = [
     player.onButtonPress("view_info", () => showManpage(false)),
 ];
 
-export async function showManpage(isShown: boolean) {
+const MANPAGE_FORCE_ENTER_OPEN_HANDLERS = [
+    player.onUpdate(motionHandler2),
+    player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
+    player.onKeyPress("escape", () => showManpage(false)),
+];
+
+export async function showManpage(isShown: boolean, importantMessage?: string) {
     var sound: string | undefined = "typing";
-    if (!(player.holdingItem?.has("lore"))) {
+    if (!(player.holdingItem?.has("lore")) && importantMessage === undefined) {
         isShown = false;
         sound = undefined;
     }
     if (sound) player.playSound(sound);
     player.manpage!.hidden = !isShown;
-    if (isShown) player.recalculateManpage();
+    if (isShown) {
+        MParser.pauseWorld(true);
+        player.hidden = true;
+        if (importantMessage === undefined)
+            player.recalculateManpage();
+        else {
+            Object.assign(player.manpage!, {
+                section: "",
+                sprite: undefined,
+                header: "",
+                body: importantMessage
+            });
+        }
+    } else {
+        MParser.pauseWorld(false);
+        player.hidden = false;
+    }
     await nextFrame();
     await nextFrame();
-    MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = isShown);
-    MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = !isShown);
+    const closedHandlersArePaused = isShown;
+    const openHandlersArePaused = isShown ? importantMessage !== undefined : true;
+    const specialHandlersArePaused = isShown ? importantMessage === undefined : true;
+    MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = closedHandlersArePaused);
+    MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = openHandlersArePaused);
+    MANPAGE_FORCE_ENTER_OPEN_HANDLERS.forEach(h => h.paused = specialHandlersArePaused);
 }
 const foo = player.onUpdate(() => {
     showManpage(false);

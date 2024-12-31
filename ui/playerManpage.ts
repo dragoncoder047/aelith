@@ -11,7 +11,7 @@ const manpageContainer = UI.add([K.pos(K.center()), K.layer("manpage"), {
         });
     },
     update(this: GameObj) {
-        this.hidden = player.hidden;
+        this.hidden = player.paused;
     }
 }]);
 

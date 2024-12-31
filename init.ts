@@ -2,11 +2,11 @@ import kaplay from "kaplay";
 import { SCALE } from "./constants";
 import { CONTROLS } from "./controls/buttons";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
+import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplayPTY } from "./plugins/kaplay-pty";
 import { kaplaySprings } from "./plugins/kaplay-springs";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
-import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 
 export const K = kaplay({
     crisp: true,

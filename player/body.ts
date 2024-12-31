@@ -104,7 +104,6 @@ export function playerBody(): PlayerBodyComp {
                     if (this.holdingItem?.has("lore")) {
                         if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
                             this.addControlText("&msg.ctlHint.viewInfo");
-
                         else
                             this.addControlText("[rainbow]&msg.ctlHint.viewInfo[/rainbow]");
                     }
@@ -122,9 +121,13 @@ export function playerBody(): PlayerBodyComp {
                     }
                 }
             } else {
-                this.addControlText("&msg.ctlHint.manpage.exit");
-                if (this.manpage!.needsToScroll)
-                    this.addControlText("&msg.ctlHint.manpage.scroll");
+                if (!(this.manpage!.header)) {
+                    this.addControlText("&msg.ctlHint.dialog.msg.exit");
+                } else {
+                    this.addControlText("&msg.ctlHint.dialog.exit");
+                    if (this.manpage!.needsToScroll)
+                        this.addControlText("&msg.ctlHint.dialog.scroll");
+                }
             }
         },
         /**
