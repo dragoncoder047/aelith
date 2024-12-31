@@ -22,7 +22,8 @@ export function tail(): TailComp {
             this.vel = K.vec2(0);
         },
         update(this: GameObj<PosComp | TailComp>) {
-            if (isNaN(this.pos.x) || isNaN(this.pos.y))
+            if (isNaN(this.pos.x) || isNaN(this.pos.y)
+                || this.pos.dist(this.topPos) > Math.max(K.width(), K.height()))
                 this.restore2Pos();
         }
     }
