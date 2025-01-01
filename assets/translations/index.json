@@ -116,7 +116,8 @@
         "lstick": "LS",
         "rstick": "RS"
     },
-    "startup.cmd": "agdb pm 4242.core",
+    "startup.cmd": "agdb pm &startup.pid.core",
     "startup.pid": "4242",
+    "startup.debugger.pid": "4247",
     "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)"
 }

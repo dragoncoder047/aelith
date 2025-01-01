@@ -1,4 +1,4 @@
-import { GameObj } from "kaplay";
+import { GameObj, Vec2 } from "kaplay";
 import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { player } from "../player";
 import { K } from "../init";
@@ -95,7 +95,43 @@ export const PAUSE_MENU: PtyMenu = {
 }
 
 export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
-export var pauseListener: GameObj;
+export var pauseListener = K.add([]);
+
+// setup navigation controls
+pauseListener.onButtonPress("nav_left", () => {
+    if (K.isCapturingInput()) return;
+    PAUSE_MENU_OBJ.switch(K.LEFT);
+})
+pauseListener.onButtonPress("nav_right", () => {
+    if (K.isCapturingInput()) return;
+    PAUSE_MENU_OBJ.switch(K.RIGHT);
+})
+pauseListener.onButtonPress("nav_up", () => {
+    if (K.isCapturingInput()) return;
+    PAUSE_MENU_OBJ.switch(K.UP);
+})
+pauseListener.onButtonPress("nav_down", () => {
+    if (K.isCapturingInput()) return;
+    PAUSE_MENU_OBJ.switch(K.DOWN);
+})
+pauseListener.onButtonPress("nav_select", () => {
+    if (K.isCapturingInput()) return;
+    PAUSE_MENU_OBJ.doit();
+})
+pauseListener.onButtonPress("nav_back", () => {
+    if (K.isCapturingInput()) return;
+    if (PAUSE_MENU_OBJ.backStack.length > 0) PAUSE_MENU_OBJ.back();
+    else doUnpause();
+});
+
+var origCamPos: Vec2;
+var origInventoryIndex: number;
+player.onButtonPress("pause_unpause", doPause);
+pauseListener.onButtonPress("pause_unpause", doUnpause);
+pauseListener.onUpdate(() => {
+    copyPreferences();
+    player.controlText.data.stringEditing = String(!!K.isCapturingInput());
+});
 
 export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // sync testing mode for music
@@ -103,35 +139,8 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         // @ts-ignore
         PAUSE_MENU.opts[0].selected.splice(3, 1);
     // setup pause / unpause controls
-    var origCamPos = player.pos;
-    var origInventoryIndex = player.holdingIndex;
-    pauseListener = K.add([]);
-    player.onButtonPress("pause_unpause", async () => {
-        origInventoryIndex = player.holdingIndex;
-        player.scrollInventory(-player.inventory.length);
-        player.hidden = player.paused = true;
-        K.get("tail").forEach(p => p.hidden = p.paused = true);
-        origCamPos = player.pos;
-        K.setCamPos(MParser.pausePos);
-        await nextFrame();
-        // prevent immediate unpause
-        pauseListener.paused = false;
-        await onPaused();
-    });
-    pauseListener.onButtonPress("pause_unpause", async () => {
-        if (K.isCapturingInput()) return;
-        if (PAUSE_MENU_OBJ.menu !== PAUSE_MENU) return;
-        player.hidden = player.paused = false;
-        player.scrollInventory(origInventoryIndex - player.holdingIndex);
-        K.get("tail").forEach(p => p.hidden = p.paused = false);
-        pauseListener.paused = true;
-        K.setCamPos(origCamPos);
-        await onUnpaused();
-    });
-    pauseListener.onUpdate(() => {
-        copyPreferences();
-        player.controlText.data.stringEditing = String(!!K.isCapturingInput());
-    });
+    origCamPos = player.pos;
+    origInventoryIndex = player.holdingIndex;
 
     // setup menu
     terminal.use(K.ptyMenu(PAUSE_MENU, {
@@ -145,36 +154,6 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         playSoundCb: sound => player.playSound(sound),
     }));
 
-    // setup navigation controls
-    pauseListener.onButtonPress("nav_left", () => {
-        if (K.isCapturingInput()) return;
-        PAUSE_MENU_OBJ.switch(K.LEFT);
-    })
-    pauseListener.onButtonPress("nav_right", () => {
-        if (K.isCapturingInput()) return;
-        PAUSE_MENU_OBJ.switch(K.RIGHT);
-    })
-    pauseListener.onButtonPress("nav_up", () => {
-        if (K.isCapturingInput()) return;
-        PAUSE_MENU_OBJ.switch(K.UP);
-    })
-    pauseListener.onButtonPress("nav_down", () => {
-        if (K.isCapturingInput()) return;
-        PAUSE_MENU_OBJ.switch(K.DOWN);
-    })
-    pauseListener.onButtonPress("nav_select", () => {
-        if (K.isCapturingInput()) return;
-        PAUSE_MENU_OBJ.doit();
-    })
-    pauseListener.onButtonPress("nav_back", () => {
-        if (K.isCapturingInput()) return;
-        if (PAUSE_MENU_OBJ.backStack.length > 0) PAUSE_MENU_OBJ.back();
-        else {
-            // trigger an unpause
-            K.pressButton("pause_unpause");
-            K.releaseButton("pause_unpause");
-        }
-    });
     pauseListener.paused = true;
 
     // @ts-expect-error
@@ -183,19 +162,35 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     copyPreferences();
 }
 
-async function onPaused() {
+async function doPause() {
+    origInventoryIndex = player.holdingIndex;
+    player.scrollInventory(-player.inventory.length);
+    player.hidden = player.paused = true;
+    K.get("tail").forEach(p => p.hidden = p.paused = true);
+    origCamPos = player.pos;
+    K.setCamPos(MParser.pausePos);
+    await nextFrame();
+    // prevent immediate unpause
+    pauseListener.paused = false;
     player.playSound("typing");
     player.controlText.t = "&pauseMenuCtlHint";
-    await PAUSE_MENU_OBJ.type("^Z\n[1]  + 4247 &msg.pause.suspended  agdb pm 4242.core\n");
+    await PAUSE_MENU_OBJ.type("^Z\n[1]  + &startup.debugger.pid &msg.pause.suspended  &startup.cmd\n");
     await PAUSE_MENU_OBJ.beginMenu();
 }
 
-async function onUnpaused() {
+async function doUnpause() {
+    if (K.isCapturingInput()) return;
+    if (PAUSE_MENU_OBJ.menu !== PAUSE_MENU) return;
+    player.hidden = player.paused = false;
+    player.scrollInventory(origInventoryIndex - player.holdingIndex);
+    K.get("tail").forEach(p => p.hidden = p.paused = false);
+    pauseListener.paused = true;
+    K.setCamPos(origCamPos);
     player.playSound("typing");
     await PAUSE_MENU_OBJ.quitMenu();
     await PAUSE_MENU_OBJ.command(
         { text: "fg %1", styles: ["command"] },
-        "[1]  + 4247 &msg.pause.continued  agdb pm 4242.core\n")
+        "[1]  + &startup.debugger.pid &msg.pause.continued  &startup.cmd\n")
     copyPreferences();
     await showManpage(false);
 }
