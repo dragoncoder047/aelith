@@ -69,6 +69,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
+  * [ ] OR - Add warning about there being no autosave
 * [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
   * [ ] Connect to Newgrounds for cloud save and medals?
 
