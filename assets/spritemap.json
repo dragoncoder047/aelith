@@ -60,8 +60,9 @@
     "broken_ladder": {
         "x": 256,
         "y": 190,
-        "width": 32,
-        "height": 32
+        "width": 96,
+        "height": 32,
+        "sliceX": 3
     },
     "box": {
         "x": 64,

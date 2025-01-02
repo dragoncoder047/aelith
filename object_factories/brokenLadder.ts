@@ -1,5 +1,5 @@
 import { Tag } from "kaplay";
-import { TILE_SIZE } from "../constants";
+import { randomFrame } from "../components/randomFrame";
 import { K } from "../init";
 import { defaults } from "./default";
 
@@ -8,6 +8,7 @@ export function brokenLadder() {
         K.sprite("broken_ladder"),
         ...defaults({ collisionIgnore: ["*"] }),
         K.offscreen({ hide: true }),
+        randomFrame(),
         "ladder" as Tag,
         "raycastIgnore" as Tag,
     ];
