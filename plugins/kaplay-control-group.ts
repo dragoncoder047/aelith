@@ -46,16 +46,13 @@ function eGroupsMatches(evGroups: string[], eventGroups: Set<string>) {
     for (var evGroup of evGroups) {
         if (evGroup.startsWith("!")) {
             if (eventGroups.has(evGroup.slice(1))) {
-                console.log(evGroups, eventGroups, "=>", false);
                 return false;
             }
         } else {
             if (!eventGroups.has(evGroup)) {
-                console.log(evGroups, eventGroups, "=>", false);
                 return false;
             }
         }
     }
-    console.log(evGroups, eventGroups, "=>", true);
     return true;
 }
