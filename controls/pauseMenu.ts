@@ -132,6 +132,7 @@ pauseListener.onUpdate(() => {
     copyPreferences();
     player.controlText.data.stringEditing = String(!!K.isCapturingInput());
 });
+pauseListener.paused = true;
 
 export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // sync testing mode for music
@@ -153,8 +154,6 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         },
         playSoundCb: sound => player.playSound(sound),
     }));
-
-    pauseListener.paused = true;
 
     // @ts-expect-error
     PAUSE_MENU_OBJ = terminal;
