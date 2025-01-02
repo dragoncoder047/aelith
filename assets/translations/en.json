@@ -6,10 +6,11 @@
         "connecting": "connecting... ",
         "connected": "connected!",
         "ai.prompt": "ask AI",
-        "findAnswer": "find the answer",
+        "findAnswer": "Create a new platformer videogame from scratch.",
+        "answer": "That's a tough task, but here goes nothing...",
         "startingDebugger": "Starting debugger...",
         "segfault": "segmentation fault",
-        "running": "Assistant is running",
+        "running": "Code Assistant is running",
         "disconnected": "Fatal error: disconnected!"
     },
     "dialog": {

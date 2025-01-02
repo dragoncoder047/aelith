@@ -6,10 +6,8 @@
         "connecting": "conectando... ",
         "connected": "¡conectado!",
         "ai.prompt": "pregúntale a la IA",
-        "findAnswer": "encontrar la respuesta",
         "startingDebugger": "Inicio del programa de depuración...",
         "segfault": "fallo de segmentación",
-        "running": "Asistente está lista",
         "disconnected": "Error fatal: ¡desconectado!"
     },
     "ctlHint": {

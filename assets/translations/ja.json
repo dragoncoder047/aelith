@@ -6,10 +6,8 @@
         "connecting": "接続中...",
         "connected": "接続されました！",
         "ai.prompt": "AI に質問",
-        "findAnswer": "答えを見つける",
         "startingDebugger": "デバッガーを起動しています...",
         "segfault": "セグメンテーション エラー",
-        "running": "アシスタントが実行中です",
         "disconnected": "致命的なエラー: 切断されました!"
     },
     "ctlHint": {

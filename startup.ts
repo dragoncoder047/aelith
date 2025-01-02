@@ -80,7 +80,7 @@ const CHUNKS: TextChunk[] = [
         },
         showCursor: true
     },
-    command("sudo ./gpt --access=all &", "&msg.startup.running\n[1] &startup.pid sudo ./gpt\n", 1, 1, true),
+    command("sudo ./gpt --enable-code --access=all --background", "&msg.startup.running\n[1] &startup.pid sudo ./gpt\n", 1, 1, true),
     command("./gpt --interactive", "", 1, 0.5, undefined),
     {
         value: "&msg.startup.connecting",
@@ -103,7 +103,14 @@ const CHUNKS: TextChunk[] = [
     },
     {
         value: {
-            text: "[1]  + &startup.pid &msg.startup.segfault  sudo ./gpt\n",
+            text: "&msg.startup.answer",
+            delayBefore: 1,
+        },
+        showCursor: false
+    },
+    {
+        value: {
+            text: "\n[1]  + &startup.pid &msg.startup.segfault  sudo ./gpt\n",
             delayBefore: 2,
         },
         showCursor: true
