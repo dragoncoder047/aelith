@@ -36,9 +36,11 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
+* [ ] Add more challenges that test all features of call/cc.
+  * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
-* [ ] Use firewall somewhere else
 * [X] Add algorithmic choosing songs based on where you are in the game
   * [ ] Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
