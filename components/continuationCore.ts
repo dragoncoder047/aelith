@@ -118,7 +118,7 @@ export function continuationCore(
                     obj.vel = K.vec2(0);
                 }
                 if (e.bugState) obj.enterState(e.bugState);
-                obj.togglerState = e.togglerState!;
+                obj.togglerState = this.params.fuzzStates ? !obj.togglerState : e.togglerState!;
                 obj.triggered = e.triggeredState!;
                 if (!e.inPlayerInventory)
                     player.removeFromInventory(obj as any);

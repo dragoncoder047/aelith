@@ -11,6 +11,7 @@
             "useSelfPosition": false,
             "recapture": false,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": null,
@@ -33,6 +34,7 @@
             "useSelfPosition": false,
             "recapture": false,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": null,
@@ -55,6 +57,7 @@
             "useSelfPosition": true,
             "recapture": false,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)",
@@ -78,6 +81,7 @@
             "useSelfPosition": false,
             "recapture": true,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": null,
@@ -101,6 +105,7 @@
             "useSelfPosition": false,
             "recapture": false,
             "reverseTeleport": true,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": null,
@@ -123,6 +128,7 @@
             "useSelfPosition": false,
             "recapture": false,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": true
         },
         "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
@@ -145,6 +151,7 @@
             "useSelfPosition": true,
             "recapture": false,
             "reverseTeleport": false,
+            "fuzzStates": false,
             "editable": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)",
