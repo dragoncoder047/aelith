@@ -56,7 +56,7 @@ export function continuationCore(
             this.use(controllable([{ hint: "" }]));
             this.controls[0]!.styles = [this.trappedBy.name.replace(/[^\w]/g, "")];
             this.on("invoke", () => this.invoke());
-            this.name = contTypes[this.type].cName;
+            this.name = this.params.cName;
             this.uniform!.u_targetcolor = this.color;
             this.hidden = true;
             this.paused = true;

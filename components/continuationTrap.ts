@@ -1,4 +1,5 @@
-import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, TextComp, Vec2 } from "kaplay";
+import { STYLES } from "../assets/textStyles";
 import trapTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -6,11 +7,17 @@ import { continuation } from "../object_factories/continuation";
 import { promiseObj } from "../object_factories/promiseObj";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
+import { UI } from "../ui";
+import { nextFrame } from "../utils";
 import { CollisionerComp } from "./collisioner";
 import { ContinuationComp } from "./continuationCore";
 import { controllable, ControllableComp } from "./controllable";
 import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { LoreComp } from "./lore";
+import { manpage, ManpageComp } from "./manpage";
 import { PromiseComp } from "./promise";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
@@ -47,19 +54,88 @@ export interface ContinuationTrapComp extends Comp {
     params: (typeof trapTypes)[keyof typeof trapTypes]["behavior"]
     readonly color: Color
     zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
+    _menu: {
+        modal: GameObj<ManpageComp>
+        term: GameObj<TextComp | PtyComp | PtyMenuComp | DynamicTextComp>
+    }
     prepare(): void
     capture(): void
     peekCapture(): ContinuationData
     getPlayerPosData(): Vec2
+
+    startEditing(): Promise<void>
+    stopEditing(): Promise<void>
+    menuUpdate(): void
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
+    var origInventoryIndex: number;
+    const switchesMenu: PtyMenu = {
+        id: "flags",
+        name: "&msg.continuation.edit.flags",
+        type: "select",
+        multiple: true,
+        opts: [
+            { text: "--defer", value: "deferred" },
+            { text: "--stack-only", value: "useSelfPosition" },
+            { text: "--as-coroutine", value: "recapture" },
+            { text: "--copy-here", value: "reverseTeleport" },
+            { text: "--fuzz", value: "fuzzStates" },
+        ] as { text: string, value: keyof ContinuationTrapComp["params"] }[],
+        selected: [],
+    };
+    const pNameMenu: PtyMenu = {
+        id: "--name-of=promise",
+        name: "&msg.continuation.edit.pName",
+        type: "string",
+        value: "",
+        validator: /^[\w\d]+$/,
+        invalidMsg: "&msg.continuation.edit.invalidName",
+    };
+    const cNameMenu: PtyMenu = {
+        id: "--name-of=continuation",
+        name: "&msg.continuation.edit.cName",
+        type: "string",
+        value: "",
+        validator: /^[\w\d]+$/,
+        invalidMsg: "&msg.continuation.edit.invalidName",
+    };
+    const topMenu: PtyMenu = {
+        id: "agdb tool-edit \"&name\"",
+        type: "submenu",
+        opts: [switchesMenu, cNameMenu, pNameMenu],
+    };
+    const theMenuContainer = UI.add([K.pos(K.center()), K.layer("manpage"), {
+        add(this: GameObj<PosComp>) {
+            K.onResize(() => {
+                this.pos = K.center();
+            });
+        },
+    }]);
+    const theMenuObjs = {
+        modal: theMenuContainer.add([manpage()]),
+        term: K.add([
+            K.text("", { styles: STYLES }),
+            K.dynamicText(),
+            K.fixed(),
+            K.anchor("botright"),
+            K.pos(0, 0),
+            K.pty({ cursor: { text: "\u2588", styles: ["cursor"] } }),
+            K.ptyMenu(topMenu),
+        ]),
+    };
+    theMenuObjs.term.paused = theMenuObjs.term.hidden = true;
+    theMenuObjs.modal.paused = theMenuObjs.modal.hidden = true;
+    theMenuObjs.modal.section = theMenuObjs.modal.header = "";
+    theMenuObjs.modal.showFooter = false;
     return {
         id: "continuation-trap",
         require: ["sprite", "pos", "named", "shader", "lore"],
         captured: [],
         isDeferring: false,
         params: {
+            cName: "{undefined}",
+            pName: "{undefined}",
             radius: 0,
             deferred: false,
             useSelfPosition: false,
@@ -91,6 +167,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.layer("ui"),
             zoop(),
         ]),
+        _menu: theMenuObjs,
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
@@ -113,6 +190,44 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 Object.assign(this.params, this.behavior);
                 this.params.radius = this.params.radius * TILE_SIZE;
                 this.lore = { seen: false, ...this.data?.lore };
+                if (!this.behavior?.editable) {
+                    theMenuContainer.destroy();
+                } else {
+                    (this.onButtonPress("edit", async () => {
+                        await this.startEditing();
+                    }) as KEventControllerPatch).forEventGroup("!menuActive");
+                    (theMenuContainer.onButtonPress("edit", async () => {
+                        await this.stopEditing();
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_left", () => {
+                        if (K.isCapturingInput()) return;
+                        this._menu.term.switch(K.LEFT);
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_right", () => {
+                        if (K.isCapturingInput()) return;
+                        this._menu.term.switch(K.RIGHT);
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_up", () => {
+                        if (K.isCapturingInput()) return;
+                        this._menu.term.switch(K.UP);
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_down", () => {
+                        if (K.isCapturingInput()) return;
+                        this._menu.term.switch(K.DOWN);
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_select", () => {
+                        if (K.isCapturingInput()) return;
+                        this._menu.term.doit();
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onButtonPress("nav_back", () => {
+                        if (K.isCapturingInput()) return;
+                        if (this._menu.term.backStack.length > 0) this._menu.term.back();
+                        else this.stopEditing();
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                    (theMenuContainer.onUpdate(() => {
+                        this.menuUpdate();
+                    }) as KEventControllerPatch).forEventGroup(["menuActive", "contMenu"]);
+                }
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
@@ -150,6 +265,19 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 // if doesn't exist, must be checkpoint type
             }
         },
+        menuUpdate(this: GameObj<ContinuationTrapComp | NamedComp>) {
+            this._menu.modal.body = this._menu.term.text;
+            player.controlText.data.stringEditing = String(!!K.isCapturingInput());
+            this._menu.term.data.name = this.name;
+            for (var k of (Object.keys(this.params) as (keyof typeof this.params)[])) {
+                const theOptIndex = switchesMenu.opts.findIndex(opt => opt.value === k);
+                if (theOptIndex !== -1) {
+                    (this.params[k] as boolean) = switchesMenu.selected.includes(theOptIndex);
+                }
+            }
+            this.params.cName = cNameMenu.value;
+            this.params.pName = pNameMenu.value;
+        },
         prepare(this: GameObj<ContinuationTrapComp | LoreComp> & PromiseComp["controlling"]) {
             if (!this.enabled) return;
             this.isDeferring = true;
@@ -161,7 +289,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             } else this.capture();
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
-            if (this.enabled && this.params.radius > 0 && player.inventory.includes(this as any)) {
+            if (this.enabled && this.params.radius > 0 && (player.inventory.includes(this as any) || this.isDeferring)) {
                 const willCapture = this.peekCapture();
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
@@ -244,5 +372,40 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.params.radius}, preparing: ${this.isDeferring}`;
         },
+
+        // editing stuff
+        async startEditing(this: GameObj<ContinuationTrapComp | PosComp>) {
+            origInventoryIndex = player.holdingIndex;
+            player.scrollInventory(-player.inventory.length);
+            player.hidden = player.paused = true;
+            K.get("tail").forEach(p => p.hidden = p.paused = true);
+            await nextFrame();
+            K.eventGroups.add("menuActive");
+            K.eventGroups.add("contMenu");
+            K.eventGroups.add("dialog");
+            player.playSound("typing");
+            player.controlText.t = "&editMenuCtlHint";
+            theMenuObjs.term.paused = false;
+            theMenuObjs.modal.paused = theMenuObjs.modal.hidden = false;
+            // copy the current state to the menu (probably unnecessary)
+            switchesMenu.selected = switchesMenu.opts.flatMap((opt, i) => this.params[opt.value as any as keyof typeof this.params] ? [i] : []);
+            pNameMenu.value = this.params.pName!;
+            cNameMenu.value = this.params.cName!;
+            this._menu.term.chunks = [];
+            await this._menu.term.beginMenu();
+        },
+        async stopEditing() {
+            if (K.isCapturingInput()) return;
+            player.scrollInventory(origInventoryIndex - player.holdingIndex);
+            player.hidden = player.paused = false;
+            K.get("tail").forEach(p => p.hidden = p.paused = false);
+            K.eventGroups.delete("menuActive");
+            K.eventGroups.delete("contMenu");
+            K.eventGroups.delete("dialog");
+            player.playSound("typing");
+            theMenuObjs.term.paused = true;
+            theMenuObjs.modal.paused = theMenuObjs.modal.hidden = true;
+            await this._menu.term.quitMenu();
+        }
     };
 }

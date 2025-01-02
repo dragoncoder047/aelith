@@ -1,9 +1,9 @@
 {
     "throw": {
-        "cName": "catch",
-        "pName": null,
         "color": "#0000ff",
         "behavior": {
+            "cName": "catch",
+            "pName": null,
             "radius": 0,
             "reusable": false,
             "concurrent": false,
@@ -23,10 +23,10 @@
         }
     },
     "setjmp": {
-        "cName": "longjmp",
-        "pName": null,
         "color": "#00ffff",
         "behavior": {
+            "cName": "longjmp",
+            "pName": null,
             "radius": 4,
             "reusable": false,
             "concurrent": false,
@@ -46,10 +46,10 @@
         }
     },
     "async": {
-        "cName": "await",
-        "pName": "promise",
         "color": "#ff8000",
         "behavior": {
+            "cName": "await",
+            "pName": "promise",
             "radius": 0,
             "reusable": false,
             "concurrent": false,
@@ -69,11 +69,10 @@
         }
     },
     "yield": {
-        "cName": "next",
-        "pName": null,
         "color": "#ffff00",
-        "radius": 0,
         "behavior": {
+            "cName": "next",
+            "pName": null,
             "radius": 0,
             "reusable": false,
             "concurrent": true,
@@ -93,11 +92,10 @@
         }
     },
     "switch": {
-        "cName": "case",
-        "pName": null,
         "color": "#ee4466",
-        "radius": 2,
         "behavior": {
+            "cName": "case",
+            "pName": null,
             "radius": 2,
             "reusable": false,
             "concurrent": false,
@@ -117,10 +115,10 @@
         }
     },
     "call/cc": {
-        "cName": "k",
-        "pName": "fut",
         "color": "#aa22ff",
         "behavior": {
+            "cName": "k",
+            "pName": "fut",
             "radius": 0,
             "reusable": true,
             "concurrent": true,
@@ -131,7 +129,7 @@
             "fuzzStates": false,
             "editable": true
         },
-        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
+        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
         "lore": {
             "header": "&msg.lore.continuation.callcc.header",
             "section": "&msg.lore.continuation.callcc.section",
@@ -140,10 +138,10 @@
         }
     },
     "assert": {
-        "cName": "assert",
-        "pName": null,
         "color": "#00ff00",
         "behavior": {
+            "cName": "assert",
+            "pName": null,
             "radius": 1.79e+308,
             "reusable": true,
             "concurrent": false,

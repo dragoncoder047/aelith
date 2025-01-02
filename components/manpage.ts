@@ -11,6 +11,7 @@ export interface ManpageComp extends Comp {
     body: string
     scrollPos: number
     margin: number
+    showFooter: boolean
     sprite: GameObj<SpriteComp> | undefined
     bg: Color
     needsToScroll: boolean
@@ -29,6 +30,7 @@ export function manpage(): ManpageComp {
         margin: 10 / SCALE,
         sprite: undefined,
         needsToScroll: false,
+        showFooter: true,
         data: {},
         draw() {
             const theHeight = K.height() * 5 / 6;
@@ -62,7 +64,7 @@ export function manpage(): ManpageComp {
                 width: theWidth,
                 indentAll: true
             });
-            const maxScroll = Math.max(0, midTxt.height - theHeight + botTxt.height + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
+            const maxScroll = Math.max(0, midTxt.height - theHeight + (this.showFooter ? botTxt.height : 0) + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
             this.scrollPos = K.clamp(this.scrollPos, 0, maxScroll);
             const toppos = -this.scrollPos + secTxt.height + this.margin;
@@ -119,6 +121,7 @@ export function manpage(): ManpageComp {
                 pos: topLeft.add(theWidth / 2, 0),
                 anchor: "top"
             }));
+            if (!this.showFooter) return;
             // footer
             K.drawRect({
                 color: this.bg,

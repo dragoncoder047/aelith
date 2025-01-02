@@ -36,7 +36,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
-* [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
 * [ ] Use firewall somewhere else
@@ -53,6 +52,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Add warning if browser is Firefox and gamepad, or single Joy-Con
 * [X] Fix player head lagging behind player body when moving
 * [X] Fix bugs where player head disappears randomly when holding continuation, and horn disappears when invoking continuation

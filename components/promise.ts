@@ -10,11 +10,13 @@ import { controllable, ControllableComp } from "./controllable";
 export interface PromiseComp extends Comp {
     controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
+
+    params: ContinuationTrapComp["params"]
     readonly color: Color
     readonly type: keyof typeof contTypes
 }
 
-export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
+export function promise(controlling: PromiseComp["controlling"], params: ContinuationTrapComp["params"]): PromiseComp {
     var _cre: KEventController;
     return {
         id: "promise",
@@ -24,19 +26,23 @@ export function promise(controlling: PromiseComp["controlling"]): PromiseComp {
         get data() {
             return contTypes[this.type as any as keyof typeof contTypes];
         },
+        params,
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
         add(this: GameObj<PromiseComp | ShaderComp | ControllableComp | NamedComp>) {
             this.use(controllable([{ hint: "" }]));
-            this.controls[0]!.styles = [this.type];
-            if (this.data!.pName !== null)
-                this.use(K.named(this.data!.pName!));
+            this.controls[0]!.styles = [this.type.replace(/[^\w]/g, "")];
+            if (this.params.pName !== null)
+                this.use(K.named(this.params.pName));
             this.on("modify", d => this.controlling.trigger("modify", d));
             this.on("invoke", () => {
                 player.removeFromInventory(this as any);
                 this.destroy();
+                const temp = this.controlling.params;
+                this.controlling.params = this.params;
                 this.controlling.capture();
+                this.controlling.params = temp;
             });
             this.uniform!.u_targetcolor = this.color;
             _cre = this.controlling.onCollide((_, col) => {

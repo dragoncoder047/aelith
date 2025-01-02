@@ -17,18 +17,17 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
         windDirection: -90,
         windForce: WIND_FORCE,
         add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp>) {
-            this.onCollideUpdate(obj => {
+            this.onCollideUpdate((obj: GameObj<BodyComp | PosComp>) => {
                 if (!this.force.isZero()
                     && this.force.y < 0
                     && obj.has(["body", "pos"])
-                    && (obj as GameObj<BodyComp>).curPlatform() !== null) {
-                    (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
-                    (obj as GameObj<BodyComp>).jump(Number.EPSILON);
+                    && obj.curPlatform() !== null) {
+                    obj.move(0, -WALK_SPEED);
+                    obj.jump(Number.EPSILON);
                 }
             });
         },
         update(this: GameObj<WindComp | AreaEffectorComp | StateComp>) {
-            // @ts-expect-error
             // why is this necessary??
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state))
         }

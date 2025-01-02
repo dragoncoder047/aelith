@@ -21,6 +21,7 @@
             "throw": "\\[&button.rtrigger]",
             "invoke": "(&button.east)",
             "modify": "\\[d-pad]",
+            "edit": "(&button.west)",
             "inventory.scroll": "\\[&button.lshoulder]/\\[&button.rshoulder]",
             "pause": "(&button.start)",
             "pMenu": {
@@ -44,6 +45,7 @@
             "throw": "\\[right click]",
             "invoke": "\\[E]/\\[enter]",
             "modify": "\\[scroll]",
+            "edit": "\\[Q]",
             "inventory.scroll": "\\[Z]/\\[C]",
             "pause": "\\[tab]",
             "pMenu": {
@@ -119,5 +121,6 @@
     "startup.cmd": "agdb pm &startup.pid.core",
     "startup.pid": "4242",
     "startup.debugger.pid": "4247",
-    "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)"
+    "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)",
+    "editMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.continuation.stopEdit)"
 }

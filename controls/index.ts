@@ -39,7 +39,7 @@ function motionHandler() {
     else if (xy.x < 0)
         player.flipX = false;
 }
-(player.onUpdate(motionHandler) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onUpdate(motionHandler) as KEventControllerPatch).forEventGroup("!dialog");
 
 (player.onButtonPress("jump", () => {
     if (player.isGrounded() || player.state === "climbing") {
@@ -48,13 +48,13 @@ function motionHandler() {
         if (!player.intersectingAny("button"))
             player.playSound("jump");
     }
-}) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonPress("throw", () => player.throw()) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("noDialog");
+}) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonPress("throw", () => player.throw()) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("!dialog");
 
 // Mouse looking
 (player.onMouseMove(mousePos => {
@@ -65,7 +65,7 @@ function motionHandler() {
         const lookingWhere = K.toWorld(mousePos.scale(1 / SCALE));
         player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
     }
-}) as KEventControllerPatch).forEventGroup("noDialog");
+}) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onGamepadStick("right", xy => {
     if (K.getLastInputDeviceType() !== "gamepad") return;
     if (xy.slen() < 0.01) {
@@ -75,13 +75,13 @@ function motionHandler() {
     // do cubed for better control at low forces
     xy = xy.scale(xy.len());
     player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.head!.worldPos()!));
-}) as KEventControllerPatch).forEventGroup("noDialog");
+}) as KEventControllerPatch).forEventGroup("!dialog");
 
 // Inventory
-(player.onButtonPress("inv_previous", () => player.scrollInventory(-1)) as KEventControllerPatch).forEventGroup("noDialog");
-(player.onButtonPress("inv_next", () => player.scrollInventory(1)) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("inv_previous", () => player.scrollInventory(-1)) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonPress("inv_next", () => player.scrollInventory(1)) as KEventControllerPatch).forEventGroup("!dialog");
 
-(player.onButtonPress("view_info", () => showManpage(true)) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("view_info", () => showManpage(true)) as KEventControllerPatch).forEventGroup("!dialog");
 
 // Footsteps sound effects when walking
 (player.onUpdate(() => {
@@ -97,7 +97,7 @@ function motionHandler() {
         player.footstepsCounter = 0;
         player.playSound(player.state === "normal" ? "footsteps" : "climbing");
     }
-}) as KEventControllerPatch).forEventGroup("noDialog");
+}) as KEventControllerPatch).forEventGroup("!dialog");
 
 function motionHandler2() {
     if (player.manpage!.needsToScroll)
@@ -128,7 +128,8 @@ export async function showManpage(isShown: boolean, importantMessage?: string, r
                 section: "",
                 sprite: undefined,
                 header: "",
-                body: importantMessage
+                body: importantMessage,
+                showFooter: false
             });
         }
     } else {
@@ -137,14 +138,12 @@ export async function showManpage(isShown: boolean, importantMessage?: string, r
     await nextFrame();
     await nextFrame();
     if (isShown) {
-        K.eventGroups.delete("noDialog");
         K.eventGroups.add("dialog");
         if (requireKeyboardToClose) K.eventGroups.add("specialDialog");
         else K.eventGroups.delete("specialDialog");
     } else {
         K.eventGroups.delete("dialog");
         K.eventGroups.delete("specialDialog");
-        K.eventGroups.add("noDialog");
     }
 }
 const foo = player.onUpdate(() => {
