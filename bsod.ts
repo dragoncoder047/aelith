@@ -21,7 +21,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: K.sub("&msg.gameErrored").replace(/(?<!\\)\[/g, "\\["),
+        text: K.sub("&msg.bsod.sadfaceMsg").replace(/(?<!\\)\[/g, "\\["),
         font: "sans-serif",
         width: K.width() * 2 / 3,
         size: K.height() / 36,
@@ -31,7 +31,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: K.sub("&msg.gameErrorDetails").replace(/(?<!\\)\[/g, "\\["),
+        text: K.sub("&msg.bsod.searchOnlineHint").replace(/(?<!\\)\[/g, "\\["),
         font: "sans-serif",
         width: K.width() * 2 / 3,
         size: K.height() / 48,
