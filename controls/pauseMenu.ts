@@ -1,13 +1,14 @@
 import { GameObj, Vec2 } from "kaplay";
-import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
-import { player } from "../player";
-import { K } from "../init";
-import { timer } from "../ui/timer";
-import { MParser } from "../assets/mparser";
-import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { musicPlay } from "../assets";
-import { guessOS, isFirefox, isTouchscreen, nextFrame } from "../utils";
 import { showManpage } from ".";
+import { musicPlay } from "../assets";
+import { MParser } from "../assets/mparser";
+import { K } from "../init";
+import { player } from "../player";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
+import { timer } from "../ui/timer";
+import { guessOS, isFirefox, isTouchscreen, nextFrame } from "../utils";
 import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 
 // save for autodetect
@@ -98,41 +99,40 @@ export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
 export var pauseListener = K.add([]);
 
 // setup navigation controls
-pauseListener.onButtonPress("nav_left", () => {
+(pauseListener.onButtonPress("nav_left", () => {
     if (K.isCapturingInput()) return;
     PAUSE_MENU_OBJ.switch(K.LEFT);
-})
-pauseListener.onButtonPress("nav_right", () => {
+}) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onButtonPress("nav_right", () => {
     if (K.isCapturingInput()) return;
     PAUSE_MENU_OBJ.switch(K.RIGHT);
-})
-pauseListener.onButtonPress("nav_up", () => {
+}) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onButtonPress("nav_up", () => {
     if (K.isCapturingInput()) return;
     PAUSE_MENU_OBJ.switch(K.UP);
-})
-pauseListener.onButtonPress("nav_down", () => {
+}) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onButtonPress("nav_down", () => {
     if (K.isCapturingInput()) return;
     PAUSE_MENU_OBJ.switch(K.DOWN);
-})
-pauseListener.onButtonPress("nav_select", () => {
+}) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onButtonPress("nav_select", () => {
     if (K.isCapturingInput()) return;
     PAUSE_MENU_OBJ.doit();
-})
-pauseListener.onButtonPress("nav_back", () => {
+}) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onButtonPress("nav_back", () => {
     if (K.isCapturingInput()) return;
     if (PAUSE_MENU_OBJ.backStack.length > 0) PAUSE_MENU_OBJ.back();
     else doUnpause();
-});
+}) as KEventControllerPatch).forEventGroup("menuActive");
 
 var origCamPos: Vec2;
 var origInventoryIndex: number;
-player.onButtonPress("pause_unpause", doPause);
-pauseListener.onButtonPress("pause_unpause", doUnpause);
-pauseListener.onUpdate(() => {
+(player.onButtonPress("pause_unpause", doPause) as KEventControllerPatch).forEventGroup("!menuActive");
+(pauseListener.onButtonPress("pause_unpause", doUnpause) as KEventControllerPatch).forEventGroup("menuActive");
+(pauseListener.onUpdate(() => {
     copyPreferences();
     player.controlText.data.stringEditing = String(!!K.isCapturingInput());
-});
-pauseListener.paused = true;
+}) as KEventControllerPatch).forEventGroup("menuActive");
 
 export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // sync testing mode for music
@@ -168,9 +168,9 @@ async function doPause() {
     K.get("tail").forEach(p => p.hidden = p.paused = true);
     origCamPos = player.pos;
     K.setCamPos(MParser.pausePos);
+    MParser.pauseWorld(true);
     await nextFrame();
-    // prevent immediate unpause
-    pauseListener.paused = false;
+    K.eventGroups.add("menuActive");
     player.playSound("typing");
     player.controlText.t = "&pauseMenuCtlHint";
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + &startup.debugger.pid &msg.pause.suspended  &startup.cmd\n");
@@ -183,7 +183,7 @@ async function doUnpause() {
     player.hidden = player.paused = false;
     player.scrollInventory(origInventoryIndex - player.holdingIndex);
     K.get("tail").forEach(p => p.hidden = p.paused = false);
-    pauseListener.paused = true;
+    K.eventGroups.delete("menuActive");
     K.setCamPos(origCamPos);
     player.playSound("typing");
     await PAUSE_MENU_OBJ.quitMenu();
@@ -192,6 +192,7 @@ async function doUnpause() {
         "[1]  + &startup.debugger.pid &msg.pause.continued  &startup.cmd\n")
     copyPreferences();
     await showManpage(false);
+    MParser.pauseWorld(false);
 }
 
 export function copyPreferences() {

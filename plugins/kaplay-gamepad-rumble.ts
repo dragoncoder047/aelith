@@ -55,7 +55,7 @@ export function kaplayRumble(K: KAPLAYCtx & KAPLAYRumblePlugin): KAPLAYRumblePlu
         }
     }
     rumbleFunc.enabled = true;
-    rumbleFunc.onlyWhenGamepadInUse = false;
+    rumbleFunc.onlyWhenGamepadInUse = true;
     return {
         rumbleEffects: {},
         rumble: rumbleFunc,

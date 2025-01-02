@@ -34,11 +34,15 @@ export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAP
     }
 }
 
-type Foo<T, From, To> = {
-    [K in keyof T]: T[K] extends From ? To : T[K] extends (...args: any) => any ? (...args: Foo<Parameters<T[K]>, From, To>) => Foo<ReturnType<T[K]>, From, To> : Foo<T[K], From, To>;
-}
+type ReplaceTypes<T, From, To extends From> =
+    T extends From ? To :
+    T extends Promise<From> ? Promise<To> :
+    T extends [infer Head, ...infer Tail] ? [ReplaceTypes<Head, From, To>, ...Extract<ReplaceTypes<Tail, From, To>, any[]>] :
+    T extends (...args: infer Params) => infer Return ? (...args: Extract<ReplaceTypes<Params, From, To>, any[]>) => ReplaceTypes<Return, From, To> :
+    T extends (infer E)[] ? ReplaceTypes<E, From, To>[] :
+    { [K in keyof T]: ReplaceTypes<T[K], From, To> };
 
-export type KAPLAYControlGroupPlugin = Partial<Foo<KAPLAYCtx, KEventController, KEventControllerPatch>> & {
+export type KAPLAYControlGroupPlugin = Partial<ReplaceTypes<KAPLAYCtx, KEventController, KEventControllerPatch>> & {
     eventGroups: Set<string>;
 }
 
