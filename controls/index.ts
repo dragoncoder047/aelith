@@ -1,9 +1,10 @@
 import { AreaComp, Vec2 } from "kaplay";
+import { MParser } from "../assets/mparser";
 import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { nextFrame } from "../utils";
-import { MParser } from "../assets/mparser";
 
 // Controls
 
@@ -38,84 +39,76 @@ function motionHandler() {
     else if (xy.x < 0)
         player.flipX = false;
 }
-export const MANPAGE_CLOSED_HANDLERS = [
-    player.onUpdate(motionHandler),
+(player.onUpdate(motionHandler) as KEventControllerPatch).forEventGroup("noDialog");
 
-    player.onButtonPress("jump", () => {
-        if (player.isGrounded() || player.state === "climbing") {
-            player.jump();
-            player.enterState("jump");
-            if (!player.intersectingAny("button"))
-                player.playSound("jump");
-        }
-    }),
-    player.onButtonPress("throw", () => player.throw()),
-    player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")),
-    player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")),
-    player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)),
-    player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)),
-    player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))),
+(player.onButtonPress("jump", () => {
+    if (player.isGrounded() || player.state === "climbing") {
+        player.jump();
+        player.enterState("jump");
+        if (!player.intersectingAny("button"))
+            player.playSound("jump");
+    }
+}) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("throw", () => player.throw()) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("noDialog");
 
-    // Mouse looking
-    player.onMouseMove(mousePos => {
-        if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
-            player.lookAt(undefined);
-        // toWorld is darn bugged kaplayjs/kaplay#325
-        else {
-            const lookingWhere = K.toWorld(mousePos.scale(1 / SCALE));
-            player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
-        }
-    }),
-    player.onGamepadStick("right", xy => {
-        if (K.getLastInputDeviceType() !== "gamepad") return;
-        if (xy.slen() < 0.01) {
-            player.lookAt(undefined);
-            return;
-        }
-        // do cubed for better control at low forces
-        xy = xy.scale(xy.len());
-        player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.head!.worldPos()!));
-    }),
+// Mouse looking
+(player.onMouseMove(mousePos => {
+    if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
+        player.lookAt(undefined);
+    // toWorld is darn bugged kaplayjs/kaplay#325
+    else {
+        const lookingWhere = K.toWorld(mousePos.scale(1 / SCALE));
+        player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
+    }
+}) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onGamepadStick("right", xy => {
+    if (K.getLastInputDeviceType() !== "gamepad") return;
+    if (xy.slen() < 0.01) {
+        player.lookAt(undefined);
+        return;
+    }
+    // do cubed for better control at low forces
+    xy = xy.scale(xy.len());
+    player.lookAt(xy.scale(MAX_THROW_STRETCH).add(player.head!.worldPos()!));
+}) as KEventControllerPatch).forEventGroup("noDialog");
 
-    // Inventory
-    player.onButtonPress("inv_previous", () => player.scrollInventory(-1)),
-    player.onButtonPress("inv_next", () => player.scrollInventory(1)),
+// Inventory
+(player.onButtonPress("inv_previous", () => player.scrollInventory(-1)) as KEventControllerPatch).forEventGroup("noDialog");
+(player.onButtonPress("inv_next", () => player.scrollInventory(1)) as KEventControllerPatch).forEventGroup("noDialog");
 
-    player.onButtonPress("view_info", () => showManpage(true)),
+(player.onButtonPress("view_info", () => showManpage(true)) as KEventControllerPatch).forEventGroup("noDialog");
 
-    // Footsteps sound effects when walking
-    player.onUpdate(() => {
-        var xy = getMotionVector();
-        if (player.state == "normal") {
-            if (xy.x === 0)
-                xy = xy.reject(K.getGravityDirection());
-            if (!player.isGrounded()) return;
-        }
-        if (player.state === "climbing" || player.state === "normal")
-            player.footstepsCounter += K.dt() * xy.len();
-        if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
-            player.footstepsCounter = 0;
-            player.playSound(player.state === "normal" ? "footsteps" : "climbing");
-        }
-    }),
-];
+// Footsteps sound effects when walking
+(player.onUpdate(() => {
+    var xy = getMotionVector();
+    if (player.state == "normal") {
+        if (xy.x === 0)
+            xy = xy.reject(K.getGravityDirection());
+        if (!player.isGrounded()) return;
+    }
+    if (player.state === "climbing" || player.state === "normal")
+        player.footstepsCounter += K.dt() * xy.len();
+    if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
+        player.footstepsCounter = 0;
+        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
+    }
+}) as KEventControllerPatch).forEventGroup("noDialog");
 
 function motionHandler2() {
     if (player.manpage!.needsToScroll)
         player.manpage!.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED;
 }
 
-const MANPAGE_OPEN_HANDLERS = [
-    player.onUpdate(motionHandler2),
-    player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
-    player.onButtonPress("view_info", () => showManpage(false)),
-];
+(player.onUpdate(motionHandler2) as KEventControllerPatch).forEventGroup("dialog");
+(player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }) as KEventControllerPatch).forEventGroup("dialog");
+(player.onButtonPress("view_info", () => showManpage(false)) as KEventControllerPatch).forEventGroup(["dialog", "!specialDialog"]);
 
-const MANPAGE_FORCE_ENTER_OPEN_HANDLERS = [
-    player.onUpdate(motionHandler2),
-    player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }),
-    player.onKeyPress("escape", () => showManpage(false)),
-];
+(player.onKeyPress("escape", () => showManpage(false)) as KEventControllerPatch).forEventGroup("specialDialog");
 
 export async function showManpage(isShown: boolean, importantMessage?: string, requireKeyboardToClose?: boolean) {
     var sound: string | undefined = "typing";
@@ -145,12 +138,16 @@ export async function showManpage(isShown: boolean, importantMessage?: string, r
     }
     await nextFrame();
     await nextFrame();
-    const closedHandlersArePaused = isShown;
-    const openHandlersArePaused = isShown ? !!requireKeyboardToClose : true;
-    const specialHandlersArePaused = isShown ? !requireKeyboardToClose : true;
-    MANPAGE_CLOSED_HANDLERS.forEach(h => h.paused = closedHandlersArePaused);
-    MANPAGE_OPEN_HANDLERS.forEach(h => h.paused = openHandlersArePaused);
-    MANPAGE_FORCE_ENTER_OPEN_HANDLERS.forEach(h => h.paused = specialHandlersArePaused);
+    if (isShown) {
+        K.eventGroups.delete("noDialog");
+        K.eventGroups.add("dialog");
+        if (requireKeyboardToClose) K.eventGroups.add("specialDialog");
+        else K.eventGroups.delete("specialDialog");
+    } else {
+        K.eventGroups.delete("dialog");
+        K.eventGroups.delete("specialDialog");
+        K.eventGroups.add("noDialog");
+    }
 }
 const foo = player.onUpdate(() => {
     showManpage(false);
