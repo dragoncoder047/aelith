@@ -17,13 +17,13 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
         windDirection: -90,
         windForce: WIND_FORCE,
         add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp>) {
-            this.onCollideUpdate((obj: GameObj<BodyComp | PosComp>) => {
+            this.onCollideUpdate((obj: GameObj) => {
                 if (!this.force.isZero()
                     && this.force.y < 0
                     && obj.has(["body", "pos"])
-                    && obj.curPlatform() !== null) {
-                    obj.move(0, -WALK_SPEED);
-                    obj.jump(Number.EPSILON);
+                    && (obj as GameObj<BodyComp>).curPlatform() !== null) {
+                    (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
+                    (obj as GameObj<BodyComp>).jump(Number.EPSILON);
                 }
             });
         },

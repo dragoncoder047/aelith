@@ -1,4 +1,4 @@
-import { KAPLAYCtx, KEventController, KEvent, Registry } from "kaplay";
+import { KAPLAYCtx, KEventController, KEvent, Registry, Vec2 } from "kaplay";
 
 export interface KEventControllerPatch extends KEventController {
     forEventGroup(evGroups: string | string[]): this
@@ -35,11 +35,16 @@ export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAP
 }
 
 type ReplaceTypes<T, From, To extends From> =
+    T extends Vec2 ? Vec2 :
     T extends From ? To :
     T extends Promise<From> ? Promise<To> :
-    T extends [infer Head, ...infer Tail] ? [ReplaceTypes<Head, From, To>, ...Extract<ReplaceTypes<Tail, From, To>, any[]>] :
+    T extends Set<From> ? Set<To> :
+    T extends Map<From, infer Value> ? Map<To, ReplaceTypes<Value, From, To>> :
+    T extends Map<infer Key, From> ? Map<ReplaceTypes<Key, From, To>, To> :
+    T extends WeakMap<infer Key, From> ? WeakMap<Extract<ReplaceTypes<Key, From, To>, WeakKey>, To> :
+    T extends WeakMap<Extract<From, WeakKey>, infer Value> ? WeakMap<Extract<To, WeakKey>, ReplaceTypes<Value, From, To>> :
+    T extends WeakSet<Extract<From, WeakKey>> ? WeakSet<Extract<To, WeakKey>> :
     T extends (...args: infer Params) => infer Return ? (...args: Extract<ReplaceTypes<Params, From, To>, any[]>) => ReplaceTypes<Return, From, To> :
-    T extends (infer E)[] ? ReplaceTypes<E, From, To>[] :
     { [K in keyof T]: ReplaceTypes<T[K], From, To> };
 
 export type KAPLAYControlGroupPlugin = Partial<ReplaceTypes<KAPLAYCtx, KEventController, KEventControllerPatch>> & {
