@@ -41,7 +41,7 @@ K.onError(error => {
         fixed: true
     });
     K.drawText({
-        text: String(error instanceof Error ? error.stack : error).replace(/(?<!\\)\[/g, "\\["),
+        text: String(error instanceof Error ? `${error.message}\n\nTraceback:\n${error.stack}` : error).replace(/(?<!\\)\[/g, "\\["),
         font: "monospace",
         width: K.width() * 2 / 3,
         size: K.height() / 56,
