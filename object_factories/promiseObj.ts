@@ -32,7 +32,7 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
                 });
             },
         },
-        promise(controlling),
+        promise(controlling, Object.assign({}, controlling.params)),
         ...throwablePlatformEff(),
         grabbable(),
         "continuation" as Tag,
