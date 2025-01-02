@@ -63,8 +63,9 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             radius: 0,
             deferred: false,
             useSelfPosition: false,
-            recapture: true,
+            recapture: false,
             reverseTeleport: false,
+            fuzzStates: false,
 
             // not editable
             concurrent: false,
@@ -109,7 +110,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.wait(0.1, () => {
                 Object.assign(this.params, this.behavior);
                 this.params.radius = this.params.radius * TILE_SIZE;
-                this.lore = { seen: false, ...this.data!.lore };
+                this.lore = { seen: false, ...this.data?.lore };
             });
         },
         update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
@@ -158,7 +159,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             } else this.capture();
         },
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
-            if (this.params.radius > 0 && player.inventory.includes(this as any)) {
+            if (this.enabled && this.params.radius > 0 && player.inventory.includes(this as any)) {
                 const willCapture = this.peekCapture();
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
