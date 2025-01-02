@@ -29,6 +29,7 @@
         "rstick",
         "rtrigger",
         "sdist",
+        "segfaulted",
         "setjmp",
         "slen",
         "tweener",

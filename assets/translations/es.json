@@ -73,7 +73,6 @@
     "gameErrored": "El juego se encontró con un problema que no pudo manejar, y ahora necesita ser reiniciado.",
     "gameErrorDetails": "Puede buscar el error en Internet:",
     "wrongWayLeft": "&arrow.left Ir por ese camino",
-    "firstDoor": "Para abrir la puerta, tendrá que pulsar\ny mantener pulsado el botón...\nsi tan solo pudiera hacer eso...",
     "firstCheckpoint": "&arrow.left ¡Felicidades,\n  tu primer\n  punto de control!",
     "thisLightbulb": "&arrow.up ...como\n  esta bombilla",
     "button": "Los botones activan cosas mientras se presionan...",
@@ -87,7 +86,6 @@
     "fellOut": "Bueno, ahora estás en un aprieto...\n¡las continuaciones son tus amigas!",
     "slightlyDifferent": "Este se comporta de manera ligeramente diferente... ¡probablemente algo bueno!",
     "secret": "[bouncy][rainbow]shh, ¿secreto?[/rainbow][/bouncy]",
-    "noSecret": "bueno, no encontraste nada\n\ntal vez el juego se actualice...",
     "powerful": "este es [bouncy][rainbow]¡extremadamente poderoso![/rainbow][/bouncy]",
     "congrats": "[bouncy][rainbow]¡FELICIDADES![/rainbow][/bouncy]\n¡has llegado al final del juego hasta ahora!"
 }

@@ -73,7 +73,6 @@
     "gameErrored": "ゲームで処理できない問題が発生したため、再起動する必要があります。",
     "gameErrorDetails": "エラーはオンラインで検索できます:",
     "wrongWayLeft": "&arrow.left そちらへ進んでください",
-    "firstDoor": "ドアを開けるには、ボタンを押し続ける必要があります...\nそれができればいいのですが...",
     "firstCheckpoint": "&arrow.left おめでとうございます、\n  最初のチェックポイントです!",
     "thisLightbulb": "&arrow.up ...この電球のように",
     "button": "ボタンは押されている間、何かをトリガーします...",
@@ -87,7 +86,6 @@
     "fellOut": "さて、あなたは今困った状況に陥っています...\n継続装置はあなたの味方です!",
     "slightlyDifferent": "これは少し動作が異なります...おそらく良いことです!",
     "secret": "[bouncy][rainbow]シーッ、秘密?[/rainbow][/bouncy]",
-    "noSecret": "ええと、何も見つかりませんでした\n\nゲームは更新されるかもしれません...",
     "powerful": "これは[bouncy][rainbow]非常に強力です![/rainbow][/bouncy]",
     "congrats": "[bouncy][rainbow]おめでとうございます![/rainbow][/bouncy]\n今のところゲームの最後まで到達しました!!"
 }
