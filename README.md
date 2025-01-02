@@ -15,29 +15,9 @@ A puzzle platformer game.
 
 ## Game premise
 
-Something went wrong in the computer system, and a debugger has been sent in to fix the horribly convoluted and illogical program that runs it. Fighting bugs along the way, and finally defeating the final bug in the program
+The AI system crashed, and a debugger is sent in to figure out why the AI crashed and fix it.
 
-## Mechanics
-
-* Player can only grab items, throw items, and "use" items
-* Player can interact with machines when they are close enough to them.
-* Throughout the gameplay, the player finds items that work as continuation traps
-  * These items when "used" give the player a "continuation"
-    * When the continuation is invoked, it teleports the player back to where they were when they captured the continuation, and resets the state of machines nearby
-      * The player can use these to teleport
-      * The resetting mechanic can be use to get machines in "glitched" states that is the only way to beat the level
-
-### Types of continuation traps
-
-* `throw` -- basic type; small radius, can only be invoked once; only saves player's position
-* `setjmp` -- saves position and machine state in small radius, can only be used once
-* `async` -- continuation trap can be thrown (down a pipe or some other place); then be captured remotely
-* `yield` -- back-and-forth type; when invoked gives the player a continuation for where they invoked it from so they can go back
-* `switch` -- reverse teleport type: teleports stuff to near you instead of teleporting you
-* `call/cc` -- most powerful continuation trap; can be used infinite number of times and has a controllable radius of effect
-* `assert` -- not an obtainable continuation trap, functions as a checkpoint that the player can use if they die or mess up
-
-#### Machine types
+### Machine types
 
 * Controls
   * [X] Lever
@@ -54,9 +34,7 @@ Something went wrong in the computer system, and a debugger has been sent in to 
   * [ ] Tower computer
   * [ ] Battery
 
-## Other ideas
-
-### TODO
+## TODO
 
 * [ ] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Finish writing man pages for all the types of continuations
