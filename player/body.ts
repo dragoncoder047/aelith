@@ -261,7 +261,7 @@ export function playerBody(): PlayerBodyComp {
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
             if (obj.has("platformEffector"))
-                (obj as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
+                (obj as any as GameObj<PlatformEffectorComp>).platformIgnore.add(this);
         },
         grab(this: GameObj<PlayerBodyComp>, obj) {
             // already have it. Problem.
