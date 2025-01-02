@@ -27,6 +27,7 @@ import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
+import { PlayerBodyComp } from "../player/body";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -556,6 +557,14 @@ export const MParser: {
         return (this.uid_counter++).toString(16);
     },
     pauseWorld(paused) {
-        this.world!.query({hierarchy: "descendants"}).forEach(x => x.paused = paused);
+        this.world!.query({ hierarchy: "descendants" }).forEach(x => x.paused = paused);
+        if (!paused) {
+            const player = K.get<PlayerBodyComp>("player")[0]!;
+            const sign = player.holdingIndex < 0 ? 1 : -1;
+            K.eventGroups.add("notReallyChangingInventory");
+            player.scrollInventory(sign);
+            player.scrollInventory(-sign);
+            K.eventGroups.delete("notReallyChangingInventory");
+        }
     },
 };

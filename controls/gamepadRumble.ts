@@ -1,6 +1,7 @@
 import { GameObj, KEventController, OffScreenComp, PosComp, Vec2 } from "kaplay";
 import { K } from "../init";
 import { player } from "../player";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 function rumbleEffectAndWait(effect: string, controller: KEventController) {
     controller.paused = true;
@@ -9,11 +10,11 @@ function rumbleEffectAndWait(effect: string, controller: KEventController) {
 
 player.onHurt(() => { if (player.hp > 0) K.rumble("hurt"); });
 player.onDeath(() => K.rumble("died"));
-const icc = player.on("inventoryChange", () => {
+const icc = (player.on("inventoryChange", () => {
     if (player.holdingItem?.has("continuation-trap")) K.rumble("get_continuation_trap");
     if (player.holdingItem?.has("continuation")) K.rumble("get_continuation");
     if (player.holdingItem?.has("promise")) K.rumble("get_promise");
-});
+}) as KEventControllerPatch).forEventGroup("!notReallyChangingInventory");
 player.on("teleport", () => rumbleEffectAndWait("teleport", icc));
 
 const bbk = player.onCollideUpdate("barrier", (_, coll) => {

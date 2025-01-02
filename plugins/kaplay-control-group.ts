@@ -1,7 +1,7 @@
 import { KAPLAYCtx, KEventController, KEvent, Registry } from "kaplay";
 
 export interface KEventControllerPatch extends KEventController {
-    forEventGroup(evGroups: string | string[]): void
+    forEventGroup(evGroups: string | string[]): this
 }
 
 export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAPLAYControlGroupPlugin {
@@ -10,6 +10,7 @@ export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAP
         evGroups: string[] = [];
         forEventGroup(evGroups: string | string[]) {
             this.evGroups = Array.isArray(evGroups) ? evGroups : [evGroups];
+            return this;
         }
     }
     K.KEvent.prototype.add = function <Args extends any[]>(this: KEvent<Args>,
@@ -17,7 +18,7 @@ export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAP
         function handler(...args: Args) {
             if (ev.paused
                 || (ev.evGroups.length > 0
-                    && ev.evGroups.every(g => !K.eventGroups.has(g)))) return;
+                    && !eGroupsMatches(ev.evGroups, K.eventGroups))) return;
             return action(...args);
         }
 
@@ -39,4 +40,22 @@ type Foo<T, From, To> = {
 
 export type KAPLAYControlGroupPlugin = Partial<Foo<KAPLAYCtx, KEventController, KEventControllerPatch>> & {
     eventGroups: Set<string>;
+}
+
+function eGroupsMatches(evGroups: string[], eventGroups: Set<string>) {
+    for (var evGroup of evGroups) {
+        if (evGroup.startsWith("!")) {
+            if (eventGroups.has(evGroup.slice(1))) {
+                console.log(evGroups, eventGroups, "=>", false);
+                return false;
+            }
+        } else {
+            if (!eventGroups.has(evGroup)) {
+                console.log(evGroups, eventGroups, "=>", false);
+                return false;
+            }
+        }
+    }
+    console.log(evGroups, eventGroups, "=>", true);
+    return true;
 }
