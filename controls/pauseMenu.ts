@@ -83,14 +83,33 @@ export const PAUSE_MENU: PtyMenu = {
             ]
         },
         {
-            id: "testing",
-            name: "testing testing",
+            id: "testfun",
+            name: "test function",
+            type: "action",
+            async action() {
+                await PAUSE_MENU_OBJ.type("test function\n");
+            },
+            hidden: true
+        },
+        {
+            id: "teststring",
+            name: "testing string",
             prompt: "Enter an IP address:",
             type: "string",
             value: "0.0.0.0",
             validator: /^(\d{1,3}\.){3}\d{1,3}$/,
             invalidMsg: "Invalid IP address",
-            hidden: false
+            hidden: true
+        },
+        {
+            id: "testrange",
+            name: "testing range",
+            type: "range",
+            range: [0, 100],
+            displayRange: [0, 100],
+            value: 50,
+            barWidth: 25,
+            hidden: true
         }
     ]
 }
