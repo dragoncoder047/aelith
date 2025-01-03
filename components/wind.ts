@@ -1,9 +1,8 @@
-import { AreaComp, BodyComp, Comp, GameObj, PosComp, StateComp } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, StateComp, AreaEffectorComp } from "kaplay";
 import { WALK_SPEED, WIND_FORCE } from "../constants";
 import { K } from "../init";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
-type AreaEffectorComp = ReturnType<typeof K.areaEffector>; // why is this necessary??
 
 export interface WindComp extends Comp {
     windForce: number
@@ -28,7 +27,6 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
             });
         },
         update(this: GameObj<WindComp | AreaEffectorComp | StateComp>) {
-            // why is this necessary??
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state))
         }
     };
