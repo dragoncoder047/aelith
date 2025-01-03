@@ -11,7 +11,7 @@ import { nextFrame } from "../utils";
 export function getMotionVector(): Vec2 {
     const leftstickRaw = K.getGamepadStick("left")//.reflect(K.RIGHT);
     const leftstick = leftstickRaw.slen() > 0.01 ? leftstickRaw : K.vec2(0);
-    const keystick = K.vec2(
+    const keystick = K.eventGroups.has("menuActive") ? K.vec2(0) : K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
     ).unit();
@@ -106,8 +106,9 @@ function motionHandler2() {
 
 (player.onUpdate(motionHandler2) as KEventControllerPatch).forEventGroup("dialog");
 (player.onScroll(xy => { if (player.manpage!.needsToScroll) player.manpage!.scrollPos += xy.y / 2 }) as KEventControllerPatch).forEventGroup("dialog");
+K.onUpdate(() => K.eventGroups.has("pauseMenu") && motionHandler2());
+K.onScroll(xy => { if (player.manpage!.needsToScroll && K.eventGroups.has("pauseMenu")) player.manpage!.scrollPos += xy.y / 2 });
 (player.onButtonPress("view_info", () => showManpage(false)) as KEventControllerPatch).forEventGroup(["dialog", "!specialDialog"]);
-
 (player.onKeyPress("escape", () => showManpage(false)) as KEventControllerPatch).forEventGroup("specialDialog");
 
 export async function showManpage(isShown: boolean, importantMessage?: string, requireKeyboardToClose?: boolean) {

@@ -516,11 +516,13 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                         return;
                     }
+                    var stringFinished = false;
                     if (this.menu.type === "string") {
                         inputListener!.destroy();
                         inputListener = undefined;
                         originalText = undefined;
                         isCapturingInput_ = false;
+                        stringFinished = true;
                     }
                     if (opt?.sounds?.back) this.playSoundCb?.(opt.sounds.back);
                     const oldMenu = this.menu;
@@ -531,6 +533,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     menuChunks.forEach(c => (this.dropChunk(c.select), this.dropChunk(c.chunks)));
                     this.dropChunk(cursorChunks);
                     await this.__redraw();
+                    if (stringFinished) this.trigger("stringFinished");
                 },
                 // MARK: switch()
                 async switch(direction) {

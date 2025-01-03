@@ -1,4 +1,4 @@
-import { GameObj, Vec2 } from "kaplay";
+import { GameObj, TextComp, Vec2 } from "kaplay";
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
@@ -90,47 +90,59 @@ export const PAUSE_MENU: PtyMenu = {
             value: "0.0.0.0",
             validator: /^(\d{1,3}\.){3}\d{1,3}$/,
             invalidMsg: "Invalid IP address",
-            hidden: true
+            hidden: false
         }
     ]
 }
 
-export var PAUSE_MENU_OBJ: GameObj<PtyMenuComp | PtyComp | DynamicTextComp>;
+export var PAUSE_MENU_OBJ: GameObj<TextComp | PtyMenuComp | PtyComp | DynamicTextComp>;
 export var pauseListener = K.add([]);
 
 // setup navigation controls
-(pauseListener.onButtonPress("nav_left", () => {
+(pauseListener.onButtonPress("nav_left", async () => {
     if (K.isCapturingInput()) return;
-    PAUSE_MENU_OBJ.switch(K.LEFT);
+    await PAUSE_MENU_OBJ.switch(K.LEFT);
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
-(pauseListener.onButtonPress("nav_right", () => {
+(pauseListener.onButtonPress("nav_right", async () => {
     if (K.isCapturingInput()) return;
-    PAUSE_MENU_OBJ.switch(K.RIGHT);
+    await PAUSE_MENU_OBJ.switch(K.RIGHT);
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
-(pauseListener.onButtonPress("nav_up", () => {
+(pauseListener.onButtonPress("nav_up", async () => {
     if (K.isCapturingInput()) return;
-    PAUSE_MENU_OBJ.switch(K.UP);
+    await PAUSE_MENU_OBJ.switch(K.UP);
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
-(pauseListener.onButtonPress("nav_down", () => {
+(pauseListener.onButtonPress("nav_down", async () => {
     if (K.isCapturingInput()) return;
-    PAUSE_MENU_OBJ.switch(K.DOWN);
+    await PAUSE_MENU_OBJ.switch(K.DOWN);
+    await nextFrame();
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
-(pauseListener.onButtonPress("nav_select", () => {
+(pauseListener.onButtonPress("nav_select", async () => {
     if (K.isCapturingInput()) return;
-    PAUSE_MENU_OBJ.doit();
+    await PAUSE_MENU_OBJ.doit();
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
-(pauseListener.onButtonPress("nav_back", () => {
+(pauseListener.onButtonPress("nav_back", async () => {
     if (K.isCapturingInput()) return;
-    if (PAUSE_MENU_OBJ.backStack.length > 0) PAUSE_MENU_OBJ.back();
-    else doUnpause();
+    if (PAUSE_MENU_OBJ.backStack.length > 0) await PAUSE_MENU_OBJ.back();
+    else await doUnpause();
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
 
-var origCamPos: Vec2;
 var origInventoryIndex: number;
 (player.onButtonPress("pause_unpause", doPause) as KEventControllerPatch).forEventGroup("!menuActive");
 (pauseListener.onButtonPress("pause_unpause", doUnpause) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
 (pauseListener.onUpdate(() => {
     copyPreferences();
+    player.manpage!.body = PAUSE_MENU_OBJ.text;
     player.controlText.data.stringEditing = String(!!K.isCapturingInput());
 }) as KEventControllerPatch).forEventGroup(["menuActive", "pauseMenu"]);
 
@@ -140,7 +152,6 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
         // @ts-ignore
         PAUSE_MENU.opts[0].selected.splice(3, 1);
     // setup pause / unpause controls
-    origCamPos = player.pos;
     origInventoryIndex = player.holdingIndex;
 
     // setup menu
@@ -158,6 +169,12 @@ export function initPauseMenu(terminal: GameObj<PtyComp>) {
     // @ts-expect-error
     PAUSE_MENU_OBJ = terminal;
 
+    // last event one
+    terminal.on("stringFinished", async () => {
+        await nextFrame();
+        player.manpage!.scrollPos = Number.MAX_VALUE;
+    });
+
     copyPreferences();
 }
 
@@ -166,16 +183,19 @@ async function doPause() {
     player.scrollInventory(-player.inventory.length);
     player.hidden = player.paused = true;
     K.get("tail").forEach(p => p.hidden = p.paused = true);
-    origCamPos = player.pos;
-    K.setCamPos(MParser.pausePos);
     MParser.pauseWorld(true);
     await nextFrame();
     K.eventGroups.add("menuActive");
     K.eventGroups.add("pauseMenu");
     player.playSound("typing");
+    player.manpage!.hidden = false;
+    player.manpage!.header = player.manpage!.section = "";
+    player.manpage!.showFooter = false;
     player.controlText.t = "&pauseMenuCtlHint";
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + &startup.debugger.pid &msg.pause.suspended  &startup.cmd\n");
     await PAUSE_MENU_OBJ.beginMenu();
+    await nextFrame();
+    player.manpage!.scrollPos = Number.MAX_VALUE;
 }
 
 async function doUnpause() {
@@ -186,8 +206,9 @@ async function doUnpause() {
     K.get("tail").forEach(p => p.hidden = p.paused = false);
     K.eventGroups.delete("menuActive");
     K.eventGroups.delete("pauseMenu");
-    K.setCamPos(origCamPos);
     player.playSound("typing");
+    player.manpage!.hidden = true;
+    player.manpage!.showFooter = true;
     await PAUSE_MENU_OBJ.quitMenu();
     await PAUSE_MENU_OBJ.command(
         { text: "fg %1", styles: ["command"] },
