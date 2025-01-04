@@ -11,7 +11,7 @@
     "control": "&c.&inputType",
     "c": {
         "gamepad": {
-            "move": "(lstick)",
+            "move": "(lstick)/\\[d-pad]",
             "sprint": "\\[&button.ltrigger]",
             "jump": "(&button.south)",
             "aim": "(rstick)",
