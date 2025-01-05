@@ -1,5 +1,4 @@
 import { AreaComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
 import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -15,8 +14,10 @@ export function getMotionVector(): Vec2 {
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward
     ).unit();
+    const sum = leftstick.add(keystick);
+    const clampedSum = sum.slen() > 1 ? sum.unit() : sum;
     const factor = K.isButtonDown("sprint") ? SPRINT_FACTOR : 1;
-    return leftstick.add(keystick).scale(factor);
+    return clampedSum.scale(factor);
 }
 
 function motionHandler() {
