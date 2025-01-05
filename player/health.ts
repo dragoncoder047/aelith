@@ -74,7 +74,6 @@ player.onDeath(async () => {
     K.setCamPos(MParser.pausePos);
     await funnyType(PAUSE_MENU_OBJ, deathMessages, false);
     PAUSE_MENU_OBJ.menu = DEATH_MENU;
-    K.strings.isPaused = "1";
     MParser.world!.trigger("update");
     // make resume things
     const allContinuations = K.get("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
@@ -121,6 +120,10 @@ player.onDeath(async () => {
     }
     pauseListener.paused = false;
     player.controlText.t = "&pauseMenuCtlHint";
+    // we are hijacking the pause menu yay!
+    K.eventGroups.add("menuActive");
+    K.eventGroups.add("pauseMenu");
+    player.controlText.data.stringEditing = "false";
     await PAUSE_MENU_OBJ.beginMenu();
 });
 
@@ -132,8 +135,9 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
         K.strings.isPaused = "0";
         PAUSE_MENU_OBJ.menu = PAUSE_MENU;
         copyPreferences();
-        player.paused = false;
-        player.hidden = false;
+        player.paused = player.hidden = false;
+        K.eventGroups.delete("menuActive");
+        K.eventGroups.delete("pauseMenu");
         K.get("tail").forEach(t => t.paused = false);
         c.invoke();
     };
