@@ -121,7 +121,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             K.anchor("botright"),
             K.pos(0, 0),
             K.pty({ cursor: { text: "\u2588", styles: ["cursor"] } }),
-            K.ptyMenu(topMenu),
+            K.ptyMenu(topMenu, { useHistory: false }),
         ]),
     };
     theMenuObjs.term.paused = theMenuObjs.term.hidden = true;

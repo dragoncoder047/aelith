@@ -53,6 +53,7 @@ export interface PtyMenuComp extends Comp {
     selStyle: string
     cmdStyle: string
     ptrText: string
+    useHistory: boolean
     playSoundCb(sound: string): void
     __updateSelected(): Promise<void>
     __backAll(): void
@@ -111,6 +112,7 @@ export interface PtyMenuCompOpt {
     },
     stringSubmitKey?: Key,
     stringCancelKey?: Key,
+    useHistory?: boolean
 }
 
 // MARK: KAPLAYPtyComp
@@ -241,7 +243,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
 
             opt = Object.assign({
                 stringSubmitKey: "enter",
-                stringCancelKey: "escape"
+                stringCancelKey: "escape",
             } as PtyMenuCompOpt, opt);
 
             return {
@@ -254,6 +256,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 selStyle: "selected",
                 cmdStyle: "command",
                 ptrText: "\u2192",
+                useHistory: opt.useHistory ?? true,
                 playSoundCb: opt.playSoundCb ?? K.play,
                 get disabled() { return disabled; },
                 __backAll(this: GameObj<PtyMenuComp | PtyComp>) {
@@ -271,6 +274,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 },
                 async __redraw(this: GameObj<PtyMenuComp | PtyComp>, isFinishOption) {
                     if (disabled) return;
+                    if (isFinishOption && !this.useHistory) return;
                     this.chunks = this.chunks.slice(0, beginLen);
                     commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
                     const outChunks: PtyChunk[] = [];
@@ -503,9 +507,21 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                             if (this.menu.multiple) {
                                 if (this.menu.selected?.includes(this.selIdx)) {
                                     this.menu.selected = this.menu.selected.filter(s => s !== this.selIdx);
+                                    if (this.useHistory) {
+                                        this.chunks = this.chunks.slice(0, beginLen);
+                                        await this.command(this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk).concat({ text: `${this.menu.opts[this.selIdx]!.value} false`, styles: [this.cmdStyle] }), "");
+                                        beginLen = this.chunks.length;
+                                        await this.__redraw(false);
+                                    }
                                 } else {
                                     if (this.menu.selected) this.menu.selected.push(this.selIdx);
                                     else this.menu.selected = [this.selIdx];
+                                    if (this.useHistory) {
+                                        this.chunks = this.chunks.slice(0, beginLen);
+                                        await this.command(this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk).concat({ text: `${this.menu.opts[this.selIdx]!.value} true`, styles: [this.cmdStyle] }), "");
+                                        beginLen = this.chunks.length;
+                                        await this.__redraw(false);
+                                    }
                                 }
                             } else {
                                 this.menu.selected = this.selIdx;
