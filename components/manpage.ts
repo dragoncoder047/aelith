@@ -64,7 +64,7 @@ export function manpage(): ManpageComp {
                 width: theWidth,
                 indentAll: true
             });
-            const maxScroll = Math.max(0, midTxt.height - theHeight + (this.showFooter ? botTxt.height : 0) + secTxt.height + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
+            const maxScroll = Math.max(0, midTxt.height - theHeight + (this.showFooter ? botTxt.height : 0) + (!!this.section ? secTxt.height : 0) + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
             this.scrollPos = K.clamp(this.scrollPos, 0, maxScroll);
             const toppos = -this.scrollPos + secTxt.height + this.margin;

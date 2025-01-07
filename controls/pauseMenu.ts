@@ -210,6 +210,7 @@ async function doPause() {
     player.manpage!.hidden = false;
     player.manpage!.header = player.manpage!.section = "";
     player.manpage!.showFooter = false;
+    player.manpage!.sprite = undefined;
     player.controlText.t = "&pauseMenuCtlHint";
     await PAUSE_MENU_OBJ.type("^Z\n[1]  + &startup.debugger.pid &msg.pause.suspended  &startup.cmd\n");
     await PAUSE_MENU_OBJ.beginMenu();
