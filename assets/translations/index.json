@@ -1,4 +1,5 @@
 {
+    "user": "anonymous",
     "tab": "    ",
     "arrow": {
         "left": "\u2190",
@@ -122,5 +123,6 @@
     "startup.pid": "4242",
     "startup.debugger.pid": "4247",
     "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)",
+    "deathMenuCtlHint": "&pauseMenuCtlHint",
     "editMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.continuation.stopEdit)"
 }

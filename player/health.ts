@@ -3,11 +3,12 @@ import { player } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
 import { ContinuationComp } from "../components/continuationCore";
-import { copyPreferences, PAUSE_MENU, PAUSE_MENU_OBJ, pauseListener } from "../controls/pauseMenu";
+import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
+import { copyPreferences } from "../controls/pauseMenu";
 import { K } from "../init";
 import { PtyMenu } from "../plugins/kaplay-pty";
-import { funnyType, TextChunk } from "../startup";
-import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
+import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
+import { modalmenu } from "../ui/menuFactory";
 
 const deathMessages: TextChunk[] = [
     {
@@ -39,12 +40,14 @@ const DEATH_MENU: PtyMenu = {
             name: "&msg.pause.restart &msg.dead.fromBeginning",
             type: "action",
             async action() {
-                await PAUSE_MENU_OBJ.quitMenu();
+                await DEATH_MENU_OBJ.term.quitMenu();
                 window.location.reload();
             }
         }
     ]
 };
+
+const DEATH_MENU_OBJ = modalmenu(K.getTreeRoot(), DEATH_MENU, undefined, ["menuActive", "deathMenu"], "&deathMenuCtlHint", false, true);
 
 player.onGround(() => {
     if (player.vel.y > FALL_DAMAGE_THRESHOLD)
@@ -72,8 +75,8 @@ player.onDeath(async () => {
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
     K.setCamPos(MParser.pausePos);
-    await funnyType(PAUSE_MENU_OBJ, deathMessages, false);
-    PAUSE_MENU_OBJ.menu = DEATH_MENU;
+    DEATH_MENU_OBJ.term.chunks = STARTUP_TERMINAL!.chunks;
+    await funnyType(DEATH_MENU_OBJ.term, deathMessages, false);
     MParser.world!.trigger("update");
     // make resume things
     const allContinuations = K.get("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
@@ -118,22 +121,17 @@ player.onDeath(async () => {
             resumeEntry.opts = resumeEntry.opts[0]!.opts;
         }
     }
-    pauseListener.paused = false;
-    player.controlText.t = "&pauseMenuCtlHint";
     // we are hijacking the pause menu yay!
-    K.eventGroups.add("menuActive");
-    K.eventGroups.add("pauseMenu");
     player.controlText.data.stringEditing = "false";
-    await PAUSE_MENU_OBJ.beginMenu();
+    await DEATH_MENU_OBJ.open();
+    DEATH_MENU_OBJ.modal.scrollPos = Number.MAX_VALUE;
 });
 
 function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
-        pauseListener.paused = true;
-        await PAUSE_MENU_OBJ.quitMenu();
+        await DEATH_MENU_OBJ.close();
+        STARTUP_TERMINAL!.chunks = DEATH_MENU_OBJ.term.chunks;
         MParser.pauseWorld(false);
-        K.strings.isPaused = "0";
-        PAUSE_MENU_OBJ.menu = PAUSE_MENU;
         copyPreferences();
         player.paused = player.hidden = false;
         K.eventGroups.delete("menuActive");

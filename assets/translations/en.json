@@ -119,8 +119,6 @@
         "detected": "Rogue code detected!"
     },
     "pause": {
-        "suspended": "suspended",
-        "continued": "continued",
         "select": "Controller type",
         "ngConnect": "Connect to Newgrounds.com",
         "setLanguage": "Language",

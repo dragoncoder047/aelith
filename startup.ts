@@ -6,6 +6,7 @@ import { musicPlay } from "./assets";
 import { nextFrame } from "./utils";
 import { PtyChunk, PtyComp, TypableOne } from "./plugins/kaplay-pty";
 import { initPauseMenu } from "./controls/pauseMenu";
+import { createPrompt } from "./ui/menuFactory";
 
 export type TextChunk = ({
     skipIf?: (vars: NestedStrings) => boolean
@@ -151,17 +152,19 @@ export async function funnyType(terminal: GameObj<PtyComp | DynamicTextComp>, ch
     }
 }
 
+export var STARTUP_TERMINAL: GameObj<TextComp | DynamicTextComp | PtyComp | PosComp> | undefined;
+
 export async function doStartup() {
-    const terminal = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp | PtyComp | PosComp> | undefined;
+    STARTUP_TERMINAL = MParser.vars.startupText as GameObj<TextComp | DynamicTextComp | PtyComp | PosComp> | undefined;
     const title = MParser.vars.titleText as GameObj<TextComp | DynamicTextComp | PosComp> | undefined;
     const isTesting = !!MParser.vars.testingMode;
 
-    if (!terminal || !title) throw "Missing critical elements!";
+    if (!STARTUP_TERMINAL || !title) throw "Missing critical elements!";
 
-    const terminalPos = terminal.worldPos()!;
-    terminal.destroy();
-    K.add(terminal);
-    terminal.pos = terminalPos;
+    const terminalPos = STARTUP_TERMINAL.worldPos()!;
+    STARTUP_TERMINAL.destroy();
+    K.add(STARTUP_TERMINAL);
+    STARTUP_TERMINAL.pos = terminalPos;
 
     const container = K.add([
         K.pos(title.pos),
@@ -185,7 +188,7 @@ export async function doStartup() {
         }
     });
 
-    terminal.use(K.pty({ maxLines: 16, cursor: { text: "\u2588", styles: ["cursor"] } }));
+    STARTUP_TERMINAL.use(K.pty({ maxLines: 16, cursor: { text: "\u2588", styles: ["cursor"] } }));
 
     // hide all
     K.get("player").forEach(p => p.hidden = p.paused = true);
@@ -204,25 +207,9 @@ export async function doStartup() {
             jumpWait = () => Promise.resolve();
         }
 
-        // get vars
-        terminal.data = { user: "anonymous" };
-        const workDir: PtyChunk = {
-            text: "/home/&user",
-            styles: ["prompt"]
-        };
-        terminal.prompt = [
-            {
-                text: "\u250C&user@dev ",
-                styles: ["ident"],
-            },
-            workDir,
-            {
-                text: "\n\u2514\u25BA$ ",
-                styles: ["ident"],
-            }
-        ];
+        STARTUP_TERMINAL.prompt = createPrompt();
 
-        await funnyType(terminal, CHUNKS, isTesting);
+        await funnyType(STARTUP_TERMINAL, CHUNKS, isTesting);
 
     } while (false);
 
@@ -231,10 +218,10 @@ export async function doStartup() {
     K.get("tail").forEach(p => p.hidden = p.paused = false);
     MParser.pauseWorld(false);
 
-    initPauseMenu(terminal);
-
     // Start music
     musicPlay.paused = isTesting; // will be false if not testing mode
+
+    initPauseMenu();
 
 };
 

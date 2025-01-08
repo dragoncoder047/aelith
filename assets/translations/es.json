@@ -45,8 +45,6 @@
         "detected": "¡Código malicioso detectado!"
     },
     "pause": {
-        "suspended": "suspendido",
-        "continued": "continuado",
         "select": "Tipo de controlador",
         "ngConnect": "Inicie sesión en Newgrounds.com",
         "preferences": "Configuración",
