@@ -79,7 +79,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             { text: "--defer", value: "deferred" },
             { text: "--stack-only", value: "useSelfPosition" },
             { text: "--as-coroutine", value: "recapture" },
-            { text: "--copy-here", value: "reverseTeleport" },
+            { text: "--force-superimpose", value: "reverseTeleport" },
             { text: "--fuzz", value: "fuzzStates" },
         ] as { text: string, value: keyof ContinuationTrapComp["params"] }[],
         selected: [],
