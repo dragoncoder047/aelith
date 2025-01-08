@@ -60,19 +60,15 @@ export const CONTROLS: Controls = {
     },
     move_left: {
         keyboard: ["a", "left"],
-        gamepad: ["dpad-left"],
     },
     move_right: {
         keyboard: ["d", "right"],
-        gamepad: ["dpad-right"],
     },
     move_up: {
         keyboard: ["w", "up"],
-        gamepad: ["dpad-up"],
     },
     move_down: {
         keyboard: ["s", "down"],
-        gamepad: ["dpad-down"],
     },
     // pause menu controls
     pause_unpause: {
