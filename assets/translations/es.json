@@ -45,7 +45,7 @@
         "detected": "¡Código malicioso detectado!"
     },
     "pause": {
-        "select": "Tipo de controlador",
+        "controllerType": "Tipo de controlador",
         "ngConnect": "Inicie sesión en Newgrounds.com",
         "preferences": "Configuración",
         "setLanguage": "Idioma",

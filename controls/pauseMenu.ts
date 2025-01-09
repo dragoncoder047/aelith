@@ -36,7 +36,7 @@ export const PAUSE_MENU: PtyMenu = {
         },
         {
             id: "set controllerType",
-            name: "&msg.pause.select",
+            name: "&msg.pause.controllerType",
             type: "select",
             opts: [
                 { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },

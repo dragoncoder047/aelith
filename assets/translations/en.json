@@ -120,7 +120,7 @@
     },
     "pause": {
         "paused": "Game is paused",
-        "select": "Controller type",
+        "controllerType": "Controller type",
         "ngConnect": "Connect to Newgrounds.com",
         "setLanguage": "Language",
         "automaticLang": "Autodetect language",

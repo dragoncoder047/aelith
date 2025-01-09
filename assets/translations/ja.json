@@ -45,7 +45,7 @@
         "detected": "不正なコードが検出されました!"
     },
     "pause": {
-        "select": "コントローラー タイプ",
+        "controllerType": "コントローラー タイプ",
         "ngConnect": "Newgrounds.com に接続",
         "setLanguage": "言語",
         "automaticLang": "言語を自動検出",

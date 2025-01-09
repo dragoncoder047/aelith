@@ -45,7 +45,7 @@
         "detected": "Rogue-Code erkannt!"
     },
     "pause": {
-        "select": "Controllertyp",
+        "controllerType": "Controllertyp",
         "ngConnect": "Mit Newgrounds.com verbinden",
         "setLanguage": "Sprache",
         "automaticLang": "Sprache automatisch erkennen",
