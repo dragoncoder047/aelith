@@ -274,7 +274,12 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 },
                 async __redraw(this: GameObj<PtyMenuComp | PtyComp>, isFinishOption) {
                     if (disabled) return;
-                    if (isFinishOption && !this.useHistory) return;
+                    if (isFinishOption) {
+                        if (!this.useHistory) {
+                            this.chunks = this.chunks.slice(0, beginLen);
+                            return;
+                        }
+                    }
                     this.chunks = this.chunks.slice(0, beginLen);
                     commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
                     const outChunks: PtyChunk[] = [];
@@ -350,7 +355,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 __stringRedraw(this: GameObj<PtyComp | PtyMenuComp>, outChunks, cmdChunks, isFinishOption) {
                     if (this.menu.type !== "string") throw new Error("unreachable");
                     if (!isFinishOption) {
-                        const s = { text: `${this.menu.prompt ?? this.menu.name ?? this.menu.id}\n`, styles: this.menu.styles };
+                        const s = { text: `${this.menu.prompt ?? (`${this.menu.name ?? this.menu.id}\n`)}`, styles: this.menu.styles };
                         const c = { text: this.menu.value, styles: this.menu.styles };
                         const e = { text: "\n", styles: ["stderr"].concat(this.menu.styles ?? []) };
                         stringChunk = { box: c, ei: e };
@@ -414,6 +419,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 siChunk.text = st;
                                 textChunks.forEach(c => this.styleChunk(c, this.selStyle, st.indexOf("*") !== -1));
                             }
+                            this.dropChunk(cursorChunks);
                             break;
                         case "range":
                             if (!rangeChunks) throw new Error("unreachable");

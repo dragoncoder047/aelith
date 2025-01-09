@@ -80,6 +80,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         name: "&msg.continuation.edit.pName",
         type: "string",
         value: "",
+        prompt: "> ",
         validator: /^[\w\d]+$/,
         invalidMsg: "&msg.continuation.edit.invalidName",
     };
@@ -88,6 +89,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         name: "&msg.continuation.edit.cName",
         type: "string",
         value: "",
+        prompt: "> ",
         validator: /^[\w\d]+$/,
         invalidMsg: "&msg.continuation.edit.invalidName",
     };

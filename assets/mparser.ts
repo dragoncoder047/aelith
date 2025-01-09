@@ -348,6 +348,25 @@ export const MParser: {
                 this.stack.push(invokedWith);
             });
         },
+        // MARK: h (math)
+        h() {
+            const MATH_FUNCS: {[f: string]: (a: number, b: number) => number} = {
+                "+": (a, b) => a + b,
+                "-": (a, b) => a - b,
+                "*": (a, b) => a * b,
+                "/": (a, b) => a / b,
+            };
+            const commands = this.stack.pop() as string;
+            for (var ch of commands) {
+                const fun = MATH_FUNCS[ch];
+                if (fun === undefined) {
+                    throw new SyntaxError(`unknown math op '${ch}'`);
+                }
+                const b = this.stack.pop() as number;
+                const a = this.stack.pop() as number;
+                this.stack.push(fun(a, b));
+            }
+        },
         // MARK: ? (debug)
         // debug command: logs the top object
         "?"() {

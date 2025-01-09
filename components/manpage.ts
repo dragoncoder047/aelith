@@ -23,7 +23,7 @@ export function manpage(): ManpageComp {
         id: "manpage",
         section: "undefined",
         header: "undefined",
-        size: 16 / FONT_SCALE,
+        size: 12 / SCALE,
         body: "undefined",
         bg: K.BLACK.lighten(20),
         scrollPos: 0,
