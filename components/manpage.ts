@@ -113,7 +113,7 @@ export function manpage(): ManpageComp {
                 color: this.bg,
                 pos: K.vec2(0, -theHeight / 2 - this.margin / 2),
                 width: theWidth,
-                height: secTxt.height + this.margin,
+                height: headerHeight + this.margin,
                 anchor: "top",
             });
             K.drawFormattedText(secTxt);
