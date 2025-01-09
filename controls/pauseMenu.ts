@@ -18,6 +18,7 @@ const availableLangs = K.langs.slice();
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
+    name: "&msg.pause.paused",
     opts: [
         {
             id: "settings -i",

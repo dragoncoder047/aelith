@@ -1,9 +1,9 @@
 import { ColorComp, GameObj, PosComp, TextComp } from "kaplay";
 import { UI } from ".";
+import { uiButton } from "../components/uiButton";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
-import { uiButton } from "../components/uiButton";
 
 export const healthbar = UI.add([
     K.pos(),

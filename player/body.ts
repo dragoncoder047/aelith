@@ -1,4 +1,4 @@
-import { GameObj, PosComp, SpriteComp, BodyComp, NamedComp, AnchorComp, Comp, Vec2, KEventController, Tag, AreaComp, AudioPlayOpt, HealthComp, TimerComp, OpacityComp, RaycastResult, PlatformEffectorComp } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationComp } from "../components/continuationCore";
@@ -6,7 +6,7 @@ import { ControllableComp } from "../components/controllable";
 import { HoldOffsetComp } from "../components/holdOffset";
 import { LoreComp } from "../components/lore";
 import { ManpageComp } from "../components/manpage";
-import { TILE_SIZE, ALPHA, INTERACT_DISTANCE, SCALE, TERMINAL_VELOCITY, MAX_THROW_VEL, MAX_THROW_STRETCH, MARGIN } from "../constants";
+import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { actuallyRaycast, ballistics } from "../utils";

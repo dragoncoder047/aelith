@@ -14,7 +14,8 @@ import enStrings from "./translations/en.json" with { type: "json" };
 import esStrings from "./translations/es.json" with { type: "json" };
 import strings from "./translations/index.json" with { type: "json" };
 import jaStrings from "./translations/ja.json" with { type: "json" };
-import fontDataURL from "./Web437_IBM_EGA_8x8.woff";
+import ibmMonoFontDataURL from "./Web437_IBM_EGA_8x8.woff";
+import unsciiMCRFontDataURL from "./unscii-8-mcr.woff";
 import worldFileSrc from "./world.txt";
 
 
@@ -28,7 +29,8 @@ K.strings.en = enStrings;
 K.strings.es = esStrings;
 K.strings.de = deStrings;
 K.strings.ja = jaStrings;
-K.loadFont("IBM Mono", fontDataURL);
+K.loadFont("IBM Mono", ibmMonoFontDataURL);
+K.loadFont("Unscii MCR", unsciiMCRFontDataURL);
 K.loadShader("recolor-red", undefined, recolorRedShader);
 K.loadShader("translate", undefined, translateShader);
 K.loadShader("invert", undefined, invertShader);

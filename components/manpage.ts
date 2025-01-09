@@ -44,6 +44,12 @@ export function manpage(): ManpageComp {
                 styles: STYLES,
                 color: K.WHITE.darken(100),
             });
+            const headerTxt = K.formatText({
+                ...secTxt.opt,
+                text: K.sub(this.header),
+                pos: topLeft.add(theWidth / 2, 0),
+                anchor: "top"
+            })
             const botTxt = K.formatText({
                 text: ":[cursor]\u2588[/cursor]",
                 anchor: "botleft",
@@ -64,10 +70,11 @@ export function manpage(): ManpageComp {
                 width: theWidth,
                 indentAll: true
             });
-            const maxScroll = Math.max(0, midTxt.height - theHeight + (this.showFooter ? botTxt.height : 0) + (!!this.section ? secTxt.height : 0) + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
+            const headerHeight = Math.max(!!this.section ? secTxt.height : 0, !!this.header ? headerTxt.height : 0);
+            const maxScroll = Math.max(0, midTxt.height - theHeight + (this.showFooter ? botTxt.height : 0) + headerHeight + 2 * this.margin + (this.sprite ? this.sprite.height + 2 * this.margin : 0));
             this.needsToScroll = maxScroll > 0;
             this.scrollPos = K.clamp(this.scrollPos, 0, maxScroll);
-            const toppos = -this.scrollPos + secTxt.height + this.margin;
+            const toppos = -this.scrollPos + headerHeight + this.margin;
             // background
             K.drawRect({
                 pos: K.vec2(0),
@@ -115,12 +122,7 @@ export function manpage(): ManpageComp {
                 pos: topLeft.add(theWidth, 0),
                 anchor: "topright"
             }));
-            K.drawFormattedText(K.formatText({
-                ...secTxt.opt,
-                text: K.sub(this.header),
-                pos: topLeft.add(theWidth / 2, 0),
-                anchor: "top"
-            }));
+            K.drawFormattedText(headerTxt);
             if (!this.showFooter) return;
             // footer
             K.drawRect({

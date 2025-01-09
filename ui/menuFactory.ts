@@ -109,6 +109,7 @@ export function modalmenu(parent: GameObj, theMenu: PtyMenu, startButton: string
             }),
             theMenuContainer.onUpdate(() => {
                 theModal.body = theTerm.text;
+                theModal.header = theTerm.menu.name ?? "";
                 if (theModal.needsToScroll)
                     theModal.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED
                 updateEv.trigger();
