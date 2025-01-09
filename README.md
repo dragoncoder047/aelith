@@ -36,6 +36,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Fix bugs where player head disappears randomly when holding continuation, and horn disappears when invoking continuation
 * [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
@@ -57,7 +58,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 * [X] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Add warning if browser is Firefox and gamepad, or single Joy-Con
 * [X] Fix player head lagging behind player body when moving
-* [X] Fix bugs where player head disappears randomly when holding continuation, and horn disappears when invoking continuation
 * [X] Add player head can turn to look at whatever is being looked at
   * [X] Add springy for the head hair/horn
 * [X] Add settings menu for stuff like switching the type of controller button names, enabling/disabling rumble, etc
