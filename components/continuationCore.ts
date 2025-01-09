@@ -94,12 +94,16 @@ export function continuationCore(
                 delta.x = delta.y = 0;
             }
 
-            player.moveBy(delta);
-            if (!delta.isZero()) player.vel = K.vec2(0);
-            K.get<TailComp>("tail").forEach(t => t.restore2Pos());
+
+            if (!delta.isZero()) {
+                player.moveBy(delta);
+                player.head!.moveBy(delta);
+                player.vel = K.vec2(0);
+                K.get<TailComp>("tail").forEach(t => t.restore2Pos());
+                K.setCamPos(K.getCamPos().add(delta));
+            }
             player.playSound("teleport");
             player.trigger("teleport");
-            // K.setCamPos(K.getCamPos().add(delta));
             for (var e of this.captured.objects) {
                 var obj = e.obj;
                 const canClone = e.obj.has("cloneable");
