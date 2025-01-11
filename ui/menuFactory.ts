@@ -63,7 +63,6 @@ export function modalmenu(parent: GameObj, theMenu: PtyMenu, startButton: string
     const startEv = new K.KEvent;
     const quitEv = new K.KEvent;
     const updateEv = new K.KEvent;
-    const changeEv = new K.KEvent;
     const handlers = {
         enter: (startButton !== undefined ? [
             parent.onButtonPress(startButton, () => theObj.open())
@@ -138,6 +137,12 @@ export function modalmenu(parent: GameObj, theMenu: PtyMenu, startButton: string
         },
         destroy() {
             theMenuContainer.destroy();
+            handlers.enter.forEach(h => h.cancel());
+            handlers.exit.forEach(h => h.cancel());
+            handlers.main.forEach(h => h.cancel());
+            startEv.clear();
+            quitEv.clear();
+            updateEv.clear();
         },
         setupGroups(groups) {
             handlers.enter.forEach(h => h.forEventGroup(groups.map(g => `!${g}`)));
