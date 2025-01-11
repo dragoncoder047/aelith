@@ -60,7 +60,6 @@ export interface ContinuationTrapComp extends Comp {
 }
 
 export function trap(soundOnCapture: string): ContinuationTrapComp {
-    var origInventoryIndex: number;
     const switchesMenu: PtyMenu = {
         id: "flags",
         name: "&msg.continuation.edit.flags",
@@ -68,6 +67,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         multiple: true,
         opts: [
             { text: "--defer", value: "deferred" },
+            { text: "--oneshot", value: "oneshot" },
             { text: "--stack-only", value: "useSelfPosition" },
             { text: "--as-coroutine", value: "recapture" },
             { text: "--force-superimpose", value: "reverseTeleport" },
@@ -108,6 +108,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             pName: "{undefined}",
             radius: 0,
             deferred: false,
+            oneshot: false,
             useSelfPosition: false,
             recapture: false,
             reverseTeleport: false,
@@ -115,7 +116,6 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
 
             // not editable
             concurrent: false,
-            reusable: false,
             editable: false,
         },
         get data() {

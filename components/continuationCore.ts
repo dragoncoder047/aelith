@@ -77,10 +77,6 @@ export function continuationCore(
                 // assertion: heal fully
                 player.heal(Infinity);
             }
-            if (this.params.recapture) {
-                // Capture a continuation from right here so the player can go back.
-                this.trappedBy.capture();
-            }
             // do restore of captured data
             const p = player.worldPos()!;
             const delta = this.captured.playerPos.sub(p);
@@ -140,7 +136,14 @@ export function continuationCore(
                 if (obj.has("collisioner"))
                     obj.ignoreTriggerTimeout = 5;
             }
-            if (!this.params.reusable) this.destroy();
+            if (this.params.oneshot) this.destroy();
+            if (this.params.recapture) {
+                // Capture a continuation from right here so the player can go back.
+                const temp = (this.trappedBy as GameObj<ContinuationTrapComp>).params;
+                this.trappedBy.params = this.params;
+                this.trappedBy.capture();
+                this.trappedBy.params = temp;
+            }
         },
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.params.reverseTeleport) return;
