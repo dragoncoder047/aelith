@@ -74,7 +74,6 @@ player.onDeath(async () => {
     player.hidden = true;
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
-    K.setCamPos(MParser.pausePos);
     DEATH_MENU_OBJ.term.chunks = STARTUP_TERMINAL!.chunks;
     await funnyType(DEATH_MENU_OBJ.term, deathMessages, false);
     MParser.world!.trigger("update");
