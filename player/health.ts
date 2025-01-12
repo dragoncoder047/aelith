@@ -1,4 +1,4 @@
-import { GameObj } from "kaplay";
+import { GameObj, NamedComp } from "kaplay";
 import { player } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
@@ -78,7 +78,7 @@ player.onDeath(async () => {
     await funnyType(DEATH_MENU_OBJ.term, deathMessages, false);
     MParser.world!.trigger("update");
     // make resume things
-    const allContinuations = K.get("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
+    const allContinuations = K.get<ContinuationComp | NamedComp>("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
     allContinuations.sort((a, b) => a.timestamp - b.timestamp);
     const divBy = 5;
     if (allContinuations.length === 0) {
