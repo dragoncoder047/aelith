@@ -6,6 +6,7 @@ import { continuation } from "../object_factories/continuation";
 import { promiseObj } from "../object_factories/promiseObj";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { MenuModal, modalmenu } from "../ui/menuFactory";
 import { CollisionerComp } from "./collisioner";
@@ -156,7 +157,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     player.holdingIndex = player.inventory.findLastIndex(i => (i as any).controlling === this);
                 }
             });
-            this._menu = modalmenu(this, topMenu, "edit", ["menuActive", "contMenu"], "&editMenuCtlHint");
+            this._menu = modalmenu(topMenu, ["menuActive", "contMenu"], "&editMenuCtlHint",
+                this.on("edit", () => this._menu.open()) as KEventControllerPatch);
             this._menu.onStart(() => this.startEditing());
             this._menu.onUpdate(() => this.menuUpdate());
             K.wait(0.1, () => {

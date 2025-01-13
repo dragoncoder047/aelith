@@ -26,7 +26,7 @@ export interface MenuModal {
     close(): Promise<void>
 }
 
-export function modalmenu(parent: GameObj, theMenu: PtyMenu, startButton: string | undefined, initEv: string[], hint: string, closeable: boolean = true, history: boolean = false): MenuModal {
+export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, enterEC: KEventControllerPatch, closeable: boolean = true, history: boolean = false): MenuModal {
     var origInventoryIndex: number;
     const theMenuContainer = UI.add([K.pos(K.center()), K.layer("manpage"), {
         add(this: GameObj<PosComp>) {
@@ -64,9 +64,7 @@ export function modalmenu(parent: GameObj, theMenu: PtyMenu, startButton: string
     const quitEv = new K.KEvent;
     const updateEv = new K.KEvent;
     const handlers = {
-        enter: (startButton !== undefined ? [
-            parent.onButtonPress(startButton, () => theObj.open())
-        ] : []) as KEventControllerPatch[],
+        enter: [enterEC],
         exit: (closeable ? [
             theMenuContainer.onButtonPress("nav_back", () => {
                 if (K.isCapturingInput()) return;

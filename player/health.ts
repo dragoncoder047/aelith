@@ -6,6 +6,7 @@ import { ContinuationComp } from "../components/continuationCore";
 import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
 import { copyPreferences } from "../controls/pauseMenu";
 import { K } from "../init";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
 import { modalmenu } from "../ui/menuFactory";
@@ -47,7 +48,9 @@ const DEATH_MENU: PtyMenu = {
     ]
 };
 
-const DEATH_MENU_OBJ = modalmenu(K.getTreeRoot(), DEATH_MENU, undefined, ["menuActive", "deathMenu"], "&deathMenuCtlHint", false, true);
+const DUMMY = new K.KEvent;
+const DEATH_MENU_OBJ = modalmenu(DEATH_MENU, ["menuActive", "deathMenu"], "&deathMenuCtlHint",
+    DUMMY.add(() => {}) as KEventControllerPatch, false, true);
 
 player.onGround(() => {
     if (player.vel.y > FALL_DAMAGE_THRESHOLD)

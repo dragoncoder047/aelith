@@ -1,16 +1,14 @@
-import { GameObj, TextComp, Vec2 } from "kaplay";
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
 import { MParser } from "../assets/mparser";
 import { K } from "../init";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
-import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
-import { timer } from "../ui/timer";
-import { guessOS, isFirefox, isTouchscreen, nextFrame } from "../utils";
-import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
+import { PtyMenu } from "../plugins/kaplay-pty";
 import { modalmenu } from "../ui/menuFactory";
+import { timer } from "../ui/timer";
+import { guessOS, isFirefox, isTouchscreen } from "../utils";
+import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 
 // save for autodetect
 const availableLangs = K.langs.slice();
@@ -107,7 +105,8 @@ export const PAUSE_MENU: PtyMenu = {
     ]
 }
 
-export var PAUSE_MENU_OBJ = modalmenu(K.getTreeRoot(), PAUSE_MENU, "pause_unpause", ["menuActive", "pauseMenu"], "&pauseMenuCtlHint");
+export var PAUSE_MENU_OBJ = modalmenu(PAUSE_MENU, ["menuActive", "pauseMenu"], "&pauseMenuCtlHint",
+    K.onButtonPress("pause_unpause", () => PAUSE_MENU_OBJ.open()) as KEventControllerPatch);
 
 export function initPauseMenu() {
     // sync testing mode for music
