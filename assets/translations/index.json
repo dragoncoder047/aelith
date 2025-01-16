@@ -28,7 +28,8 @@
             "pMenu": {
                 "switch": "\\[d-pad]",
                 "select": "(&button.south)",
-                "back": "(&button.east)"
+                "back": "(&button.east)",
+                "exit": "(&button.west)"
             },
             "dialog": {
                 "scroll": "(lstick)",
@@ -53,6 +54,7 @@
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",
                 "back": "\\[backspace]",
+                "exit": "\\[Q]",
                 "editSubmit": "\\[enter]",
                 "editCancel": "\\[esc]"
             },
@@ -122,7 +124,7 @@
     "startup.cmd": "agdb pm &startup.pid.core",
     "startup.pid": "4242",
     "startup.debugger.pid": "4247",
-    "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back)",
+    "pauseMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.pause.back\n&msg.ctlHint.pause.unpause)",
     "deathMenuCtlHint": "&pauseMenuCtlHint",
     "editMenuCtlHint": "$fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit\n&msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch\n&msg.ctlHint.pause.select\n&msg.ctlHint.continuation.stopEdit)"
 }
