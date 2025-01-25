@@ -28,6 +28,7 @@ import { trapdoor } from "../object_factories/trapdoor";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
 import { PlayerBodyComp } from "../player/body";
+import { grating } from "../object_factories/grating";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -83,6 +84,7 @@ export const MParser: {
         "@": playerPosition,
         "#": wall,
         "%": barrier,
+        "$": grating,
         "<": rightDestroyBarrier,
         "=": ladder,
         "~": brokenLadder
@@ -483,7 +485,7 @@ export const MParser: {
     merge() {
         const w = this.world!;
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", "conveyor"];
+        const allowedTags = ["wall", "barrier", "conveyor", "grating"];
         for (var tag of allowedTags) {
             const tiles: { [pos: string]: GameObj<AreaComp | MergeableComp | PosComp> } = {};
             // get original tiles in a grid

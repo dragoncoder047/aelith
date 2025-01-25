@@ -1,3 +1,4 @@
+import { Tag } from "kaplay";
 import { trap } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
@@ -27,5 +28,6 @@ export function continuationTrap() {
         K.named("{undefined}"),
         ...throwablePlatformEff(),
         lore(),
+        "continuationTrap" as Tag
     ];
 }

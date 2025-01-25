@@ -64,6 +64,12 @@
         "height": 32,
         "sliceX": 3
     },
+    "grating": {
+        "x": 352,
+        "y": 190,
+        "height": 32,
+        "width": 32
+    },
     "box": {
         "x": 64,
         "y": 190,
