@@ -5,7 +5,12 @@ import { K } from "../init";
 import { player } from "../player";
 
 export const timer = UI.add([
-    K.text("", { size: 24 / SCALE, width: TILE_SIZE * 8, align: "right" }),
+    K.text("", {
+        size: 24 / SCALE,
+        width: TILE_SIZE * 8,
+        align: "right",
+        font: "Unscii MCR"
+    }),
     K.anchor("topright"),
     K.pos(),
     K.opacity(1),
@@ -28,5 +33,5 @@ K.onUpdate(() => {
         timerValue += K.dt();
         timer.hidden = false;
     }
-    timer.text = `${Math.floor(timerValue / 60)}:${(timerValue % 60).toFixed(4)}`.replace(/:(\d)\./, ":0$1.");
+    timer.text = `${Math.floor(timerValue / 60)}:${(timerValue % 60).toFixed(3)}`.replace(/:(\d)\./, ":0$1.");
 });
