@@ -45,7 +45,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 * [X] Add algorithmic choosing songs based on where you are in the game
   * [ ] Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
-* [ ] Add pause menu option to reflect left stick left or right (Xbox controller seems to be reflected, PS5 isn't)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
