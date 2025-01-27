@@ -38,7 +38,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 * [ ] Fix bug where pause menu gets stuck behind other dialogs and can be opened while the other dialogs are active
   * Probably just a simple forEventGroup addition to fix
-* [ ] Make sounds different when walking on / falling on grating.
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
 * [ ] Add more challenges that test all features of call/cc.
@@ -57,6 +56,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Make sounds different when walking on / falling on grating.
 * [X] Add controls on call/cc to pop up a menu for editing the radius, changing the mode (throw or not), turn on or off autorecapture, etc.
 * [X] Add warning if browser is Firefox and gamepad, or single Joy-Con
 * [X] Fix player head lagging behind player body when moving

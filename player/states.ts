@@ -52,6 +52,6 @@ player.onStateEnd("climbing", () => {
         player.footstepsCounter += K.dt() * xy.len();
     if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
         player.footstepsCounter = 0;
-        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
+        player.playSound(player.state === "normal" ? (player.curPlatform()?.sprite == "grating" ? "footsteps_metal" : "footsteps") : "climbing");
     }
 }) as KEventControllerPatch).forEventGroup("!dialog");
