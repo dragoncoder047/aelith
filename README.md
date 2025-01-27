@@ -36,6 +36,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Make sounds different when walking on / falling on grating.
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
 * [ ] Add more challenges that test all features of call/cc.
