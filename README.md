@@ -36,6 +36,8 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Fix bug where pause menu gets stuck behind other dialogs and can be opened while the other dialogs are active
+  * Probably just a simple forEventGroup addition to fix
 * [ ] Make sounds different when walking on / falling on grating.
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
