@@ -81,19 +81,18 @@ export function antivirus(): AntivirusComp {
             // do raycast to things
             const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area"])
                 .concat([player])
-                .filter((x: any) => x !== this)
-                .filter(x => !x.paused);
-            const sdt = Math.pow(this.maxDistance * 1.5, 2);
+                .filter((x: any) => x !== this && !x.paused);
+            const dontCareDistSquared = Math.pow(this.maxDistance * 1.5, 2);
             const offensiveObjects = objects
                 .filter(o => this.isOffensive(o));
             const obstacles = objects
                 .filter(x => x.isStatic)
             const r = (objects: GameObj<AreaComp>[], a: number) =>
-                this.rayHit = actuallyRaycast(objects,
-                    this.worldPos()!, K.LEFT.rotate(a), this.maxDistance);
+                actuallyRaycast(objects, this.worldPos()!,
+                    K.LEFT.rotate(a), this.maxDistance);
             for (var o of offensiveObjects) {
                 if (player.inventory.includes(o as any)) o = player;
-                if (o.worldPos()!.sdist(this.worldPos()!) > sdt) continue;
+                if (o.worldPos()!.sdist(this.worldPos()!) > dontCareDistSquared) continue;
                 this.rayHit = r(obstacles.concat([o]), this.worldPos()!.sub(o.worldPos()!).angle());
                 if (this.rayHit !== null && this.isOffensive(this.rayHit.object)) {
                     if (!this.togglerState) this.broadcast(this.toggleMsg);

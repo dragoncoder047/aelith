@@ -5,7 +5,7 @@
     "get_continuation": [[0, 1, 250]],
     "get_promise": [[0.8, 1, 150]],
     "teleport": [[1, 0, 200], [0, 1, 200]],
-    "barrier_left": [[0, 1, 100]],
-    "barrier_right": [[1, 0, 100]],
-    "barrier_middle": [[0.8, 0.8, 100]]
+    "barrier_left": [[0, 1, 200]],
+    "barrier_right": [[1, 0, 200]],
+    "barrier_middle": [[0.8, 0.8, 200]]
 }
