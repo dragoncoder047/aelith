@@ -1,6 +1,8 @@
 import { player } from ".";
+import { FOOTSTEP_INTERVAL } from "../constants";
 import { getMotionVector } from "../controls";
 import { K } from "../init";
+import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 // State functions
 player.onStateUpdate("normal", () => {
@@ -37,3 +39,19 @@ player.onStateEnd("climbing", () => {
     player.animSpeed = 1;
     player.mass = 1;
 });
+
+// Footsteps sound effects when walking
+(player.onUpdate(() => {
+    var xy = getMotionVector();
+    if (player.state == "normal") {
+        if (xy.x === 0)
+            xy = xy.reject(K.getGravityDirection());
+        if (!player.isGrounded()) return;
+    }
+    if (player.state === "climbing" || player.state === "normal")
+        player.footstepsCounter += K.dt() * xy.len();
+    if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
+        player.footstepsCounter = 0;
+        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
+    }
+}) as KEventControllerPatch).forEventGroup("!dialog");

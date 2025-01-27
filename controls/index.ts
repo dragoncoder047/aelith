@@ -1,5 +1,5 @@
 import { AreaComp, Vec2 } from "kaplay";
-import { FOOTSTEP_INTERVAL, MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
+import { MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
@@ -84,22 +84,6 @@ function motionHandler() {
 (player.onButtonPress("inv_next", () => player.scrollInventory(1)) as KEventControllerPatch).forEventGroup("!dialog");
 
 (player.onButtonPress("view_info", () => showManpage(true)) as KEventControllerPatch).forEventGroup("!dialog");
-
-// Footsteps sound effects when walking
-(player.onUpdate(() => {
-    var xy = getMotionVector();
-    if (player.state == "normal") {
-        if (xy.x === 0)
-            xy = xy.reject(K.getGravityDirection());
-        if (!player.isGrounded()) return;
-    }
-    if (player.state === "climbing" || player.state === "normal")
-        player.footstepsCounter += K.dt() * xy.len();
-    if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
-        player.footstepsCounter = 0;
-        player.playSound(player.state === "normal" ? "footsteps" : "climbing");
-    }
-}) as KEventControllerPatch).forEventGroup("!dialog");
 
 function motionHandler2() {
     if (player.manpage!.needsToScroll)
