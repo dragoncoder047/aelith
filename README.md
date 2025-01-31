@@ -36,7 +36,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
-* [ ] Add splashes of particles for stuff
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
 * [ ] Add more challenges that test all features of call/cc.
@@ -55,6 +54,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Add splashes of particles for stuff
 * [X] Fix bug where pause menu gets stuck behind other dialogs and can be opened while the other dialogs are active
   * Probably just a simple forEventGroup addition to fix
 * [X] Make sounds different when walking on / falling on grating.

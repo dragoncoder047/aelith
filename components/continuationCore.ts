@@ -8,6 +8,7 @@ import { CloneableComp } from "./cloneable";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
 import { TailComp } from "../player/tail";
+import { splash } from "../particleSplash";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
@@ -145,6 +146,7 @@ export function continuationCore(
                     obj.ignoreTriggerTimeout = 5;
             }
             if (this.params.oneshot) this.destroy();
+            splash(player.pos, this.color);
         },
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.params.reverseTeleport) return;

@@ -10,6 +10,7 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
 import { modalmenu } from "../ui/menuFactory";
+import { splash } from "../particleSplash";
 
 const deathMessages: TextChunk[] = [
     {
@@ -62,6 +63,7 @@ player.onHurt(() => {
         player.flash();
         K.shake();
         K.play("hurt");
+        splash(player.pos, K.RED);
     }
 })
 

@@ -17,6 +17,7 @@ import { LoreComp } from "./lore";
 import { PromiseComp } from "./promise";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
+import { splash } from "../particleSplash";
 
 export type CDEComps =
     | PosComp
@@ -263,6 +264,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
+                splash(player.pos, this.color);
                 this.zoop.hidden = true;
             });
         },

@@ -1,5 +1,6 @@
-import { AudioPlayOpt, BodyComp, Comp, GameObj, PosComp } from "kaplay";
+import { AudioPlayOpt, BodyComp, ColorComp, Comp, GameObj, PosComp, SpriteComp } from "kaplay";
 import { K } from "../init";
+import { splash } from "../particleSplash";
 import { player } from "../player";
 
 export interface ThudderComp extends Comp {
@@ -12,13 +13,15 @@ export function thudder(sounds: Record<string, string> = { grating: "thud_metal"
     return {
         id: "thudder",
         require: ["body", "pos"],
-        add(this: GameObj<BodyComp | PosComp>) {
+        add(this: GameObj<BodyComp | PosComp | SpriteComp | ColorComp>) {
             this.onGround(() => {
                 if (K.time() > 0.1 && shouldPlay()) { // prevent spurious sounds when game starts
                     const spriteName = this.curPlatform()?.sprite as string;
                     const soundID = sounds[spriteName] || sounds.else;
                     if (soundID)
                         player.playSound(soundID, soundOpts, this.worldPos()!, this.vel.len());
+                    if (this.vel.y > 100)
+                        splash(this.worldPos()!.add(0, (this?.height ?? 0) / 2), this.color ?? K.WHITE)
                 }
             });
         }
