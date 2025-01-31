@@ -5,7 +5,7 @@ import { ContinuationData, ContinuationTrapComp } from "../components/continuati
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore, LoreComp } from "../components/lore";
-import { FRICTION, RESTITUTION, TILE_SIZE } from "../constants";
+import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
@@ -30,7 +30,7 @@ export function continuation(
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
-        K.body(),
+        K.body({ maxVelocity: TERMINAL_VELOCITY }),
         K.named("{undefined}"),
         continuationCore(type, captured, trap),
         {

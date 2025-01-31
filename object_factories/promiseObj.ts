@@ -4,7 +4,7 @@ import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore, LoreComp } from "../components/lore";
 import { promise, PromiseComp } from "../components/promise";
-import { FRICTION, RESTITUTION, TILE_SIZE } from "../constants";
+import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
@@ -24,7 +24,7 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
-        K.body(),
+        K.body({ maxVelocity: TERMINAL_VELOCITY }),
         {
             add(this: GameObj<BodyComp>) {
                 this.onBeforePhysicsResolve(coll => {

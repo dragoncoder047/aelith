@@ -1,13 +1,13 @@
 import { CompList } from "kaplay";
-import { K } from "../init";
 import { bug } from "../components/bug";
+import { FRICTION, TERMINAL_VELOCITY } from "../constants";
+import { K } from "../init";
 import { defaults } from "./default";
-import { FRICTION, RESTITUTION, TILE_SIZE } from "../constants";
 
 export function bugger(): CompList<any> {
     return [
         K.sprite("bug", { anim: "walk" }),
-        K.body({ jumpForce: 200 }),
+        K.body({ jumpForce: 200, maxVelocity: TERMINAL_VELOCITY }),
         K.layer("player"),
         K.state("sleeping"),
         ...defaults({

@@ -3,9 +3,9 @@ import { thudder } from "../components/thudder";
 import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { playerBody, PlayerBodyComp } from "./body";
-import { tail } from "./tail";
-import { playerHead } from "./head";
 import { copyOpacityOfPlayer } from "./copyOpacityOfPlayer";
+import { playerHead } from "./head";
+import { tail } from "./tail";
 
 export const player = K.add([
     playerBody(),
@@ -92,6 +92,7 @@ function addChain(start: GameObj, startPos: Vec2, nSeg: number, maxSz: number, c
             K.body({
                 mass: 0.1,
                 damping,
+                maxVelocity: TERMINAL_VELOCITY
             }),
             K.spring({
                 other: previous as GameObj<BodyComp | PosComp>,
