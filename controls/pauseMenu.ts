@@ -105,7 +105,7 @@ export const PAUSE_MENU: PtyMenu = {
     ]
 }
 
-export var PAUSE_MENU_OBJ = modalmenu(PAUSE_MENU, ["menuActive", "pauseMenu"], "&pauseMenuCtlHint",
+export var PAUSE_MENU_OBJ = modalmenu(PAUSE_MENU, ["!dialog", "menuActive", "pauseMenu"], "&pauseMenuCtlHint",
     K.onButtonPress("pause_unpause", () => PAUSE_MENU_OBJ.open()) as KEventControllerPatch);
 
 export function initPauseMenu() {

@@ -143,7 +143,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             updateEv.clear();
         },
         setupGroups(groups) {
-            handlers.enter.forEach(h => h.forEventGroup(groups.map(g => `!${g}`)));
+            handlers.enter.forEach(h => h.forEventGroup(groups.map(g => `!${g.replace(/^!/, "")}`)));
             handlers.exit.forEach(h => h.forEventGroup(groups));
             handlers.main.forEach(h => h.forEventGroup(groups));
             initEv = groups;
