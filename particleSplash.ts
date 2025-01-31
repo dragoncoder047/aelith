@@ -11,7 +11,7 @@ export function splash(where: Vec2, color: Color | (() => Color), n = 10) {
             K.scale(K.rand(2, 4)),
             K.layer("ui"),
             K.area({
-                collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug"],
+                collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug", "grating", "barrier"],
                 friction: FRICTION
             }),
             K.body(),
