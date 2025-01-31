@@ -14,6 +14,7 @@ import { button } from "../object_factories/button";
 import { checkpoint } from "../object_factories/checkpoint";
 import { continuationTrap } from "../object_factories/continuationTrapGun";
 import { conveyor } from "../object_factories/conveyor";
+import { crossing } from "../object_factories/crossing";
 import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
 import { grating } from "../object_factories/grating";
@@ -89,7 +90,8 @@ export const MParser: {
         "!": specialGrating,
         "<": rightDestroyBarrier,
         "=": ladder,
-        "~": brokenLadder
+        "~": brokenLadder,
+        "&": crossing,
     },
     vars: {},
     // MARK: commands
@@ -487,7 +489,7 @@ export const MParser: {
     merge() {
         const w = this.world!;
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", "conveyor", "grating"];
+        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover"];
         for (var tag of allowedTags) {
             const tiles: { [pos: string]: GameObj<AreaComp | MergeableComp | PosComp> } = {};
             // get original tiles in a grid
