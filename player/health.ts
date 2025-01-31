@@ -51,7 +51,7 @@ const DEATH_MENU: PtyMenu = {
 
 const DUMMY = new K.KEvent;
 const DEATH_MENU_OBJ = modalmenu(DEATH_MENU, ["menuActive", "deathMenu"], "&deathMenuCtlHint",
-    DUMMY.add(() => {}) as KEventControllerPatch, false, true);
+    DUMMY.add(() => { }) as KEventControllerPatch, false, true);
 
 player.onGround(() => {
     if (player.vel.y > FALL_DAMAGE_THRESHOLD)
@@ -63,7 +63,7 @@ player.onHurt(() => {
         player.flash();
         K.shake();
         K.play("hurt");
-        splash(player.pos, K.RED);
+        splash(player.pos, K.RED, 30);
     }
 })
 
@@ -142,5 +142,9 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
         K.eventGroups.delete("pauseMenu");
         K.get("tail").forEach(t => t.paused = false);
         c.invoke();
+        K.loop(0.1, () => {
+            const speed = K.rand(1, 2);
+            splash(player.pos, () => K.Color.fromHSL((K.time() * speed) % 1, 1, 1 / 2));
+        }, 10);
     };
 }

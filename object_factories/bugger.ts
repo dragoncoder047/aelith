@@ -1,4 +1,4 @@
-import { CompList } from "kaplay";
+import { CompList, Tag } from "kaplay";
 import { bug } from "../components/bug";
 import { FRICTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
@@ -21,5 +21,6 @@ export function bugger(): CompList<any> {
             u_targetcolor: K.RED,
         }),
         bug(),
+        "bug" as Tag,
     ];
 }

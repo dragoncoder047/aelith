@@ -260,11 +260,11 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
+            splash(player.pos, this.color);
             this.zoop.radius = zoopRadius(this.params.radius);
             this.zoop.zoop().then(() => {
                 player.addToInventory(cont);
                 cont.activate();
-                splash(player.pos, this.color);
                 this.zoop.hidden = true;
             });
         },

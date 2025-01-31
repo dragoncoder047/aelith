@@ -2,9 +2,8 @@ import { Vec2, Color, Tag } from "kaplay";
 import { K } from "./init";
 import { FRICTION } from "./constants";
 
-export function splash(where: Vec2, color: Color) {
-    const NUM_PARTICLES_PER_SPLASH = 10;
-    for (var i = 0; i < NUM_PARTICLES_PER_SPLASH; i++) {
+export function splash(where: Vec2, color: Color | (() => Color), n = 10) {
+    for (var i = 0; i < n; i++) {
         K.add([
             K.pos(where),
             K.sprite("particle"),
@@ -12,13 +11,13 @@ export function splash(where: Vec2, color: Color) {
             K.scale(K.rand(2, 4)),
             K.layer("ui"),
             K.area({
-                collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation"],
+                collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug"],
                 friction: FRICTION
             }),
             K.body(),
             K.lifespan(K.rand(0.5, 1)),
             K.opacity(1),
-            K.shader("recolor-red", { u_targetcolor: color }),
+            K.shader("recolor-red", typeof color === "function" ? (() => ({ u_targetcolor: color() })) : { u_targetcolor: color }),
             "particle" as Tag,
             "raycastIgnore" as Tag,
             "noCollideWithTail" as Tag,
