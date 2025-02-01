@@ -11,6 +11,7 @@ export function windTunnel() {
         ...machine({
             collisionIgnore: ["tail"]
         }),
+        K.offscreen({ hide: false }),
         wind(),
         K.outline(0),
         // this is set by wind comp
