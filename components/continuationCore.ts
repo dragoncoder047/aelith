@@ -129,8 +129,13 @@ export function continuationCore(
                 if (e.bugState) obj.enterState(e.bugState);
                 obj.togglerState = this.params.fuzzStates ? !obj.togglerState : e.togglerState!;
                 obj.triggered = e.triggeredState!;
-                if (!e.inPlayerInventory)
+                if (!e.inPlayerInventory) {
                     player.removeFromInventory(obj as any);
+                    const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
+                    if (!off && (obj.has("toggler") || obj.has("bug")) && obj.has("body")) {
+                        splash(obj.pos, this.color, undefined, undefined, obj.tags.filter(x => x != "*"));
+                    }
+                }
                 else
                     player.addToInventory(obj as any);
                 // If it is a button or laser that *was* triggered by a box when captured, but

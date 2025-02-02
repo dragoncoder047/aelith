@@ -2,6 +2,7 @@ import { player } from ".";
 import { FOOTSTEP_INTERVAL } from "../constants";
 import { getMotionVector } from "../controls";
 import { K } from "../init";
+import { splash } from "../particleSplash";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 // State functions
@@ -53,5 +54,7 @@ player.onStateEnd("climbing", () => {
     if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
         player.footstepsCounter = 0;
         player.playSound(player.state === "normal" ? (player.curPlatform()?.sprite == "grating" ? "footsteps_metal" : "footsteps") : "climbing");
+        if (player.isGrounded())
+            splash(player.pos.add(0, player.height / 2), K.WHITE.darken(70), 2, -10);
     }
 }) as KEventControllerPatch).forEventGroup("!dialog");
