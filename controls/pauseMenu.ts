@@ -27,6 +27,8 @@ const gcTypeMenu: PtyMenu = {
     hidden: true
 };
 
+const rumbleOption = { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true };
+
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
@@ -37,7 +39,7 @@ export const PAUSE_MENU: PtyMenu = {
             name: "&msg.pause.preferences",
             type: "select",
             opts: [
-                { text: "&msg.pause.controllerRumble", value: "rumble" },
+                rumbleOption,
                 { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
                 { text: "&msg.pause.showControlHints", value: "controlHints" },
                 { text: "&msg.pause.playBgMusic", value: "music" },
@@ -149,6 +151,7 @@ export function copyPreferences() {
 
 K.onGamepadConnect(g => {
     gcTypeMenu.hidden = false;
+    rumbleOption.hidden = false;
     const id = navigator.getGamepads()[g.index]!.id;
     const which = detectGamepadType(id);
     if (which !== undefined) {
