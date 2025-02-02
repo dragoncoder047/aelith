@@ -10,7 +10,7 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
 import { modalmenu } from "../ui/menuFactory";
-import { splash } from "../particleSplash";
+import { splash } from "../particles";
 
 const deathMessages: TextChunk[] = [
     {

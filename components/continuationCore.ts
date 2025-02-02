@@ -8,7 +8,7 @@ import { CloneableComp } from "./cloneable";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
 import { TailComp } from "../player/tail";
-import { splash } from "../particleSplash";
+import { splash } from "../particles";
 
 export interface ContinuationComp extends Comp {
     timestamp: number

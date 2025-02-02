@@ -1,4 +1,6 @@
-import { Comp, GameObj, KEventController } from "kaplay";
+import { Comp, GameObj, KEventController, PosComp } from "kaplay";
+import { K } from "../init";
+import { makeParticle } from "../particles";
 
 export interface LinkComp extends Comp {
     readonly idTag: string,
@@ -15,6 +17,7 @@ export function linked(tag: string): LinkComp {
     var _grp = tag;
     return {
         id: "linked",
+        require: ["pos"],
         get idTag() { return "__linkid_" + _grp; },
         get linkGroup() { return _grp; },
         set linkGroup(newTag) {
@@ -25,13 +28,36 @@ export function linked(tag: string): LinkComp {
         add(this: GameObj) {
             this.tag(this.idTag);
         },
-        broadcast(this: GameObj, msg: string) {
-            this.query({
+        broadcast(this: GameObj<PosComp | LinkComp>, msg: string) {
+            const self = this;
+            const sibs = this.query({
                 hierarchy: "siblings",
                 include: this.idTag,
-            }).concat(this).forEach(sibling => {
-                sibling.trigger("message", msg);
             });
+            sibs.forEach(sibling => {
+                const FADE_TIME = 0.25;
+                const start = K.time();
+                sibling.trigger("message", msg);
+                K.add([
+                    {
+                        draw(this: GameObj) {
+                            const o = K.lerp(1, 0, (K.time() - start) / FADE_TIME);
+                            if (o < 0) {
+                                this.destroy();
+                                return;
+                            }
+                            K.drawLine({
+                                p1: self.pos,
+                                p2: sibling.pos,
+                                width: 2,
+                                color: K.WHITE,
+                                opacity: o,
+                            });
+                        },
+                    }
+                ]);
+            });
+            this.trigger("message", msg);
         },
         onMessage(this: GameObj, cb: (msg: string) => void): KEventController {
             return this.on("message", cb);

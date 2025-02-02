@@ -17,7 +17,7 @@ import { LoreComp } from "./lore";
 import { PromiseComp } from "./promise";
 import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
-import { splash } from "../particleSplash";
+import { splash } from "../particles";
 
 export type CDEComps =
     | PosComp

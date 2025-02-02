@@ -1,6 +1,6 @@
 import { AudioPlayOpt, BodyComp, ColorComp, Comp, GameObj, PosComp, SpriteComp } from "kaplay";
 import { K } from "../init";
-import { splash } from "../particleSplash";
+import { splash } from "../particles";
 import { player } from "../player";
 
 export interface ThudderComp extends Comp {
