@@ -12,6 +12,7 @@ import { player } from "./player";
 import "./player/states";
 import "./player/health";
 import "./ui";
+import("./.p");
 
 K.setGravity(GRAVITY);
 

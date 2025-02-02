@@ -69,7 +69,8 @@ export type PtyMenu = {
     name?: string
     id: string,
     styles?: string[],
-    hidden?: boolean
+    hidden?: boolean,
+    header?: string | PtyChunk
 } & ({
     type: "submenu"
     opts: PtyMenu[]
@@ -282,7 +283,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     }
                     this.chunks = this.chunks.slice(0, beginLen);
                     commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
-                    const outChunks: PtyChunk[] = [];
+                    const outChunks: PtyChunk[] = typeof this.menu.header === "undefined" ? [] : typeof this.menu.header === "string" ? [{ text: this.menu.header }] : [this.menu.header];
                     cursorChunks = this.menu.type !== "submenu" && this.menu.type !== "string" ? this.toChunks(this.cursor) : [];
                     menuChunks = [];
                     optionChunks = [];
@@ -467,7 +468,6 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                     this.selIdx = this.menu.opts.findIndex(x => !x.hidden);
                                     break;
                                 case "string":
-                                    console.log("beginning string input");
                                     originalText = this.menu.value;
                                     isCapturingInput_ = true;
                                     inputListener = K.add([
