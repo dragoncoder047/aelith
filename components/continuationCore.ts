@@ -132,7 +132,7 @@ export function continuationCore(
                 if (!e.inPlayerInventory) {
                     player.removeFromInventory(obj as any);
                     const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
-                    if (!off && (obj.has("toggler") || obj.has("bug")) && obj.has("body")) {
+                    if (!off && (obj.has("toggler") || obj.has("bug")) && (obj.has("body") || obj.is("interactable"))) {
                         splash(obj.pos, this.color, undefined, undefined, obj.tags.filter(x => x != "*"));
                     }
                 }

@@ -9,7 +9,7 @@ export function splash(where: Vec2, color: Color | (() => Color), n = 10, yv_max
             K.sprite("particle"),
             K.anchor("center"),
             K.scale(K.rand(2, 4)),
-            K.layer("ui"),
+            K.layer("particles"),
             K.area({
                 collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug", "grating", "barrier", ...ig_tags_extra],
                 friction: FRICTION

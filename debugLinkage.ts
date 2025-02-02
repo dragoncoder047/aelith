@@ -3,7 +3,7 @@ import { MParser } from "./assets/mparser";
 import { LinkComp } from "./components/linked";
 import { K } from "./init";
 import { SCALE } from "./constants";
-import COLORS from "./assets/golly_color_list.json";
+import COLORS from "./assets/gollyColors.json";
 
 K.add([{
     drawInspect() {

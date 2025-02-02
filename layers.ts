@@ -10,6 +10,7 @@ K.setLayers([
     "playerTail",
     "player",
     "grabbing",
+    "particles",
     "ui",
     "manpage",
 ], "world");
