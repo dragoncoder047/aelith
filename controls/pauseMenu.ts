@@ -13,6 +13,20 @@ import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 // save for autodetect
 const availableLangs = K.langs.slice();
 
+const gcTypeMenu: PtyMenu = {
+    id: "set controllerType",
+    name: "&msg.pause.controllerType",
+    type: "select",
+    opts: [
+        { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },
+        { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
+        { text: "PS5    (&ps5.west &ps5.north &ps5.east &ps5.south, &ps5.select/&ps5.start)", value: "ps5" },
+        { text: "PS4    (&ps4.west &ps4.north &ps4.east &ps4.south, &ps4.select/&ps4.start)", value: "ps4" },
+    ],
+    selected: 0,
+    hidden: true
+};
+
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
@@ -32,18 +46,7 @@ export const PAUSE_MENU: PtyMenu = {
             selected: [0, 1, 2, 3, 4],
             multiple: true
         },
-        {
-            id: "set controllerType",
-            name: "&msg.pause.controllerType",
-            type: "select",
-            opts: [
-                { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },
-                { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
-                { text: "PS5    (&ps5.west &ps5.north &ps5.east &ps5.south, &ps5.select/&ps5.start)", value: "ps5" },
-                { text: "PS4    (&ps4.west &ps4.north &ps4.east &ps4.south, &ps4.select/&ps4.start)", value: "ps4" },
-            ],
-            selected: 0
-        },
+        gcTypeMenu,
         {
             id: "set language",
             name: "&msg.pause.setLanguage",
@@ -145,6 +148,7 @@ export function copyPreferences() {
 }
 
 K.onGamepadConnect(g => {
+    gcTypeMenu.hidden = false;
     const id = navigator.getGamepads()[g.index]!.id;
     const which = detectGamepadType(id);
     if (which !== undefined) {
@@ -152,6 +156,7 @@ K.onGamepadConnect(g => {
         PAUSE_MENU.opts[1].selected = PAUSE_MENU.opts[1].opts.findIndex(x => x.value === which);
         copyPreferences();
     }
+    PAUSE_MENU_OBJ.term.__redraw(false);
     // handle special gamepad types
     if (isFirefox()) {
         player.manpage!.data = { os: guessOS() };

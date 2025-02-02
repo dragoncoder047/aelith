@@ -35,7 +35,7 @@ export function guessOS() {
 }
 
 export function isTouchscreen() {
-    return navigator.maxTouchPoints > 0
+    return navigator.maxTouchPoints > 0;
 }
 
 function getUserAgentString() {
