@@ -55,8 +55,10 @@ export function wind(states: [string, string] = ["off", "on"]): WindComp {
                         });
                         p = np;
                     }
-                    x.opacity -= K.dt() * x.speed;
-                    x.pos = x.pos.add(a.scale(1 / K.dt()));
+                    if (!this.paused) {
+                        x.opacity -= K.dt() * x.speed;
+                        x.pos = x.pos.add(a.scale(1 / K.dt()));
+                    }
                 }
                 while (wisps.length < maxWisps) {
                     const start = s.random();
