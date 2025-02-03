@@ -114,9 +114,9 @@
 %
 %Az
 %
-%%
+%%                                                [4. Demo cloning jump over]
 %          [1. Demo box and button]       [3. Demo setjmp with doors]
-%          [4. Get box]    [2. Demo doors & throw]     [5. Demo cloning jump over]
+%                         [2. Demo doors & throw]           #
 %                            S######S 90nr(sw)i90r          #
 %                              Dt D 4g4z                    #
 %                Xz         =    T   =  (name)(throw)sz     #
