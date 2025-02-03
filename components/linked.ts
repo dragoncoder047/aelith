@@ -38,24 +38,25 @@ export function linked(tag: string): LinkComp {
                 const FADE_TIME = 0.25;
                 const start = K.time();
                 sibling.trigger("message", msg);
-                K.add([
-                    {
-                        draw(this: GameObj) {
-                            const o = K.lerp(1, 0, (K.time() - start) / FADE_TIME);
-                            if (o < 0) {
-                                this.destroy();
-                                return;
-                            }
-                            K.drawLine({
-                                p1: self.pos,
-                                p2: sibling.pos,
-                                width: 2,
-                                color: K.WHITE,
-                                opacity: o,
-                            });
-                        },
-                    }
-                ]);
+                if (!("opacity" in this) || (this as any).opacity > 0)
+                    K.add([
+                        {
+                            draw(this: GameObj) {
+                                const o = K.lerp(1, 0, (K.time() - start) / FADE_TIME);
+                                if (o < 0) {
+                                    this.destroy();
+                                    return;
+                                }
+                                K.drawLine({
+                                    p1: self.pos,
+                                    p2: sibling.pos,
+                                    width: 2,
+                                    color: K.WHITE,
+                                    opacity: o,
+                                });
+                            },
+                        }
+                    ]);
             });
             this.trigger("message", msg);
         },
