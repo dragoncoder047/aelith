@@ -36,8 +36,9 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Move wind drawing to shader
+* [ ] Make fans calculate the wind automatically rather than just fixed wind tunnel object
 * [ ] Fix bugs where horn disappears when invoking continuation
-* [ ] Add final "CPU" for player to sacrifice all their continuation traps and get call/cc.
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations

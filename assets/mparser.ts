@@ -31,6 +31,7 @@ import { trapdoor } from "../object_factories/trapdoor";
 import { wall } from "../object_factories/wall";
 import { windTunnel } from "../object_factories/windTunnel";
 import { PlayerBodyComp } from "../player/body";
+import { vacuum } from "../object_factories/vacuum";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -76,7 +77,8 @@ export const MParser: {
         U: trapdoor,
         V: antivirus,
         W: windTunnel,
-        X: box, // Y, Z
+        X: box,
+        Y: vacuum, // Z
     },
     // MARK: fixedTiles
     /**

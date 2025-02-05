@@ -44,6 +44,7 @@ export type ContinuationData = {
 
 export interface ContinuationTrapComp extends Comp {
     isDeferring: boolean
+    isConnected: boolean
     captured: GameObj<ContinuationComp>[]
     readonly data: (typeof trapTypes)[keyof typeof trapTypes] | undefined
     readonly enabled: boolean
@@ -105,6 +106,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
         require: ["sprite", "pos", "named", "shader", "lore"],
         captured: [],
         isDeferring: false,
+        isConnected: false,
         params: {
             cName: "{undefined}",
             pName: "{undefined}",
@@ -199,7 +201,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 else this.zoop.hidden = true;
             }
 
-            const targetAnim = this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
+            const targetAnim = this.isConnected ? "connected" : this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
             if (this.getCurAnim()?.name !== targetAnim) {
                 if (this.hasAnim(targetAnim))
                     this.play(targetAnim);

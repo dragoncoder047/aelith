@@ -21,6 +21,7 @@ export function continuationTrap() {
             u_targetcolor: K.RED,
         }),
         K.offscreen({ hide: true }),
+        K.opacity(1),
         trap("capture"),
         K.layer("boxes"),
         grabbable(),
