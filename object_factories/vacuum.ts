@@ -3,6 +3,7 @@ import { vacuumComp } from "../components/vacuum";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { clicky } from "../components/clicky";
 
 export function vacuum() {
     return [
@@ -13,5 +14,6 @@ export function vacuum() {
         ...machine(),
         K.tile({ isObstacle: true }),
         vacuumComp(),
+        clicky(["on"], ["vacuum_activate"]),
     ];
 }

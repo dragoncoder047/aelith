@@ -23,6 +23,13 @@ const bbk = player.onCollideUpdate("barrier", (_, coll) => {
     if (coll?.isTop()) rumbleEffectAndWait("barrier_middle", bbk);
 });
 
+const cbk = player.onCollideUpdate("conveyor", o => {
+    if (player.curPlatform() === o) rumbleEffectAndWait("walking_on_conveyor", cbk);
+});
+player.on("whiff", () => {
+    K.rumble("cant_throw");
+});
+
 player.on("remoteSense", (normal: Vec2 | undefined, trap: GameObj<PosComp | OffScreenComp>) => {
     normal ??= K.UP;
     if (trap.isOffScreen()) {

@@ -22,7 +22,7 @@ function exists(path) {
  * @param {string} path
  * @returns {string}
  */
-function RawTextCompressedModule(contents, path) {
+function rawstring_compressed(contents, path) {
     const m = `/* Auto-generated file... */
 import { decompress } from "$$DECOMPRESSOR_RUNTIME";
 const ${nameify(path)}_crunch = ${JSON.stringify(compress(contents))}
@@ -37,7 +37,7 @@ export default ${nameify(path)};
  * @param {string} path
  * @returns {string}
  */
-function JSONCompressedModule(json, path) {
+function json_compressed(json, path) {
     const m = `/* Auto-generated file... */
 import { decompress } from "$$DECOMPRESSOR_RUNTIME";
 const ${nameify(path)}_crunch = ${JSON.stringify(compress(json))};
@@ -127,12 +127,11 @@ const config = {
     bundle: true,
     sourcemap: true,
     minify: true,
+    metafile: true,
     platform: "browser",
     charset: "utf8",
     loader: {
         ".png": "dataurl",
-        ".glsl": "text",
-        ".txt": "text",
         ".woff": "dataurl"
     },
     entryPoints: [packageJSON.main],
@@ -150,30 +149,25 @@ const config = {
             },
         },
         {
-            name: "compress_text",
+            name: "compress_ext",
             setup(build) {
                 build.onResolve({ filter: /^\$\$DECOMPRESSOR_RUNTIME$/ }, () => {
                     return {
                         path: "$$DECOMPRESSOR_RUNTIME",
-                        namespace: "compress_text",
+                        namespace: "compress_ext",
                     }
                 });
-                build.onLoad({ filter: /\$\$DECOMPRESSOR_RUNTIME/, namespace: "compress_text" }, () => {
+                build.onLoad({ filter: /\$\$DECOMPRESSOR_RUNTIME/, namespace: "compress_ext" }, () => {
                     return { contents: compressionRuntimeSrc };
                 })
-                build.onLoad({ filter: /\.txt$/ }, args => {
+                build.onLoad({ filter: /\.(txt|glsl)$/ }, args => {
                     return {
-                        contents: RawTextCompressedModule(fs.readFileSync(args.path), args.path)
-                    }
-                });
-                build.onLoad({ filter: /\.glsl$/ }, args => {
-                    return {
-                        contents: RawTextCompressedModule(fs.readFileSync(args.path), args.path)
+                        contents: rawstring_compressed(fs.readFileSync(args.path), args.path)
                     }
                 });
                 build.onLoad({ filter: /\.json$/ }, args => {
                     return {
-                        contents: JSONCompressedModule(fs.readFileSync(args.path), args.path)
+                        contents: json_compressed(fs.readFileSync(args.path), args.path)
                     }
                 });
             }
@@ -195,4 +189,7 @@ if (process.argv.includes("-w")) {
     });
     await esbuild.context(config).then(ctx => ctx.watch());
 }
-else await esbuild.build(config);
+else {
+    const result = await esbuild.build(config);
+    if (result.metafile) fs.writeFileSync("build/meta.json", JSON.stringify(result.metafile))
+}

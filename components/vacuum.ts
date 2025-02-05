@@ -35,7 +35,7 @@ export function vacuumComp(states = ["off", "on"]): VacuumComp {
                 const obj = o as GameObj<NamedComp | PosComp | BodyComp | ContinuationTrapComp>;
                 if (this.nice(obj)) {
                     if (!obj.has("body")) return;
-                    obj.moveTo(this.pos, 300);
+                    obj.moveTo(this.pos, 100);
                     obj.vel = K.vec2(0);
                 }
             });

@@ -308,7 +308,10 @@ export function playerBody(): PlayerBodyComp {
         },
         throw(this: GameObj<PlayerBodyComp>) {
             const thrown = this.holdingItem;
-            if (!thrown || !this.throwImpulse || !thrown.is("throwable")) return;
+            if (!thrown || !this.throwImpulse || !thrown.is("throwable")) {
+                this.trigger("whiff");
+                return;
+            }
             this.drop(thrown);
             thrown.trigger("thrown");
             thrown.applyImpulse(this.throwImpulse);
