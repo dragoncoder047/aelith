@@ -47,6 +47,8 @@ export function antivirus(): AntivirusComp {
             var [from, to] = this.sweepAngleRange;
             if (Math.abs(this.angle - from) > Math.abs(this.angle - to))
                 [from, to] = [to, from];
+            this.angle = K.clamp(this.angle, from, to);
+            if (to == from) return;
             tweener = this.tween(
                 this.angle, to,
                 Math.abs(this.angle - to) / this.sweepSpeed,
@@ -54,7 +56,7 @@ export function antivirus(): AntivirusComp {
                 K.easings.easeInOutSine);
             tweener.onEnd(() => this.sweepy());
         },
-        update(this: GameObj<TimerComp | TogglerComp | AntivirusComp | RotateComp | PosComp | LinkComp | OffScreenComp>) {
+        update(this: GameObj<TimerComp | TogglerComp | AntivirusComp | RotateComp | PosComp>) {
             if (this.sweepAngleRange[1] < this.sweepAngleRange[0]) this.sweepAngleRange = [this.sweepAngleRange[1], this.sweepAngleRange[0]];
             if (this.togglerState) {
                 if (tweener) tweener.cancel();
@@ -69,41 +71,39 @@ export function antivirus(): AntivirusComp {
                             .concat(this.additionalStyles)
                             .map(t => t.replace(/[^\w]/g, "")));
                 }
-            } else {
-                if (this.alertTextObj) {
-                    this.alertTextObj.t = style(this.allClearMessage, this.allClearStyles);
-                }
+            } else if (this.alertTextObj) {
+                this.alertTextObj.t = style(this.allClearMessage, this.allClearStyles);
             }
-            if (this.isOffScreen()) {
-                this.rayHit = null;
-                return;
-            }
+        },
+        draw(this: GameObj<AntivirusComp | SpriteComp | PosComp | LinkComp | OffScreenComp | TogglerComp | RotateComp>) {
+            if (typeof this.laserColor === "string") this.laserColor = K.Color.fromHex(this.laserColor);
             // do raycast to things
-            const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area"])
+            const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
                 .concat([player])
-                .filter((x: any) => x !== this && !x.paused);
+                .filter((x: any) => x !== this && !x.paused)
+                .filter(x => !x.collisionIgnore.some(t => this.is(t)));
             const dontCareDistSquared = Math.pow(this.maxDistance * 1.5, 2);
             const offensiveObjects = objects
                 .filter(o => this.isOffensive(o));
             const obstacles = objects
                 .filter(x => x.isStatic)
-            const r = (objects: GameObj<AreaComp>[], a: number) =>
-                actuallyRaycast(objects, this.worldPos()!,
+            const r = (o: GameObj<AreaComp>[], a: number) =>
+                actuallyRaycast(o, this.worldPos()!,
                     K.LEFT.rotate(a), this.maxDistance);
+            var offended = false;
             for (var o of offensiveObjects) {
                 if (player.inventory.includes(o as any)) o = player;
                 if (o.worldPos()!.sdist(this.worldPos()!) > dontCareDistSquared) continue;
                 this.rayHit = r(obstacles.concat([o]), this.worldPos()!.sub(o.worldPos()!).angle());
                 if (this.rayHit !== null && this.isOffensive(this.rayHit.object)) {
                     if (!this.togglerState) this.broadcast(this.toggleMsg);
-                    return;
+                    offended = true;
                 }
             }
-            this.rayHit = r(objects, this.angle);
-            if (this.togglerState) this.broadcast(this.toggleMsg);
-        },
-        draw(this: GameObj<AntivirusComp | SpriteComp | PosComp>) {
-            if (typeof this.laserColor === "string") this.laserColor = K.Color.fromHex(this.laserColor);
+            if (!offended) {
+                this.rayHit = r(objects, this.angle);
+                if (this.togglerState) this.broadcast(this.toggleMsg)
+            };
             if (this.rayHit) {
                 K.drawLine({
                     p1: K.LEFT.scale(this.width / 2),

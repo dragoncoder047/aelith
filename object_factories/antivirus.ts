@@ -6,6 +6,7 @@ export function antivirus() {
     return [
         K.sprite("antivirus"),
         ...machine(),
+        K.offscreen({ hide: false }),
         antivirusComp(),
     ];
 }
