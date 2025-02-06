@@ -37,7 +37,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 ## TODO
 
 * [ ] Move wind drawing to shader
-* [ ] Make fans calculate the wind automatically rather than just fixed wind tunnel object
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
@@ -55,6 +54,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Make fans calculate the wind automatically rather than just fixed wind tunnel object
 * [X] Add lines of particles between linked objects when they change state
   * Like what happens when you hit a creaking in minecraft and the particles show which tree has its creaking heart.
 * [X] Add splashes of particles for stuff

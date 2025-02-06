@@ -1,10 +1,10 @@
 import { GameObj, LevelComp, PosComp } from "kaplay";
+import { worldFileSrc } from ".";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
-import { MParser } from "./mparser";
 import { doStartup } from "../startup";
-import { worldFileSrc } from ".";
+import { MParser } from "./mparser";
 
 K.load((async () => {
     MParser.world = K.addLevel(worldFileSrc.split("\n"), {
@@ -20,6 +20,7 @@ K.load((async () => {
 
 K.onLoad(() => {
     MParser.build();
+    MParser.postprocess();
 
     const isDebug = !!MParser.vars.testingMode;
     const playerPositions = MParser.world!.get<PosComp>("playerPosition");

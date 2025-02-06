@@ -62,5 +62,5 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     float alpha = (1. - uv.y) * sin(uv.x * 3.141592653589);
     float noiseval = chgnoise(uv);
     // alpha = 1.;
-    return vec4(u_targetcolor, pixelate(noiseval * alpha, u_pixamt));
+    return vec4(u_targetcolor / 255., pixelate(noiseval * alpha, u_pixamt));
 }

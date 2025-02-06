@@ -1,6 +1,7 @@
 import { AreaComp, BodyComp, Comp, GameObj, PosComp, RectComp, Tag, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { drawZapLine } from "../utils";
 
 export interface CrossoverComp extends Comp {
     colliding: {
@@ -125,6 +126,25 @@ export function crossover(): CrossoverComp {
                 this.colliding.horizontal.delete(obj);
                 this.colliding.vertical.delete(obj);
             });
+        },
+        draw(this: GameObj<CrossoverComp | RectComp>) {
+            const lh = this.colliding.horizontal.size;
+            const lv = this.colliding.vertical.size;
+            const w2 = this.width / 2 + TILE_SIZE / 8;
+            const h2 = this.height / 2 + TILE_SIZE / 8;
+            const tl = K.vec2(-w2, -h2);
+            const tr = K.vec2(w2, -h2);
+            const bl = K.vec2(-w2, h2);
+            const br = K.vec2(w2, h2);
+            if (lh > 0 || lv > 0) {
+                if (lh > lv) {
+                    drawZapLine(tl, tr);
+                    drawZapLine(bl, br);
+                } else {
+                    drawZapLine(tl, bl);
+                    drawZapLine(tr, br);
+                }
+            }
         },
         destroy() {
             detectors.forEach(d => d.destroy());

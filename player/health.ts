@@ -144,7 +144,11 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
         c.invoke();
         K.loop(0.1, () => {
             const speed = K.rand(1, 2);
-            splash(player.pos, () => K.Color.fromHSL((K.time() * speed) % 1, 1, 1 / 2));
+            splash(player.pos, () => K.Color.fromHSL((K.time() * speed) % 1, 1, 1 / 2), undefined, undefined, [], 0.2, 0.2);
         }, 10);
     };
 }
+
+// K.onKeyPress("`", () => {
+//     player.hurt(player.hp);
+// });

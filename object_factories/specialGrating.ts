@@ -14,6 +14,9 @@ export function specialGrating() {
                         if (trap.enabled && !trap.isDeferring)
                             col.preventResolution();
                     }
+                    else if (obj.has("bug")) {
+                        col.preventResolution();
+                    }
                 });
             }
         }

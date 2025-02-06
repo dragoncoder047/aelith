@@ -1,18 +1,18 @@
-import { Tag } from "kaplay";
+import { Tag, Vec2 } from "kaplay";
 import { wind } from "../components/wind";
-import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 
-export function windTunnel() {
+export function windTunnel(pos: Vec2, width: number, height: number, direction: number) {
     return [
-        K.rect(TILE_SIZE, TILE_SIZE),
+        K.pos(pos),
+        K.rect(width, height),
         K.opacity(0),
         ...machine({
             collisionIgnore: ["tail"]
         }),
         K.offscreen({ hide: false }),
-        wind(),
+        wind(direction - 90),
         K.outline(0),
         // this is set by wind comp
         K.areaEffector({ force: K.vec2(0) }),

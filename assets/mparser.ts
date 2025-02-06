@@ -1,4 +1,5 @@
 import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, Tag, Vec2 } from "kaplay";
+import { FanComp } from "../components/fan";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -28,31 +29,32 @@ import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { specialGrating } from "../object_factories/specialGrating";
 import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
-import { wall } from "../object_factories/wall";
-import { windTunnel } from "../object_factories/windTunnel";
-import { PlayerBodyComp } from "../player/body";
 import { vacuum } from "../object_factories/vacuum";
+import { wall } from "../object_factories/wall";
+import { windEnd } from "../object_factories/windEnd";
+import { PlayerBodyComp } from "../player/body";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
 export const MParser: {
-    pausePos: Vec2,
-    world: GameObj<LevelComp | PosComp> | undefined,
-    spawners: { [x: string]: (this: typeof MParser) => CompList<any>; };
-    fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; };
-    commands: { [x: string]: (this: typeof MParser) => void; };
-    buffer: string | number | undefined;
-    parenStack: string[];
-    vars: { [x: string]: any; };
-    commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[];
-    stack: any[];
-    merge(): void;
-    process(cmd: string, pos?: Vec2): CompList<any> | undefined;
-    cleanBuffer(): void;
-    build(): void;
-    uid_counter: number,
-    uid(): string;
+    pausePos: Vec2
+    world: GameObj<LevelComp | PosComp> | undefined
+    spawners: { [x: string]: (this: typeof MParser) => CompList<any>; }
+    fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; }
+    commands: { [x: string]: (this: typeof MParser) => void; }
+    buffer: string | number | undefined
+    parenStack: string[]
+    vars: { [x: string]: any; }
+    commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[]
+    stack: any[]
+    merge(): void
+    process(cmd: string, pos?: Vec2): CompList<any> | undefined
+    cleanBuffer(): void
+    build(): void
+    postprocess(): void
+    uid_counter: number
+    uid(): string
     pauseWorld(paused: boolean): void
 } = {
     pausePos: K.vec2(0),
@@ -76,7 +78,7 @@ export const MParser: {
         T: continuationTrap,
         U: trapdoor,
         V: antivirus,
-        W: windTunnel,
+        W: windEnd,
         X: box,
         Y: vacuum, // Z
     },
@@ -358,7 +360,7 @@ export const MParser: {
         },
         // MARK: h (math)
         h() {
-            const MATH_FUNCS: {[f: string]: (a: number, b: number) => number} = {
+            const MATH_FUNCS: { [f: string]: (a: number, b: number) => number } = {
                 "+": (a, b) => a + b,
                 "-": (a, b) => a - b,
                 "*": (a, b) => a * b,
@@ -570,6 +572,16 @@ export const MParser: {
                 throw new Error("bad command: " + cmd);
             }
         }
+    },
+    /**
+     * Processes the fans and stuff that need to look at the world.
+     */
+    postprocess() {
+        const fans = this.world!.get<FanComp>("fan", { only: "comps" });
+        for (var f of fans) {
+            f.createWind(this.world!);
+        }
+        this.world!.get("windEnd").forEach(o => o.destroy());
     },
     /**
      * Queue of commands to be executed to initialize the game.

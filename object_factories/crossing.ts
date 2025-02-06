@@ -11,7 +11,7 @@ export function crossing(): CompList<any> {
         K.rect(TILE_SIZE, TILE_SIZE),
         K.opacity(0),
         mergeable(),
-        ...defaults({ friction: FRICTION, collisionIgnore: ["tail"] }),
+        ...defaults({ friction: FRICTION, collisionIgnore: ["tail", "particle"] }),
         K.offscreen({ hide: true }),
         crossover(),
         "crossover" as Tag,

@@ -16,7 +16,8 @@ export function bug(): BugComp {
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
         add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp | TimerComp | SpriteComp>) {
-            this.onCollide((obj, coll) => {
+            this.onPhysicsResolve(coll => {
+                const obj = coll.target;
                 if (obj.has("bug")) {
                     if (obj.state === "angry") this.enterState("angry");
                     else if (obj.state === "scared" || this.state === "sleeping") this.enterState("walking");

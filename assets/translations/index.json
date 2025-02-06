@@ -25,6 +25,7 @@
             "edit": "(&button.west)",
             "inventory.scroll": "\\[&button.lshoulder]/\\[&button.rshoulder]",
             "pause": "(&button.start)",
+            "breathe": "(&button.lstick)",
             "pMenu": {
                 "switch": "\\[d-pad]",
                 "select": "(&button.south)",
@@ -50,6 +51,7 @@
             "edit": "\\[Q]",
             "inventory.scroll": "\\[Z]/\\[C]",
             "pause": "\\[tab]",
+            "breathe": "\\[V]",
             "pMenu": {
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",

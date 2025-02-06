@@ -80,6 +80,7 @@
         "grab": "&control.interact grab",
         "interact": "&control.interact interact",
         "switchItem": "&control.inventory.scroll switch item",
+        "breathe": "&control.breathe breathe",
         "pause": {
             "open": "&control.pause pause game",
             "switch": "&control.pMenu.switch switch",

@@ -4,6 +4,7 @@ import { K } from "../init";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { nextFrame } from "../utils";
+import { splash } from "../particles";
 
 // Controls
 
@@ -54,6 +55,7 @@ function motionHandler() {
 (player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonPress("edit", () => player.holdingItem?.trigger("edit")) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonDown("breathe", () => splash(player.head!.pos, K.WHITE, 5, undefined, [], 0.1, 0.3)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("!dialog");

@@ -97,15 +97,15 @@ export function playerBody(): PlayerBodyComp {
             // update control text
             this.controlText.t = "";
             if (this.manpage!.hidden) {
+                this.addControlText("&msg.ctlHint.breathe");
                 this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
                 this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
                 if (this.inventory.length > 0) {
-                    this.addControlText("&msg.ctlHint.switchItem");
                     if (this.holdingItem?.has("lore")) {
                         if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
-                            this.addControlText("&msg.ctlHint.viewInfo");
+                            this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
                         else
-                            this.addControlText("[rainbow]&msg.ctlHint.viewInfo[/rainbow]");
+                            this.addControlText("&msg.ctlHint.switchItem    [rainbow]&msg.ctlHint.viewInfo[/rainbow]");
                     }
                 }
                 if (this.lookingAt?.has("grabbable"))

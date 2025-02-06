@@ -9,12 +9,12 @@ export interface WindComp extends Comp {
     windDirection: number
 }
 
-export function wind(states: [string, string] = ["off", "on"]): WindComp {
+export function wind(direction: number, states: [string, string] = ["off", "on"]): WindComp {
     var wisps: { pos: Vec2, opacity: number, speed: number }[] = [];
     return {
         id: "wind",
         require: ["areaEffector", "area", "state", "linked", "toggler"],
-        windDirection: -90,
+        windDirection: direction,
         windForce: WIND_FORCE,
         add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp>) {
             this.onCollideUpdate((obj: GameObj) => {

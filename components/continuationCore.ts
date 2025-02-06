@@ -9,6 +9,7 @@ import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuation
 import { controllable, ControllableComp } from "./controllable";
 import { TailComp } from "../player/tail";
 import { splash } from "../particles";
+import { drawZapLine } from "../utils";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
@@ -156,27 +157,7 @@ export function continuationCore(
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.params.reverseTeleport) return;
             K.pushRotate(-this.angle);
-            const p1 = K.vec2(0, 0);
-            const p2 = this.fromWorld(this.worldMarker.worldPos()!);
-            if (this.worldMarker.isOffScreen()) {
-                const doubledScreenRect = new K.Rect(K.vec2(-K.width(), -K.height()), K.width() * 2, K.height() * 2);
-                const out = new K.Line(K.vec2(), K.vec2());
-                const clipped = new K.Line(p1, p2);
-                K.clipLineToRect(doubledScreenRect, clipped, out);
-                p1.x = out.p1.x;
-                p1.y = out.p1.y;
-                p2.x = out.p2.x;
-                p2.y = out.p2.y;
-            }
-            const segments = 8 * p1.sub(p2).len() / TILE_SIZE;
-            const jitter = () => K.rand(K.vec2(-2, -2), K.vec2(2, 2));
-            const f = (t: number) => K.lerp(p1, p2, t).add(jitter());
-            K.drawCurve(f, {
-                segments,
-                width: 1 / SCALE,
-                opacity: 0.5,
-                color: this.color
-            });
+            drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { opacity: 0.5, width: 1 / SCALE, color: this.color });
             K.popTransform();
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {
