@@ -9,6 +9,7 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PtyChunk, PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { nextFrame } from "../utils";
+import { MParser } from "../assets/mparser";
 
 var getMotionVector: () => Vec2;
 import("../controls").then(mod => getMotionVector = mod.getMotionVector);
@@ -27,6 +28,7 @@ export interface MenuModal {
 }
 
 export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, enterEC: KEventControllerPatch, closeable: boolean = true, history: boolean = false): MenuModal {
+    const THIS_MENU_ID = "___menu" + MParser.uid();
     var origInventoryIndex: number;
     const theMenuContainer = UI.add([K.pos(K.center()), K.layer("manpage"), {
         add(this: GameObj<PosComp>) {
@@ -143,6 +145,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             updateEv.clear();
         },
         setupGroups(groups) {
+            groups.push(THIS_MENU_ID);
             handlers.enter.forEach(h => h.forEventGroup(groups.map(g => `!${g.replace(/^!/, "")}`)));
             handlers.exit.forEach(h => h.forEventGroup(groups));
             handlers.main.forEach(h => h.forEventGroup(groups));
