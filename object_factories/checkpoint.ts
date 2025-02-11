@@ -12,7 +12,7 @@ export function checkpoint() {
         ...defaults(),
         K.tile({ isObstacle: false }),
         nudge(0, TILE_SIZE / 2),
-        K.shader("recolor-red", {
+        K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
         trap("checkpoint"),

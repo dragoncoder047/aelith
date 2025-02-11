@@ -6,10 +6,11 @@ import { Tag } from "kaplay";
 
 export function wall() {
     return [
+        K.layer("background1"),
         K.sprite("steel", { tiled: true }),
         K.body({ isStatic: true }),
         mergeable(),
-        ...defaults({ friction: FRICTION }),
+        ...defaults({ friction: FRICTION, collisionIgnore: ["wall"] }), // micro-optimization
         "wall" as Tag,
     ]
 }

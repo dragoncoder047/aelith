@@ -12,7 +12,7 @@ import { throwablePlatformEff } from "./throwablePlatformEff";
 export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<LoreComp>) {
     return [
         K.sprite("promise", { anim: "normal" }),
-        K.shader("recolor-red", {
+        K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
         K.offscreen({ hide: true }),

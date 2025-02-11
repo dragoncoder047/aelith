@@ -17,7 +17,7 @@ export function bugger(): CompList<any> {
             scale: K.vec2(7 / 8, 1)
         }),
         K.offscreen({ hide: true }),
-        K.shader("recolor-red", {
+        K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
         bug(),

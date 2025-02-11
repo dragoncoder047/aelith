@@ -42,7 +42,7 @@ export function continuationCore(
             K.anchor("center"),
             K.offscreen(),
             K.area(),
-            K.shader("recolor-red", {
+            K.shader("recolorRed", {
                 u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
             }),
             "worldMarker" as Tag,

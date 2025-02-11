@@ -14,12 +14,13 @@ K.load((async () => {
         wildcardTile: (cmd, pos) => MParser.process(cmd, pos),
     }) as GameObj<LevelComp | PosComp>;
 
-    MParser.merge();
-
 })());
 
 K.onLoad(() => {
+    MParser.preprocess();
     MParser.build();
+    MParser.midprocess();
+    MParser.merge();
     MParser.postprocess();
 
     const isDebug = !!MParser.vars.testingMode;

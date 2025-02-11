@@ -1,4 +1,4 @@
-import { Tag } from "kaplay";
+import { GameObj, Tag } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
@@ -8,6 +8,11 @@ export function windEnd() {
         K.rect(TILE_SIZE, TILE_SIZE),
         K.area(),
         ...machine(),
-        "windEnd" as Tag
+        "windEnd" as Tag,
+        {
+            add(this: GameObj) {
+                this.on("midprocess", () => this.destroy());
+            }
+        }
     ]
 }

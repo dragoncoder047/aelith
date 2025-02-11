@@ -17,7 +17,7 @@ export function continuationTrap() {
             friction: FRICTION / 8,
             restitution: RESTITUTION
         }),
-        K.shader("recolor-red", {
+        K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
         K.offscreen({ hide: true }),

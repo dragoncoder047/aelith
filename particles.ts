@@ -25,7 +25,7 @@ export function makeParticle(where: Vec2, color: Color | (() => Color), ig_tags_
         }),
         K.lifespan(K.rand(0.5, 1)),
         K.opacity(1),
-        K.shader("recolor-red", typeof color === "function" ? (() => ({ u_targetcolor: color() })) : { u_targetcolor: color }),
+        K.shader("recolorRed", typeof color === "function" ? (() => ({ u_targetcolor: color() })) : { u_targetcolor: color }),
         "particle" as Tag,
         "raycastIgnore" as Tag,
         "noCollideWithTail" as Tag,

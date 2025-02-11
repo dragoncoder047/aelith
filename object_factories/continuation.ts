@@ -17,7 +17,7 @@ export function continuation(
 ) {
     return [
         K.sprite("continuation_invoker"),
-        K.shader("recolor-red", {
+        K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
         K.offscreen({ hide: true }),

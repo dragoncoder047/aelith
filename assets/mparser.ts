@@ -1,5 +1,4 @@
 import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, Tag, Vec2 } from "kaplay";
-import { FanComp } from "../components/fan";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -16,6 +15,7 @@ import { checkpoint } from "../object_factories/checkpoint";
 import { continuationTrap } from "../object_factories/continuationTrapGun";
 import { conveyor } from "../object_factories/conveyor";
 import { crossing } from "../object_factories/crossing";
+import { dataPipe } from "../object_factories/dataPipe";
 import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
 import { grating } from "../object_factories/grating";
@@ -53,6 +53,8 @@ export const MParser: {
     process(cmd: string, pos?: Vec2): CompList<any> | undefined
     cleanBuffer(): void
     build(): void
+    preprocess(): void
+    midprocess(): void
     postprocess(): void
     uid_counter: number
     uid(): string
@@ -98,6 +100,9 @@ export const MParser: {
         "~": brokenLadder,
         "&": crossing,
         "_": onetimeCushion,
+        "+": () => dataPipe(true),
+        "-": () => dataPipe(false),
+        ":": () => dataPipe(false, false)
     },
     vars: {},
     // MARK: commands
@@ -501,8 +506,9 @@ export const MParser: {
             // get original tiles in a grid
             for (var x = 0; x < w.numColumns(); x++)
                 for (var y = 0; y < w.numRows(); y++) {
-                    const obj = w.getAt(K.vec2(x, y))[0] as typeof tiles[keyof typeof tiles] | undefined;
-                    if (obj && obj.has("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
+                    const objs = w.getAt(K.vec2(x, y)) as (typeof tiles[keyof typeof tiles])[];
+                    for (var obj of objs)
+                        if (obj && obj.has("mergeable") && obj.has("area") && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid
@@ -575,15 +581,15 @@ export const MParser: {
             }
         }
     },
-    /**
-     * Processes the fans and stuff that need to look at the world.
-     */
+    // MARK: postprocess()
+    preprocess() {
+        this.world!.get("*").forEach(o => o.trigger("preprocess"));
+    },
+    midprocess() {
+        this.world!.get("*").forEach(o => o.trigger("midprocess"));
+    },
     postprocess() {
-        const fans = this.world!.get<FanComp>("fan", { only: "comps" });
-        for (var f of fans) {
-            f.createWind(this.world!);
-        }
-        this.world!.get("windEnd").forEach(o => o.destroy());
+        this.world!.get("*").forEach(o => o.trigger("postprocess"));
     },
     /**
      * Queue of commands to be executed to initialize the game.

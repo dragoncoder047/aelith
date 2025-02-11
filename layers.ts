@@ -1,7 +1,8 @@
 import { K } from "./init";
 
 K.setLayers([
-    "background",
+    "background1",
+    "background2",
     "world",
     "text",
     "boxes",

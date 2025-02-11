@@ -1,7 +1,7 @@
-uniform vec3 u_targetcolor;
 uniform float u_time;
-uniform float u_octave;
-uniform float u_staticrand;
+
+const vec4 GREEN = vec4(0., .3, 0., 1.);
+const vec4 SPARK = vec4(.8, .9, 1., 1.);
 
 // perlin noise function from https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 
@@ -37,22 +37,9 @@ float perlin(vec3 p) {
     return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
-float map(float alpha, float a, float b, float x, float y) {
-    return x + (y - x) * (alpha - a) / (b - a);
-}
-
-float chgnoise(vec2 pos) {
-    // tweak this to make it look better...
-    float moving = perlin(vec3(pos.x, pos.y + u_time, u_staticrand) * u_octave);
-    float constant = perlin(vec3(pos, u_time) * u_octave * 1.5);
-    return moving * constant * 2.;
-}
-
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-    if(uv.y < (1. / 32.))
-        return vec4(u_targetcolor / 255., 1.);
-    float alpha = (1. - uv.y) * sin(uv.x * 3.141592653589);
-    float noiseval = chgnoise(uv);
-    alpha *= noiseval;
-    return vec4(u_targetcolor / 255., alpha);
+    vec4 o_color = texture2D(tex, uv);
+    vec4 wire_color = mix(GREEN, SPARK, pow(perlin(vec3(pos / 10., u_time)), 10.));
+    if (o_color.r > 0.01 && o_color.g < 0.01 && o_color.b < 0.01) return wire_color;
+    return o_color;
 }

@@ -248,5 +248,12 @@
         "y": 238,
         "width": 1,
         "height": 1
+    },
+    "pipe": {
+        "x": 0,
+        "y": 366,
+        "width": 512,
+        "height": 32,
+        "sliceX": 16
     }
 }

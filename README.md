@@ -36,7 +36,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
-* [ ] Add background pipes block art
+* [ ] Add MORE background pipes block art
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
