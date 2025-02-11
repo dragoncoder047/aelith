@@ -55,10 +55,28 @@ function motionHandler() {
 (player.onButtonPress("interact", () => player.lookingAt?.trigger("interact")) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonPress("invoke", () => player.holdingItem?.trigger("invoke")) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonPress("edit", () => player.holdingItem?.trigger("edit")) as KEventControllerPatch).forEventGroup("!dialog");
-(player.onButtonDown("breathe", () => splash(player.head!.pos, K.WHITE, 5, undefined, [], 0.1, 0.3)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("!dialog");
+(player.onButtonDown("flyUp", () => {
+    if (!(player.holdingItem as any)?.data?.flyingEnabled) {
+        player.gravityScale = 1;
+        K.rumble("cant_fly");
+        return;
+    }
+    if (player.state === "normal") {
+        player.gravityScale = -1;
+        if (player.vel.slen() > WALK_SPEED * WALK_SPEED) {
+            player.vel = player.vel.unit().scale(WALK_SPEED);
+        }
+        splash(player.pos.add(0, player.height / 2), (player.holdingItem as any).color, 5, -10)
+    }
+}) as KEventControllerPatch).forEventGroup("!dialog");
+player.onButtonRelease("flyUp", () => {
+    if (player.state === "normal") {
+        player.gravityScale = 1;
+    }
+}); // not in dialog EV group cause if player opens dialog when holding fly button then this gets stuck wrongly
 
 // Mouse looking
 (player.onMouseMove(mousePos => {
@@ -142,17 +160,17 @@ const foo = player.onUpdate(() => {
 
 
 /// xxx: where else to put these?
-K.onGamepadButtonPress("home", async () => {
-    if (K.isFullscreen()) {
-        K.setFullscreen(false);
-    } else {
-        const el = K._k.app.state.canvas;
-        console.log(el);
-        // @ts-ignore
-        await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.() ?? el.mozRequestFullScreen?.() ?? el.msRequestFullscreen?.());
-        // _onFullscreenResized();
-    }
-});
+// K.onGamepadButtonPress("home", async () => {
+//     if (K.isFullscreen()) {
+//         K.setFullscreen(false);
+//     } else {
+//         const el = K._k.app.state.canvas;
+//         console.log(el);
+//         // @ts-ignore
+//         await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.() ?? el.mozRequestFullScreen?.() ?? el.msRequestFullscreen?.());
+//         // _onFullscreenResized();
+//     }
+// });
 
 // TODO: why does this not work?
 // function _onFullscreenResized() {

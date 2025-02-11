@@ -16,12 +16,12 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
         require: ["areaEffector", "area", "state", "linked", "toggler"],
         windDirection: direction,
         windForce: WIND_FORCE,
-        add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp>) {
+        add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp | WindComp>) {
             this.onCollideUpdate((obj: GameObj) => {
-                if (!this.force.isZero()
-                    && this.force.y < 0
+                if (this.windDirection == -90
                     && obj.has(["body", "pos"])
-                    && (obj as GameObj<BodyComp>).curPlatform() !== null) {
+                    && (obj as GameObj<BodyComp>).curPlatform() !== null
+                    && this.force.slen() > 0) {
                     (obj as GameObj<PosComp>).move(0, -WALK_SPEED);
                     (obj as GameObj<BodyComp>).jump(Number.EPSILON);
                 }

@@ -13,7 +13,7 @@
     "c": {
         "gamepad": {
             "move": "(lstick)",
-            "sprint": "\\[&button.ltrigger]",
+            "sprint": "\\[&button.lstick]",
             "jump": "(&button.south)",
             "aim": "(rstick)",
             "look": "(rstick)",
@@ -25,7 +25,7 @@
             "edit": "(&button.west)",
             "inventory.scroll": "\\[&button.lshoulder]/\\[&button.rshoulder]",
             "pause": "(&button.start)",
-            "breathe": "(&button.lstick)",
+            "flyUp": "\\[&button.ltrigger]",
             "pMenu": {
                 "switch": "\\[d-pad]",
                 "select": "(&button.south)",
@@ -51,7 +51,7 @@
             "edit": "\\[Q]",
             "inventory.scroll": "\\[Z]/\\[C]",
             "pause": "\\[tab]",
-            "breathe": "\\[V]",
+            "flyUp": "\\[V]",
             "pMenu": {
                 "switch": "\\[WASD]/\\[&arrow.left&arrow.right&arrow.up&arrow.down]",
                 "select": "\\[enter]",

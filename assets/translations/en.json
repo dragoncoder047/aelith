@@ -80,7 +80,6 @@
         "grab": "&control.interact grab",
         "interact": "&control.interact interact",
         "switchItem": "&control.inventory.scroll switch item",
-        "breathe": "&control.breathe breathe",
         "pause": {
             "open": "&control.pause pause game",
             "switch": "&control.pMenu.switch switch",
@@ -104,6 +103,7 @@
             "modify": "&control.modify change capture radius",
             "edit": "&control.edit edit capture flags",
             "stopEdit": "&control.edit finish",
+            "fly": "&control.flyUp fly up",
             "invoke": {
                 "default": "&control.invoke invoke continuation",
                 "assert": "&control.invoke invoke checkpoint"
@@ -167,6 +167,7 @@
     "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
     "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
     "noLoneBugs": "I'm sure you're familiar with the fact that there is no such thing as \"one bug\"...",
+    "basement": "Ooh, what's this? Are these ports holding up the entire system?",
     "secret": "[bouncy][rainbow]shh, secret?[/rainbow][/bouncy]",
     "powerful": "this one is [bouncy][rainbow]extremely powerful![/rainbow][/bouncy]",
     "congrats": "[bouncy][rainbow]CONGRATULATIONS![/rainbow][/bouncy]\nyou have reached the end of the game so far!!"

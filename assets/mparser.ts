@@ -23,6 +23,7 @@ import { invisibleTrigger } from "../object_factories/invisibleTrigger";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
+import { onetimeCushion } from "../object_factories/onetimeCushion";
 import { playerPosition } from "../object_factories/playerPosition";
 import { popupTextNote } from "../object_factories/popupText";
 import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
@@ -96,6 +97,7 @@ export const MParser: {
         "=": ladder,
         "~": brokenLadder,
         "&": crossing,
+        "_": onetimeCushion,
     },
     vars: {},
     // MARK: commands

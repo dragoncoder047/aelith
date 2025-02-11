@@ -36,9 +36,9 @@ export const CONTROLS: Controls = {
         gamepad: ["west"],
         keyboard: ["q"],
     },
-    breathe: {
+    flyUp: {
         keyboard: ["v"],
-        gamepad: ["lstick"]
+        gamepad: ["ltrigger"]
     },
     // inventory controls
     inv_previous: {
@@ -60,7 +60,7 @@ export const CONTROLS: Controls = {
     // motion controls
     sprint: {
         keyboard: ["shift"],
-        gamepad: ["ltrigger"],
+        gamepad: ["lstick"],
     },
     move_left: {
         keyboard: ["a", "left"],

@@ -1,4 +1,4 @@
-import { GameObj, KEventController, OffScreenComp, PosComp, Vec2 } from "kaplay";
+import { Collision, GameObj, KEventController, OffScreenComp, PosComp, Vec2 } from "kaplay";
 import { K } from "../init";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
@@ -17,15 +17,12 @@ const icc = (player.on("inventoryChange", () => {
 }) as KEventControllerPatch).forEventGroup("!notReallyChangingInventory");
 player.on("teleport", () => rumbleEffectAndWait("teleport", icc));
 
-const bbk = player.onCollideUpdate("barrier", (_, coll) => {
+const bbk = player.onCollideUpdate("barrier", ((_: GameObj, coll: Collision) => {
     if (coll?.isLeft()) rumbleEffectAndWait("barrier_left", bbk);
     if (coll?.isRight()) rumbleEffectAndWait("barrier_right", bbk);
     if (coll?.isTop()) rumbleEffectAndWait("barrier_middle", bbk);
-});
+}) as any);
 
-const cbk = player.onCollideUpdate("conveyor", o => {
-    if (player.curPlatform() === o) rumbleEffectAndWait("walking_on_conveyor", cbk);
-});
 player.on("whiff", () => {
     K.rumble("cant_throw");
 });

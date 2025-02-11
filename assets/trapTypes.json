@@ -15,6 +15,7 @@
             "editable": false
         },
         "hint": null,
+        "flyingEnabled": false,
         "lore": {
             "header": "&msg.lore.continuation.throw.header",
             "section": "&msg.lore.continuation.throw.section",
@@ -38,6 +39,7 @@
             "editable": false
         },
         "hint": null,
+        "flyingEnabled": false,
         "lore": {
             "header": "&msg.lore.continuation.setjmp.header",
             "section": "&msg.lore.continuation.setjmp.section",
@@ -61,6 +63,7 @@
             "editable": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)",
+        "flyingEnabled": false,
         "lore": {
             "header": "&msg.lore.continuation.async.header",
             "section": "&msg.lore.continuation.async.section",
@@ -84,6 +87,7 @@
             "editable": false
         },
         "hint": null,
+        "flyingEnabled": false,
         "lore": {
             "header": "&msg.lore.continuation.yield.header",
             "section": "&msg.lore.continuation.yield.section",
@@ -107,6 +111,7 @@
             "editable": false
         },
         "hint": null,
+        "flyingEnabled": false,
         "lore": {
             "header": "&msg.lore.continuation.switch.header",
             "section": "&msg.lore.continuation.switch.section",
@@ -129,7 +134,8 @@
             "fuzzStates": false,
             "editable": true
         },
-        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
+        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit\n&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
+        "flyingEnabled": true,
         "lore": {
             "header": "&msg.lore.continuation.callcc.header",
             "section": "&msg.lore.continuation.callcc.section",
@@ -153,6 +159,7 @@
             "editable": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)",
+        "flyingEnabled": true,
         "lore": {
             "header": "&msg.lore.continuation.assert.header",
             "section": "&msg.lore.continuation.assert.section",

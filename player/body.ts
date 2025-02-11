@@ -97,7 +97,6 @@ export function playerBody(): PlayerBodyComp {
             // update control text
             this.controlText.t = "";
             if (this.manpage!.hidden) {
-                this.addControlText("&msg.ctlHint.breathe");
                 this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
                 this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
                 if (this.inventory.length > 0) {

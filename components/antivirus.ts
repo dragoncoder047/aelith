@@ -15,10 +15,10 @@ export interface AntivirusComp extends Comp {
     allClearMessage: string
     additionalStyles: string[]
     allClearStyles: string[]
-    sweepAngleRange: [number, number],
-    maxDistance: number,
+    sweepAngleRange: [number, number]
+    maxDistance: number
     sweepSpeed: number
-    laserColor: Color | string,
+    laserColor: Color | string
     rayHit: RaycastResult
     sweepy(): void
     isOffensive(obj: GameObj | undefined): boolean

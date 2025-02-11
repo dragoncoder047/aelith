@@ -157,7 +157,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             });
             this.on("thrown", () => {
                 if (this.params.deferred && this.isDeferring) {
-                    player.holdingIndex = player.inventory.findLastIndex(i => (i as any).controlling === this);
+                    const newHoldingIndex = player.inventory.findLastIndex(i => (i as any).controlling === this);
+                    player.scrollInventory(newHoldingIndex - player.holdingIndex);
                 }
             });
             this._menu = modalmenu(topMenu, ["menuActive", "contMenu"], "&editMenuCtlHint",

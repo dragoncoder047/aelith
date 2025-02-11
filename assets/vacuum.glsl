@@ -2,7 +2,6 @@ uniform vec3 u_targetcolor;
 uniform float u_time;
 uniform float u_octave;
 uniform float u_staticrand;
-uniform float u_pixamt;
 
 // perlin noise function from https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 
@@ -58,9 +57,10 @@ float chgnoise(vec2 pos) {
 }
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-    uv = pixelate(uv, u_pixamt);
+    if(uv.y < (1. / 32.))
+        return vec4(u_targetcolor / 255., 1.);
     float alpha = (1. - uv.y) * sin(uv.x * 3.141592653589);
     float noiseval = chgnoise(uv);
-    // alpha = 1.;
-    return vec4(u_targetcolor / 255., pixelate(noiseval * alpha, u_pixamt));
+    alpha *= noiseval;
+    return vec4(u_targetcolor / 255., alpha);
 }

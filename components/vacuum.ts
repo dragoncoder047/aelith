@@ -46,7 +46,6 @@ export function vacuumComp(states = ["off", "on"]): VacuumComp {
                     u_time: K.time() * x,
                     u_octave: x * 2,
                     u_staticrand: this.id!,
-                    u_pixamt: TILE_SIZE / SCALE * x
                 };
             }));
         },
