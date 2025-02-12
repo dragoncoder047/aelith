@@ -1,4 +1,4 @@
-import { AreaComp, Comp, GameObj, PosComp, Shape, SpriteComp, TileComp, TimerController, Vec2 } from "kaplay";
+import { AreaComp, Comp, GameObj, OffScreenComp, PosComp, Shape, SpriteComp, TileComp, TimerController, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -14,7 +14,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
     var zappyTimer: TimerController
     return {
         id: "pipe",
-        require: ["sprite", "pos", "tile"],
+        require: ["sprite", "pos", "tile", "offscreen"],
         add(this: GameObj<PipeComp | PosComp>) {
             this.on("preprocess", () => {
                 this.chooseSpriteNum();
@@ -52,9 +52,9 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 this.unuse("area");
             });
         },
-        zap(this: GameObj<PipeComp | PosComp>, now = true, num = 5) {
+        zap(this: GameObj<PipeComp | PosComp | OffScreenComp>, now = true, num = 5) {
             if (zappyTimer) zappyTimer.cancel();
-            if (now)
+            if (now && !this.isOffScreen())
                 splash(this.pos, () => K.choose([K.YELLOW.lighten(100), K.CYAN.lighten(170)]), num, undefined, ["wall"]);
             zappyTimer = K.wait(K.rand(0, 200), () => this.zap());
         },

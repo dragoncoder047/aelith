@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -500,15 +500,15 @@ export const MParser: {
     merge() {
         const w = this.world!;
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover"];
+        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "pipe"];
         for (var tag of allowedTags) {
-            const tiles: { [pos: string]: GameObj<AreaComp | MergeableComp | PosComp> } = {};
+            const tiles: { [pos: string]: GameObj<MergeableComp | PosComp | SpriteComp> } = {};
             // get original tiles in a grid
             for (var x = 0; x < w.numColumns(); x++)
                 for (var y = 0; y < w.numRows(); y++) {
                     const objs = w.getAt(K.vec2(x, y)) as (typeof tiles[keyof typeof tiles])[];
                     for (var obj of objs)
-                        if (obj && obj.has("mergeable") && obj.has("area") && obj.is(tag)) tiles[c2k(x, y)] = obj;
+                        if (obj && obj.has("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid
@@ -521,7 +521,7 @@ export const MParser: {
                     var width = 1;
                     for (var merge_x = x + 1; merge_x < w.numColumns(); merge_x++, width++) {
                         const kk = c2k(merge_x, y);
-                        if (tiles[kk]) {
+                        if (tiles[kk] && tiles[kk].frame === tile.frame) {
                             tiles[kk].destroy();
                             delete tiles[kk];
                             tile.modifyWidth(TILE_SIZE);
@@ -534,7 +534,7 @@ export const MParser: {
                         // check to see if all squares below are filled
                         for (var thisrow_x = x, i = 0; i < width; thisrow_x++, i++) {
                             const kk = c2k(thisrow_x, merge_y);
-                            if (!tiles[kk]) {
+                            if (!tiles[kk] || tiles[kk].frame !== tile.frame) {
                                 // done merging
                                 break downstretchloop;
                             }
