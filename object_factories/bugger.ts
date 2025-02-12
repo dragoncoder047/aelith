@@ -1,5 +1,6 @@
 import { CompList, Tag } from "kaplay";
 import { bug } from "../components/bug";
+import { clicky } from "../components/clicky";
 import { FRICTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
@@ -21,6 +22,7 @@ export function bugger(): CompList<any> {
             u_targetcolor: K.RED,
         }),
         bug(),
+        clicky(["scared"], ["bug_squeak"]),
         "bug" as Tag,
     ];
 }

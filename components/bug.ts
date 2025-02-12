@@ -51,7 +51,6 @@ export function bug(): BugComp {
             });
             this.onStateEnter("scared", () => {
                 this.moveDir *= 2;
-                player.playSound("bug_squeak", undefined, this.pos);
                 this.wait(5, () => {
                     if (this.state === "scared") this.enterState("walking");
                 });

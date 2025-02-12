@@ -17,7 +17,7 @@ export function fan(): FanComp {
         require: ["pos", "rotate", "toggler"],
         wind: [],
         add(this: GameObj<FanComp>) {
-            this.on("preprocess", () => {
+            this.on("midprocess", () => {
                 this.createWind();
             });
         },
@@ -26,21 +26,45 @@ export function fan(): FanComp {
                 .filter(x => x.is(["wall", "barrier", "door", "windEnd"], "or"))
                 .map(o => o.worldArea()!);
             const collides = (p: Vec2) => obstacles.some(o => o.collides(p as any));
-            const d = K.UP.rotate(this.angle).scale(TILE_SIZE);
+            var a = this.angle;
+            var d: Vec2 | undefined = K.UP.rotate(a).scale(TILE_SIZE);
             var chk_pt = this.pos.add(d);
-            var center = chk_pt;
-            var width = TILE_SIZE, height = TILE_SIZE;
-            do {
-                chk_pt = chk_pt.add(d);
-                center = center.add(d.scale(1 / 2));
-                width += Math.abs(d.x);
-                height += Math.abs(d.y);
-            } while (!collides(chk_pt));
-            center = center.sub(d.scale(1 / 2));
-            width -= Math.abs(d.x);
-            height -= Math.abs(d.y);
-            // TODO: check if direct corner
-            this.wind.push(K.add(windTunnel(center, width, height, this.angle)));
+            while (d !== undefined) {
+                var center = chk_pt;
+                var width = TILE_SIZE, height = TILE_SIZE;
+                do {
+                    chk_pt = chk_pt.add(d);
+                    center = center.add(d.scale(1 / 2));
+                    width += Math.abs(d.x);
+                    height += Math.abs(d.y);
+                } while (!collides(chk_pt));
+                chk_pt = chk_pt.sub(d);
+                center = center.sub(d.scale(1 / 2));
+                width -= Math.abs(d.x);
+                height -= Math.abs(d.y);
+                this.wind.push(K.add(windTunnel(center, width, height, a)));
+                // check if direct corner
+                const dd: [number, Vec2][] = [[a - 90, d.rotate(-90)], [a + 90, d.rotate(90)]];
+                var seeway = false;
+                var oneway = false;
+                for (var [a2, d2] of dd) {
+                    if (!collides(chk_pt.add(d2))) {
+                        if (!seeway) {
+                            d = d2;
+                            a = a2;
+                            seeway = true;
+                            oneway = true;
+                        } else oneway = false;
+                    }
+                }
+                if (!oneway) break;
+                // K.add([
+                //     K.circle(10),
+                //     K.color(K.WHITE),
+                //     K.pos(chk_pt.add(d)),
+                // ]);
+                // break;
+            }
         },
         update(this: GameObj<FanComp | TogglerComp>) {
             this.wind.forEach(w => w.togglerState = this.togglerState);

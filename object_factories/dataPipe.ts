@@ -10,7 +10,7 @@ export function dataPipe(solid = true, useBackground = true) {
         K.sprite("pipe", { tiled: true }),
         pipeComp(solid, useBackground),
         ...defaults(),
-        K.offscreen({ hide: true }),
+        K.offscreen(),
         mergeable(),
         "pipe" as Tag,
         K.shader("dataPipe", () => ({

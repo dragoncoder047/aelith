@@ -10,7 +10,6 @@ export function vacuum() {
     return [
         K.uvquad(TILE_SIZE, TILE_SIZE),
         "vacuum" as Tag,
-        "raycastIgnore" as Tag,
         K.opacity(0),
         ...machine(),
         K.tile({ isObstacle: true }),

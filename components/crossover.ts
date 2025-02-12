@@ -22,6 +22,7 @@ function passthroughHelper(
         add(this: GameObj<BodyComp | AreaComp>) {
             this.onBeforePhysicsResolve(coll => {
                 const obj = coll.target;
+                if (obj.isStatic) return;
                 if (main.colliding[otherDir].has(obj)) {
                     return;
                 }
@@ -76,7 +77,7 @@ export function crossover(): CrossoverComp {
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
                     () => this.pos.sub(K.vec2(this.width / 2, 0)),
-                    () => K.vec2(TILE_SIZE, this.height)),
+                    () => K.vec2(TILE_SIZE / 2, this.height)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(K.add([
@@ -89,7 +90,7 @@ export function crossover(): CrossoverComp {
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
                     () => this.pos.add(K.vec2(this.width / 2, 0)),
-                    () => K.vec2(TILE_SIZE, this.height)),
+                    () => K.vec2(TILE_SIZE / 2, this.height)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(K.add([
@@ -102,7 +103,7 @@ export function crossover(): CrossoverComp {
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
                     () => this.pos.sub(K.vec2(0, this.height / 2)),
-                    () => K.vec2(this.width, TILE_SIZE)),
+                    () => K.vec2(this.width, TILE_SIZE / 2)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(K.add([
@@ -115,7 +116,7 @@ export function crossover(): CrossoverComp {
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
                     () => this.pos.add(K.vec2(0, this.height / 2)),
-                    () => K.vec2(this.width, TILE_SIZE)),
+                    () => K.vec2(this.width, TILE_SIZE / 2)),
                 "raycastIgnore" as Tag,
             ]));
             this.onBeforePhysicsResolve(coll => {

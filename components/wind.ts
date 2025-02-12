@@ -34,7 +34,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
             if (this.state == states[1]) {
                 // draw wind indicators
                 const s = this.worldArea().bbox();
-                const maxWisps = s.area() / 256;
+                const maxWisps = s.area() / 1024;
                 K.pushMatrix(new K.Mat23);
                 for (var i = 0; i < wisps.length; i++) {
                     const x = wisps[i]!;
@@ -44,7 +44,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
                         continue;
                     }
                     var p = x.pos, a = K.Vec2.fromAngle(this.windDirection).scale(x.speed);
-                    for (var w = 0; w < x.opacity; w += 1 / 16) {
+                    for (var w = 0; w < x.opacity && s.contains(p); w += 1 / 16) {
                         var np = p.add(a);
                         K.drawLine({
                             p1: p,

@@ -31,7 +31,7 @@ import { specialGrating } from "../object_factories/specialGrating";
 import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
 import { vacuum } from "../object_factories/vacuum";
-import { wall } from "../object_factories/wall";
+import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
 
@@ -90,8 +90,10 @@ export const MParser: {
      * Commands that spawn a tile that isn't configurable.
      */
     fixedTiles: {
+        // XXX: Cannot use: 0123456789[]{}()
         "@": playerPosition,
         "#": wall,
+        "*": bgWall,
         "%": barrier,
         "$": grating,
         "!": specialGrating,
@@ -508,7 +510,7 @@ export const MParser: {
                 for (var y = 0; y < w.numRows(); y++) {
                     const objs = w.getAt(K.vec2(x, y)) as (typeof tiles[keyof typeof tiles])[];
                     for (var obj of objs)
-                        if (obj && obj.has("mergeable") && obj.is(tag)) tiles[c2k(x, y)] = obj;
+                        if (obj && obj.has("mergeable") && obj.has("area") && obj.is(tag)) tiles[c2k(x, y)] = obj;
                 }
             // do merge algorithm
             // scan grid
@@ -519,12 +521,14 @@ export const MParser: {
                     if (!tile) continue;
                     // found tile: stretch it across as far as possible
                     var width = 1;
+                    tile.addSquare(tile.pos);
                     for (var merge_x = x + 1; merge_x < w.numColumns(); merge_x++, width++) {
                         const kk = c2k(merge_x, y);
                         if (tiles[kk] && tiles[kk].frame === tile.frame) {
+                            tile.addSquare(tiles[kk].pos);
                             tiles[kk].destroy();
                             delete tiles[kk];
-                            tile.modifyWidth(TILE_SIZE);
+                            tile.modifyWidth(1);
                             tile.moveBy(TILE_SIZE / 2, 0);
                         } else break;
                     }
@@ -542,10 +546,13 @@ export const MParser: {
                         // get here = can merge down
                         for (var thisrow_x = x, i = 0; i < width; thisrow_x++, i++) {
                             const kk = c2k(thisrow_x, merge_y);
-                            tiles[kk]?.destroy();
+                            if (tiles[kk]) {
+                                tile.addSquare(tiles[kk].pos);
+                                tiles[kk].destroy();
+                            }
                             delete tiles[kk];
                         }
-                        tile.modifyHeight(TILE_SIZE);
+                        tile.modifyHeight(1);
                         tile.moveBy(0, TILE_SIZE / 2);
                     }
                 }
