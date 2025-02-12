@@ -1,6 +1,6 @@
-import { AreaComp, Comp, CompList, GameObj, OffScreenComp, PosComp, Shape, SpriteComp, TileComp, TimerController, Vec2 } from "kaplay";
+import { AreaComp, Comp, CompList, GameObj, OffScreenComp, PosComp, Rect, Shape, SpriteComp, TileComp, TimerController, Vec2 } from "kaplay";
 import { MParser } from "../assets/mparser";
-import { BG_WALL_OPACITY, TILE_SIZE } from "../constants";
+import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { bgWall, wall } from "../object_factories/wall";
 import { splash } from "../particles";
@@ -24,9 +24,9 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
         },
         chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp>) {
             const pipes = MParser.world!.get<AreaComp>("area")
-                .filter(x => x.is("pipe"))
-                .map(o => o.worldArea()!);
-            const collides = (l: Shape[], p: Vec2) => l.some(o => o.collides(p as any));
+                .filter(x => x.is(["pipe", "vacuum", "lever", "door", "button"], "or"))
+                .map(o => o.worldArea()!.bbox());
+            const collides = (l: Rect[], p: Vec2) => l.some(o => o.distToPoint(p) < 3);
             const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE));
             var frameNo = 0;
             for (var i = 0; i < ds.length; i++) {

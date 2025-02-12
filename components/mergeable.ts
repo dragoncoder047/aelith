@@ -12,13 +12,13 @@ export interface MergeableComp extends Comp {
 
 export function mergeable(): MergeableComp {
     return {
-        tileDims: K.vec2(1, 1),
+        tileDims: K.vec2(0),
         squares: [],
         id: "mergeable",
         add(this: GameObj<SpriteComp | MergeableComp>) {
             this.on("postprocess", () => {
-                this.width = this.tileDims.x * TILE_SIZE;
-                this.height = this.tileDims.y * TILE_SIZE;
+                this.width += this.tileDims.x * TILE_SIZE;
+                this.height += this.tileDims.y * TILE_SIZE;
             });
         },
         addSquare(pos) {

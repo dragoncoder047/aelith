@@ -58,16 +58,10 @@ export function fan(): FanComp {
                     }
                 }
                 if (!oneway) break;
-                // K.add([
-                //     K.circle(10),
-                //     K.color(K.WHITE),
-                //     K.pos(chk_pt.add(d)),
-                // ]);
-                // break;
             }
         },
         update(this: GameObj<FanComp | TogglerComp>) {
             this.wind.forEach(w => w.togglerState = this.togglerState);
-        }
+        },
     }
 }

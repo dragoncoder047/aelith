@@ -56,8 +56,9 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
                         p = np;
                     }
                     if (!this.paused) {
-                        x.opacity -= K.dt() * x.speed;
-                        x.pos = x.pos.add(a.scale(1 / K.dt()));
+                        const b = K.dt() * x.speed
+                        x.opacity -= b;
+                        x.pos = x.pos.add(a.scale(b * this.windForce / 20));
                     }
                 }
                 while (wisps.length < maxWisps) {
