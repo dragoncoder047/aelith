@@ -1,15 +1,15 @@
 import { player } from ".";
 import { FOOTSTEP_INTERVAL } from "../constants";
-import { getMotionVector } from "../controls";
+import { getPlayerMotionVector } from "../controls";
 import { K } from "../init";
 import { splash } from "../particles";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 // State functions
 player.onStateUpdate("normal", () => {
-    if (player.isGrounded() && Math.abs(getMotionVector().x) > Number.EPSILON) {
+    if (player.isGrounded() && Math.abs(getPlayerMotionVector().x) > Number.EPSILON) {
         if (player.getCurAnim()?.name != "walking") player.play("walking");
-        player.animSpeed = Math.abs(getMotionVector().x);
+        player.animSpeed = Math.abs(getPlayerMotionVector().x);
     }
     else {
         if (player.getCurAnim()?.name != "idle") player.play("idle");
@@ -32,7 +32,7 @@ player.onStateUpdate("climbing", () => {
     if (!player.intersectingAny("ladder")) {
         player.enterState("normal");
     }
-    player.animSpeed = getMotionVector().len();
+    player.animSpeed = getPlayerMotionVector().len();
 });
 player.onStateEnd("climbing", () => {
     player.gravityScale = 1;
@@ -43,7 +43,7 @@ player.onStateEnd("climbing", () => {
 
 // Footsteps sound effects when walking
 (player.onUpdate(() => {
-    var xy = getMotionVector();
+    var xy = getPlayerMotionVector();
     if (player.state == "normal") {
         if (xy.x === 0)
             xy = xy.reject(K.getGravityDirection());

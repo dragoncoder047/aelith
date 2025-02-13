@@ -8,7 +8,7 @@ import { controllable, ControllableComp } from "./controllable";
 
 
 export interface PromiseComp extends Comp {
-    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp>
+    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp | BodyComp>
     readonly data: (typeof contTypes)[keyof typeof contTypes] | undefined
 
     params: ContinuationTrapComp["params"]
@@ -39,6 +39,7 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
             this.on("invoke", () => {
                 player.removeFromInventory(this as any);
                 this.destroy();
+                this.controlling.gravityScale = 1;
                 const temp = this.controlling.params;
                 this.controlling.params = this.params;
                 this.controlling.capture();

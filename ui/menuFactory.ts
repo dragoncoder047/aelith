@@ -167,11 +167,11 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             startEv.trigger();
         },
         async close() {
+            initEv.forEach(ev => K.eventGroups.delete(ev));
             quitEv.trigger();
             theObj.term.paused = true;
             theObj.modal.paused = theObj.modal.hidden = true;
             await theObj.term.quitMenu();
-            initEv.forEach(ev => K.eventGroups.delete(ev));
             player.scrollInventory(origInventoryIndex - player.holdingIndex);
             player.hidden = player.paused = false;
             K.get("tail").forEach(p => p.hidden = p.paused = false);

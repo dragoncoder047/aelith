@@ -134,7 +134,7 @@
             "fuzzStates": false,
             "editable": true
         },
-        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit\n&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise)",
+        "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit&tab&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise\n&msg.ctlHint.continuation.remoteMove)",
         "flyingEnabled": true,
         "lore": {
             "header": "&msg.lore.continuation.callcc.header",

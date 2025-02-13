@@ -104,6 +104,7 @@
             "edit": "&control.edit edit capture flags",
             "stopEdit": "&control.edit finish",
             "fly": "&control.flyUp fly up",
+            "remoteMove": "&control.flyUp move trap",
             "invoke": {
                 "default": "&control.invoke invoke continuation",
                 "assert": "&control.invoke invoke checkpoint"

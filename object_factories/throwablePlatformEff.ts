@@ -4,8 +4,8 @@ import { K } from "../init";
 import { player } from "../player";
 
 // async import
-var getMotionVector: () => Vec2;
-import("../controls").then(m => getMotionVector = m.getMotionVector);
+var getPlayerMotionVector: () => Vec2;
+import("../controls").then(m => getPlayerMotionVector = m.getPlayerMotionVector);
 
 export function throwablePlatformEff() {
     return [
@@ -13,7 +13,7 @@ export function throwablePlatformEff() {
             shouldCollide(obj, normal) {
                 if (obj !== player) return true;
                 if (K.UP.eq(normal)) return false;
-                if (getMotionVector().slen() > 1.3) return true;
+                if (getPlayerMotionVector().slen() > 1.3) return true;
                 if (K.LEFT.eq(normal)) return false;
                 if (K.RIGHT.eq(normal)) return false;
                 return true;

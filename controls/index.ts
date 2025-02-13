@@ -1,10 +1,11 @@
-import { AreaComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, ColorComp, GameObj, PosComp, Vec2 } from "kaplay";
+import { PromiseComp } from "../components/promise";
 import { MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
+import { splash } from "../particles";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { nextFrame } from "../utils";
-import { splash } from "../particles";
 
 // Controls
 
@@ -21,8 +22,13 @@ export function getMotionVector(): Vec2 {
     return clampedSum.scale(factor);
 }
 
+export function getPlayerMotionVector(): Vec2 {
+    if (K.isButtonDown("flyUp") && _playerIsHoldingFlyingPromise()) return K.vec2(0);
+    return getMotionVector();
+}
+
 function motionHandler() {
-    var xy = getMotionVector();
+    var xy = getPlayerMotionVector();
     const len = xy.len();
     if (len === 0) return;
     if (player.intersectingAny("ladder") && Math.abs(xy.y) > 0.6) {
@@ -58,9 +64,25 @@ function motionHandler() {
 (player.onButtonDown("invoke_increment", () => player.holdingItem?.trigger("modify", K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onButtonDown("invoke_decrement", () => player.holdingItem?.trigger("modify", -K.dt() * MODIFY_SPEED)) as KEventControllerPatch).forEventGroup("!dialog");
 (player.onScroll(xy => player.holdingItem?.trigger("modify", Math.round(K.clamp(-xy.y, -TILE_SIZE * K.dt() * MODIFY_SPEED, TILE_SIZE * K.dt() * MODIFY_SPEED)))) as KEventControllerPatch).forEventGroup("!dialog");
+
+function _playerIsHoldingFlyingPromise() {
+    if (player.holdingItem && player.holdingItem.has("promise")) {
+        const c = (player.holdingItem as any as GameObj<PromiseComp>).controlling;
+        if (c.data?.flyingEnabled) return true;
+    }
+    return false;
+}
 (player.onButtonDown("flyUp", () => {
+    if (_playerIsHoldingFlyingPromise()) {
+        const c: GameObj<PosComp | BodyComp | ColorComp> = (player.holdingItem as any).controlling;
+        c.gravityScale = 0;
+        c.vel = K.vec2(0);
+        if (c.curPlatform()) c.jump(1);
+        c.move(getMotionVector().scale(WALK_SPEED));
+        splash(c.pos, c.color, 5, -10);
+        return;
+    }
     if (!(player.holdingItem as any)?.data?.flyingEnabled) {
-        player.gravityScale = 1;
         K.rumble("cant_fly");
         return;
     }
@@ -69,10 +91,14 @@ function motionHandler() {
         if (player.vel.slen() > WALK_SPEED * WALK_SPEED) {
             player.vel = player.vel.unit().scale(WALK_SPEED);
         }
-        splash(player.pos.add(0, player.height / 2), (player.holdingItem as any).color, 5, -10)
+        splash(player.pos.add(0, player.height / 2), (player.holdingItem as any).color, 5, -10);
     }
 }) as KEventControllerPatch).forEventGroup("!dialog");
 player.onButtonRelease("flyUp", () => {
+    if (_playerIsHoldingFlyingPromise()) {
+        const c: GameObj<PosComp | BodyComp> = (player.holdingItem as any).controlling;
+        c.gravityScale = 1;
+    }
     if (player.state === "normal") {
         player.gravityScale = 1;
     }

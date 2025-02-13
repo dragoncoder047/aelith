@@ -36,7 +36,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
-* [ ] Make call/cc be able to be remotely driven when holding promise
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
@@ -54,6 +53,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Make call/cc be able to be remotely driven when holding promise
 * [X] Add background pipes block art
 * [X] Make fans calculate the wind automatically rather than just fixed wind tunnel object
 * [X] Add lines of particles between linked objects when they change state
