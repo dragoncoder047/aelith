@@ -11,7 +11,7 @@ export function windEnd() {
         "windEnd" as Tag,
         {
             add(this: GameObj) {
-                this.on("midprocess", () => this.destroy());
+                this.on("postprocess", () => this.destroy());
             }
         }
     ]
