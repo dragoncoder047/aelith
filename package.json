@@ -15,13 +15,12 @@
         "genframes": "python3 scripts/gen_random_frames.py"
     },
     "license": "GPL-3.0-only",
-    "packageManager": "pnpm@9.12.1+sha512.e5a7e52a4183a02d5931057f7a0dbff9d5e9ce3161e33fa68ae392125b79282a8a8a470a51dfc8a0ed86221442eb2fb57019b0990ed24fab519bf0e1bc5ccfc4",
     "devDependencies": {
         "esbuild": "^0.24.0",
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#071177e606dc1fe30d148f97484960d70c992862",
+        "kaplay": "github:dragoncoder047/kaplay#68ea69808479ad2eb1f3d24082bacbfb0fa49eff",
         "zzfx": "^1.3.0"
     },
     "type": "module"
