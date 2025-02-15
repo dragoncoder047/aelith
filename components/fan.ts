@@ -44,14 +44,19 @@ export function fan(): FanComp {
                 height -= Math.abs(d.y);
                 this.wind.push(K.add(windTunnel(center, width, height, a)));
                 // check if direct corner
-                const dd: [number, Vec2][] = [[a - 90, d.rotate(-90)], [a + 90, d.rotate(90)]];
+                const dd: [number | null, Vec2][] = [
+                    [a - 90, d.rotate(-90)],
+                    [a + 90, d.rotate(90)],
+                    [null, d.rotate(90).sub(d)],
+                    [null, d.rotate(-90).sub(d)]
+                ];
                 var seeway = false;
                 var oneway = false;
                 for (var [a2, d2] of dd) {
                     if (!collides(chk_pt.add(d2))) {
                         if (!seeway) {
                             d = d2;
-                            a = a2;
+                            a = a2!;
                             seeway = true;
                             oneway = true;
                         } else oneway = false;
