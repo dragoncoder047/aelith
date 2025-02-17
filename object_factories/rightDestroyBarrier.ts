@@ -7,6 +7,7 @@ export function rightDestroyBarrier(): CompList<any> {
         ...barrier(),
         {
             add(this: GameObj<BodyComp>) {
+                this.untag("barrier");
                 this.onPhysicsResolve(coll => {
                     if (coll.target === player && coll.isRight())
                         this.destroy();

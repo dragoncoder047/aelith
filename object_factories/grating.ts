@@ -7,6 +7,7 @@ import { defaults } from "./default";
 export function grating() {
     return [
         K.sprite("grating", { tiled: true }),
+        K.layer("background"),
         K.body({ isStatic: true }),
         mergeable(),
         ...defaults({ friction: FRICTION }),

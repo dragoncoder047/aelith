@@ -12,7 +12,6 @@ export function crossing(): CompList<any> {
         K.opacity(0),
         mergeable(),
         ...defaults({ friction: FRICTION, collisionIgnore: ["tail", "particle"] }),
-        K.offscreen({ hide: true }),
         crossover(),
         "crossover" as Tag,
         "raycastIgnore" as Tag,

@@ -1,4 +1,4 @@
-import { AreaCompOpt } from "kaplay";
+import { AreaCompOpt, GameObj, OffScreenComp, SpriteComp } from "kaplay";
 import { K } from "../init";
 
 /**
@@ -11,5 +11,14 @@ export function defaults(areaOpts?: AreaCompOpt) {
         K.timer(),
         K.tile({ isObstacle: true }),
         K.rotate(0),
+        K.offscreen({ hide: true }),
+        {
+            add(this: GameObj<OffScreenComp | SpriteComp>) {
+                const ec = this.on("postprocess", () => {
+                    this.offscreenDistance = K.vec2(this.width, this.height).slen();
+                    ec.cancel();
+                })
+            }
+        }
     ];
 }
