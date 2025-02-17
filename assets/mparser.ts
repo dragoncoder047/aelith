@@ -594,6 +594,8 @@ export const MParser: {
     },
     midprocess() {
         this.world!.get("*").forEach(o => o.trigger("midprocess"));
+        this.world!.get("*").forEach(o => o.trigger("midprocess2"));
+        this.world!.get("*").forEach(o => o.trigger("midprocess3"));
     },
     postprocess() {
         this.world!.get("*").forEach(o => o.trigger("postprocess"));

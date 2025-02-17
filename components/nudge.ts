@@ -9,7 +9,7 @@ export function nudge(...by: Vec2Args): NudgeComp {
         id: "nudge",
         require: ["pos"],
         add(this: GameObj<PosComp>) {
-            this.on("postprocess", () => {
+            this.on("midprocess", () => {
                 // @ts-expect-error
                 this.moveBy(K.vec2(...by));
                 this.unuse("nudge");

@@ -17,17 +17,18 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
         id: "pipe",
         require: ["sprite", "pos", "tile", "offscreen", "mergeable"],
         add(this: GameObj<PipeComp | PosComp>) {
-            this.on("preprocess", () => {
+            this.on("midprocess2", () => {
                 this.chooseSpriteNum();
             });
             this.zap(false);
         },
         chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp>) {
             const pipes = MParser.world!.get<AreaComp>("area")
-                .filter(x => x.is(["pipe", "vacuum", "lever", "door", "button"], "or"))
-                .map(o => o.worldArea()!.bbox());
-            const collides = (l: Rect[], p: Vec2) => l.some(o => o.distToPoint(p) < 3);
-            const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE));
+            .filter(x => x.is(["pipe", "machine"], "or"))
+            .filter(x => x.has("sprite") || x.has("shader"))
+            .map(o => o.worldArea()!.bbox());
+            const collides = (l: Rect[], p: Vec2) => l.some(o => o.collides(p));
+            const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * 4 / 7));
             var frameNo = 0;
             for (var i = 0; i < ds.length; i++) {
                 const lookPos = this.worldPos()!.add(ds[i]!);
