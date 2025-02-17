@@ -21,12 +21,12 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
             this.onStateEnter(states[0], () => {
                 this.tweener?.cancel();
                 this.tweener = this.tween(this.rollAmount, 0, 1, val => this.rollAmount = val, K.easings.easeOutBounce);
-                this.collisionIgnore = this.collisionIgnore.filter(x => x != "*");
+                this.collisionIgnore.delete("*");
             });
             this.onStateEnter(states[1], () => {
                 this.tweener?.cancel();
                 this.tweener = this.tween(this.rollAmount, -1, Math.abs(this.rollAmount - (-1)), val => this.rollAmount = val, K.easings.linear);
-                this.collisionIgnore.push("*");
+                this.collisionIgnore.add("*");
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!

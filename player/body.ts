@@ -148,7 +148,7 @@ export function playerBody(): PlayerBodyComp {
 
                 const allObjects = K.get<AreaComp>("area", { recursive: true, only: "comps" })
                     .filter(x => !(this.inventory as any[]).includes(x)
-                        && x.collisionIgnore.every(t => !this.is(t))
+                        && x.collisionIgnore.isDisjointFrom(this.tagsAsSet)
                         && !x.is("raycastIgnore")
                         && !x.paused);
 

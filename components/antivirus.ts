@@ -81,7 +81,7 @@ export function antivirus(): AntivirusComp {
             const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
                 .concat([player])
                 .filter((x: any) => x !== this && !x.paused)
-                .filter(x => !x.collisionIgnore.some(t => this.is(t)));
+                .filter(x => x.collisionIgnore.isDisjointFrom(this.tagsAsSet));
             const dontCareDistSquared = Math.pow(this.maxDistance * 1.5, 2);
             const offensiveObjects = objects
                 .filter(o => this.isOffensive(o));
