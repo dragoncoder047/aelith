@@ -32,7 +32,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             const pipes = areas
                 .filter(x => x.is(["pipe", "machine"], "or"))
                 .filter(x => x.has("sprite") || x.has("shader"))
-                .map(o => o.worldArea()!.bbox());
+                .map(o => o.aabb());
             const collides = (l: Rect[], p: Vec2) => l.some(o => o.collides(p));
             const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * 4 / 7));
             const wp = this.worldPos()!;
@@ -50,13 +50,13 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 var factory: () => CompList<any>;
                 const walls = areas
                     .filter(x => x.is("wall"))
-                    .map(o => o.worldArea()!.bbox());
+                    .map(o => o.aabb());
                 const barriers = areas
                     .filter(x => x.is("barrier"))
-                    .map(o => o.worldArea()!.bbox());
+                    .map(o => o.aabb());
                 const gratings = areas
                     .filter(x => x.is("grating"))
-                    .map(o => o.worldArea()!.bbox());
+                    .map(o => o.aabb());
                 if (look(gratings) === 0b0101 && solid) factory = grating;
                 else if (look(walls) !== 0) factory = (solid ? wall : bgWall);
                 else if (look(barriers) !== 0 && solid) factory = barrier;

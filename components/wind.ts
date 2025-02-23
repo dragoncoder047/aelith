@@ -33,7 +33,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
         draw(this: GameObj<StateComp | AreaComp | RectComp | WindComp | PosComp>) {
             if (this.state == states[1]) {
                 // draw wind indicators
-                const s = this.worldArea().bbox();
+                const s = this.aabb();
                 const maxWisps = s.area() / 1024;
                 K.pushMatrix(new K.Mat23);
                 for (var i = 0; i < wisps.length; i++) {
