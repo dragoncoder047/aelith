@@ -17,6 +17,9 @@ export const K = kaplay({
     buttons: CONTROLS,
     touchToMouse: false,
     font: "IBM Mono",
+    sapDirection: "vertical",
+    qtMaxObjects: 256,
+    qtMaxLevels: 6,
     plugins: [
         kaplayZzFX,
         kaplayZzFXM,

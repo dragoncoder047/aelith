@@ -17,11 +17,16 @@ K.load((async () => {
 })());
 
 K.onLoad(() => {
+    // K.debug.paused = true;
+    // return;
     MParser.preprocess();
     MParser.build();
     MParser.midprocess();
     MParser.merge();
     MParser.postprocess();
+
+    K.switchBroadPhaseAlgo("quadtree");
+    K.loop(1, () => K.cleanBroadPhase());
 
     const isDebug = !!MParser.vars.testingMode;
     const playerPositions = MParser.world!.get<PosComp>("playerPosition");

@@ -8,11 +8,11 @@ const FPSIndicator = UI.add([
     K.color(K.WHITE),
     K.layer("ui"),
 ]);
-var frameCounter = 0, lastTime = 0;
+var frameCounter = 0, lastTime = performance.now();
 K.onUpdate(() => frameCounter++);
 setInterval(() => {
-    const now = K.time();
-    const fps = frameCounter / (now - lastTime);
+    const now = performance.now();
+    const fps = frameCounter * 1000 / (now - lastTime);
     if (isNaN(fps)) {
         console.error("game is frozen??");
         return;
@@ -40,15 +40,13 @@ function updateObjectCount() {
     else countIndicator.color = K.GREEN;
 }
 
-K.wait(0.1, () => {
-    objectCount = K.get("*", { recursive: true }).length;
+objectCount = K.get("*", { recursive: true }).length;
+updateObjectCount();
+K.onAdd(() => {
+    objectCount++;
     updateObjectCount();
-    K.onAdd(() => {
-        objectCount++;
-        updateObjectCount();
-    });
-    K.onDestroy(() => {
-        objectCount--;
-        updateObjectCount();
-    });
+});
+K.onDestroy(() => {
+    objectCount--;
+    updateObjectCount();
 });
