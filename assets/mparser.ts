@@ -34,39 +34,15 @@ import { vacuum } from "../object_factories/vacuum";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
-
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
-export const MParser: {
-    pausePos: Vec2
-    world: GameObj<LevelComp | PosComp> | undefined
-    spawners: { [x: string]: (this: typeof MParser) => CompList<any>; }
-    fixedTiles: { [x: string]: (this: typeof MParser) => CompList<any>; }
-    commands: { [x: string]: (this: typeof MParser) => void; }
-    buffer: string | number | undefined
-    parenStack: string[]
-    vars: { [x: string]: any; }
-    commandQueue: (string | number | Vec2 | ((this: typeof MParser) => void))[]
-    stack: any[]
-    merge(): void
-    process(cmd: string, pos?: Vec2): CompList<any> | undefined
-    cleanBuffer(): void
-    build(): void
-    preprocess(): void
-    midprocess(): void
-    postprocess(): void
-    uid_counter: number
-    uid(): string
-    pauseWorld(paused: boolean): void
-} = {
-    pausePos: K.vec2(0),
-    world: undefined,
+export class MParser {
     // MARK: spawners
     /**
      * Commands that spawn a machine at that particular location.
      */
-    spawners: {
+    spawners: Record<string, () => CompList<any>> = {
         A: checkpoint,
         B: button,
         C: conveyor,
@@ -84,12 +60,12 @@ export const MParser: {
         W: windEnd,
         X: box,
         Y: vacuum, // Z
-    },
+    };
     // MARK: fixedTiles
     /**
      * Commands that spawn a tile that isn't configurable.
      */
-    fixedTiles: {
+    fixedTiles: Record<string, () => CompList<any>> = {
         // XXX: Cannot use: 0123456789[]{}()
         "@": playerPosition,
         "#": wall,
@@ -105,14 +81,14 @@ export const MParser: {
         "+": () => dataPipe(true),
         "-": () => dataPipe(false),
         ":": () => dataPipe(false, false)
-    },
-    vars: {},
+    };
+    vars: Record<string, any> = {};
     // MARK: commands
     /**
      * Parser commands that are executed post-world-creation
      * to initialize the machines.
      */
-    commands: {
+    commands: Record<string, (this: MParser) => void> = {
         // MARK: z (ndrop)
         // drop/done command: things* n? --
         z() {
@@ -222,7 +198,7 @@ export const MParser: {
         f() {
             const n = this.stack.pop() as number;
             const tag = this.stack.pop() as Tag;
-            const code = this.stack.pop() as (this: typeof MParser) => void;
+            const code = this.stack.pop() as (this: MParser) => void;
             const objects: GameObj[] = [];
             this.commandQueue.unshift(() => {
                 while (objects.length > 0) this.stack.push(objects.pop());
@@ -349,7 +325,7 @@ export const MParser: {
         // actually this function is rigged to error
         c() {
             (undefined as unknown as () => void)();
-            const func = this.stack.pop() as (typeof MParser)["commands"][string];
+            const func = this.stack.pop() as MParser["commands"][string];
             const save = {
                 stack: this.stack.slice(),
                 commands: this.commandQueue.slice(),
@@ -400,14 +376,14 @@ export const MParser: {
         //         console.log(i, ":", this.stack[i]?.tags);
         //     }
         // }
-    },
+    };
     /**
      * Used to hold intermediate parsing results.
      */
-    buffer: undefined,
-    parenStack: [],
+    buffer: number | string | undefined = undefined;
+    parenStack: string[] = [];
     // MARK: process()
-    process(cmd, pos): CompList<any> | undefined {
+    process(cmd: string, pos?: Vec2): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
         if (cmd == "[" || cmd == "(" || cmd == "{") {
             this.parenStack.push(cmd);
@@ -480,7 +456,7 @@ export const MParser: {
                 return this.fixedTiles[cmd]!.call(this);
             }
             else if (pos !== undefined && cmd in this.spawners) {
-                this.commandQueue.push(pos);
+                this.commandQueue.push(pos!);
                 var rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
                 // (kaplay deduplicates tags automatically)
@@ -490,7 +466,7 @@ export const MParser: {
             }
             else throw new ReferenceError("unknown command " + cmd);
         }
-    },
+    }
     // MARK: merge()
     /**
      * Merge blocks across horizontally and/or vertically in the world
@@ -499,8 +475,7 @@ export const MParser: {
      * 
      * Uses https://stackoverflow.com/questions/5919298/algorithm-for-finding-the-fewest-rectangles-to-cover-a-set-of-rectangles-without
      */
-    merge() {
-        const w = this.world!;
+    merge(w: GameObj<LevelComp>) {
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
         const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "pipe"];
         for (var tag of allowedTags) {
@@ -558,7 +533,7 @@ export const MParser: {
                 }
             }
         }
-    },
+    }
     // MARK: cleanBuffer()
     /**
      * Reset the buffer at the end of a buffer command.
@@ -566,19 +541,19 @@ export const MParser: {
     cleanBuffer() {
         if (this.buffer !== undefined) this.commandQueue.push(this.buffer);
         this.buffer = undefined;
-    },
+    }
     // MARK: build()
     /**
      * Execute the stored commands in the queue, to initialize the machines.
      */
-    build() {
+    build(world: GameObj) {
         this.cleanBuffer();
         while (this.commandQueue.length > 0) {
             var cmd = this.commandQueue.shift();
             if (typeof cmd === "function")
                 cmd.call(this);
             else if (cmd instanceof K.Vec2)
-                this.stack.push(...this.world!.getAt(cmd));
+                this.stack.push(...world!.getAt(cmd));
             else if (typeof cmd === "string" || typeof cmd === "number")
                 this.stack.push(cmd);
             else {
@@ -587,40 +562,30 @@ export const MParser: {
                 throw new Error("bad command: " + cmd);
             }
         }
-    },
+    }
     // MARK: postprocess()
-    preprocess() {
-        this.world!.get("*").forEach(o => o.trigger("preprocess"));
-    },
-    midprocess() {
-        this.world!.get("*").forEach(o => o.trigger("midprocess"));
-        this.world!.get("*").forEach(o => o.trigger("midprocess2"));
-        this.world!.get("*").forEach(o => o.trigger("midprocess3"));
-    },
-    postprocess() {
-        this.world!.get("*").forEach(o => o.trigger("postprocess"));
-    },
+    preprocess(world: GameObj) {
+        world!.get("machine").forEach(o => o.trigger("preprocess"));
+    }
+    midprocess(world: GameObj) {
+        const l = world!.get("machine");
+        l.forEach(o => o.trigger("midprocess"));
+        l.forEach(o => o.trigger("midprocess2"));
+        l.forEach(o => o.trigger("midprocess3"));
+    }
+    postprocess(world: GameObj) {
+        world!.get("machine").forEach(o => o.trigger("postprocess"));
+    }
     /**
      * Queue of commands to be executed to initialize the game.
      */
-    commandQueue: [],
+    commandQueue: (string | number | Vec2 | GameObj | ((this: MParser) => void))[] = [];
     /**
      * Intermediate stack of objects used during initialization.
      */
-    stack: [],
-    uid_counter: 10000,
+    stack: any[] = [];
+    static uid_counter = 10000;
     uid() {
-        return (this.uid_counter++).toString(16);
-    },
-    pauseWorld(paused) {
-        this.world!.query({ hierarchy: "descendants" }).forEach(x => x.paused = paused);
-        if (!paused) {
-            const player = K.get<PlayerBodyComp>("player")[0]!;
-            const sign = player.holdingIndex < 0 ? 1 : -1;
-            K.eventGroups.add("notReallyChangingInventory");
-            player.scrollInventory(sign);
-            player.scrollInventory(-sign);
-            K.eventGroups.delete("notReallyChangingInventory");
-        }
-    },
+        return (MParser.uid_counter++).toString(16);
+    }
 };

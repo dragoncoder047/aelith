@@ -30,15 +30,12 @@ export function linked(tag: string): LinkComp {
         },
         broadcast(this: GameObj<PosComp | LinkComp>, msg: string) {
             const self = this;
-            const sibs = this.query({
-                hierarchy: "siblings",
-                include: this.idTag,
-            });
-            sibs.forEach(sibling => {
+            const targets = K.get(this.idTag, { recursive: true }).filter(x => x !== this);
+            targets.forEach(target => {
                 const FADE_TIME = 0.25;
                 const start = K.time();
-                sibling.trigger("message", msg);
-                if (!("opacity" in this) || (this as any).opacity > 0)
+                target.trigger("message", msg);
+                if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists())
                     K.add([
                         {
                             draw(this: GameObj) {
@@ -49,7 +46,7 @@ export function linked(tag: string): LinkComp {
                                 }
                                 K.drawLine({
                                     p1: self.pos,
-                                    p2: sibling.pos,
+                                    p2: target.pos,
                                     width: 2,
                                     color: K.WHITE,
                                     opacity: o,

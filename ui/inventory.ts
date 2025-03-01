@@ -6,22 +6,6 @@ import { K } from "../init";
 import { player } from "../player";
 import { healthbar } from "./healthbar";
 
-function updateInventory() {
-    if (player.inventory.length === 0) {
-        inventory.text = "";
-        return;
-    }
-    if (player.holdingItem === undefined) {
-        inventory.text = "nothing";
-        return;
-    }
-    const name = player.holdingItem.name;
-    inventory.text = name;
-    const countAll = player.inventory.map(i => +(i.name === name)).reduce((a, b) => a + b, 0);
-    const countBefore = player.inventory.slice(0, player.holdingIndex).map(i => +(i.name === name)).reduce((a, b) => a + b, 1);
-    if (countAll > 1) inventory.text += ` (${countBefore}/${countAll})`;
-}
-
 const btnLeft = UI.add([
     K.text("\u25C4", {
         size: 32 / SCALE,
@@ -55,6 +39,21 @@ const inventory = UI.add([
             this.pos = K.vec2(
                 MARGIN + btnLeft.pos.x + btnLeft.width,
                 -(MARGIN * 2 + healthbar.height) + K.height() * (1 + +player.hidden));
+
+            if (player.inventory.length === 0 || player.hidden) {
+                this.text = "";
+                return;
+            }
+            if (player.holdingItem === undefined) {
+                this.text = "nothing";
+                return;
+            }
+            const name = player.holdingItem.name;
+            this.text = name;
+            const countAll = player.inventory.map(i => +(i.name === name)).reduce((a, b) => a + b, 0);
+            const countBefore = player.inventory.slice(0, player.holdingIndex).map(i => +(i.name === name)).reduce((a, b) => a + b, 1);
+            if (countAll > 1) this.text += ` (${countBefore}/${countAll})`;
+
         }
     }
 ]);
@@ -76,5 +75,3 @@ const btnRight = UI.add([
     }
 ]);
 btnRight.use(uiButton(() => player.scrollInventory(1)));
-updateInventory();
-player.on("inventoryChange", updateInventory);

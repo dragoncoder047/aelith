@@ -47,7 +47,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
       * [ ] Make the vacuum something else and the portal be the current vacuum
       * `P` object is portal: mergeable and rainbow, links to id of level and id of matching portal
   * The data for cross-level linking
-    * command `x` that steals ID and broadcasts globally to all levels
+    * `g` use cross level naming
 
 * Use build script to pull in text maps to JSON file.
 
