@@ -23,7 +23,7 @@ export function fan(): FanComp {
             });
         },
         createWind(this: GameObj<PosComp | RotateComp | FanComp>) {
-            const obstacles = WorldManager.activeLevel!.get<AreaComp>("area")
+            const obstacles = WorldManager.getLevelOf(this)!.get<AreaComp>("area")
                 .filter(x => x.is(["wall", "barrier", "door", "windEnd"], "or"))
                 .map(o => o.worldArea()!);
             const collides = (p: Vec2) => obstacles.some(o => o.collides(p as any));

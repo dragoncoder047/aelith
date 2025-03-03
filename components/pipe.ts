@@ -29,7 +29,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             this.zap(false);
         },
         chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp>) {
-            const areas = WorldManager.activeLevel!.get<AreaComp>("area");
+            const areas = WorldManager.getLevelOf(this)!.get<AreaComp>("area");
             const pipes = areas
                 .filter(x => x.is(["pipe", "machine"], "or"))
                 .filter(x => x.has("sprite") || x.has("shader"))
@@ -62,7 +62,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 else if (look(walls) !== 0) factory = (solid ? wall : bgWall);
                 else if (look(barriers) !== 0 && solid) factory = barrier;
                 else return;
-                const obj = WorldManager.activeLevel!.spawn(factory(), this.tilePos)!;
+                const obj = WorldManager.getLevelOf(this)!.spawn(factory(), this.tilePos)!;
                 obj.pos = this.pos;
                 obj.tilePos = this.tilePos;
             }

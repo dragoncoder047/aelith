@@ -78,7 +78,7 @@ export function antivirus(): AntivirusComp {
         draw(this: GameObj<AntivirusComp | SpriteComp | PosComp | LinkComp | OffScreenComp | TogglerComp | RotateComp>) {
             if (typeof this.laserColor === "string") this.laserColor = K.Color.fromHex(this.laserColor);
             // do raycast to things
-            const objects = WorldManager.activeLevel!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
+            const objects = WorldManager.getLevelOf(this)!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
                 .concat([player])
                 .filter((x: any) => x !== this && !x.paused)
                 .filter(x => x.collisionIgnore.isDisjointFrom(this.tagsAsSet));
