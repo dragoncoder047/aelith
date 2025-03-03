@@ -2,6 +2,7 @@ uniform vec3 u_targetcolor;
 uniform float u_time;
 uniform float u_octave;
 uniform float u_staticrand;
+uniform float u_angle;
 
 // perlin noise function from https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 
@@ -41,6 +42,13 @@ float map(float alpha, float a, float b, float x, float y) {
     return x + (y - x) * (alpha - a) / (b - a);
 }
 
+vec2 rotateUV(vec2 uv, float rotation) {
+    float cosAngle = cos(rotation);
+    float sinAngle = sin(rotation);
+    vec2 p = uv - vec2(0.5);
+    return vec2(cosAngle * p.x + sinAngle * p.y + 0.5, cosAngle * p.y - sinAngle * p.x + 0.5);
+}
+
 float chgnoise(vec2 pos) {
     // tweak this to make it look better...
     float moving = perlin(vec3(pos.x, pos.y + u_time, u_staticrand) * u_octave);
@@ -49,7 +57,8 @@ float chgnoise(vec2 pos) {
 }
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-    if(uv.y < (1. / 32.))
+    uv = rotateUV(uv, u_angle);
+    if(uv.y < .03125)
         return vec4(u_targetcolor / 255., 1.);
     float alpha = (1. - uv.y) * sin(uv.x * 3.141592653589);
     float noiseval = chgnoise(uv);
