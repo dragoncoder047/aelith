@@ -37,7 +37,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 ## SPLIT INTO LEVELS TO REDUCE LAG
 
 * [ ] Make MParser not depend on the world pointer object
-* [ ] Create a WorldManager singleton.
+* [X] Create a WorldManager singleton.
 
 * Each level will be an object that contains the data of the level:
   * The level object (make-style prefab)

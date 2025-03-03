@@ -1,12 +1,13 @@
 import { AreaComp, Comp, CompList, GameObj, OffScreenComp, PosComp, Rect, SpriteComp, TileComp, TimerController, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
+import { MParser } from "../levels/mparser";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { grating } from "../object_factories/grating";
 import { bgWall, wall } from "../object_factories/wall";
-import { splash } from "../particles";
+import { splash } from "../misc/particles";
 import { MergeableComp } from "./mergeable";
 import { barrier } from "../object_factories/barrier";
+import { WorldManager } from "../levels";
 
 export interface PipeComp extends Comp {
     chooseSpriteNum(): void
@@ -28,7 +29,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             this.zap(false);
         },
         chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp>) {
-            const areas = MParser.world!.get<AreaComp>("area");
+            const areas = WorldManager.activeLevel!.get<AreaComp>("area");
             const pipes = areas
                 .filter(x => x.is(["pipe", "machine"], "or"))
                 .filter(x => x.has("sprite") || x.has("shader"))
@@ -61,7 +62,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 else if (look(walls) !== 0) factory = (solid ? wall : bgWall);
                 else if (look(barriers) !== 0 && solid) factory = barrier;
                 else return;
-                const obj = MParser.world!.spawn(factory(), this.tilePos)!;
+                const obj = WorldManager.activeLevel!.spawn(factory(), this.tilePos)!;
                 obj.pos = this.pos;
                 obj.tilePos = this.tilePos;
             }

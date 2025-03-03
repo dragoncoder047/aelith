@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -34,6 +34,7 @@ import { vacuum } from "../object_factories/vacuum";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
@@ -82,7 +83,50 @@ export class MParser {
         "-": () => dataPipe(false),
         ":": () => dataPipe(false, false)
     };
-    vars: Record<string, any> = {};
+    vars: Record<string, any> = {
+        // put the specialized convenience functions here so I don't
+        // need to define them at the top of every level file
+
+        // swap
+        sw(this: MParser) {
+            const a = this.stack.pop();
+            const b = this.stack.pop();
+            this.stack.push(a);
+            this.stack.push(b);
+        },
+
+        // invisible init
+        ii(this: MParser) {
+            const obj = this.stack.at(-1) as GameObj<InvisibleTriggerComp>;
+            obj.setup("1 s onCollide|player");
+            this.stack.push("1+y");
+            this.commandQueue.unshift(this.commands.e!);
+        },
+
+        // hall note setup
+        hs(this: MParser) {
+            const string = this.stack.pop() as string;
+            const note = this.stack.at(-1) as GameObj<DynamicTextComp | TextComp | PosComp>;
+            note.t = string;
+            note.width = 10 * TILE_SIZE;
+            note.moveBy(0, -12);
+        },
+
+        // nested
+        ns(this: MParser) {
+            const n = this.stack.pop() as number;
+            const arr = this.stack.slice(-n);
+            this.stack.splice(this.stack.length - n, n, arr);
+        },
+
+        // push
+        pu(this: MParser) {
+            const i = this.stack.pop();
+            const arr = this.stack.at(-1);
+            if (!Array.isArray(arr)) throw new Error("push to non-array");
+            arr.push(i);
+        }
+    };
     // MARK: commands
     /**
      * Parser commands that are executed post-world-creation
@@ -111,33 +155,30 @@ export class MParser {
         s() {
             const value = this.stack.pop();
             const propName = this.stack.pop() as string;
-            const obj = this.stack.pop();
+            const obj = this.stack.at(-1);
             // K.debug.log(`Setting ${propName} on ${obj.tags} to ${value}`);
             obj[propName] = value;
-            this.stack.push(obj);
         },
         // MARK: r(otate)
         // rotate by degrees: obj degrees -- obj
         r() {
             const degrees = this.stack.pop() as number;
-            const object = this.stack.pop() as GameObj<RotateComp>;
+            const object = this.stack.at(-1) as GameObj<RotateComp>;
             object.angle += degrees;
-            this.stack.push(object);
         },
         // MARK: m(ove)
         // move: obj x y -- obj
         m() {
             const y = this.stack.pop() as number;
             const x = this.stack.pop() as number;
-            const obj = this.stack.pop() as GameObj<PosComp>;
+            const obj = this.stack.at(-1) as GameObj<PosComp>;
             obj.pos = obj.pos.add(K.vec2(x, y));
-            this.stack.push(obj);
         },
         // MARK: g(roup)
         // group command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
         g() {
             var n = this.stack.pop() as number | string;
-            var link = this.uid();
+            var link = MParser.uid();
             if (typeof n === "string") {
                 link = n;
                 n = this.stack.pop() as number;
@@ -251,17 +292,16 @@ export class MParser {
         // MARK: t(oggle)
         // toggle command: flips the state of the game object
         t() {
-            const obj = this.stack.pop() as GameObj<TogglerComp>;
+            const obj = this.stack.at(-1) as GameObj<TogglerComp>;
             obj.togglerState = !obj.togglerState;
             // K.onLoad(() => obj.togglerState = !obj.togglerState);
-            this.stack.push(obj);
         },
         // MARK: e(longate)
         // elongate command: stretches the object's area in the specified direction
         // intended to be used for wind tunnels
         e() {
             const mod = this.stack.pop() as string;
-            const obj = this.stack.pop() as GameObj<AreaComp | PosComp>;
+            const obj = this.stack.at(-1) as GameObj<AreaComp | PosComp>;
             const match = /^([+-]?\d+)([+-][xy])$/i.exec(mod);
             if (!match) throw new Error("invalid elongate command " + mod);
             const [_, dir, axis] = match;
@@ -279,12 +319,11 @@ export class MParser {
                 default:
                     throw new Error("BUG: something's wrong with my regex in e() command");
             }
-            this.stack.push(obj);
         },
         // MARK: u(id)
         // push a uid
         u() {
-            this.stack.push(this.uid());
+            this.stack.push(MParser.uid());
         },
         // MARK: a (fontsize)
         // fontsize command: size -- pixels
@@ -301,9 +340,8 @@ export class MParser {
         // MARK: invisible trigger setup command: (I string -- I)
         v() {
             const s = this.stack.pop() as string;
-            const obj = this.stack.pop() as GameObj<InvisibleTriggerComp>;
+            const obj = this.stack.at(-1) as GameObj<InvisibleTriggerComp>;
             obj.setup(s);
-            this.stack.push(obj);
         },
         // MARK: (s)q(uirrel)
         // squirrel command:
@@ -362,6 +400,10 @@ export class MParser {
                 this.stack.push(fun(a, b));
             }
         },
+        // new object
+        o() {
+            this.stack.push({});
+        }
         // // MARK: ? (debug)
         // // debug command: logs the top object
         // "?"() {
@@ -585,7 +627,7 @@ export class MParser {
      */
     stack: any[] = [];
     static uid_counter = 10000;
-    uid() {
+    static uid() {
         return (MParser.uid_counter++).toString(16);
     }
 };

@@ -1,5 +1,5 @@
 import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
+import { MParser } from "../levels/mparser";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationComp } from "../components/continuationCore";
 import { ControllableComp } from "../components/controllable";
@@ -9,8 +9,9 @@ import { ManpageComp } from "../components/manpage";
 import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { actuallyRaycast, ballistics } from "../utils";
+import { actuallyRaycast, ballistics } from "../misc/utils";
 import { PlayerHeadComp } from "./head";
+import { WorldManager } from "../levels";
 
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
@@ -132,7 +133,7 @@ export function playerBody(): PlayerBodyComp {
         /**
          * True if overlapping any game object with the tag "type".
          */
-        intersectingAny(this: GameObj<AreaComp>, type, where = MParser.world) {
+        intersectingAny(this: GameObj<AreaComp>, type, where = WorldManager.activeLevel) {
             return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
         lookingAt: undefined,

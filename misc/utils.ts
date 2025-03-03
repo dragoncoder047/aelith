@@ -1,6 +1,6 @@
 import { AreaComp, DrawCurveOpt, GameObj, RaycastResult, Vec2 } from "kaplay";
-import { TILE_SIZE } from "./constants";
-import { K } from "./init";
+import { TILE_SIZE } from "../constants";
+import { K } from "../init";
 
 export function nextFrame(): Promise<void> {
     return new Promise(resolve => requestAnimationFrame(() => resolve()));

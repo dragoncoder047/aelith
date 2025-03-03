@@ -1,4 +1,4 @@
-import { ZzFXMSong } from "../plugins/kaplay-zzfxm";
+import { ZzFXMSong } from "../../plugins/kaplay-zzfxm";
 import rawSongs from "./songs.json";
 import { parse } from "./sounds";
 export const aaa: ZzFXMSong = parse(rawSongs.aaa);

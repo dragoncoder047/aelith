@@ -1,7 +1,7 @@
-import { AreaComp, Comp, GameObj, LevelComp, PosComp, RotateComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
+import { AreaComp, Comp, GameObj, PosComp, RotateComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { WorldManager } from "../levels";
 import { windTunnel } from "../object_factories/windTunnel";
 import { TogglerComp } from "./toggler";
 import { WindComp } from "./wind";
@@ -23,7 +23,7 @@ export function fan(): FanComp {
             });
         },
         createWind(this: GameObj<PosComp | RotateComp | FanComp>) {
-            const obstacles = MParser.world!.get<AreaComp>("area")
+            const obstacles = WorldManager.activeLevel!.get<AreaComp>("area")
                 .filter(x => x.is(["wall", "barrier", "door", "windEnd"], "or"))
                 .map(o => o.worldArea()!);
             const collides = (p: Vec2) => obstacles.some(o => o.collides(p as any));

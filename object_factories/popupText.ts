@@ -1,5 +1,5 @@
 import { Comp, Tag } from "kaplay";
-import { MParser } from "../assets/mparser";
+import { MParser } from "../levels/mparser";
 import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { linked } from "../components/linked";
 import { toggler } from "../components/toggler";

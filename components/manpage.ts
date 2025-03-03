@@ -18,14 +18,14 @@ export interface ManpageComp extends Comp {
     data: NestedStrings
 }
 
-export function manpage(): ManpageComp {
+export function manpage(opt: { bg?: Color } = {}): ManpageComp {
     return {
         id: "manpage",
         section: "undefined",
         header: "undefined",
         size: 12 / SCALE,
         body: "undefined",
-        bg: K.BLACK.lighten(20),
+        bg: opt.bg ?? K.BLACK.lighten(20),
         scrollPos: 0,
         margin: 10 / SCALE,
         sprite: undefined,

@@ -1,14 +1,16 @@
 import { GameObj, LevelComp, PosComp, Vec2 } from "kaplay";
-import { MParser } from "../assets/mparser";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { nextFrame } from "../utils";
+import { nextFrame } from "../misc/utils";
 import { player } from "../player";
+import { playTransition, TextChunk } from "../transitions";
+import { MParser } from "./mparser";
 
 interface Level {
     levelObj: GameObj<LevelComp>;
     name: string;
     initialPos: Vec2 | undefined;
+    introduction: TextChunk[]
 }
 
 export const WorldManager = {
@@ -41,6 +43,7 @@ export const WorldManager = {
             levelObj,
             name: parser.vars.name,
             initialPos,
+            introduction: parser.vars.introduction ?? []
         }
     },
     async goLevel(id: string) {
@@ -55,6 +58,15 @@ export const WorldManager = {
         player.paused = false;
     },
     async transitionScreen(level: Level) {
-        
+        await playTransition(level.name, level.introduction);
+    },
+    pause(isPaused: boolean) {
+        if (this.activeLevel) {
+            this.activeLevel.paused = this.activeLevel.hidden = isPaused;
+        }
+    },
+    getLevelOf(obj: GameObj): GameObj | null {
+        while (obj.parent) obj = obj.parent;
+        return obj;
     }
 };

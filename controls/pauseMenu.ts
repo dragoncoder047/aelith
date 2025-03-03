@@ -1,13 +1,13 @@
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
-import { MParser } from "../assets/mparser";
 import { K } from "../init";
+import { WorldManager } from "../levels";
+import { guessOS, isFirefox, isTouchscreen } from "../misc/utils";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { modalmenu } from "../ui/menuFactory";
 import { timer } from "../ui/timer";
-import { guessOS, isFirefox, isTouchscreen } from "../utils";
 import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 
 // save for autodetect
@@ -112,6 +112,7 @@ export const PAUSE_MENU: PtyMenu = {
 
 export var PAUSE_MENU_OBJ = modalmenu(PAUSE_MENU, ["!dialog", "menuActive", "pauseMenu"], "&pauseMenuCtlHint",
     K.onButtonPress("pause_unpause", () => PAUSE_MENU_OBJ.open()) as KEventControllerPatch);
+PAUSE_MENU_OBJ.modal.bg = K.BLACK;
 
 export function initPauseMenu() {
     // sync testing mode for music
@@ -126,7 +127,7 @@ export function initPauseMenu() {
 }
 
 function doPause() {
-    MParser.pauseWorld(true);
+    WorldManager.pause(true);
 }
 
 async function doUnpause() {
@@ -134,7 +135,7 @@ async function doUnpause() {
     player.hidden = player.paused = false;
     copyPreferences();
     await showManpage(false);
-    MParser.pauseWorld(false);
+    WorldManager.pause(false);
 }
 
 export function copyPreferences() {

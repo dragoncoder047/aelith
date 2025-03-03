@@ -8,8 +8,8 @@ import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PtyChunk, PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
-import { nextFrame } from "../utils";
-import { MParser } from "../assets/mparser";
+import { nextFrame } from "../misc/utils";
+import { MParser } from "../levels/mparser";
 
 var getMotionVector: () => Vec2;
 import("../controls").then(mod => getMotionVector = mod.getMotionVector);

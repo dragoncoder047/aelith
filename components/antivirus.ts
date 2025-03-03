@@ -1,12 +1,12 @@
 import { AreaComp, BodyComp, Color, Comp, GameObj, OffScreenComp, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { WorldManager } from "../levels";
+import { actuallyRaycast } from "../misc/utils";
 import { player } from "../player";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { actuallyRaycast } from "../utils";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
-import { MParser } from "../assets/mparser";
 
 export interface AntivirusComp extends Comp {
     alertTextObj: GameObj<DynamicTextComp> | undefined
@@ -78,7 +78,7 @@ export function antivirus(): AntivirusComp {
         draw(this: GameObj<AntivirusComp | SpriteComp | PosComp | LinkComp | OffScreenComp | TogglerComp | RotateComp>) {
             if (typeof this.laserColor === "string") this.laserColor = K.Color.fromHex(this.laserColor);
             // do raycast to things
-            const objects = MParser.world!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
+            const objects = WorldManager.activeLevel!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
                 .concat([player])
                 .filter((x: any) => x !== this && !x.paused)
                 .filter(x => x.collisionIgnore.isDisjointFrom(this.tagsAsSet));

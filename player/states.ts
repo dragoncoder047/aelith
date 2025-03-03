@@ -2,7 +2,7 @@ import { player } from ".";
 import { FOOTSTEP_INTERVAL } from "../constants";
 import { getPlayerMotionVector } from "../controls";
 import { K } from "../init";
-import { splash } from "../particles";
+import { splash } from "../misc/particles";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 // State functions

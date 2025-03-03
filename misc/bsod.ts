@@ -1,4 +1,4 @@
-import { K } from "./init";
+import { K } from "../init";
 
 K.onError(error => {
     // Draw blue windows screen of death

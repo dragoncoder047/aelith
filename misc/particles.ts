@@ -1,6 +1,6 @@
 import { Color, Tag, Vec2 } from "kaplay";
-import { FRICTION } from "./constants";
-import { K } from "./init";
+import { FRICTION } from "../constants";
+import { K } from "../init";
 
 export function splash(where: Vec2, color: Color | (() => Color), n = 10, yv_max = -200, ig_tags_extra: string[] = [], drag: number = 0, wf: number = 1) {
     for (var i = 0; i < n; i++) {

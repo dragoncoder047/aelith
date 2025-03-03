@@ -8,8 +8,8 @@ import { CloneableComp } from "./cloneable";
 import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
 import { controllable, ControllableComp } from "./controllable";
 import { TailComp } from "../player/tail";
-import { splash } from "../particles";
-import { drawZapLine } from "../utils";
+import { splash } from "../misc/particles";
+import { drawZapLine } from "../misc/utils";
 
 export interface ContinuationComp extends Comp {
     timestamp: number

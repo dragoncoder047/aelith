@@ -1,7 +1,7 @@
 import { AreaComp, BodyComp, Comp, GameObj, PosComp, RectComp, Tag, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { drawZapLine } from "../utils";
+import { drawZapLine } from "../misc/utils";
 
 export interface CrossoverComp extends Comp {
     colliding: {

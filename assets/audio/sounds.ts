@@ -1,4 +1,4 @@
-import { ZzFXSound } from "../plugins/kaplay-zzfx";
+import { ZzFXSound } from "../../plugins/kaplay-zzfx";
 import rawSounds from "./sounds.json";
 
 export const sounds: Record<string, ZzFXSound> = {};

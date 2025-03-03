@@ -1,6 +1,5 @@
 import { Comp, GameObj, KEventController, PosComp } from "kaplay";
 import { K } from "../init";
-import { makeParticle } from "../particles";
 
 export interface LinkComp extends Comp {
     readonly idTag: string,

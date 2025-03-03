@@ -1,8 +1,5 @@
-1(testingMode)d                                                         [T(name)(call/cc)s0n16bmz]
-[a b -- b a]{(1b1a)p}(sw)d
-[N text -- N]{(t)(sw)is(width)10bs0n12nm}(hs)d
-[I -- I]{(1+y)e(1 s onCollide|player)v}(ii)d
-[x x x n -- [x x x]]{{(v)1q}(sw)il(v)k}(ns)d                             %
+                                                                        [T(name)(call/cc)s0n16bmz]
+                                                                         %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #                            N                                                 %                                                  % (t)(&msg.secret)sz
 %                                                                              %                                                  %

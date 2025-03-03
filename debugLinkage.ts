@@ -1,13 +1,14 @@
 import { GameObj, PosComp, Vec2 } from "kaplay";
-import { MParser } from "./assets/mparser";
+import { MParser } from "./levels/mparser";
 import { LinkComp } from "./components/linked";
 import { K } from "./init";
 import { SCALE } from "./constants";
 import COLORS from "./assets/gollyColors.json";
+import { WorldManager } from "./levels";
 
 K.add([{
     drawInspect() {
-        const allObjs = MParser.world!.get<LinkComp | PosComp>("linked");
+        const allObjs = WorldManager.activeLevel?.get<LinkComp | PosComp>("linked") ?? [];
         const groups = new Map<string, GameObj<LinkComp | PosComp>[]>;
         const names: string[] = [];
         for (var obj of allObjs) {

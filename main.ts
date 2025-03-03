@@ -1,20 +1,24 @@
 import { K } from "./init";
 import "./layers";
 
-import "./assets/loadLevel";
-import "./bsod";
+import "./misc/bsod";
 import type { LinkComp } from "./components/linked";
 import { GRAVITY } from "./constants";
 import "./controls";
 import "./controls/gamepadRumble";
+import { initPauseMenu } from "./controls/pauseMenu";
 import "./debugLinkage";
 import { player } from "./player";
-import "./player/states";
 import "./player/health";
+import "./player/states";
 import "./ui";
 import("./.p");
 
 K.setGravity(GRAVITY);
+
+// TODO: load first level
+
+initPauseMenu();
 
 // @ts-ignore
 window.playerFollower = player.camFollower!;

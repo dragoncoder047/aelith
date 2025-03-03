@@ -1,7 +1,7 @@
 import { GameObj, NamedComp } from "kaplay";
 import { player } from ".";
 import { musicPlay } from "../assets";
-import { MParser } from "../assets/mparser";
+import { MParser } from "../levels/mparser";
 import { ContinuationComp } from "../components/continuationCore";
 import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
 import { copyPreferences } from "../controls/pauseMenu";
@@ -10,7 +10,8 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
 import { modalmenu } from "../ui/menuFactory";
-import { splash } from "../particles";
+import { splash } from "../misc/particles";
+import { WorldManager } from "../levels";
 
 const deathMessages: TextChunk[] = [
     {
@@ -71,9 +72,9 @@ player.onDeath(async () => {
     resumeEntry.opts = []; // clear in case user died twice
     musicPlay.paused = true;
     K.play("die");
-    MParser.pauseWorld(true);
+    WorldManager.pause(true);
     player.scrollInventory(-player.inventory.length);
-    player.trigger("update");
+    player.update();
     player.paused = true;
     await K.tween(1, 0, 2, o => player.opacity = o);
     player.hidden = true;
@@ -81,7 +82,7 @@ player.onDeath(async () => {
     K.get("tail").forEach(t => t.paused = true);
     DEATH_MENU_OBJ.term.chunks = STARTUP_TERMINAL!.chunks;
     await funnyType(DEATH_MENU_OBJ.term, deathMessages, false);
-    MParser.world!.trigger("update");
+    WorldManager.activeLevel!.update();
     // make resume things
     const allContinuations = K.get<ContinuationComp | NamedComp>("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
     allContinuations.sort((a, b) => a.timestamp - b.timestamp);
@@ -135,7 +136,7 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         await DEATH_MENU_OBJ.close();
         STARTUP_TERMINAL!.chunks = DEATH_MENU_OBJ.term.chunks;
-        MParser.pauseWorld(false);
+        WorldManager.pause(false);
         copyPreferences();
         player.paused = player.hidden = false;
         K.eventGroups.delete("menuActive");

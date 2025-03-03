@@ -1,0 +1,19 @@
+o(value)(&msg.startup.pressToBegin)s1(ns)i
+o(value)o(text)()ss(waitKey)(enter)s(showCursor)1s(ignoreJumpSkip)1s(pu)i
+o(value)(&msg.startup.password)s(clear)1s(pu)i
+o(value)o(text)(*********)s(typewriter)1s(sound)(typing)s(delayBefore)1ss(showCursor)1s(pu)i
+o(value)o(text)(%0A&msg.startup.loggedInOK%0A)s(delayBefore)1ss(showCursor)1s(pu)i
+(command)(sudo ./gpt --enable-code --access=all --background)(&msg.startup.running%0A[1] &startup.pid sudo ./gpt%0A)1 1 1 6(ns)i(pu)i
+(command)(./gpt --interactive)()1 1 2(/)h0 6(ns)i(pu)i
+o(value)(&msg.startup.connecting)s(pu)i
+o(value)o(text)(&msg.startup.connected%0A&msg.startup.ai.prompt > )s(delayBefore)1ss(pu)i
+o(value)o(text)(&msg.startup.findAnswer%0A)s(typewriter)1s(delayBefore)1s(styles)(command)1(ns)is(sound)(typing)ss(showCursor)1s(pu)i
+o(value)o(text)(&msg.startup.answer)s(delayBefore)1ss(showCursor)0s(pu)i
+o(value)o(text)(%0A[1]  + &startup.pid &msg.startup.segfault  sudo ./gpt%0A)s(delayBefore)2ss(showCursor)1s(pu)i
+o(value)o(text)(&msg.startup.disconnected%0A)s(styles)(stderr)1(ns)is(sound)(command_fail)ss(pu)i
+(command)(ls *.core)(&startup.pid.core%0A)3 1 2(/)h1 6(ns)i(pu)i
+(command)(&startup.cmd)(&msg.startup.startingDebugger)1 4(/)h1 4(/)h 5(ns)i(pu)i
+o(value)()s(showCursor)1s(pu)i
+(introduction)d
+
+[TODO: add the level here!]

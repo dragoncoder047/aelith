@@ -1,24 +1,24 @@
+import rumbleEffects from "./rumbleEffects.json";
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
+import { aaa, bbb, ccc } from "./audio/songs";
+import { sounds } from "./audio/sounds";
+import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
+import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
 import { playMusic } from "./music";
-import rumbleEffects from "../assets/rumbleEffects.json";
-import recolorRedShader from "./recolorRed.glsl";
-import { aaa, bbb, ccc } from "./songs";
-import { sounds } from "./sounds";
-import spritemapDef from "./spritemap.json" with { type: "json" };
-import spritemapDataURL from "./spritemap.png";
-import translateShader from "./translate.glsl";
-import invertShader from "./invert.glsl";
-import vacuumShader from "./vacuum.glsl";
-import datapipeShader from "./dataPipe.glsl";
+import datapipeShader from "./shaders/dataPipe.glsl";
+import fuzzyFadeShader from "./shaders/fuzzy.glsl";
+import invertShader from "./shaders/invert.glsl";
+import recolorRedShader from "./shaders/recolorRed.glsl";
+import translateShader from "./shaders/translate.glsl";
+import vacuumShader from "./shaders/vacuum.glsl";
+import spritemapDef from "./textures/spritemap.json" with { type: "json" };
+import spritemapDataURL from "./textures/spritemap.png";
 import deStrings from "./translations/de.json" with { type: "json" };
 import enStrings from "./translations/en.json" with { type: "json" };
 import esStrings from "./translations/es.json" with { type: "json" };
 import strings from "./translations/index.json" with { type: "json" };
 import jaStrings from "./translations/ja.json" with { type: "json" };
-import ibmMonoFontDataURL from "./Web437_IBM_EGA_8x8.woff";
-import unsciiMCRFontDataURL from "./unscii-8-mcr.woff";
-import worldFileSrc from "./world.txt";
 
 
 // Load assets
@@ -38,6 +38,7 @@ K.loadShader("translate", undefined, translateShader);
 K.loadShader("invert", undefined, invertShader);
 K.loadShader("vacuum", undefined, vacuumShader);
 K.loadShader("dataPipe", undefined, datapipeShader);
+K.loadShader("fuzzy", undefined, fuzzyFadeShader);
 K.loadZzFXM("aaa", aaa);
 K.loadZzFXM("bbb", bbb);
 K.loadZzFXM("ccc", ccc);
@@ -61,5 +62,3 @@ export const musicPlay = playMusic({
     volume: MUSIC_VOLUME,
     paused: true,
 });
-
-export { worldFileSrc };

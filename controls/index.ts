@@ -2,10 +2,10 @@ import { AreaComp, BodyComp, ColorComp, GameObj, PosComp, Vec2 } from "kaplay";
 import { PromiseComp } from "../components/promise";
 import { MAX_THROW_STRETCH, MODIFY_SPEED, SCALE, SPRINT_FACTOR, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
-import { splash } from "../particles";
+import { splash } from "../misc/particles";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
-import { nextFrame } from "../utils";
+import { nextFrame } from "../misc/utils";
 
 // Controls
 
