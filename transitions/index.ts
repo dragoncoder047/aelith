@@ -1,9 +1,10 @@
-import { GameObj, KEventController } from "kaplay";
+import { GameObj, KEventController, TextComp } from "kaplay";
 import { STYLES } from "../assets/textStyles";
-import { FONT_SCALE } from "../constants";
+import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { DynamicTextComp, NestedStrings } from "../plugins/kaplay-dynamic-text";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PtyChunk, PtyComp, TypableOne } from "../plugins/kaplay-pty";
+import { createPrompt } from "../ui/menuFactory";
 
 export type TextChunk = ({
     clear?: boolean,
@@ -62,17 +63,43 @@ function command(
     };
 }
 
-export async function playTransition(name: string, tran: TextChunkCompressed[]) {
+export async function playTransition(name: string, tran: TextChunkCompressed[], halfCut: boolean = false) {
     var u_amount = 0;
     K.usePostEffect("fuzzy", () => ({ u_amount }));
-    await K.tween(0, 1, 0.5, a => u_amount = a);
-    const rect = K.add([
+    if (!halfCut) await K.tween(0, 1, 0.5, a => u_amount = a);
+    const fader = K.add([
         K.fixed(),
         K.rect(K.width(), K.height()),
         K.color(K.getBackground()!),
-        K.opacity(),
+        K.opacity(1),
+        K.layer("background"),
+    ]);
+    const term = K.add([
+        K.text("", {
+            styles: STYLES,
+            size: 16 / FONT_SCALE,
+            width: 12 * TILE_SIZE,
+            align: "left",
+            lineSpacing: 1.15,
+        }),
+        K.dynamicText(),
+        K.pty({
+            maxLines: 16,
+            cursor: { text: "\u2588", styles: ["cursor"] },
+        }),
+        K.fixed(),
+        K.pos(K.width() / 2, K.height() / 3),
+        K.anchor("top"),
+        K.color(K.WHITE.darken(100)),
+        K.opacity(1),
+        K.layer("text"),
     ]);
     const head = K.add([
+        {
+            draw(this: GameObj<TextComp>) {
+                K.drawRect({ ...this, color: K.getBackground()! });
+            }
+        },
         K.text("", {
             font: "Unscii MCR",
             styles: STYLES,
@@ -80,36 +107,23 @@ export async function playTransition(name: string, tran: TextChunkCompressed[]) 
         }),
         K.dynamicText(name),
         K.fixed(),
-        K.pos(K.width() / 2, K.height() / 4),
+        K.pos(K.width() / 2, K.height() / 6),
         K.anchor("center"),
-        K.color(K.getBackground()!),
-        K.opacity(),
+        K.opacity(1),
+        K.layer("text"),
     ]);
-    const term = K.add([
-        K.text("", {
-            styles: STYLES,
-            size: 16 / FONT_SCALE,
-        }),
-        K.dynamicText(),
-        K.pty({
-            maxLines: 16,
-            cursor: { text: "\u2588", styles: ["cursor"] }
-        }),
-        K.fixed(),
-        K.pos(K.width() / 2, K.height() / 4),
-        K.anchor("center"),
-        K.color(K.getBackground()!),
-        K.opacity(),
-    ]);
-    await K.wait(0.2);
-    await K.tween(1, 0, 0.7, a => u_amount = a);
+    term.prompt = createPrompt();
+    if (!halfCut) {
+        await K.wait(0.2);
+        await K.tween(1, 0, 0.7, a => u_amount = a);
+    }
     K.usePostEffect(null!);
     await typeChunks(term, tran, K._k.globalOpt.debug !== false);
-    [rect, head, term].forEach(x => x.fadeOut(1).then(() => x.destroy()));
+    [fader, head, term].forEach(x => x.fadeOut(1).onEnd(() => x.destroy()));
 };
 
-async function typeChunks(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunkCompressed[], isTesting: boolean) {
-    for (var chunk of chunks.map(decompressTextChunk)) {
+export async function typeChunks(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunkCompressed[], isTesting: boolean) {
+    for (var chunk of chunks.map(c => decompressTextChunk(c))) {
         if (chunk.clear) terminal.chunks = [];
         if (chunk.isCommand) {
             await terminal.command(

@@ -44,7 +44,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
   * The level name
   * The position to load the player to
     * Only the first splash screen level has this, others have portals
-      * [ ] Make the vacuum something else and the portal be the current vacuum
+      * [ ] Make the portal be the current vacuum
       * `P` object is portal: mergeable and rainbow, links to id of level and id of matching portal
   * The data for cross-level linking
     * `g` use cross level naming

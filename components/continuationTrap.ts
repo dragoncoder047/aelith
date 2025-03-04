@@ -178,7 +178,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
             this.controls[0]!.hint = K.sub(
-                this.data!.hint ?? "&msg.ctlHint.continuation.default",
+                this.data?.hint ?? "&msg.ctlHint.continuation.default",
                 {
                     which: "trap",
                     isDeferring: String(this.isDeferring),
@@ -192,7 +192,8 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
-                if (this.enabled
+                if (this.exists()
+                    && this.enabled
                     && this.params.radius > 0
                     && player.manpage!.hidden
                     && player.inventory.includes(this)) {

@@ -1,7 +1,7 @@
 import { BodyComp, Comp, DrawCircleOpt, DrawLineOpt, GameObj, KAPLAYCtx, PosComp, Vec2 } from "kaplay";
 
 export interface SpringCompOpt {
-    other: GameObj<BodyComp | PosComp>
+    other?: GameObj<BodyComp | PosComp>
     p1?: Vec2
     p2?: Vec2
     forceSelf?: boolean,
@@ -36,13 +36,12 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
     return {
         // @ts-expect-error
         spring(opts = {}) {
-            if (!opts.other) throw new Error("need other on spring");
-            if (!opts.other.has("body")) throw new Error("other needs to be a body");
+            if (!opts.other?.has("body")) opts.forceOther = false;
             opts.drawOpts = Object.assign({ width: 2, color: K.WHITE }, opts.drawOpts);
             return {
                 id: "spring",
                 require: ["body", "pos"],
-                other: opts.other,
+                other: opts.other ?? K.getTreeRoot(),
                 p1: opts.p1 ?? K.vec2(0, 0),
                 p2: opts.p2 ?? K.vec2(0, 0),
                 forceSelf: opts.forceSelf ?? true,

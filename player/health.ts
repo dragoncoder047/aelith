@@ -1,17 +1,16 @@
 import { GameObj, NamedComp } from "kaplay";
 import { player } from ".";
 import { musicPlay } from "../assets";
-import { MParser } from "../levels/mparser";
 import { ContinuationComp } from "../components/continuationCore";
 import { FALL_DAMAGE_THRESHOLD, MAX_FALL_DAMAGE, TERMINAL_VELOCITY } from "../constants";
 import { copyPreferences } from "../controls/pauseMenu";
 import { K } from "../init";
+import { WorldManager } from "../levels";
+import { splash } from "../misc/particles";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
-import { funnyType, STARTUP_TERMINAL, TextChunk } from "../startup";
+import { TextChunk, typeChunks } from "../transitions";
 import { modalmenu } from "../ui/menuFactory";
-import { splash } from "../misc/particles";
-import { WorldManager } from "../levels";
 
 const deathMessages: TextChunk[] = [
     {
@@ -80,8 +79,8 @@ player.onDeath(async () => {
     player.hidden = true;
     player.opacity = 1;
     K.get("tail").forEach(t => t.paused = true);
-    DEATH_MENU_OBJ.term.chunks = STARTUP_TERMINAL!.chunks;
-    await funnyType(DEATH_MENU_OBJ.term, deathMessages, false);
+    DEATH_MENU_OBJ.term.chunks = [];
+    await typeChunks(DEATH_MENU_OBJ.term, deathMessages, false);
     WorldManager.activeLevel!.update();
     // make resume things
     const allContinuations = K.get<ContinuationComp | NamedComp>("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
@@ -135,7 +134,6 @@ player.onDeath(async () => {
 function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         await DEATH_MENU_OBJ.close();
-        STARTUP_TERMINAL!.chunks = DEATH_MENU_OBJ.term.chunks;
         WorldManager.pause(false);
         copyPreferences();
         player.paused = player.hidden = false;

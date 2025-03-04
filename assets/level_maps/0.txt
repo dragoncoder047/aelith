@@ -15,5 +15,12 @@ o(value)o(text)(&msg.startup.disconnected%0A)s(styles)(stderr)1(ns)is(sound)(com
 (command)(&startup.cmd)(&msg.startup.startingDebugger)1 4(/)h1 4(/)h 5(ns)i(pu)i
 o(value)()s(showCursor)1s(pu)i
 (introduction)d
+(&gamename)(name)d
 
 [TODO: add the level here!]
+
+           @
+
+
+######################
+######################

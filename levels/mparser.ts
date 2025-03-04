@@ -607,16 +607,15 @@ export class MParser {
     }
     // MARK: postprocess()
     preprocess(world: GameObj) {
-        world!.get("machine").forEach(o => o.trigger("preprocess"));
+        world!.children.forEach(o => o.trigger("preprocess"));
     }
     midprocess(world: GameObj) {
-        const l = world!.get("machine");
-        l.forEach(o => o.trigger("midprocess"));
-        l.forEach(o => o.trigger("midprocess2"));
-        l.forEach(o => o.trigger("midprocess3"));
+        world!.children.forEach(o => o.trigger("midprocess"));
+        world!.children.forEach(o => o.trigger("midprocess2"));
+        world!.children.forEach(o => o.trigger("midprocess3"));
     }
     postprocess(world: GameObj) {
-        world!.get("machine").forEach(o => o.trigger("postprocess"));
+        world!.children.forEach(o => o.trigger("postprocess"));
     }
     /**
      * Queue of commands to be executed to initialize the game.

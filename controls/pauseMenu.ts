@@ -111,7 +111,7 @@ export const PAUSE_MENU: PtyMenu = {
 }
 
 export var PAUSE_MENU_OBJ = modalmenu(PAUSE_MENU, ["!dialog", "menuActive", "pauseMenu"], "&pauseMenuCtlHint",
-    K.onButtonPress("pause_unpause", () => PAUSE_MENU_OBJ.open()) as KEventControllerPatch);
+    player.onButtonPress("pause_unpause", () => PAUSE_MENU_OBJ.open()) as KEventControllerPatch);
 PAUSE_MENU_OBJ.modal.bg = K.BLACK;
 
 export function initPauseMenu() {

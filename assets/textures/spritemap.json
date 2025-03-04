@@ -255,5 +255,11 @@
         "width": 512,
         "height": 32,
         "sliceX": 16
+    },
+    "grabber": {
+        "x": 54,
+        "y": 318,
+        "width": 32,
+        "height": 32
     }
 }
