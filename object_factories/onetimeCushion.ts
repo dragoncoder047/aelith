@@ -10,6 +10,7 @@ export function onetimeCushion() {
             add(this: GameObj<BodyComp>) {
                 this.onBeforePhysicsResolve(c => {
                     if (c.target === player) {
+                        c.preventResolution();
                         player.vel = K.vec2(0);
                         this.destroy();
                     }

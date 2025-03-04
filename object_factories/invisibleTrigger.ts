@@ -3,6 +3,7 @@ import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { StateManager } from "../save_state";
 
 export function invisibleTrigger() {
     return [
@@ -11,5 +12,8 @@ export function invisibleTrigger() {
         ...machine(),
         invisibleTriggerComp(),
         "raycastIgnore" as Tag,
+        { reviver: "invisibleTrigger" }
     ];
 }
+
+StateManager.registerReviver("invisibleTrigger", invisibleTrigger);

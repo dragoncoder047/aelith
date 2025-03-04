@@ -1,4 +1,4 @@
-import { AreaCompOpt } from "kaplay";
+import { AreaCompOpt, Tag } from "kaplay";
 import { MParser } from "../levels/mparser";
 import { linked } from "../components/linked";
 import { toggler } from "../components/toggler";
@@ -14,6 +14,7 @@ export function machine(areaOpts?: AreaCompOpt) {
         K.state("off"),
         linked(MParser.uid()),
         K.offscreen({ hide: true }),
-        ...defaults(areaOpts)
+        ...defaults(areaOpts),
+        "saveable" as Tag,
     ];
 }

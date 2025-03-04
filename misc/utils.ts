@@ -55,3 +55,10 @@ function getUserAgentString() {
     // @ts-ignore
     return navigator.userAgent || navigator.vendor || window.opera;
 }
+export type JSONSerializable =
+    | number
+    | boolean
+    | string
+    | null
+    | { [key: string]: JSONSerializable; }
+    | JSONSerializable[];

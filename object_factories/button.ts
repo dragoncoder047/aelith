@@ -7,6 +7,7 @@ import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 import { collisioner } from "../components/collisioner";
+import { StateManager } from "../save_state";
 
 export function button() {
     return [
@@ -23,5 +24,7 @@ export function button() {
         collisioner(),
         clicky(),
         "noCollideWithTail" as Tag,
+        { reviver: "button" }
     ];
 }
+StateManager.registerReviver("button", button);

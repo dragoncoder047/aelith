@@ -4,6 +4,7 @@ import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 import { fan as fanComp } from "../components/fan"
+import { StateManager } from "../save_state";
 
 export function fan() {
     return [
@@ -14,5 +15,8 @@ export function fan() {
         ...machine({ friction: FRICTION }),
         animRun("spin"),
         ambiance("fan_running", "fan_start", "fan_stop"),
+        { reviver: "fan" },
     ];
 }
+
+StateManager.registerReviver("fan", fan);

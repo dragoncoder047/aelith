@@ -5,6 +5,7 @@ import { vacuumComp } from "../components/vacuum";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { StateManager } from "../save_state";
 
 export function vacuum() {
     return [
@@ -16,5 +17,8 @@ export function vacuum() {
         vacuumComp(),
         invisibleTriggerComp(),
         clicky(["on"], ["vacuum_activate"]),
+        { reviver: "vacuum" },
     ];
 }
+
+StateManager.registerReviver("vacuum", vacuum);

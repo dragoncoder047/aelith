@@ -7,6 +7,7 @@ import { playTransition, TextChunk } from "../transitions";
 import { MParser } from "./mparser";
 
 interface Level {
+    id: string;
     levelObj: GameObj<LevelComp>;
     name: string;
     initialPos: Vec2 | undefined;
@@ -15,7 +16,7 @@ interface Level {
 
 export const WorldManager = {
     allLevels: {} as Record<string, Level>,
-    activeLevel: undefined as GameObj<LevelComp> | undefined,
+    activeLevel: undefined as Level | undefined,
     loadLevel(id: string, map: string, whichPos: number = 0) {
         const parser = new MParser;
         const levelObj = K.addLevel(map.split("\n"), {
@@ -34,24 +35,22 @@ export const WorldManager = {
         const initialPos = playerPositions.at(whichPos)?.pos;
         playerPositions.forEach(p => p.destroy());
         this.allLevels[id] = {
+            id,
             levelObj,
             name: parser.vars.name,
             initialPos,
             introduction: parser.vars.introduction ?? []
         }
     },
-    async goLevel(id: string, halfCut: boolean = false) {
+    async goLevel(id: string, halfCut: boolean = false, instant: boolean = false) {
         const level = this.allLevels[id];
         if (!level) throw new Error(`no such level: "${id}"`);
         player.hidden = true;
         this.pause(true);
-        await playTransition(level.name, level.introduction, halfCut);
-        this.activeLevel = level.levelObj;
+        if (!instant) await playTransition(level.name, level.introduction, halfCut);
+        this.activeLevel = level;
         player.hidden = false;
-        const delta = (level.initialPos ?? K.vec2(0)).sub(player.pos);
-        player.moveBy(delta);
-        K.get<TailComp>("tail").forEach(t => t.restore2Pos());
-        K.setCamPos(player.worldPos()!);
+        player.tpTo(level.initialPos ?? K.vec2(0));
         this.pause(false);
     },
     activateLevel(level: GameObj<LevelComp>, running: boolean) {
@@ -59,7 +58,7 @@ export const WorldManager = {
     },
     pause(isPaused: boolean) {
         if (this.activeLevel) {
-            this.activateLevel(this.activeLevel, !isPaused);
+            this.activateLevel(this.activeLevel.levelObj, !isPaused);
         }
         player.paused = isPaused;
     },

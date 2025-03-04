@@ -1,46 +1,22 @@
-import { AreaComp, BodyComp, CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, StateComp, Vec2 } from "kaplay";
+import { CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, Vec2 } from "kaplay";
 import trapTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { splash } from "../misc/particles";
 import { continuation } from "../object_factories/continuation";
 import { promiseObj } from "../object_factories/promiseObj";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
+import { LiveStateSaveable, LiveObjectState, LiveState } from "../save_state/live";
 import { MenuModal, modalmenu } from "../ui/menuFactory";
-import { CollisionerComp } from "./collisioner";
 import { ContinuationComp } from "./continuationCore";
 import { controllable, ControllableComp } from "./controllable";
-import { InvisibleTriggerComp } from "./invisibleTrigger";
 import { LoreComp } from "./lore";
 import { PromiseComp } from "./promise";
-import { TogglerComp } from "./toggler";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
-import { splash } from "../misc/particles";
-
-export type CDEComps =
-    | PosComp
-    | BodyComp
-    | CollisionerComp
-    | TogglerComp
-    | InvisibleTriggerComp
-    | StateComp
-    | AreaComp;
-
-export type ContinuationDataEntry = {
-    obj: GameObj<CDEComps>
-    inPlayerInventory: boolean
-    pos?: Vec2
-    togglerState?: boolean
-    triggeredState?: boolean
-    bugState?: string
-};
-export type ContinuationData = {
-    playerPos: Vec2
-    objects: ContinuationDataEntry[]
-    params: ContinuationTrapComp["params"]
-};
+import { WorldManager } from "../levels";
 
 export interface ContinuationTrapComp extends Comp {
     isDeferring: boolean
@@ -55,14 +31,14 @@ export interface ContinuationTrapComp extends Comp {
     _menu: MenuModal
     prepare(): void
     capture(): void
-    peekCapture(): ContinuationData
+    peekCapture(): LiveState
     getPlayerPosData(): Vec2
 
     startEditing(): void
     menuUpdate(): void
 }
 
-export function trap(soundOnCapture: string): ContinuationTrapComp {
+export function continuationTrapCore(soundOnCapture: string): ContinuationTrapComp {
     const switchesMenu: PtyMenu = {
         id: "flags",
         name: "&msg.continuation.edit.flags",
@@ -121,6 +97,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
             // not editable
             concurrent: false,
             editable: false,
+            global: false,
         },
         get data() {
             return (trapTypes as any)[(this as any).name!];
@@ -237,7 +214,7 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).has("invisible-trigger")) continue;
-                    if (e.inPlayerInventory) continue;
+                    if (e.where === null) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox)
                         K.drawRect({
@@ -272,17 +249,19 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                 this.zoop.hidden = true;
             });
         },
-        peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): ContinuationData {
+        peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): LiveState {
+            // TODO: move this to the save state method of Saveable
             // Capture all of the objects
-            const data: ContinuationData = {
+            const data: LiveState = {
                 playerPos: this.getPlayerPosData(),
-                params: Object.assign({}, this.params),
+                worldID: WorldManager.activeLevel!.id,
+                restoreParams: Object.assign({}, this.params),
                 objects: []
             };
             if (this.params.radius > 0) {
                 // find all the objects
                 const circle = new K.Circle(data.playerPos, this.params.radius);
-                const foundObjects = K.get<CDEComps>("machine", { recursive: true })
+                const foundObjects = K.get<LiveStateSaveable>("machine", { recursive: true })
                     .filter(obj =>
                         ((obj as unknown as GameObj<OpacityComp>).opacity === 0
                             // If opacity is 0, it's a wind tunnel or something else, must use distance to pos
@@ -293,18 +272,20 @@ export function trap(soundOnCapture: string): ContinuationTrapComp {
                     .filter(obj => !obj.is("checkpoint"))
                     .concat(player.inventory.filter(x => x.has("body")) as any);
                 for (var obj of foundObjects) {
-                    const e: ContinuationDataEntry = {
+                    throw 'tdo';
+                    const e: LiveObjectState = {
                         obj,
-                        inPlayerInventory: player.inventory.includes(obj as any),
+                        where: player.inventory.includes(obj as any) ? null : WorldManager.activeLevel!.id,
+                        state: {},
                     };
                     if (obj.has("body") && !obj.isStatic)
-                        e.pos = (e.inPlayerInventory ? data.playerPos : obj.pos).clone();
+                        e.pos = (e.where === null ? data.playerPos : obj.pos).clone();
                     if (obj.has("toggler"))
-                        e.togglerState = obj.togglerState;
+                        e.state.toggle = obj.togglerState;
                     if (obj.has("invisible-trigger"))
-                        e.triggeredState = obj.triggered;
+                        e.state.trigger = obj.triggered;
                     if (obj.has("bug"))
-                        e.bugState = obj.state;
+                        e.state.bug = obj.state;
                     data.objects.push(e);
                 }
             }

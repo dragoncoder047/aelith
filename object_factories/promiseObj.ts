@@ -1,5 +1,4 @@
 import { BodyComp, GameObj, Tag } from "kaplay";
-import { controllable } from "../components/controllable";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore, LoreComp } from "../components/lore";
@@ -8,6 +7,7 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
+import { StateManager } from "../save_state";
 
 export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<LoreComp>) {
     return [
@@ -37,5 +37,9 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
         grabbable(),
         "continuation" as Tag,
         lore(controlling.lore),
+        "saveable" as Tag,
+        { reviver: "promise" }
     ];
 }
+
+StateManager.registerReviver("promise", promiseObj);

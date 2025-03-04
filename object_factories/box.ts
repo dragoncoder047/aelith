@@ -1,14 +1,15 @@
-import { CompList, GameObj, LevelComp } from "kaplay";
+import { CompList, GameObj } from "kaplay";
+import { boxSaveComp } from "../components/boxSave";
 import { cloneable } from "../components/cloneable";
 import { grabbable } from "../components/grabbable";
+import { holdOffset } from "../components/holdOffset";
+import { lore } from "../components/lore";
 import { randomFrame } from "../components/randomFrame";
-import { thudder } from "../components/thudder";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { holdOffset } from "../components/holdOffset";
-import { lore } from "../components/lore";
+import { StateManager } from "../save_state";
 
 /**
  * Components for a moveable, grabbable box.
@@ -39,7 +40,7 @@ export function box(): CompList<any> {
         grabbable(),
         holdOffset(K.vec2(0)),
         K.layer("boxes"),
-        K.named("var"),
+        K.named("data"),
         randomFrame(),
         ...throwablePlatformEff(),
         cloneable((orig: GameObj<any>) => [...box(), K.pos((orig as any).pos)], ["frame"]),
@@ -49,5 +50,8 @@ export function box(): CompList<any> {
             section: "&msg.lore.box.section",
             header: "&msg.lore.box.header",
         }),
+        boxSaveComp(),
     ];
 }
+
+StateManager.registerReviver("box", box);

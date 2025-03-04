@@ -1,10 +1,11 @@
 import { AreaComp, Comp, GameObj, Tag } from "kaplay";
-import { ContinuationTrapComp, trap } from "../components/continuationTrap";
+import { ContinuationTrapComp, continuationTrapCore } from "../components/continuationTrap";
 import { K } from "../init";
 import { defaults } from "./default";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
 import { lore } from "../components/lore";
+import { StateManager } from "../save_state";
 
 export function checkpoint() {
     return [
@@ -15,7 +16,7 @@ export function checkpoint() {
         K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
-        trap("checkpoint"),
+        continuationTrapCore("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
         lore(),
@@ -27,6 +28,10 @@ export function checkpoint() {
             }
         } as Comp,
         "raycastIgnore" as Tag,
-        "checkpoint" as Tag
+        "checkpoint" as Tag,
+        "saveable" as Tag,
+        { reviver: "checkpoint" },
     ];
 }
+
+StateManager.registerReviver("checkpoint", checkpoint);

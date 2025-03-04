@@ -1,5 +1,5 @@
 import { Tag } from "kaplay";
-import { trap } from "../components/continuationTrap";
+import { continuationTrapCore } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore } from "../components/lore";
@@ -7,6 +7,7 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
+import { StateManager } from "../save_state";
 
 export function continuationTrap() {
     return [
@@ -22,13 +23,17 @@ export function continuationTrap() {
         }),
         K.offscreen({ hide: true }),
         K.opacity(1),
-        trap("capture"),
+        continuationTrapCore("capture"),
         K.layer("boxes"),
         grabbable(),
         holdOffset(K.vec2(-TILE_SIZE / 6, -TILE_SIZE / 12)),
         K.named("{undefined}"),
         ...throwablePlatformEff(),
         lore(),
-        "continuationTrap" as Tag
+        "continuationTrap" as Tag,
+        "saveable" as Tag,
+        { reviver: "continuationTrap" }
     ];
 }
+
+StateManager.registerReviver("continuationTrap", continuationTrap);

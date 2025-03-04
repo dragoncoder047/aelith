@@ -12,7 +12,8 @@
             "recapture": false,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -36,7 +37,8 @@
             "recapture": false,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -60,7 +62,8 @@
             "recapture": false,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)",
         "flyingEnabled": false,
@@ -84,7 +87,8 @@
             "recapture": true,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -108,7 +112,8 @@
             "recapture": false,
             "reverseTeleport": true,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -132,7 +137,8 @@
             "recapture": false,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": true
+            "editable": true,
+            "global": false
         },
         "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit&tab&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise\n&msg.ctlHint.continuation.remoteMove)",
         "flyingEnabled": true,
@@ -156,7 +162,8 @@
             "recapture": false,
             "reverseTeleport": false,
             "fuzzStates": false,
-            "editable": false
+            "editable": false,
+            "global": true
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)",
         "flyingEnabled": true,

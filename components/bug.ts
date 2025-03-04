@@ -1,9 +1,10 @@
-import { GameObj, PosComp, AreaComp, Comp, SpriteComp, BodyComp, StateComp, ShaderComp, TimerComp, SpriteAnim } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, ShaderComp, SpriteComp, StateComp, TimerComp } from "kaplay";
 import { FOOTSTEP_INTERVAL, WALK_SPEED } from "../constants";
-import { player } from "../player";
 import { K } from "../init";
+import { player } from "../player";
+import { Saveable } from "../save_state";
 
-export interface BugComp extends Comp {
+export interface BugComp extends Comp, Saveable {
     moveDir: number
     finish(): void
     footstepsCounter: 0,
@@ -12,6 +13,7 @@ export interface BugComp extends Comp {
 export function bug(): BugComp {
     return {
         id: "bug",
+        reviver: "bug",
         require: ["pos", "area", "sprite", "body", "state", "shader", "timer"],
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
@@ -95,6 +97,20 @@ export function bug(): BugComp {
                 this.footstepsCounter = 0;
                 player.playSound("bug_footsteps", undefined, this.pos);
             }
+        },
+        liveState(this: GameObj<BugComp | StateComp>) {
+            return { state: this.state, dir: this.moveDir }
+        },
+        deadState(this: GameObj<BugComp | StateComp>) {
+            return { state: this.state, dir: this.moveDir }
+        },
+        restoreDeadState(this: GameObj<BugComp | StateComp>, state) {
+            this.enterState((state as any).state);
+            this.moveDir = (state as any).moveDir;
+        },
+        restoreLiveState(this: GameObj<BugComp | StateComp>, state) {
+            this.enterState((state as any).state);
+            this.moveDir = (state as any).moveDir;
         },
     };
 }

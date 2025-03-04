@@ -81,7 +81,7 @@ player.onDeath(async () => {
     K.get("tail").forEach(t => t.paused = true);
     DEATH_MENU_OBJ.term.chunks = [];
     await typeChunks(DEATH_MENU_OBJ.term, deathMessages, false);
-    WorldManager.activeLevel!.update();
+    WorldManager.activeLevel!.levelObj.update();
     // make resume things
     const allContinuations = K.get<ContinuationComp | NamedComp>("continuation", { only: "comps", recursive: true }).filter(x => x.name === "assert");
     allContinuations.sort((a, b) => a.timestamp - b.timestamp);

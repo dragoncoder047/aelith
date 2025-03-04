@@ -4,6 +4,7 @@ import { clicky } from "../components/clicky";
 import { FRICTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
+import { StateManager } from "../save_state";
 
 export function bugger(): CompList<any> {
     return [
@@ -24,5 +25,8 @@ export function bugger(): CompList<any> {
         bug(),
         clicky(["scared"], ["bug_squeak"]),
         "bug" as Tag,
+        "saveable" as Tag,
     ];
 }
+
+StateManager.registerReviver("bug", bugger);

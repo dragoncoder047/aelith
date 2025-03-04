@@ -1,8 +1,9 @@
 import { Comp, GameObj, StateComp } from "kaplay";
 import { K } from "../init";
+import { Saveable } from "../save_state";
 import { LinkComp } from "./linked";
 
-export interface TogglerComp extends Comp {
+export interface TogglerComp extends Comp, Saveable {
     falseState: string,
     trueState: string,
     toggleMsg: string,
@@ -13,7 +14,7 @@ export interface TogglerComp extends Comp {
 /**
  * Component that implements a machine that toggles state when it receives the "toggle" message.
  */
-export function toggler(falseState: string = "off", trueState: string = "on", initialState: boolean = false, toggleMsg: string = "toggle"): TogglerComp {
+export function toggler(falseState: string = "off", trueState: string = "on", initialState: boolean = false, toggleMsg: string = "toggle"): Omit<TogglerComp, "reviver"> {
     var closure__state = initialState;
     return {
         id: "toggler",
@@ -40,6 +41,18 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
         _syncState(this: GameObj<StateComp | TogglerComp>) {
             var targetState = this.togglerState ? this.trueState : this.falseState;
             if (this.state != targetState) this.enterState(targetState);
-        }
+        },
+        liveState() {
+            return { togglerState: this.togglerState };
+        },
+        deadState() {
+            return { togglerState: this.togglerState };
+        },
+        restoreDeadState(state) {
+            this.togglerState = (state as any).togglerState;
+        },
+        restoreLiveState(state) {
+            this.togglerState = (state as any).togglerState;
+        },
     };
 }

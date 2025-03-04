@@ -7,6 +7,7 @@ import { spriteToggle } from "../components/spriteToggle";
 import { CONVEYOR_SPEED } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { StateManager } from "../save_state";
 
 export function conveyor() {
     return [
@@ -20,5 +21,8 @@ export function conveyor() {
         nudge(0, 8),
         ambiance("conveyor_running"),
         "conveyor" as Tag,
+        { reviver: "conveyor" }
     ]
 }
+
+StateManager.registerReviver("conveyor", conveyor);

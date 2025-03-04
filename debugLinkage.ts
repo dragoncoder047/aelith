@@ -8,7 +8,7 @@ import { WorldManager } from "./levels";
 
 K.add([{
     drawInspect() {
-        const allObjs = WorldManager.activeLevel?.get<LinkComp | PosComp>("linked") ?? [];
+        const allObjs = WorldManager.activeLevel?.levelObj.get<LinkComp | PosComp>("linked") ?? [];
         const groups = new Map<string, GameObj<LinkComp | PosComp>[]>;
         const names: string[] = [];
         for (var obj of allObjs) {

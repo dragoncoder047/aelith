@@ -12,6 +12,7 @@ import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { actuallyRaycast, ballistics } from "../misc/utils";
 import { PlayerHeadComp } from "./head";
 import { WorldManager } from "../levels";
+import { TailComp } from "./tail";
 
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
@@ -44,6 +45,7 @@ export interface PlayerBodyComp extends Comp {
     addControlText(text: string, styles?: string[]): void;
     manpage: GameObj<ManpageComp> | undefined;
     recalculateManpage(): void;
+    tpTo(pos: Vec2): void;
 }
 export function playerBody(): PlayerBodyComp {
     var flashLoop: KEventController;
@@ -57,10 +59,16 @@ export function playerBody(): PlayerBodyComp {
         },
         camFollower: undefined,
         footstepsCounter: 0,
+        tpTo(this: GameObj<PosComp>, pos) {
+            const delta = pos.sub(this.pos);
+            this.moveBy(delta);
+            K.get<TailComp>("tail").forEach(t => t.restore2Pos());
+            K.setCamPos(this.worldPos()!);
+        },
         // MARK: add()
         add(this: GameObj<PlayerBodyComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
-            this.camFollower = this.onUpdate(() => {
+            this.camFollower = this.on("fixedUpdate", () => {
                 K.setCamPos(K.getCamPos().lerp(this.worldPos()!, ALPHA));
             });
         },
@@ -133,7 +141,7 @@ export function playerBody(): PlayerBodyComp {
         /**
          * True if overlapping any game object with the tag "type".
          */
-        intersectingAny(this: GameObj<AreaComp>, type, where = WorldManager.activeLevel) {
+        intersectingAny(this: GameObj<AreaComp>, type, where = WorldManager.activeLevel?.levelObj) {
             return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
         },
         lookingAt: undefined,

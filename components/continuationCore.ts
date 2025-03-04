@@ -5,7 +5,8 @@ import { K } from "../init";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 import { CloneableComp } from "./cloneable";
-import { CDEComps, ContinuationData, ContinuationTrapComp } from "./continuationTrap";
+import { ContinuationTrapComp } from "./continuationTrap";
+import { LiveStateSaveable, LiveState } from "../save_state/live";
 import { controllable, ControllableComp } from "./controllable";
 import { TailComp } from "../player/tail";
 import { splash } from "../misc/particles";
@@ -15,9 +16,9 @@ export interface ContinuationComp extends Comp {
     timestamp: number
     type: keyof typeof contTypes
     trappedBy: GameObj//<ContinuationTrapComp>
-    readonly params: ContinuationData["params"]
+    readonly params: ContinuationTrapComp["params"];
     readonly color: Color
-    captured: ContinuationData
+    captured: LiveState
     worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp>
     invoke(): void,
     activate(): void,
@@ -25,7 +26,7 @@ export interface ContinuationComp extends Comp {
 
 export function continuationCore(
     type: keyof typeof contTypes,
-    captured: ContinuationData,
+    captured: LiveState,
     trap: GameObj<ContinuationTrapComp>
 ): ContinuationComp {
     return {
@@ -49,7 +50,7 @@ export function continuationCore(
             "raycastIgnore" as Tag,
         ]),
         get params() {
-            return this.captured.params;
+            return this.captured.restoreParams!;
         },
         get color() {
             return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
@@ -120,17 +121,19 @@ export function continuationCore(
                 if (e.obj.has("body") && !e.obj.isStatic) {
                     if (shouldClone && canClone) {
                         // It is out of range, clone it
-                        obj = (e.obj as GameObj<CDEComps | CloneableComp<CDEComps>>).clone();
+                        obj = (e.obj as GameObj<LiveStateSaveable | CloneableComp<LiveStateSaveable>>).clone();
                         e.obj.tags.forEach(t => obj.tag(t));
                     }
                     // Update pos and vel
                     obj.pos = e.pos!.add(reverseDelta);
                     obj.vel = K.vec2(0);
                 }
-                if (e.bugState) obj.enterState(e.bugState);
-                obj.togglerState = this.params.fuzzStates ? !obj.togglerState : e.togglerState!;
-                obj.triggered = e.triggeredState!;
-                if (!e.inPlayerInventory) {
+                if (e.state.bug) obj.enterState(e.state.bug);
+                obj.togglerState = this.params.fuzzStates ? !obj.togglerState : e.state.toggle!;
+                obj.triggered = e.state.trigger!;
+                if (e.where !== null) {
+                    // TODO: move to the right world
+                    throw "tdo";
                     player.removeFromInventory(obj as any);
                     const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
                     if (!off && (obj.has("toggler") || obj.has("bug")) && (obj.has("body") || obj.is("interactable"))) {
