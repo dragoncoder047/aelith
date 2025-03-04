@@ -12,8 +12,5 @@ export function invisibleTrigger() {
         ...machine(),
         invisibleTriggerComp(),
         "raycastIgnore" as Tag,
-        { reviver: "invisibleTrigger" }
     ];
 }
-
-StateManager.registerReviver("invisibleTrigger", invisibleTrigger);

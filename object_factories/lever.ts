@@ -16,8 +16,5 @@ export function lever() {
         clicky(),
         "lever" as Tag,
         "interactable" as Tag,
-        { reviver: "lever" },
     ];
 }
-
-StateManager.registerReviver("lever", lever);

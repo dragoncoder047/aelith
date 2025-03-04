@@ -15,6 +15,5 @@ export function machine(areaOpts?: AreaCompOpt) {
         linked(MParser.uid()),
         K.offscreen({ hide: true }),
         ...defaults(areaOpts),
-        "saveable" as Tag,
     ];
 }

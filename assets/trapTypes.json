@@ -13,7 +13,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": false,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -38,7 +40,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": false,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -63,7 +67,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": false,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": false
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)",
         "flyingEnabled": false,
@@ -88,7 +94,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": false,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -113,7 +121,9 @@
             "reverseTeleport": true,
             "fuzzStates": false,
             "editable": false,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": false
         },
         "hint": null,
         "flyingEnabled": false,
@@ -138,7 +148,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": true,
-            "global": false
+            "global": false,
+            "destroysObjects": false,
+            "destroyImmune": true
         },
         "hint": "$fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)\n&msg.ctlHint.continuation.modify\n&msg.ctlHint.continuation.edit&tab&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise\n&msg.ctlHint.continuation.remoteMove)",
         "flyingEnabled": true,
@@ -163,7 +175,9 @@
             "reverseTeleport": false,
             "fuzzStates": false,
             "editable": false,
-            "global": true
+            "global": true,
+            "destroysObjects": true,
+            "destroyImmune": true
         },
         "hint": "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)",
         "flyingEnabled": true,

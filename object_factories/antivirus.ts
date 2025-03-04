@@ -9,8 +9,5 @@ export function antivirus() {
         ...machine(),
         K.offscreen({ hide: false }),
         antivirusComp(),
-        { reviver: "antivirus" }
     ];
 }
-
-StateManager.registerReviver("antivirus", antivirus);

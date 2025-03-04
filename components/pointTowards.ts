@@ -5,11 +5,11 @@ export interface PointTowardsComp extends Comp {
     angleOffset: number;
 }
 
-export function pointTowards(): PointTowardsComp {
+export function pointTowards(what: GameObj<PosComp> | null = null): PointTowardsComp {
     return {
         id: "pointTowards",
         require: ["rotate", "pos"],
-        pointingTowards: null,
+        pointingTowards: what,
         angleOffset: 0,
         update(this: GameObj<PosComp | PointTowardsComp | RotateComp>) {
             if (this.pointingTowards)

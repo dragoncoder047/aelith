@@ -34,20 +34,6 @@ export const player = K.add([
     K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
     K.anchor("center"),
     K.state("normal"),
-    {
-        draw(this: GameObj<PosComp | PlayerBodyComp>) {
-            const h = this.holdingItem;
-            if (h) {
-                // draw the item again on top
-                K.pushTransform();
-                K.pushMatrix((this as any).localTransform.inverse); // weird math
-                K.pushTranslate(h.parent ? h.parent.worldTransform.transformVector(h.worldPos()!, K.vec2(0)) : K.vec2(0));
-                K.pushTranslate(this.worldPos()!.sub(h.worldPos()!));
-                h.draw();
-                K.popTransform();
-            }
-        }
-    },
     "raycastIgnore"
 ]);
 // why is this necessary out here?

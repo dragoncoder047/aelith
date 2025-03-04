@@ -1,7 +1,8 @@
-import { CircleComp, Color, Comp, GameObj, NamedComp, OpacityComp, OutlineComp, PosComp, ShaderComp, SpriteComp, Vec2 } from "kaplay";
+import { CircleComp, Color, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
 import trapTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { WorldManager } from "../levels";
 import { splash } from "../misc/particles";
 import { continuation } from "../object_factories/continuation";
 import { promiseObj } from "../object_factories/promiseObj";
@@ -9,14 +10,14 @@ import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
-import { LiveStateSaveable, LiveObjectState, LiveState } from "../save_state/live";
+import { StateManager } from "../save_state";
+import { WorldSnapshot } from "../save_state/state";
 import { MenuModal, modalmenu } from "../ui/menuFactory";
 import { ContinuationComp } from "./continuationCore";
 import { controllable, ControllableComp } from "./controllable";
 import { LoreComp } from "./lore";
 import { PromiseComp } from "./promise";
 import { zoop, ZoopComp, zoopRadius } from "./zoop";
-import { WorldManager } from "../levels";
 
 export interface ContinuationTrapComp extends Comp {
     isDeferring: boolean
@@ -31,8 +32,7 @@ export interface ContinuationTrapComp extends Comp {
     _menu: MenuModal
     prepare(): void
     capture(): void
-    peekCapture(): LiveState
-    getPlayerPosData(): Vec2
+    peekCapture(): WorldSnapshot
 
     startEditing(): void
     menuUpdate(): void
@@ -50,6 +50,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             { text: "--stack-only", value: "useSelfPosition" },
             { text: "--as-coroutine", value: "recapture" },
             { text: "--force-superimpose", value: "reverseTeleport" },
+            { text: "--cleanup-subprocesses", value: "destroysObjects" },
             { text: "--fuzz", value: "fuzzStates" },
         ] as { text: string, value: keyof ContinuationTrapComp["params"] }[],
         selected: [],
@@ -73,7 +74,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         invalidMsg: "&msg.continuation.edit.invalidName",
     };
     const topMenu: PtyMenu = {
-        id: "agdb tool-edit \"&name\"",
+        id: "agdb config \"&name\"",
         type: "submenu",
         opts: [switchesMenu, cNameMenu, pNameMenu],
     };
@@ -93,11 +94,13 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             recapture: false,
             reverseTeleport: false,
             fuzzStates: false,
+            destroysObjects: false,
 
             // not editable
             concurrent: false,
             editable: false,
             global: false,
+            destroyImmune: false,
         },
         get data() {
             return (trapTypes as any)[(this as any).name!];
@@ -117,9 +120,12 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             K.outline(2, K.RED),
             K.layer("ui"),
             zoop(),
+            K.timer(),
         ]),
         _menu: undefined as any,
-        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp>) {
+        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp | PosComp>) {
+            this.zoop.hidden = true;
+            this.zoop.pos = this.pos;
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
                 if (!this.params.deferred || !this.isDeferring) this.prepare();
@@ -165,7 +171,6 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.controls[0]!.hidden = !this.enabled;
 
             this.zoop.outline.color = this.color;
-            this.zoop.pos = this.getPlayerPosData();
             this.uniform!.u_targetcolor = this.color;
 
             if (!this.zoop.isZooping) {
@@ -211,10 +216,11 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
             if (this.enabled && this.params.radius > 0 && (player.inventory.includes(this as any) || this.isDeferring)) {
                 const willCapture = this.peekCapture();
+                this.zoop.pos = willCapture.playerPos;
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).has("invisible-trigger")) continue;
-                    if (e.where === null) continue;
+                    if (e.location.levelID !== WorldManager.activeLevel!.id) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox)
                         K.drawRect({
@@ -237,7 +243,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.isDeferring = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
-            const cont = K.add(continuation(this.name! as any, data, this)) as unknown as (PlayerInventoryItem & GameObj<ContinuationComp>);
+            const cont = K.add(continuation(this.name! as any, data, this)) as any as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
@@ -249,50 +255,8 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                 this.zoop.hidden = true;
             });
         },
-        peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): LiveState {
-            // TODO: move this to the save state method of Saveable
-            // Capture all of the objects
-            const data: LiveState = {
-                playerPos: this.getPlayerPosData(),
-                worldID: WorldManager.activeLevel!.id,
-                restoreParams: Object.assign({}, this.params),
-                objects: []
-            };
-            if (this.params.radius > 0) {
-                // find all the objects
-                const circle = new K.Circle(data.playerPos, this.params.radius);
-                const foundObjects = K.get<LiveStateSaveable>("machine", { recursive: true })
-                    .filter(obj =>
-                        ((obj as unknown as GameObj<OpacityComp>).opacity === 0
-                            // If opacity is 0, it's a wind tunnel or something else, must use distance to pos
-                            // else just let's see if it collides
-                            ? undefined
-                            : obj.worldArea?.().collides(circle))
-                        ?? obj.worldPos()!.dist(data.playerPos) < this.params.radius)
-                    .filter(obj => !obj.is("checkpoint"))
-                    .concat(player.inventory.filter(x => x.has("body")) as any);
-                for (var obj of foundObjects) {
-                    throw 'tdo';
-                    const e: LiveObjectState = {
-                        obj,
-                        where: player.inventory.includes(obj as any) ? null : WorldManager.activeLevel!.id,
-                        state: {},
-                    };
-                    if (obj.has("body") && !obj.isStatic)
-                        e.pos = (e.where === null ? data.playerPos : obj.pos).clone();
-                    if (obj.has("toggler"))
-                        e.state.toggle = obj.togglerState;
-                    if (obj.has("invisible-trigger"))
-                        e.state.trigger = obj.triggered;
-                    if (obj.has("bug"))
-                        e.state.bug = obj.state;
-                    data.objects.push(e);
-                }
-            }
-            return data;
-        },
-        getPlayerPosData(this: GameObj<ContinuationTrapComp | PosComp>) {
-            return this.params.useSelfPosition ? this.worldPos()! : player.worldPos()!;
+        peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): WorldSnapshot {
+            return StateManager.capture(this.params, this.worldPos()!);
         },
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.params.radius}, preparing: ${this.isDeferring}`;

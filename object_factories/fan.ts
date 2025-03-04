@@ -15,8 +15,5 @@ export function fan() {
         ...machine({ friction: FRICTION }),
         animRun("spin"),
         ambiance("fan_running", "fan_start", "fan_stop"),
-        { reviver: "fan" },
     ];
 }
-
-StateManager.registerReviver("fan", fan);

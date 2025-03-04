@@ -14,8 +14,6 @@ export function trapdoor() {
         K.tile({ isObstacle: true }),
         rollingDoor(),
         clicky(undefined, ["door_closing", "door_opening"]),
-        { reviver: "trapdoor" }
     ];
 }
 
-StateManager.registerReviver("trapdoor", trapdoor);

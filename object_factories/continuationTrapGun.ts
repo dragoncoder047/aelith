@@ -32,8 +32,5 @@ export function continuationTrap() {
         lore(),
         "continuationTrap" as Tag,
         "saveable" as Tag,
-        { reviver: "continuationTrap" }
     ];
 }
-
-StateManager.registerReviver("continuationTrap", continuationTrap);

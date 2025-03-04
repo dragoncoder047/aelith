@@ -25,8 +25,5 @@ export function bugger(): CompList<any> {
         bug(),
         clicky(["scared"], ["bug_squeak"]),
         "bug" as Tag,
-        "saveable" as Tag,
     ];
 }
-
-StateManager.registerReviver("bug", bugger);

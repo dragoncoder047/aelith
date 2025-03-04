@@ -39,8 +39,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 * [X] Make MParser not depend on the world pointer object
 * [X] Create a WorldManager singleton.
 
-* [ ] Make LinkedComp handle linked objects in save state and angle too
-
 * Each level will be an object that contains the data of the level:
   * The level object (make-style prefab)
   * The level name
@@ -52,10 +50,10 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
     * `g` use cross level naming
   * Make NEW vacuum object, like a grabber
 
-* Use build script to pull in text maps to JSON file.
+* [X] Use build script to pull in text maps to JSON file.
 
-* [ ] When player picks up object, make it a child of the player.
-* [ ] When player drops object, make it a child of the active level.
+* [X] When player picks up object, make it a child of the player.
+* [X] When player drops object, make it a child of the active level.
   * [X] Need setParent for this, if it is working
 
 * On loading a new level:

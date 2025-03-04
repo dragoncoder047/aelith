@@ -17,8 +17,6 @@ export function vacuum() {
         vacuumComp(),
         invisibleTriggerComp(),
         clicky(["on"], ["vacuum_activate"]),
-        { reviver: "vacuum" },
     ];
 }
 
-StateManager.registerReviver("vacuum", vacuum);

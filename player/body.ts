@@ -62,6 +62,7 @@ export function playerBody(): PlayerBodyComp {
         tpTo(this: GameObj<PosComp>, pos) {
             const delta = pos.sub(this.pos);
             this.moveBy(delta);
+            K.get<PosComp>("head").forEach(t => t.moveBy(delta));
             K.get<TailComp>("tail").forEach(t => t.restore2Pos());
             K.setCamPos(this.worldPos()!);
         },
@@ -75,7 +76,7 @@ export function playerBody(): PlayerBodyComp {
         flash(this: GameObj<OpacityComp | TimerComp>, duration = 0.5) {
             if (flashLoop) flashLoop.cancel();
             if (stopFlashWaiter) stopFlashWaiter.cancel();
-            flashLoop = this.onUpdate(() => {
+            flashLoop = this.loop(0.05, () => {
                 this.opacity = 1 - this.opacity;
             });
             stopFlashWaiter = this.wait(duration, () => {
@@ -89,7 +90,7 @@ export function playerBody(): PlayerBodyComp {
             other.vel = K.vec2(0);
             const offset = other.has("hold-offset") ? (other as GameObj<HoldOffsetComp> & PlayerInventoryItem).holdOffset : K.vec2(0);
             const fOffset = this.flipX ? offset.reflect(K.RIGHT) : offset;
-            other.moveTo(this.worldPos()!.add((other as any).worldTransform.transformVector(K.vec2(0), K.vec2(0))).add(fOffset));
+            other.pos = fOffset;
         },
         // MARK: update()
         update(this: GameObj<PlayerBodyComp | BodyComp>) {
@@ -265,6 +266,8 @@ export function playerBody(): PlayerBodyComp {
         holdingIndex: -1,
         addToInventory(this: GameObj<PlayerBodyComp>, obj) {
             if (this.inventory.includes(obj)) return;
+            obj.setParent(this, { keep: K.KeepFlags.Pos });
+            this._pull2Pos(obj);
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
@@ -287,8 +290,11 @@ export function playerBody(): PlayerBodyComp {
             if (i === -1) return;
             obj.paused = obj.hidden = false;
             if (obj.exists()) {
+                const p = obj.worldPos()!;
+                obj.parent = WorldManager.activeLevel!.levelObj;
+                obj.worldPos(p);
+                obj.vel = K.vec2(0);
                 obj.trigger("inactive");
-                obj.moveTo(this.worldPos()!.sub((obj.parent?.worldPos?.())! ?? K.vec2(0)));
             }
             this.inventory.splice(i, 1);
             if (this.holdingIndex > i || this.holdingIndex === this.inventory.length)

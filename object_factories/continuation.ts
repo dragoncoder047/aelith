@@ -2,19 +2,18 @@ import { BodyComp, GameObj, RotateComp, Tag } from "kaplay";
 import continuationTypes from "../assets/trapTypes.json" with { type: "json" };
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationTrapComp } from "../components/continuationTrap";
-import { LiveState } from "../save_state/live";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore, LoreComp } from "../components/lore";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { WorldSnapshot } from "../save_state/state";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { StateManager } from "../save_state";
 
 export function continuation(
     type: keyof typeof continuationTypes,
-    captured: LiveState,
+    captured: WorldSnapshot,
     trap: GameObj<ContinuationTrapComp | LoreComp>
 ) {
     return [
@@ -50,8 +49,5 @@ export function continuation(
         "continuation" as Tag,
         lore(trap.lore),
         "saveable" as Tag,
-        { reviver: "continuation" }
     ];
 }
-
-StateManager.registerReviver("continuation", continuation);

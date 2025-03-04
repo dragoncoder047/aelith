@@ -1,84 +1,156 @@
-import { CompList, GameObj } from "kaplay";
+import { Color, GameObj, OpacityComp, Vec2 } from "kaplay";
+import { K } from "../init";
 import { WorldManager } from "../levels";
 import { player } from "../player";
-import { DeadObjectState, DeadState } from "./dead";
-import { LiveObjectState, LiveStateSaveable, LiveState, Snapshot } from "./live";
-import { K } from "../init";
+import { ObjectSnapshot, RestoreFlags, StateComps, WorldSnapshot } from "./state";
+import { CloneableComp } from "../components/cloneable";
+import { splash } from "../misc/particles";
+import { ContinuationComp } from "../components/continuationCore";
 
-export interface Saveable {
-    liveState(): LiveObjectState["state"];
-    deadState(): DeadObjectState["state"];
-    reviver: string;
-    restoreLiveState(state: LiveObjectState["state"]): void;
-    restoreDeadState(state: DeadObjectState["state"]): void;
-}
-
-type ReviveFunction = () => CompList<any>;
 
 export const StateManager = {
-    revivers: {} as Record<string, ReviveFunction>,
-    registerReviver(id: string, factory: ReviveFunction) {
-        this.revivers[id] = factory;
-    },
-    snapshot(restoreParams: LiveState["restoreParams"]): Snapshot {
-        const c1 = K.onTag((obj, tag) => {
-            if (tag === "saveable") theState.objectsToBeDestroyed.add(obj);
-        });
-        const c2 = K.onDestroy("saveable", obj => theState.objectsToBeDestroyed.delete(obj));
-        const theState: Snapshot = {
-            playerPos: player.pos,
+    capture(params: WorldSnapshot["restoreParams"], selfPos: Vec2): WorldSnapshot {
+        // Capture all of the objects
+        const data: WorldSnapshot = {
+            playerPos: params.useSelfPosition ? selfPos : player.worldPos()!,
             worldID: WorldManager.activeLevel!.id,
+            restoreParams: Object.assign({}, params),
             objects: [],
-            objectsToBeDestroyed: new Set<GameObj>,
-            cancel() { c1.cancel(); c2.cancel(); },
-            restoreParams,
+            afterObjects: new Set,
         };
-        for (var id of Object.keys(WorldManager.allLevels)) {
-            for (var obj of WorldManager.allLevels[id]!.levelObj.get<LiveStateSaveable>("saveable")) {
-                if (!this.isSaveable(obj)) throw new Error("Not saveable obj " + obj.tags);
-                theState.objects.push({
-                    obj,
-                    where: id,
-                    state: obj.liveState(),
-                });
+        if (params.radius > 0 || params.global) {
+            for (var key of (params.global ? Object.keys(WorldManager.allLevels) : [WorldManager.activeLevel!.id])) {
+                // find all the objects
+                const circle = new K.Circle(data.playerPos, params.radius);
+                const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine", { recursive: true })
+                    .filter(obj =>
+                        ((obj as unknown as GameObj<OpacityComp>).opacity === 0
+                            // If opacity is 0, it's a wind tunnel or something else, must use distance to pos
+                            // else just let's see if it collides
+                            ? undefined
+                            : obj.worldArea?.().collides(circle))
+                        ?? obj.worldPos()!.sdist(data.playerPos) < (params.radius * params.radius))
+                    .filter(obj => !obj.is("checkpoint"))
+                    .concat(player.inventory.filter(x => x.has("body")) as any);
+                for (var obj of foundObjects) {
+                    const inInventory = player.inventory.includes(obj as any);
+                    const e: ObjectSnapshot = {
+                        obj,
+                        restoreFlags: this.getRestoreFlags(obj),
+                        location: {
+                            levelID: inInventory ? null : key,
+                            pos: (inInventory ? data.playerPos : obj.worldPos()!).clone(),
+                            angle: obj.angle,
+                        },
+                        state: {
+                            toggle: obj.togglerState,
+                            trigger: obj.triggered,
+                            bug: obj.state,
+                        },
+                    };
+                    data.objects.push(e);
+                }
             }
         }
-        return theState;
-    },
-    restoreSnapshot(snapshot: Snapshot) {
-        snapshot.cancel();
-        for (var s of snapshot.objects) {
-            s.obj.pos = s.pos!;
-            s.obj.restoreLiveState(s.state);
+        if (params.destroysObjects) {
+            K.onAdd((obj: any) => {
+                if (obj.is("machine") || obj.is("continuation")) {
+                    data.afterObjects.add(obj);
+                    K.debug.log("added object", obj.id);
+                }
+            });
         }
-        player.tpTo(snapshot.playerPos);
-        snapshot.objectsToBeDestroyed.forEach(o => o.destroy());
+        return data;
     },
-    captureLive(captureParams: LiveState["restoreParams"]): LiveState {
-        if (captureParams?.global) return this.snapshot(captureParams);
+    getRestoreFlags(obj: GameObj): number {
+        var out = 0;
+        if (obj.has("body") && !obj.isStatic)
+            out |= RestoreFlags.pos;
+        if (obj.has("toggler"))
+            out |= RestoreFlags.toggle;
+        if (obj.has("invisible-trigger"))
+            out |= RestoreFlags.trigger;
+        if (obj.has("bug"))
+            out |= RestoreFlags.bug;
+        return out;
     },
-    restoreDead(state: DeadState) {
-        throw "TODO";
-    },
-    restoreLive(state: LiveState) {
-        if (state.restoreParams?.global) return this.restoreSnapshot(state as any);
-        throw "TODO";
-    },
-    liveStateFor(obj: GameObj<LiveStateSaveable>, state: LiveObjectState["state"]): LiveObjectState {
-        return {
-            obj,
-            where: player.inventory.includes(obj as any) ?
-                null
-                : WorldManager.activeLevel!.id,
-            state,
+    async restore(state: WorldSnapshot, color: Color) {
+        // do restore of captured data
+        const p = player.worldPos()!;
+        const delta = state.playerPos.sub(p);
+        const reverseDelta = K.vec2(0);
+
+        if (state.restoreParams.reverseTeleport) {
+            // do move
+            reverseDelta.x = -delta.x;
+            reverseDelta.y = -delta.y;
+            // don't move
+            delta.x = delta.y = 0;
+            state.worldID = WorldManager.activeLevel!.id;
+        }
+
+        if (state.worldID !== WorldManager.activeLevel!.id) {
+            await WorldManager.goLevel(state.worldID, false, true);
+        }
+        if (!delta.isZero()) {
+            player.tpTo(player.pos.add(delta));
+        }
+        player.playSound("teleport");
+        player.trigger("teleport");
+        splash(player.pos, color);
+        for (var e of state.objects) {
+            var obj = e.obj;
+            const canClone = e.obj.has("cloneable");
+            const shouldClone = (
+                !state.restoreParams.reverseTeleport
+                && (player.inventory.includes(e.obj as any) ? state.playerPos : e.obj.pos)
+                    .sdist(state.playerPos) > (state.restoreParams.radius * state.restoreParams.radius))
+            if (e.restoreFlags & RestoreFlags.pos) {
+                if (shouldClone && canClone) {
+                    // It is out of range, clone it
+                    obj = (e.obj as GameObj<StateComps | CloneableComp<StateComps>>).clone();
+                    e.obj.tags.forEach(t => obj.tag(t));
+                }
+                // Update pos, angle
+                obj.worldPos(e.location.pos.add(reverseDelta));
+                obj.angle = e.location.angle;
+            }
+            if (e.restoreFlags & RestoreFlags.bug)
+                obj.enterState(e.state.bug!);
+            if (e.restoreFlags & RestoreFlags.toggle)
+                obj.togglerState = state.restoreParams.fuzzStates ? !obj.togglerState : e.state.toggle!;
+            if (e.restoreFlags & RestoreFlags.trigger)
+                obj.triggered = e.state.trigger!;
+            if (e.location.levelID !== null) {
+                player.removeFromInventory(obj as any);
+                obj.setParent(WorldManager.allLevels[e.location.levelID]!.levelObj, { keep: K.KeepFlags.Pos });
+                const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
+                if (e.location.levelID === state.worldID
+                    && !off
+                    && (obj.has("toggler") || obj.has("bug"))
+                    && (obj.has("body") || obj.is("interactable"))) {
+                    splash(obj.pos, color, undefined, undefined, obj.tags.filter(x => x !== "*"));
+                }
+            }
+            else
+                player.addToInventory(obj as any);
+            // If it is a button or laser that *was* triggered by a box when captured, but
+            // isn't triggered currently, the following happens when the continuation is
+            // invoked:
+            // 1. The box is moved back, so that it is triggering the button or laser.
+            // 2. The button/laser state is surreptitiously restored by the continuation.
+            // 3. On the next frame, the button/laser notices that it got triggered, and toggles
+            //    state - undoing the continuation invocation.
+            // To prevent #3 from occuring, the button/laser is told to ignore new triggers for
+            // 5 physics frames (0.1 seconds) after being restored.
+            if (obj.has("collisioner"))
+                obj.ignoreTriggerTimeout = 5;
+        }
+        for (var obj of state.afterObjects) {
+            if (!obj.exists()) continue;
+            if ((obj as any as GameObj<ContinuationComp>).params?.destroyImmune) continue;
+            obj.destroy();
+            K.debug.log("destroyed obj", obj.id);
         }
     },
-    isSaveable(obj: GameObj) {
-        return (
-            typeof obj.toLiveState === "function"
-            && obj.toLiveState.length === 0
-            && typeof obj.toDeadState === "function"
-            && obj.toDeadState.length === 0
-        );
-    }
 };

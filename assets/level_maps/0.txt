@@ -1,3 +1,10 @@
+
+     T(name)(setjmp)sz
+    Xz     @       Az
+
+######################
+######################
+
 o(value)(&msg.startup.pressToBegin)s1(ns)i
 o(value)o(text)()ss(waitKey)(enter)s(showCursor)1s(ignoreJumpSkip)1s(pu)i
 o(value)(&msg.startup.password)s(clear)1s(pu)i
@@ -18,17 +25,3 @@ o(value)()s(showCursor)1s(pu)i
 (&gamename)(name)d
 
 [TODO: add the level here!]
-
-    Xz     @
-
-
-
-
-
-
-
-
-
-           _
-######################
-######################

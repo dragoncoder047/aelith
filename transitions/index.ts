@@ -5,6 +5,7 @@ import { K } from "../init";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PtyChunk, PtyComp, TypableOne } from "../plugins/kaplay-pty";
 import { createPrompt } from "../ui/menuFactory";
+import { nextFrame } from "../misc/utils";
 
 export type TextChunk = ({
     clear?: boolean,
@@ -125,19 +126,15 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
 export async function typeChunks(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunkCompressed[], isTesting: boolean) {
     for (var chunk of chunks.map(c => decompressTextChunk(c))) {
         if (chunk.clear) terminal.chunks = [];
+        const cancel = chunk.ignoreJumpSkip && !isTesting
+            ? new Promise<never>(() => { })
+            : isTesting ? nextFrame() : jumpWait();
         if (chunk.isCommand) {
-            await terminal.command(
-                chunk.command, chunk.output,
-                chunk.ignoreJumpSkip && !isTesting
-                    ? new Promise(() => { })
-                    : jumpWait());
+            await terminal.command(chunk.command, chunk.output, cancel);
         }
         else {
             terminal.showCursor = !!chunk.showCursor;
-            await terminal.type(chunk.value,
-                chunk.ignoreJumpSkip && !isTesting
-                    ? new Promise(() => { })
-                    : jumpWait());
+            await terminal.type(chunk.value, cancel);
         }
     }
 }

@@ -24,7 +24,5 @@ export function button() {
         collisioner(),
         clicky(),
         "noCollideWithTail" as Tag,
-        { reviver: "button" }
     ];
 }
-StateManager.registerReviver("button", button);

@@ -23,8 +23,6 @@ export function popupTextNote() {
         } as Comp,
         "raycastIgnore" as Tag,
         "saveable" as Tag,
-        { reviver: "popupText" }
     ]
 }
 
-StateManager.registerReviver("popupText", popupTextNote);

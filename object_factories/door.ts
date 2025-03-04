@@ -20,8 +20,5 @@ export function door() {
         rollingDoor(),
         nudge(0, TILE_SIZE / 2),
         clicky(undefined, ["door_closing", "door_opening"]),
-        { reviver: "door" }
     ];
 }
-
-StateManager.registerReviver("door", door);

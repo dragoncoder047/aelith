@@ -1,9 +1,8 @@
 import { Comp, GameObj, StateComp } from "kaplay";
 import { K } from "../init";
-import { Saveable } from "../save_state";
 import { LinkComp } from "./linked";
 
-export interface TogglerComp extends Comp, Saveable {
+export interface TogglerComp extends Comp {
     falseState: string,
     trueState: string,
     toggleMsg: string,
@@ -41,18 +40,6 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
         _syncState(this: GameObj<StateComp | TogglerComp>) {
             var targetState = this.togglerState ? this.trueState : this.falseState;
             if (this.state != targetState) this.enterState(targetState);
-        },
-        liveState() {
-            return { togglerState: this.togglerState };
-        },
-        deadState() {
-            return { togglerState: this.togglerState };
-        },
-        restoreDeadState(state) {
-            this.togglerState = (state as any).togglerState;
-        },
-        restoreLiveState(state) {
-            this.togglerState = (state as any).togglerState;
         },
     };
 }

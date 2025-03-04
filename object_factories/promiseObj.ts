@@ -38,8 +38,6 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
         "continuation" as Tag,
         lore(controlling.lore),
         "saveable" as Tag,
-        { reviver: "promise" }
     ];
 }
 
-StateManager.registerReviver("promise", promiseObj);

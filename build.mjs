@@ -183,6 +183,7 @@ const config = {
                     }
                     const ws = JSON.stringify(worlds);
                     fs.writeFileSync("assets/level_maps/ALL.json", ws);
+                    console.error(`rebuilt levels/ALL.json`);
                 });
             }
         }
@@ -195,9 +196,9 @@ if (process.argv.includes("-w")) {
         setup(build) {
             build.onEnd(result => {
                 if (result.errors.length == 0)
-                    console.error(`[${new Date().toISOString()}] rebuilt ${config.outfile} success!`);
+                    console.error(`rebuilt ${config.outfile} OK`);
                 else
-                    console.error(`[${new Date().toISOString()}] failed to build ${config.outfile}!`)
+                    console.error(`failed to build ${config.outfile}`);
             });
         },
     });

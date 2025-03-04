@@ -30,8 +30,5 @@ export function checkpoint() {
         "raycastIgnore" as Tag,
         "checkpoint" as Tag,
         "saveable" as Tag,
-        { reviver: "checkpoint" },
     ];
 }
-
-StateManager.registerReviver("checkpoint", checkpoint);

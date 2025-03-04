@@ -11,8 +11,6 @@ export function light() {
         ...machine(),
         K.anchor("bot"),
         "raycastIgnore" as Tag,
-        { reviver: "light" }
     ]
 }
 
-StateManager.registerReviver("light", light);

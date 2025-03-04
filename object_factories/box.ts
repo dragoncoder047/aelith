@@ -1,5 +1,4 @@
 import { CompList, GameObj } from "kaplay";
-import { boxSaveComp } from "../components/boxSave";
 import { cloneable } from "../components/cloneable";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
@@ -9,7 +8,6 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 import { machine } from "./machine";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { StateManager } from "../save_state";
 
 /**
  * Components for a moveable, grabbable box.
@@ -26,15 +24,15 @@ export function box(): CompList<any> {
             friction: FRICTION,
             restitution: RESTITUTION,
             shape: new K.Polygon([
-                K.vec2(-TILE_SIZE * 7 / 16, -TILE_SIZE / 2),
-                K.vec2(TILE_SIZE * 7 / 16, -TILE_SIZE / 2),
-                K.vec2(TILE_SIZE / 2, -TILE_SIZE * 7 / 16),
-                K.vec2(TILE_SIZE / 2, TILE_SIZE * 7 / 16),
-                K.vec2(TILE_SIZE * 7 / 16, TILE_SIZE / 2),
-                K.vec2(-TILE_SIZE * 7 / 16, TILE_SIZE / 2),
-                K.vec2(-TILE_SIZE / 2, TILE_SIZE * 7 / 16),
-                K.vec2(-TILE_SIZE / 2, -TILE_SIZE * 7 / 16),
-            ]),
+                K.vec2(-7 / 16, -1 / 2),
+                K.vec2(7 / 16, -1 / 2),
+                K.vec2(1 / 2, -7 / 16),
+                K.vec2(1 / 2, 7 / 16),
+                K.vec2(7 / 16, 1 / 2),
+                K.vec2(-7 / 16, 1 / 2),
+                K.vec2(-1 / 2, 7 / 16),
+                K.vec2(-1 / 2, -7 / 16),
+            ].map(v => v.scale(TILE_SIZE)).toReversed()),
         }),
         K.tile({ isObstacle: true }),
         grabbable(),
@@ -50,8 +48,5 @@ export function box(): CompList<any> {
             section: "&msg.lore.box.section",
             header: "&msg.lore.box.header",
         }),
-        boxSaveComp(),
     ];
 }
-
-StateManager.registerReviver("box", box);

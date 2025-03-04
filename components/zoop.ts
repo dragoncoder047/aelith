@@ -1,4 +1,4 @@
-import { CircleComp, Comp, GameObj } from "kaplay";
+import { CircleComp, Comp, GameObj, TimerComp } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 
@@ -12,22 +12,19 @@ export function zoop(): ZoopComp {
     const onZoopEnds = new K.KEvent();
     return {
         id: "zoop",
-        require: ["circle"],
+        require: ["circle", "timer"],
         zoopSpeed: TILE_SIZE * 25,
         isZooping: false,
-        update(this: GameObj<ZoopComp | CircleComp>) {
-            if (!this.isZooping) return;
-            this.radius -= this.zoopSpeed * K.dt();
-            if (this.radius < 0) {
+        zoop(this: GameObj<ZoopComp | CircleComp | TimerComp>, radius) {
+            this.radius = radius ?? this.radius;
+            const tc = this.tween(this.radius, 0, this.radius / this.zoopSpeed, v => this.radius = v);
+            this.hidden = false;
+            this.isZooping = true;
+            tc.onEnd(() => {
                 this.hidden = true;
                 this.isZooping = false;
                 onZoopEnds.trigger();
-            }
-        },
-        zoop(this: GameObj<ZoopComp | CircleComp>, radius) {
-            this.radius = radius ?? this.radius;
-            this.isZooping = true;
-            this.hidden = false;
+            });
             return new Promise(r => onZoopEnds.addOnce(() => r()));
         }
     }
