@@ -2,7 +2,6 @@ import { Tag } from "kaplay";
 import { spriteToggle } from "../components/spriteToggle";
 import { K } from "../init";
 import { machine } from "./machine";
-import { StateManager } from "../save_state";
 
 export function light() {
     return [

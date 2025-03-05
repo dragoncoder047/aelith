@@ -1,6 +1,4 @@
-uniform vec3 u_targetcolor;
 uniform float u_time;
-uniform float u_octave;
 uniform float u_staticrand;
 uniform float u_angle;
 
@@ -51,17 +49,25 @@ vec2 rotateUV(vec2 uv, float rotation) {
 
 float chgnoise(vec2 pos) {
     // tweak this to make it look better...
-    float moving = perlin(vec3(pos.x, pos.y + u_time, u_staticrand) * u_octave);
-    float constant = perlin(vec3(pos, u_time) * u_octave * 1.5);
+    float moving = perlin(vec3(pos.x, pos.y + u_time, u_staticrand) * 2.);
+    float constant = perlin(vec3(pos, u_time) * 3.);
     return moving * constant * 2.;
 }
 
+vec3 hsv2rgb(vec3 c) {
+    // from https://stackoverflow.com/a/17897228/23626926
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-    uv = rotateUV(uv, u_angle);
-    if(uv.y < .03125)
-        return vec4(u_targetcolor / 255., 1.);
-    float alpha = (1. - uv.y) * sin(uv.x * 3.141592653589);
-    float noiseval = chgnoise(uv);
+    vec2 uv2 = rotateUV(uv, u_angle);
+    if(uv2.y < .03125)
+        return vec4(1.);
+    float alpha = (1. - uv2.y) * sin(uv2.x * 3.141592653589);
+    float noiseval = chgnoise(uv2);
     alpha *= noiseval;
-    return vec4(u_targetcolor / 255., alpha);
+    vec3 rainbow = hsv2rgb(vec3(perlin(vec3(uv2 + u_staticrand, u_time)), 1., .5));
+    return vec4(rainbow, alpha);
 }

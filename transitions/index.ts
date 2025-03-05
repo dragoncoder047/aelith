@@ -64,7 +64,7 @@ function command(
     };
 }
 
-export async function playTransition(name: string, tran: TextChunkCompressed[], halfCut: boolean = false) {
+export async function playTransition(name: string, tran: TextChunkCompressed[], halfCut: boolean = false, switchFun = () => { }) {
     var u_amount = 0;
     K.usePostEffect("fuzzy", () => ({ u_amount }));
     if (!halfCut) await K.tween(0, 1, 0.5, a => u_amount = a);
@@ -114,6 +114,7 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
         K.layer("text"),
     ]);
     term.prompt = createPrompt();
+    switchFun();
     if (!halfCut) {
         await K.wait(0.2);
         await K.tween(1, 0, 0.7, a => u_amount = a);

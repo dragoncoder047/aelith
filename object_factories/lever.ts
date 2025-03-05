@@ -4,7 +4,6 @@ import { spriteToggle } from "../components/spriteToggle";
 import { toggleSwitch } from "../components/toggleSwitch";
 import { K } from "../init";
 import { machine } from "./machine";
-import { StateManager } from "../save_state";
 
 export function lever() {
     return [

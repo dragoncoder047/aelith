@@ -3,7 +3,6 @@ import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
-import { StateManager } from "../save_state";
 
 export function invisibleTrigger() {
     return [

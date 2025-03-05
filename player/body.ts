@@ -156,7 +156,7 @@ export function playerBody(): PlayerBodyComp {
                 this.lookingAt = undefined;
                 if (!this.lookingDirection) break;
 
-                const allObjects = K.get<AreaComp>("area", { recursive: true, only: "comps" })
+                const allObjects = WorldManager.activeLevel!.levelObj.get<AreaComp>("area")
                     .filter(x => !(this.inventory as any[]).includes(x)
                         && x.collisionIgnore.isDisjointFrom(this.tagsAsSet)
                         && !x.is("raycastIgnore")

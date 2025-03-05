@@ -1,4 +1,4 @@
-import { AreaCompOpt, GameObj, OffScreenComp, SpriteComp } from "kaplay";
+import { AreaCompOpt } from "kaplay";
 import { K } from "../init";
 
 /**

@@ -24,13 +24,14 @@ export const StateManager = {
                 const circle = new K.Circle(data.playerPos, params.radius);
                 const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine", { recursive: true })
                     .filter(obj =>
-                        ((obj as unknown as GameObj<OpacityComp>).opacity === 0
+                        !obj.is("checkpoint")
+                        && !obj.is("portal")
+                        && (((obj as unknown as GameObj<OpacityComp>).opacity === 0
                             // If opacity is 0, it's a wind tunnel or something else, must use distance to pos
                             // else just let's see if it collides
                             ? undefined
                             : obj.worldArea?.().collides(circle))
-                        ?? obj.worldPos()!.sdist(data.playerPos) < (params.radius * params.radius))
-                    .filter(obj => !obj.is("checkpoint"))
+                            ?? obj.worldPos()!.sdist(data.playerPos) < (params.radius * params.radius)))
                     .concat(player.inventory.filter(x => x.has("body")) as any);
                 for (var obj of foundObjects) {
                     const inInventory = player.inventory.includes(obj as any);
@@ -55,7 +56,7 @@ export const StateManager = {
         if (params.destroysObjects) {
             // Must use onTag cause objects get tags later when they get cloned
             K.onTag((obj: any, tag: string) => {
-                if (tag === "machine" ||  tag === "continuation") {
+                if (tag === "machine" || tag === "continuation") {
                     data.afterObjects.add(obj);
                 }
             });
@@ -93,7 +94,7 @@ export const StateManager = {
             await WorldManager.goLevel(state.worldID, false, true);
         }
         if (!delta.isZero()) {
-            player.tpTo(player.pos.add(delta));
+            player.tpTo(p.add(delta));
         }
         player.playSound("teleport");
         player.trigger("teleport");
@@ -123,7 +124,10 @@ export const StateManager = {
                 obj.triggered = e.state.trigger!;
             if (e.location.levelID !== null) {
                 player.removeFromInventory(obj as any);
-                obj.setParent(WorldManager.allLevels[e.location.levelID]!.levelObj, { keep: K.KeepFlags.Pos });
+                const tLevel = WorldManager.allLevels[e.location.levelID]!.levelObj;
+                obj.setParent(tLevel, { keep: K.KeepFlags.Pos });
+                obj.hidden = tLevel.hidden;
+                obj.paused = tLevel.paused;
                 const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
                 if (e.location.levelID === state.worldID
                     && !off

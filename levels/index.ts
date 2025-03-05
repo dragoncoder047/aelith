@@ -43,18 +43,30 @@ export const WorldManager = {
         }
     },
     async goLevel(id: string, halfCut: boolean = false, instant: boolean = false) {
-        const level = this.allLevels[id];
-        if (!level) throw new Error(`no such level: "${id}"`);
-        player.hidden = true;
-        this.pause(true);
-        if (!instant) await playTransition(level.name, level.introduction, halfCut);
-        this.activeLevel = level;
+        const levelTo = this.allLevels[id];
+        if (!levelTo) throw new Error(`no such level: "${id}"`);
+        if (instant) {
+            this.pause(true);
+            this.activeLevel = levelTo;
+        }
+        else {
+            player.paused = true;
+            await playTransition(levelTo.name, levelTo.introduction, halfCut, () => {
+                this.pause(true);
+                this.activeLevel = levelTo;
+            });
+        }
         player.hidden = false;
-        player.tpTo(level.initialPos ?? K.vec2(0));
+        player.tpTo(levelTo.initialPos ?? K.vec2(0));
         this.pause(false);
     },
-    activateLevel(level: GameObj<LevelComp>, running: boolean) {
-        level.get("*", { recursive: true }).forEach(o => o.paused = o.hidden = !running);
+    activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {
+        level.get("*", { recursive: true }).forEach(o => {
+            o.paused = !running;
+            o.hidden = !visible;
+        });
+        level.paused = !running;
+        level.hidden = !visible;
     },
     pause(isPaused: boolean) {
         if (this.activeLevel) {

@@ -7,7 +7,6 @@ import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constant
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { StateManager } from "../save_state";
 
 export function continuationTrap() {
     return [

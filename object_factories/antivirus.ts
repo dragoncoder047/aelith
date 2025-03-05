@@ -1,6 +1,5 @@
 import { antivirus as antivirusComp } from "../components/antivirus";
 import { K } from "../init";
-import { StateManager } from "../save_state";
 import { machine } from "./machine";
 
 export function antivirus() {

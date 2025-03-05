@@ -30,7 +30,7 @@ import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { specialGrating } from "../object_factories/specialGrating";
 import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
-import { vacuum } from "../object_factories/vacuum";
+import { portal } from "../object_factories/portal";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
@@ -47,12 +47,20 @@ export class MParser {
         A: checkpoint,
         B: button,
         C: conveyor,
-        D: door, // E
-        F: fan, // G, H
-        I: invisibleTrigger, // J, K
+        D: door,
+        // E
+        F: fan,
+        // G
+        // H
+        I: invisibleTrigger,
+        // J
+        // K
         L: light,
         M: popupTextNote,
-        N: textNote, // O, P, Q
+        N: textNote,
+        // O
+        P: portal,
+        // Q
         R: bugger,
         S: lever,
         T: continuationTrap,
@@ -60,7 +68,8 @@ export class MParser {
         V: antivirus,
         W: windEnd,
         X: box,
-        Y: vacuum, // Z
+        // Y
+        // Z
     };
     // MARK: fixedTiles
     /**
@@ -519,7 +528,7 @@ export class MParser {
      */
     merge(w: GameObj<LevelComp>) {
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "pipe"];
+        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "pipe", "portal"];
         for (var tag of allowedTags) {
             const tiles: { [pos: string]: GameObj<MergeableComp | PosComp | SpriteComp> } = {};
             // get original tiles in a grid

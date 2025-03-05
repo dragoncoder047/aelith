@@ -4,7 +4,6 @@ import { clicky } from "../components/clicky";
 import { FRICTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
-import { StateManager } from "../save_state";
 
 export function bugger(): CompList<any> {
     return [

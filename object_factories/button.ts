@@ -1,13 +1,12 @@
 import { Tag } from "kaplay";
 import { button as buttonComp } from "../components/button";
 import { clicky } from "../components/clicky";
+import { collisioner } from "../components/collisioner";
 import { nudge } from "../components/nudge";
 import { spriteToggle } from "../components/spriteToggle";
 import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
-import { collisioner } from "../components/collisioner";
-import { StateManager } from "../save_state";
 
 export function button() {
     return [

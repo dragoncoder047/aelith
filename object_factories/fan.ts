@@ -1,10 +1,9 @@
 import { ambiance } from "../components/ambientSound";
 import { animRun } from "../components/animRun";
+import { fan as fanComp } from "../components/fan";
 import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
-import { fan as fanComp } from "../components/fan"
-import { StateManager } from "../save_state";
 
 export function fan() {
     return [

@@ -1,11 +1,10 @@
 import { AreaComp, Comp, GameObj, Tag } from "kaplay";
 import { ContinuationTrapComp, continuationTrapCore } from "../components/continuationTrap";
-import { K } from "../init";
-import { defaults } from "./default";
+import { lore } from "../components/lore";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
-import { lore } from "../components/lore";
-import { StateManager } from "../save_state";
+import { K } from "../init";
+import { defaults } from "./default";
 
 export function checkpoint() {
     return [
