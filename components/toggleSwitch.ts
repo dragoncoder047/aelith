@@ -14,6 +14,7 @@ export function toggleSwitch(msg: string = "toggle"): TogglerSwitchComp {
         add(this: GameObj<AreaComp | PosComp | LinkComp>) {
             this.on("interact", () => {
                 this.broadcast(msg);
+                this.trigger("pull")
             });
         }
     };

@@ -133,8 +133,17 @@
         "showControlHints": "Show control hints",
         "playBgMusic": "Play background music",
         "playSfx": "Play sound effects",
+        "playCutsceneEveryTime": "Play level transition every time",
         "restart": "Restart game",
-        "reallyRestart": "Are you sure you want to restart?\n  All progress will be lost!"
+        "reallyRestart": "Are you sure you want to restart?\n  All progress will be lost!",
+        "stats": {
+            "heading": "Statistics",
+            "none": "Nothing significant yet...",
+            "continuations_invoked": "continuations invoked",
+            "bugs_stomped": "bugs stomped",
+            "levers_switched": "levers pulled",
+            "boxes_cloned": "memory reallocated"
+        }
     },
     "dead": {
         "complete": "Debugging complete.",

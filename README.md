@@ -58,6 +58,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Add a sprite for the crossover component.
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bugs where horn disappears when invoking continuation
 * [ ] Add more challenges that test all features of call/cc.
@@ -76,6 +77,8 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Add a preference to only show the lore cutscene every time or the first time.
+* [X] Add a stats counter in pause menu (boxes cloned, continuations invoked, bugs stomped, levers switched, lightbulbs illuminated)
 * [X] Make call/cc be able to be remotely driven when holding promise
 * [X] Add background pipes block art
 * [X] Make fans calculate the wind automatically rather than just fixed wind tunnel object

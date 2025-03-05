@@ -11,13 +11,14 @@ export function playMusic(options: AudioPlayOpt) {
         currentPlayer = K.play(K.choose(SONGS), options);
         currentPlayer.onEnd(playNext);
     }
-    playNext();
+    K.onLoad(playNext);
     return {
         get paused() {
-            return currentPlayer.paused;
+            return currentPlayer?.paused;
         },
         set paused(x) {
-            currentPlayer.paused = x;
+            if (currentPlayer)
+                currentPlayer.paused = x;
         },
     };
 }

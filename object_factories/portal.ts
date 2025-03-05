@@ -17,6 +17,7 @@ export function portal() {
         mergeable(),
         K.named("undefined"),
         "raycastIgnore",
+        "noCollideWithTail",
     ];
 }
 

@@ -64,15 +64,15 @@ function command(
     };
 }
 
-export async function playTransition(name: string, tran: TextChunkCompressed[], halfCut: boolean = false, switchFun = () => { }) {
+export async function playTransition(name: string, tran: TextChunkCompressed[], fast = false, first = false, switchFun = () => { }) {
     var u_amount = 0;
     K.usePostEffect("fuzzy", () => ({ u_amount }));
-    if (!halfCut) await K.tween(0, 1, 0.5, a => u_amount = a);
+    if (!fast && !first) await K.tween(0, 1, 0.5, a => u_amount = a);
     const fader = K.add([
         K.fixed(),
         K.rect(K.width(), K.height()),
         K.color(K.getBackground()!),
-        K.opacity(1),
+        K.opacity(fast ? 0 : 1),
         K.layer("background"),
     ]);
     const term = K.add([
@@ -115,12 +115,12 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
     ]);
     term.prompt = createPrompt();
     switchFun();
-    if (!halfCut) {
+    if (!fast && !first) {
         await K.wait(0.2);
         await K.tween(1, 0, 0.7, a => u_amount = a);
     }
     K.usePostEffect(null!);
-    await typeChunks(term, tran, K._k.globalOpt.debug !== false);
+    if (!fast) await typeChunks(term, tran, K._k.globalOpt.debug !== false);
     [fader, head, term].forEach(x => x.fadeOut(1).onEnd(() => x.destroy()));
 };
 

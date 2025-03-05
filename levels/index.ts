@@ -2,7 +2,6 @@ import { GameObj, LevelComp, PosComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
-import { TailComp } from "../player/tail";
 import { playTransition, TextChunk } from "../transitions";
 import { MParser } from "./mparser";
 
@@ -17,6 +16,8 @@ interface Level {
 export const WorldManager = {
     allLevels: {} as Record<string, Level>,
     activeLevel: undefined as Level | undefined,
+    everyCutscene: true,
+    seenCutscenes: {} as Record<string, boolean>,
     loadLevel(id: string, map: string, whichPos: number = 0) {
         const parser = new MParser;
         const levelObj = K.addLevel(map.split("\n"), {
@@ -42,7 +43,7 @@ export const WorldManager = {
             introduction: parser.vars.introduction ?? []
         }
     },
-    async goLevel(id: string, halfCut: boolean = false, instant: boolean = false) {
+    async goLevel(id: string, fast = false, instant = false, first = false) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
         if (instant) {
@@ -51,11 +52,13 @@ export const WorldManager = {
         }
         else {
             player.paused = true;
-            await playTransition(levelTo.name, levelTo.introduction, halfCut, () => {
+            fast ||= !this.everyCutscene && this.seenCutscenes[id]!;
+            await playTransition(levelTo.name, levelTo.introduction, fast, first, () => {
                 this.pause(true);
                 this.activeLevel = levelTo;
             });
         }
+        this.seenCutscenes[id] = true;
         player.hidden = false;
         player.tpTo(levelTo.initialPos ?? K.vec2(0));
         this.pause(false);

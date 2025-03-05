@@ -22,6 +22,7 @@ export function cloneable<T>(
                     ? thisVal.clone()
                     : thisVal) as any;
             }
+            newObj.trigger("start_as_clone");
             return newObj;
         }
     }

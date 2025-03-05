@@ -6,6 +6,7 @@ import { guessOS, isFirefox, isTouchscreen } from "../misc/utils";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
+import { StatTracker } from "../stats_tracker";
 import { modalmenu } from "../ui/menuFactory";
 import { timer } from "../ui/timer";
 import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
@@ -42,13 +43,15 @@ export const PAUSE_MENU: PtyMenu = {
                 rumbleOption,
                 { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
                 { text: "&msg.pause.showControlHints", value: "controlHints" },
+                { text: "&msg.pause.playCutsceneEveryTime", value: "cutscenes" },
                 { text: "&msg.pause.playBgMusic", value: "music" },
                 { text: "&msg.pause.playSfx", value: "sfx" },
             ],
-            selected: [0, 1, 2, 3, 4],
+            selected: [0, 1, 2, 3, 4, 5],
             multiple: true
         },
         gcTypeMenu,
+        StatTracker.menuViewer,
         {
             id: "set language",
             name: "&msg.pause.setLanguage",
@@ -146,6 +149,7 @@ export function copyPreferences() {
     musicPlay.paused = !switches?.includes("music");
     player.sfxEnabled = switches?.includes("sfx");
     K.rumble.enabled = switches?.includes("rumble");
+    WorldManager.everyCutscene = switches?.includes("cutscenes");
     player.controlText.hidden = !switches?.includes("controlHints");
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }

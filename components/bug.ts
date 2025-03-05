@@ -37,6 +37,7 @@ export function bug(): BugComp {
                         this.jump();
                 } else if (coll?.isTop() && !obj.has("bug") && !obj.isStatic) {
                     this.enterState("scared");
+                    if (obj === player) this.trigger("stomped_by_player");
                 }
             });
             this.onFallOff(() => {

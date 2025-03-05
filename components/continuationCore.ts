@@ -85,6 +85,7 @@ export function continuationCore(
                 this.trappedBy.params = temp;
             }
             if (this.params.oneshot) this.destroy();
+            this.trigger("invoked");
             StateManager.restore(this.captured, this.color).then(() => {
                 if (this.type === "assert") {
                     // assertion: heal fully

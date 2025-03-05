@@ -1,7 +1,7 @@
-import { AreaComp, BodyComp, Comp, GameObj, NamedComp, PlatformEffectorComp, PosComp, RotateComp } from "kaplay";
+import { BodyComp, Comp, GameObj, NamedComp, PlatformEffectorComp, PosComp, RotateComp } from "kaplay";
 import { K } from "../init";
-import { player } from "../player";
 import { WorldManager } from "../levels";
+import { player } from "../player";
 
 export interface PortalComp extends Comp {
     toLevel: string | undefined,
@@ -19,18 +19,21 @@ export function portalComp(): PortalComp {
         add(this: GameObj<PosComp | BodyComp | PortalComp | PlatformEffectorComp | NamedComp | RotateComp>) {
             this.onPhysicsResolve(c => {
                 const o = c.target;
-                if (o.is("machine") || o === player) {
+                if (o.is("machine")
+                    || o.is("continuation")
+                    || o.is("promise")
+                    || o === player) {
                     const targetLevel = WorldManager.allLevels[this.toLevel!]!;
                     const matchingPortal: GameObj<PosComp | PlatformEffectorComp> | undefined = targetLevel.levelObj.children.find(g => g.name === this.outPortal) as any;
                     if (!matchingPortal) throw new Error("No matching portal for id " + this.outPortal);
                     const mpp = matchingPortal.worldPos()!;
+                    player.playSound("portal_teleport", undefined, this.worldPos()!);
                     if (o === player) {
                         WorldManager.goLevel(this.toLevel!).then(() => player.tpTo(mpp));
                     }
                     else {
                         o.setParent(targetLevel.levelObj, { keep: K.KeepFlags.Pos });
                         o.worldPos(mpp);
-                        K.debug.log("TODO: play teleport sound");
                     }
                     matchingPortal.platformIgnore.add(o);
                 }

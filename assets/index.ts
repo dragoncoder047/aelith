@@ -1,4 +1,3 @@
-import rumbleEffects from "./rumbleEffects.json";
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
 import { aaa, bbb, ccc } from "./audio/songs";
@@ -6,12 +5,13 @@ import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
 import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
 import { playMusic } from "./music";
+import rumbleEffects from "./rumbleEffects.json";
 import datapipeShader from "./shaders/dataPipe.glsl";
 import fuzzyFadeShader from "./shaders/fuzzy.glsl";
 import invertShader from "./shaders/invert.glsl";
+import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import translateShader from "./shaders/translate.glsl";
-import portalShader from "./shaders/portal.glsl";
 import spritemapDef from "./textures/spritemap.json" with { type: "json" };
 import spritemapDataURL from "./textures/spritemap.png";
 import deStrings from "./translations/de.json" with { type: "json" };
@@ -56,7 +56,6 @@ K.strings.fn = {
     }
 };
 
-// Start music in background
 export const musicPlay = playMusic({
     loop: true,
     volume: MUSIC_VOLUME,
