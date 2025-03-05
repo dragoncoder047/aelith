@@ -56,15 +56,6 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 * [X] When player drops object, make it a child of the active level.
   * [X] Need setParent for this, if it is working
 
-* On loading a new level:
-    1. the player is paused
-    2. the old level is unloaded
-    3. the new level is loaded
-    4. the new level is paused
-    5. the player is teleported to the correct place in the level
-    6. the transition plays
-    7. the player and new level are unpaused
-
 ## TODO
 
 * [ ] Make flash trail that shows activation of things follow the data wires

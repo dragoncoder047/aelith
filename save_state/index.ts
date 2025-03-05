@@ -53,10 +53,10 @@ export const StateManager = {
             }
         }
         if (params.destroysObjects) {
-            K.onAdd((obj: any) => {
-                if (obj.is("machine") || obj.is("continuation")) {
+            // Must use onTag cause objects get tags later when they get cloned
+            K.onTag((obj: any, tag: string) => {
+                if (tag === "machine" ||  tag === "continuation") {
                     data.afterObjects.add(obj);
-                    K.debug.log("added object", obj.id);
                 }
             });
         }
@@ -148,9 +148,8 @@ export const StateManager = {
         }
         for (var obj of state.afterObjects) {
             if (!obj.exists()) continue;
-            if ((obj as any as GameObj<ContinuationComp>).params?.destroyImmune) continue;
+            if (obj.has("continuation") && (obj as any as GameObj<ContinuationComp>).params?.destroyImmune) continue;
             obj.destroy();
-            K.debug.log("destroyed obj", obj.id);
         }
     },
 };
