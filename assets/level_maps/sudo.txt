@@ -1,9 +1,9 @@
-   P(toLevel)(start)s(name)(toStart)s(outPortal)(toSudo)sz
+#####=
+#P   = 90nr(toLevel)(start)s(name)(toStart)s(outPortal)(toSudo)sz
+#Pz  ~
+#Pz  =
+#####=#
 
-
-
-#######
-
-o(value)
+o(value)()
 
 ([command]sudo[/command])(name)d

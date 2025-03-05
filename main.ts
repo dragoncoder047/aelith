@@ -15,6 +15,7 @@ import "./player/health";
 import "./player/states";
 import "./stats_tracker";
 import "./ui";
+import { musicPlay } from "./assets";
 import("./.p");
 
 K.setGravity(GRAVITY);
@@ -24,10 +25,11 @@ K.onLoad(() => {
     K.setCamPos(K.vec2(16384, 16384));
     for (var [name, world] of Object.entries(allLevels))
         WorldManager.loadLevel(name, world, K._k.globalOpt.debug ? -1 : 0);
-    WorldManager.goLevel("start", false, true);
+    WorldManager.goLevel("start", false, true).then(() => {
+        musicPlay.paused = K._k.globalOpt.debug !== false;
+        initPauseMenu();
+    });
 });
-
-initPauseMenu();
 
 // @ts-ignore
 window.playerFollower = player.camFollower!;

@@ -27,11 +27,12 @@ export function portalComp(): PortalComp {
                     const matchingPortal: GameObj<PosComp | PlatformEffectorComp> | undefined = targetLevel.levelObj.children.find(g => g.name === this.outPortal) as any;
                     if (!matchingPortal) throw new Error("No matching portal for id " + this.outPortal);
                     const mpp = matchingPortal.worldPos()!;
-                    player.playSound("portal_teleport", undefined, this.worldPos()!);
                     if (o === player) {
+                        K.play("portal_teleport");
                         WorldManager.goLevel(this.toLevel!).then(() => player.tpTo(mpp));
                     }
                     else {
+                        player.playSound("portal_teleport", undefined, this.worldPos()!);
                         o.setParent(targetLevel.levelObj, { keep: K.KeepFlags.Pos });
                         o.worldPos(mpp);
                     }

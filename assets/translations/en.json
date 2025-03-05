@@ -1,18 +1,4 @@
 {
-    "startup": {
-        "password": "Password for &user: ",
-        "loggedInOK": "Logged in!",
-        "pressToBegin": "Press ENTER to start...",
-        "connecting": "connecting... ",
-        "connected": "connected!",
-        "ai.prompt": "ask AI",
-        "findAnswer": "Create a new platformer videogame from scratch.",
-        "answer": "That's a tough task, but here goes nothing...",
-        "startingDebugger": "Starting debugger...",
-        "segfault": "segmentation fault",
-        "running": "Code Assistant is running",
-        "disconnected": "Fatal error: disconnected!"
-    },
     "dialog": {
         "firefoxDontWorkWithGamepads": "You appear to be using Firefox. Unfortunately for you, Firefox's implementation of the web game controller API is so horribly messed up as to be unusable. You can continue with your mouse and keyboard.\n\nIf you really want to use a game controller, please use another browser like Chrome$fn.switch(&os~mac:, Opera, or Safari~windows:, Opera, or Microsoft Edge~linux: or Opera).",
         "singleJoyConDontHaveEnoughButtons": "You appear to have connected a single Joy-Con controller, which does not have enough buttons to play this game. You can try connecting the other Joy-Con, or just use your mouse and keyboard.",
@@ -133,7 +119,7 @@
         "showControlHints": "Show control hints",
         "playBgMusic": "Play background music",
         "playSfx": "Play sound effects",
-        "playCutsceneEveryTime": "Play level transition every time",
+        "cutsceneOnlyFirstTime": "Only show level transition the first time",
         "restart": "Restart game",
         "reallyRestart": "Are you sure you want to restart?\n  All progress will be lost!",
         "stats": {
@@ -151,6 +137,22 @@
         "resume": "Resume from a previous checkpoint",
         "checkpoint": "Checkpoint",
         "fromBeginning": "from the beginning"
+    },
+    "cutscene": {
+        "startup": {
+            "password": "Password for &user: ",
+            "loggedInOK": "Logged in!",
+            "pressToBegin": "Press ENTER to start...",
+            "connecting": "connecting... ",
+            "connected": "connected!",
+            "ai.prompt": "ask AI",
+            "findAnswer": "Create a new platformer videogame from scratch.",
+            "answer": "That's a tough task, but here goes nothing...",
+            "startingDebugger": "Starting debugger...",
+            "segfault": "segmentation fault",
+            "running": "Code Assistant is running",
+            "disconnected": "Fatal error: disconnected!"
+        }
     },
     "press": "press",
     "notImplemented": "Not implemented yet, sorry",

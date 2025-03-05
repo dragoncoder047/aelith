@@ -10,13 +10,14 @@ interface Level {
     levelObj: GameObj<LevelComp>;
     name: string;
     initialPos: Vec2 | undefined;
-    introduction: TextChunk[]
+    introduction: TextChunk[];
+    cutsceneOnce: boolean;
 }
 
 export const WorldManager = {
     allLevels: {} as Record<string, Level>,
     activeLevel: undefined as Level | undefined,
-    everyCutscene: true,
+    onlyFirstTime: true,
     seenCutscenes: {} as Record<string, boolean>,
     loadLevel(id: string, map: string, whichPos: number = 0) {
         const parser = new MParser;
@@ -40,20 +41,25 @@ export const WorldManager = {
             levelObj,
             name: parser.vars.name,
             initialPos,
-            introduction: parser.vars.introduction ?? []
+            introduction: parser.vars.introduction ?? [],
+            cutsceneOnce: parser.vars.cutsceneOnce!,
         }
     },
     async goLevel(id: string, fast = false, first = false) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
         player.paused = true;
-        fast ||= !this.everyCutscene && this.seenCutscenes[id]!;
+        if (this.seenCutscenes[id]) {
+            K.debug.log("Seen this cutscene", this.onlyFirstTime, String(levelTo.cutsceneOnce));
+            if (this.onlyFirstTime) fast = true;
+            if (levelTo.cutsceneOnce) fast = true;
+        }
         await playTransition(levelTo.name, levelTo.introduction, fast, first, () => {
             this.pause(true);
             player.hidden = true;
             this.activeLevel = levelTo;
+            this.seenCutscenes[id] = true;
         });
-        this.seenCutscenes[id] = true;
         player.hidden = false;
         player.tpTo(levelTo.initialPos ?? K.vec2(0));
         this.pause(false);

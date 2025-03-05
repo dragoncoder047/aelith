@@ -6,7 +6,7 @@ import { nextFrame } from "../misc/utils";
 export type PtyChunk = {
     text: string
     styles?: string[]
-    typewriter?: boolean
+    typewriter?: boolean | "llm"
     sound?: string | (() => void)
     delayBefore?: number | (() => PromiseLike<void>)
 }
@@ -165,7 +165,8 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         const textNoSub = chunk.text;
                         const realText = K.sub(textNoSub, this.data);
                         chunk.text = "";
-                        for (var ch of realText) {
+                        const littleBits = chunk.typewriter === "llm" ? realText.split(" ").map(t => `${t} `) : [...realText];
+                        for (var ch of littleBits) {
                             chunk.text += ch;
                             redraw(this);
                             sound();
