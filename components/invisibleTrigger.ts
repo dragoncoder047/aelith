@@ -2,7 +2,6 @@ import { AreaComp, Comp, GameObj, StateComp } from "kaplay";
 import { TogglerComp } from "./toggler";
 import { player } from "../player";
 import { LinkComp } from "./linked";
-import { Saveable } from "../save_state";
 
 export interface InvisibleTriggerComp extends Comp {
     setup(s: string): void
@@ -21,25 +20,6 @@ export function invisibleTriggerComp(): InvisibleTriggerComp {
         andState: "on",
         triggered: false,
         resettable: false,
-        add(this: GameObj<InvisibleTriggerComp | Saveable>) {
-            // Monkeypatch, cause kaplay doesn't allow overriding properties
-            const oldDSave = this.deadState;
-            const oldLSave = this.liveState;
-            const oldDSet = this.restoreDeadState;
-            const oldLSet = this.restoreLiveState;
-            this.deadState = () => ({...(oldDSave.call(this) as any), triggered: this.triggered });
-            this.liveState = () => ({...(oldLSave.call(this) as any), triggered: this.triggered });
-            this.restoreDeadState = (state: any) => {
-                this.triggered = state.triggered;
-                delete state.triggered;
-                oldDSet.call(this, state);
-            };
-            this.restoreLiveState = (state: any) => {
-                this.triggered = state.triggered;
-                delete state.triggered;
-                oldLSet.call(this, state);
-            };
-        },
         setup(this: GameObj<AreaComp | TogglerComp | InvisibleTriggerComp>, s) {
             // format is "1" if oneshot 
             // + "p" if event target is player

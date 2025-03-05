@@ -1,9 +1,24 @@
-
-     T(name)(setjmp)sz
-P   Xz     @       Az 90nr(toLevel)(1)s(name)(zero)s(outPortal)(one)sz
-Pz
-######################
-######################
+                  %%%
+                ::% %   :
+                 :%@%   :
+            :    :+:+:::::
+            ::::  % %    :
+               :  % %    :
+########$$$####+### #####+########################
+########   ####+### #####+########################
+########   ####+### #####+++++++++++++############
+########   ####+### #################+++++++++####
+########   +++++### #########################+####
+#####+++:::+###++++:++++++++++###############+####
+#####+##   +####### #########################+####
+#####++#   ::M       N                   NP##+#### 90r(toLevel)(sudo)s(name)(toSudo)s(outPortal)(toStart)sz (t)(&msg.firstPortal)s(align)(right)s(anchor)(topright)s(width)4bsz (t)(&msg.newToDebugging)sz
+######+#    :                             P+++#### z
+######+#    :I     _                      P##+#### z 2g(1 s onCollide|player)vz(t)(&msg.wrongWayRight)sz
+######+#####+############+###$$$$$$$#########+####
++++++++#####+############++++:::::::++++++++++####
+###########++############+###       ##############
+############++++++++++++++###       ##############
+#########################+###       ##############
 
 o(value)(&msg.startup.pressToBegin)s1(ns)i
 o(value)o(text)()ss(waitKey)(enter)s(showCursor)1s(ignoreJumpSkip)1s(pu)i
@@ -23,5 +38,4 @@ o(value)o(text)(&msg.startup.disconnected%0A)s(styles)(stderr)1(ns)is(sound)(com
 o(value)()s(showCursor)1s(pu)i
 (introduction)d
 (&gamename)(name)d
-
-[TODO: add the level here!]
+[cSpell: ignore bnmz hbnmz ]

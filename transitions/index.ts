@@ -70,6 +70,7 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
     if (!fast && !first) await K.tween(0, 1, 0.5, a => u_amount = a);
     const fader = K.add([
         K.fixed(),
+        K.pos(0, 0),
         K.rect(K.width(), K.height()),
         K.color(K.getBackground()!),
         K.opacity(fast ? 0 : 1),
@@ -98,7 +99,7 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
     const head = K.add([
         {
             draw(this: GameObj<TextComp>) {
-                K.drawRect({ ...this, color: K.getBackground()! });
+                K.drawRect({ ...this, pos: K.vec2(0), color: K.getBackground()! });
             }
         },
         K.text("", {

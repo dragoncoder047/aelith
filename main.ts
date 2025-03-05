@@ -24,7 +24,7 @@ K.onLoad(() => {
     K.setCamPos(K.vec2(16384, 16384));
     for (var [name, world] of Object.entries(allLevels))
         WorldManager.loadLevel(name, world, K._k.globalOpt.debug ? -1 : 0);
-    WorldManager.goLevel("0", false, false, true);
+    WorldManager.goLevel("start", false, true);
 });
 
 initPauseMenu();

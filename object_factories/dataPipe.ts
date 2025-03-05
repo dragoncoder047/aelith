@@ -14,6 +14,7 @@ export function dataPipe(solid = true, useBackground = true) {
         "pipe" as Tag,
         K.shader("dataPipe", () => ({
             u_time: K.time(),
-        }))
+        })),
+        K.offscreen({ hide: false }),
     ]
 }

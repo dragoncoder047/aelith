@@ -52,6 +52,7 @@ const DEATH_MENU: PtyMenu = {
 const DUMMY = new K.KEvent;
 const DEATH_MENU_OBJ = modalmenu(DEATH_MENU, ["menuActive", "deathMenu"], "&deathMenuCtlHint",
     DUMMY.add(() => { }) as KEventControllerPatch, false, true);
+DEATH_MENU_OBJ.modal.bg = K.BLACK;
 
 player.onGround(() => {
     if (player.vel.y > FALL_DAMAGE_THRESHOLD)
@@ -75,10 +76,10 @@ player.onDeath(async () => {
     player.scrollInventory(-player.inventory.length);
     player.update();
     player.paused = true;
+    K.get("tail").forEach(t => t.paused = true);
     await K.tween(1, 0, 2, o => player.opacity = o);
     player.hidden = true;
     player.opacity = 1;
-    K.get("tail").forEach(t => t.paused = true);
     DEATH_MENU_OBJ.term.chunks = [];
     await typeChunks(DEATH_MENU_OBJ.term, deathMessages, false);
     WorldManager.activeLevel!.levelObj.update();

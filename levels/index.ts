@@ -43,21 +43,16 @@ export const WorldManager = {
             introduction: parser.vars.introduction ?? []
         }
     },
-    async goLevel(id: string, fast = false, instant = false, first = false) {
+    async goLevel(id: string, fast = false, first = false) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
-        if (instant) {
+        player.paused = true;
+        fast ||= !this.everyCutscene && this.seenCutscenes[id]!;
+        await playTransition(levelTo.name, levelTo.introduction, fast, first, () => {
             this.pause(true);
+            player.hidden = true;
             this.activeLevel = levelTo;
-        }
-        else {
-            player.paused = true;
-            fast ||= !this.everyCutscene && this.seenCutscenes[id]!;
-            await playTransition(levelTo.name, levelTo.introduction, fast, first, () => {
-                this.pause(true);
-                this.activeLevel = levelTo;
-            });
-        }
+        });
         this.seenCutscenes[id] = true;
         player.hidden = false;
         player.tpTo(levelTo.initialPos ?? K.vec2(0));

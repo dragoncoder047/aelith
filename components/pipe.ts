@@ -18,7 +18,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
     var zappyTimer: TimerController
     return {
         id: "pipe",
-        require: ["sprite", "pos", "tile", "offscreen", "mergeable"],
+        require: ["sprite", "pos", "tile", "mergeable"],
         add(this: GameObj<PipeComp | PosComp>) {
             this.on("midprocess2", () => {
                 this.chooseSpriteNum();

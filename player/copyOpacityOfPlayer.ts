@@ -14,5 +14,8 @@ export function copyOpacityOfPlayer(): CopyOpacityOfPlayerComp {
             if (this.has("spring"))
                 this.drawOpts.opacity = player.opacity;
         },
+        draw() {
+            this.update!();
+        }
     }
 }

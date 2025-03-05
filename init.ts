@@ -10,7 +10,7 @@ import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
 import { kaplayControlGroup } from "./plugins/kaplay-control-group";
 
 export const K = kaplay({
-    debug: true,
+    debug: false,
     crisp: true,
     global: false,
     scale: SCALE,
