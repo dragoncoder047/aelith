@@ -3,13 +3,15 @@ import { WALK_SPEED, WIND_FORCE } from "../constants";
 import { K } from "../init";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
+import { FanComp } from "./fan";
+import { WorldManager } from "../levels";
 
 export interface WindComp extends Comp {
     windForce: number
     windDirection: number
 }
 
-export function wind(direction: number, states: [string, string] = ["off", "on"]): WindComp {
+export function wind(direction: number, states: [string, string] = ["off", "on"], fan: GameObj<FanComp>): WindComp {
     var wisps: { pos: Vec2, opacity: number, speed: number }[] = [];
     return {
         id: "wind",
@@ -29,8 +31,10 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
         },
         update(this: GameObj<WindComp | AreaEffectorComp | StateComp>) {
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state));
+            this.paused = fan.paused;
         },
         draw(this: GameObj<StateComp | AreaComp | RectComp | WindComp | PosComp>) {
+            this.hidden = WorldManager.getLevelOf(fan) === WorldManager.activeLevel?.levelObj;
             if (this.state == states[1]) {
                 // draw wind indicators
                 const s = this.aabb();

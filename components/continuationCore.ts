@@ -96,7 +96,7 @@ export function continuationCore(
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.params.reverseTeleport || !WorldManager.activeLevel?.levelObj.isAncestorOf(this.worldMarker)) return;
             K.pushRotate(-this.angle);
-            drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { opacity: 0.5, width: 1 / SCALE, color: this.color });
+            drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { width: 2 / SCALE, color: this.color });
             K.popTransform();
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {

@@ -29,7 +29,7 @@ export interface PlayerBodyComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean;
     lookingAt: GameObj<AreaComp> | undefined;
     lookingDirection: Vec2 | undefined;
-    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number): { cancel(): void; onEnd(p: () => void): KEventController; } | undefined;
+    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number, object?: GameObj): { cancel(): void; onEnd(p: () => void): KEventController; } | undefined;
     inventory: PlayerInventoryItem[];
     holdingIndex: number;
     addToInventory(object: PlayerInventoryItem): void;
@@ -230,7 +230,7 @@ export function playerBody(): PlayerBodyComp {
          * @param pos Position of the sound in world coordinates
          * @param impactVel Velocity of impact, if provided
          */
-        playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel = undefined) {
+        playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
@@ -243,7 +243,8 @@ export function playerBody(): PlayerBodyComp {
                 const dist = this.worldPos()!.dist(pos);
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
                 const rv0 = rv1 * 2;
-                zz.volume = v * K.mapc(dist, rv1, rv0, 1, 0);
+                const oExists = !object || !object.hidden || WorldManager.getLevelOf(object) === WorldManager.activeLevel?.levelObj;
+                zz.volume = oExists ? v * K.mapc(dist, rv1, rv0, 1, 0) : 0;
                 zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);
             };
             doWatch();

@@ -27,7 +27,7 @@ o(value)(&msg.cutscene.startup.password)s(clear)1s(pu)i
 o(value)o(text)(*********)s(typewriter)1s(sound)(typing)s(delayBefore)1ss(showCursor)1s(pu)i
 o(value)o(text)(%0A&msg.cutscene.startup.loggedInOK%0A)s(delayBefore)1ss(showCursor)1s(pu)i
 (command)(./gpt --no-gui)()1 1 2(/)h0 6(ns)i(pu)i
-o(value)o(text)(&msg.cutscene.startup.ai.prompt > )ss(pu)i
+o(value)(&msg.cutscene.startup.ai.prompt > )s(pu)i
 o(value)o(text)(&msg.cutscene.startup.findAnswer%0A)s(typewriter)1s(delayBefore)1s(styles)(command)1(ns)is(sound)(typing)ss(showCursor)1s(pu)i
 o(value)o(text)(&msg.cutscene.startup.answer)s(delayBefore)1s(typewriter)(llm)ss(showCursor)0s(pu)i
 o(value)o(text)(%0A[1]  + &startup.pid &msg.cutscene.startup.segfault  ./gpt --no-gui%0A)s(styles)(stderr)1(ns)is(sound)(command_fail)s(delayBefore)2ss(showCursor)1s(pu)i

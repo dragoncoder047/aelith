@@ -34,7 +34,7 @@ export function linked(tag: string): LinkComp {
                 const FADE_TIME = 0.25;
                 const start = K.time();
                 target.trigger("message", msg);
-                if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists())
+                if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists() && !target.paused)
                     K.add([
                         {
                             draw(this: GameObj) {

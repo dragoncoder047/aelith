@@ -52,6 +52,10 @@ function passthroughHelper(
             this.collisionIgnore = main.collisionIgnore;
             this.friction = main.friction;
             this.restitution = main.restitution;
+            this.paused = main.paused;
+        },
+        draw(this: GameObj) {
+            this.hidden = main.hidden;
         }
     }
 }
@@ -128,7 +132,11 @@ export function crossover(): CrossoverComp {
                 this.colliding.vertical.delete(obj);
             });
         },
+        update(this: GameObj) {
+            detectors.forEach(d => d.paused = this.paused);
+        },
         draw(this: GameObj<CrossoverComp | RectComp>) {
+            detectors.forEach(d => d.hidden = this.hidden);
             const lh = this.colliding.horizontal.size;
             const lv = this.colliding.vertical.size;
             const w2 = this.width / 2 + TILE_SIZE / 8;

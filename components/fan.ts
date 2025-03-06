@@ -43,7 +43,7 @@ export function fan(): FanComp {
                 center = center.sub(d.scale(1 / 2));
                 width -= Math.abs(d.x);
                 height -= Math.abs(d.y);
-                this.wind.push(K.add(windTunnel(center, width, height, a)));
+                this.wind.push(K.add(windTunnel(center, width, height, a, this)));
                 // check if direct corner
                 const dd: [number | null, Vec2][] = [
                     [a - 90, d.rotate(-90)],
@@ -67,7 +67,13 @@ export function fan(): FanComp {
             }
         },
         update(this: GameObj<FanComp | TogglerComp>) {
-            this.wind.forEach(w => w.togglerState = this.togglerState);
+            this.wind.forEach(w => {
+                w.togglerState = this.togglerState;
+                w.paused = this.paused;
+            });
         },
+        draw(this: GameObj<FanComp>) {
+            this.wind.forEach(w => w.hidden = WorldManager.getLevelOf(this) === WorldManager.activeLevel?.levelObj);
+        }
     }
 }

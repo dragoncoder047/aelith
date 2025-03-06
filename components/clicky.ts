@@ -15,7 +15,7 @@ export function clicky(states: string[] = ["off", "on"], sounds: string[] = ["sw
         add(this: GameObj<StateComp | PosComp>) {
             states.forEach((state, i) => {
                 this.onStateEnter(state, () => {
-                    player.playSound(sounds[i]!, undefined, this.worldPos()!);
+                    player.playSound(sounds[i]!, undefined, this.worldPos()!, undefined, this);
                 });
             });
         },

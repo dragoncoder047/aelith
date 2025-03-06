@@ -1,6 +1,6 @@
-import { K } from "../init";
-import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { STYLES } from "../assets/textStyles";
+import { FONT_SCALE, TILE_SIZE } from "../constants";
+import { K } from "../init";
 
 export function textNote() {
     return [
