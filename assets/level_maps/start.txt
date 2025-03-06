@@ -11,7 +11,7 @@
 ########   +++++### #########################+####
 #####+++:::+###++++:++++++++++###############+####
 #####+##   +####### #########################+####
-#####++#   ::M       N                   NP##+#### 90r(toLevel)(sudo)s(name)(toSudo)s(outPortal)(toStart)sz (t)(&msg.firstPortal)s(align)(right)s(anchor)(topright)s(width)4bsz (t)(&msg.newToDebugging)sz
+#####++#   ::M       N                   NP##+#### 90r(sudo)(ps)iz (t)(&msg.firstPortal)s(align)(right)s(anchor)(topright)s(width)4bsz (t)(&msg.newToDebugging)sz
 ######+#    :                             P+++#### z
 ######+#    :I     _                      P##+#### z 2g(1 s onCollide|player)vz(t)(&msg.wrongWayRight)sz
 ######+#####+############+###$$$$$$$#########+####

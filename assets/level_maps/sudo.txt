@@ -7,10 +7,10 @@
 ######+##=$+$+######=#########++####
 ######+++-:::+######=########++#####
 #########=   +######=IM      +###### (t)(&msg.firstVariable)s(width)8bs(sw)i(ii)i
-#########=  P+######= :::::::+###### 90r(toLevel)(race)s(name)(toRace)s(outPortal)(toSudo)sz
+#########=  P+######= :::::::+###### 90r(cp1)(ps)iz
 ##########$$$+####++-::   Xz #######
 #######+##   ++++++#=#+++###########
-######++P           = : L        ### (sw)i90nr(toLevel)(start)s(name)(toStart)s(outPortal)(toSudo)sz
+######++P           = : L        ### (sw)i90nr(start)(ps)iz
 +++++++#Pz          = :MMt       ### (2a1b2a)p4g(&msg.firstButton)(hs)iz(&msg.getMeOneToo)(hs)i3z
 ######+#Pz            ::: B      ### 3g3z
 ######+#################+++#########

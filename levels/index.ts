@@ -20,7 +20,7 @@ export const WorldManager = {
     onlyFirstTime: true,
     seenCutscenes: {} as Record<string, boolean>,
     loadLevel(id: string, map: string, whichPos: number = 0) {
-        const parser = new MParser;
+        const parser = new MParser(id);
         const levelObj = K.addLevel(map.split("\n"), {
             tileWidth: TILE_SIZE,
             tileHeight: TILE_SIZE,

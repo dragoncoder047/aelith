@@ -165,5 +165,9 @@
     "getMeOneToo": "While you're at it, save me some\nmemory too -- y'know, that's probably\nwhy I crashed...",
     "firstVariable": "This is a variable.\nThese will be very useful!",
     "firstDoor": "To open the door, you will need to press\nand hold that button.\nYou have the memory for that, right?",
+    "raceCond": "Or, maybe that's why I crashed... a race condition? A little continuation juice right there, thanks!",
+    "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
+    "firstContinuation": "That [assert]green[/assert] thing you are holding?\nIt's a [bouncy][rainbow]continuation![/rainbow][/bouncy]\nGo on, invoke it!",
+    "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
     "DUMMY": "DUMMY"
 }

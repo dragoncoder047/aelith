@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, NamedComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -35,10 +35,16 @@ import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { PortalComp } from "../components/portal";
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
 export class MParser {
+    cLevelID: string;
+
+    constructor(id: string) {
+        this.cLevelID = id;
+    }
     // MARK: spawners
     /**
      * Commands that spawn a machine at that particular location.
@@ -134,6 +140,15 @@ export class MParser {
             const arr = this.stack.at(-1);
             if (!Array.isArray(arr)) throw new Error("push to non-array");
             arr.push(i);
+        },
+
+        // portal setup
+        ps(this: MParser) {
+            const toLevel = this.stack.pop() as string;
+            const portal = this.stack.at(-1) as GameObj<PortalComp | NamedComp>;
+            portal.name = "to_" + toLevel;
+            portal.toLevel = toLevel;
+            portal.outPortal = "to_" + this.cLevelID;
         }
     };
     // MARK: commands
