@@ -21,7 +21,7 @@ import("./.p");
 K.setGravity(GRAVITY);
 
 K.onLoad(() => {
-    player.paused = true;
+    player.freeze(true);
     K.setCamPos(K.vec2(16384, 16384));
     for (var [name, world] of Object.entries(allLevels))
         WorldManager.loadLevel(name, world, K._k.globalOpt.debug ? -1 : 0);

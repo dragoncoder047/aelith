@@ -16,7 +16,7 @@ export function makeParticle(where: Vec2, color: Color | (() => Color), ig_tags_
         K.scale(K.rand(2, 4)),
         K.layer("particles"),
         K.area({
-            collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug", "grating", ...ig_tags_extra],
+            collisionIgnore: ["particle", "player", "box", "continuationTrap", "continuation", "bug", "grating", "portal", ...ig_tags_extra],
             friction: FRICTION
         }),
         K.body({

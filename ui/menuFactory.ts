@@ -159,7 +159,8 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             if (!history) theObj.term.chunks = [];
             origInventoryIndex = player.holdingIndex;
             player.scrollInventory(-player.inventory.length);
-            player.hidden = player.paused = true;
+            player.hidden = true;
+            player.freeze(true);
             K.get("tail").forEach(p => p.hidden = p.paused = true);
             player.playSound("typing");
             player.controlText.t = hint;
@@ -173,7 +174,8 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             theObj.modal.paused = theObj.modal.hidden = true;
             await theObj.term.quitMenu();
             player.scrollInventory(origInventoryIndex - player.holdingIndex);
-            player.hidden = player.paused = false;
+            player.hidden = false;
+            player.freeze(false);
             K.get("tail").forEach(p => p.hidden = p.paused = false);
             player.playSound("typing");
         }

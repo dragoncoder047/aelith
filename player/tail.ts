@@ -21,10 +21,13 @@ export function tail(): TailComp {
             this.pos = this.topPos.clone();
             this.vel = K.vec2(0);
         },
-        update(this: GameObj<PosComp | TailComp>) {
-            if (isNaN(this.pos.x) || isNaN(this.pos.y)
-                || this.pos.dist(this.topPos) > Math.max(K.width(), K.height()))
+        fixedUpdate(this: GameObj<PosComp | TailComp>) {
+            if (isNaN(this.pos.x)
+                || isNaN(this.pos.y)
+                || this.pos.dist(this.topPos) > Math.max(K.width(), K.height())) {
+                console.log("found NaN in tail");
                 this.restore2Pos();
+            }
         }
     }
 }

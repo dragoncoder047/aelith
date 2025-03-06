@@ -46,6 +46,7 @@ export interface PlayerBodyComp extends Comp {
     manpage: GameObj<ManpageComp> | undefined;
     recalculateManpage(): void;
     tpTo(pos: Vec2): void;
+    freeze(paused: boolean): void;
 }
 export function playerBody(): PlayerBodyComp {
     var flashLoop: KEventController;
@@ -65,6 +66,11 @@ export function playerBody(): PlayerBodyComp {
             K.get<PosComp>("head").forEach(t => t.moveBy(delta));
             K.get<TailComp>("tail").forEach(t => t.restore2Pos());
             K.setCamPos(this.worldPos()!);
+        },
+        freeze(this: GameObj, paused) {
+            this.paused = paused;
+            K.get<PosComp>("head").forEach(t => t.paused = paused);
+            K.get<TailComp>("tail").forEach(t => t.paused = paused);
         },
         // MARK: add()
         add(this: GameObj<PlayerBodyComp | PosComp | HealthComp | TimerComp | OpacityComp>) {

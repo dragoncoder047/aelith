@@ -135,7 +135,6 @@ function doPause() {
 
 async function doUnpause() {
     if (PAUSE_MENU_OBJ.term.menu !== PAUSE_MENU) return;
-    player.hidden = player.paused = false;
     copyPreferences();
     await showManpage(false);
     WorldManager.pause(false);

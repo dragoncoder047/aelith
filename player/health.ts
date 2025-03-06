@@ -75,7 +75,6 @@ player.onDeath(async () => {
     WorldManager.pause(true);
     player.scrollInventory(-player.inventory.length);
     player.update();
-    player.paused = true;
     K.get("tail").forEach(t => t.paused = true);
     await K.tween(1, 0, 2, o => player.opacity = o);
     player.hidden = true;
@@ -136,8 +135,8 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         await DEATH_MENU_OBJ.close();
         WorldManager.pause(false);
+        player.hidden = false;
         copyPreferences();
-        player.paused = player.hidden = false;
         K.eventGroups.delete("menuActive");
         K.eventGroups.delete("pauseMenu");
         K.get("tail").forEach(t => t.paused = false);

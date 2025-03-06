@@ -128,7 +128,7 @@
             "continuations_invoked": "continuations invoked",
             "bugs_stomped": "bugs stomped",
             "levers_switched": "levers pulled",
-            "boxes_cloned": "memory reallocated"
+            "boxes_cloned": "memory allocated"
         }
     },
     "dead": {
@@ -143,15 +143,15 @@
             "password": "Password for &user: ",
             "loggedInOK": "Logged in!",
             "pressToBegin": "Press ENTER to start...",
-            "connecting": "connecting... ",
-            "connected": "connected!",
             "ai.prompt": "ask AI",
             "findAnswer": "Create a new platformer videogame from scratch.",
             "answer": "That's a tough task, but here goes nothing...",
             "startingDebugger": "Starting debugger...",
-            "segfault": "segmentation fault",
-            "running": "Code Assistant is running",
-            "disconnected": "Fatal error: disconnected!"
+            "segfault": "segmentation fault"
+        },
+        "sudo": {
+            "password": "Password for &user:",
+            "nomemory": "out of memory initializing agent mode"
         }
     },
     "press": "press",
@@ -161,5 +161,8 @@
     "wrongWayRight": "Go that way &arrow.right",
     "newToDebugging": "New to debugging? Great! Head on over and I'll show you around.",
     "firstPortal": "That's a symlink. It will take you to another part of the filesystem.\n&arrow.right",
+    "firstButton": "Buttons trigger things while\npressed, like this lightbulb",
+    "firstVariable": "This is a variable.\nThese will be very useful!",
+    "firstDoor": "To open the door, you will need to press\nand hold that button.\nYou have the memory for that, right?",
     "DUMMY": "DUMMY"
 }

@@ -67,7 +67,8 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     return where;
                 },
                 fixedUpdate(this: GameObj<BodyComp | SpringComp>) {
-                    const displacement = this.actualP2.sub(this.p1);
+                    const displacementN = this.actualP2.sub(this.p1);
+                    const displacement = displacementN.isZero() ? K.Vec2.fromAngle(K.rand(360)) : displacementN;
                     const targetDisplacement = displacement.unit().scale(this.length);
 
                     const springForce = targetDisplacement.sub(displacement).scale(this.springConstant);

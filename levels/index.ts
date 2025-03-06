@@ -48,9 +48,8 @@ export const WorldManager = {
     async goLevel(id: string, fast = false, first = false) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
-        player.paused = true;
+        player.freeze(true);
         if (this.seenCutscenes[id]) {
-            K.debug.log("Seen this cutscene", this.onlyFirstTime, String(levelTo.cutsceneOnce));
             if (this.onlyFirstTime) fast = true;
             if (levelTo.cutsceneOnce) fast = true;
         }
@@ -76,7 +75,7 @@ export const WorldManager = {
         if (this.activeLevel) {
             this.activateLevel(this.activeLevel.levelObj, !isPaused);
         }
-        player.paused = isPaused;
+        player.freeze(isPaused);
     },
     getLevelOf(obj: GameObj): GameObj | null {
         while (obj.parent && !obj.has("level")) obj = obj.parent;

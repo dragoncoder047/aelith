@@ -126,7 +126,7 @@ function decompress(string) {
 const config = {
     bundle: true,
     sourcemap: true,
-    minify: true,
+    minify: false,
     metafile: true,
     platform: "browser",
     charset: "utf8",
