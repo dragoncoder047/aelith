@@ -1,29 +1,27 @@
-########################+###############
-########################+###############
-#######+##+#+++++++++###+###############
-#######++++++#######++++++++#######+####
-##########+##  D M      I        ##+#### 2g(ii)iz(&msg.firstDoor)(hs)iz
-######+++++##=   :::::::=        ##+####
-##########+##=$+$+######=#########++####
-##########+++-:::+######=########++#####
-#############=   +######=IM      +###### 2g(t)(&msg.firstVariable)s(width)8bsz(ii)iz
-#############=  P+######= :::::::+###### 90r(toLevel)(race)s(name)(toRace)s(outPortal)(toSudo)sz
-##############$$$+####++-::   Xz #######
-###########+##   ++++++#=#+++###########
-##########++P           = : L        ### (sw)i90nr(toLevel)(start)s(name)(toStart)s(outPortal)(toSudo)sz
-#++++++++++#Pz          = :IM        ### 2g(&msg.firstButton)(hs)iz(ii)i1b0nmz
-##########+#Pz            ::: B      ### 3g3z
-##########+#################+++#########
-##########+++++++++++++++++++###########
-###########+############################
-###++++++++++###########################
+####################+###############
+####################+###############
+###+##+#+++++++++###+###############
+###++++++#######++++++++#######+####
+######+##  D M      I        ##+#### 2g(ii)iz(&msg.firstDoor)(hs)iz
+##+++++##=   :::::::=        ##+####
+######+##=$+$+######=#########++####
+######+++-:::+######=########++#####
+#########=   +######=IM      +###### (t)(&msg.firstVariable)s(width)8bs(sw)i(ii)i
+#########=  P+######= :::::::+###### 90r(toLevel)(race)s(name)(toRace)s(outPortal)(toSudo)sz
+##########$$$+####++-::   Xz #######
+#######+##   ++++++#=#+++###########
+######++P           = : L        ### (sw)i90nr(toLevel)(start)s(name)(toStart)s(outPortal)(toSudo)sz
++++++++#Pz          = :MMt       ### (2a1b2a)p4g(&msg.firstButton)(hs)iz(&msg.getMeOneToo)(hs)i3z
+######+#Pz            ::: B      ### 3g3z
+######+#################+++#########
+######+++++++++++++++++++###########
+#######+############################
++++++++++###########################
 
 (command)(sudo agdb agent enable)(&msg.cutscene.sudo.password)1 5(/)h1 5(ns)i1(ns)i
 o(value)o(text)(*********)s(typewriter)1s(sound)(typing)s(delayBefore)1ss(showCursor)1s(pu)i
 o(value)o(text)(%0Aagdb: &msg.cutscene.sudo.nomemory%0A)s(delayBefore)1s(sound)(command_fail)s(styles)(stderr)1(ns)iss(pu)i
 (command)()()0 1 5(ns)i(pu)i
 (introduction)d
-
 ([command]sudo[/command])(name)d
-
 [cSpell: ignore aagdb ]

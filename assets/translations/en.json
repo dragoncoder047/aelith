@@ -162,6 +162,7 @@
     "newToDebugging": "New to debugging? Great! Head on over and I'll show you around.",
     "firstPortal": "That's a symlink. It will take you to another part of the filesystem.\n&arrow.right",
     "firstButton": "Buttons trigger things while\npressed, like this lightbulb",
+    "getMeOneToo": "While you're at it, save me some\nmemory too -- y'know, that's probably\nwhy I crashed...",
     "firstVariable": "This is a variable.\nThese will be very useful!",
     "firstDoor": "To open the door, you will need to press\nand hold that button.\nYou have the memory for that, right?",
     "DUMMY": "DUMMY"
