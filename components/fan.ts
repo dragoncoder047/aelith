@@ -73,7 +73,7 @@ export function fan(): FanComp {
             });
         },
         draw(this: GameObj<FanComp>) {
-            this.wind.forEach(w => w.hidden = WorldManager.getLevelOf(this) === WorldManager.activeLevel?.levelObj);
+            this.wind.forEach(w => w.hidden = WorldManager.getLevelOf(this) !== WorldManager.activeLevel?.levelObj);
         }
     }
 }

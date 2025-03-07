@@ -34,7 +34,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
             this.paused = fan.paused;
         },
         draw(this: GameObj<StateComp | AreaComp | RectComp | WindComp | PosComp>) {
-            this.hidden = WorldManager.getLevelOf(fan) === WorldManager.activeLevel?.levelObj;
+            this.hidden = WorldManager.getLevelOf(fan) !== WorldManager.activeLevel?.levelObj;
             if (this.state == states[1]) {
                 // draw wind indicators
                 const s = this.aabb();
