@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, Comp, GameObj, PosComp, ShaderComp, SpriteComp, StateComp, TimerComp } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, ShaderComp, SpriteComp, StateComp, TimerComp, TimerController } from "kaplay";
 import { FOOTSTEP_INTERVAL, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -16,11 +16,17 @@ export function bug(): BugComp {
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
         add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp | TimerComp | SpriteComp>) {
+            // patch EnterState so it only transitions if the state will be changed!
+            const oldEnterState = this.enterState;
+            this.enterState = (state, ...args) => {
+                if (this.state !== state) oldEnterState.call(this, state, ...args);
+            };
             this.onPhysicsResolve(coll => {
                 const obj = coll.target;
                 if (obj.has("bug")) {
                     if (obj.state === "angry") this.enterState("angry");
-                    else if (obj.state === "scared" || this.state === "sleeping") this.enterState("walking");
+                    else if (obj.state === "scared" || obj.state === "stunned" || this.state === "sleeping")
+                        this.enterState("walking");
                 }
                 if (this.state === "sleeping" && obj !== player) return;
                 if (coll?.isLeft() || coll?.isRight()) {
@@ -36,7 +42,7 @@ export function bug(): BugComp {
                     if (obj.has("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
                         this.jump();
                 } else if (coll?.isTop() && !obj.has("bug") && !obj.isStatic) {
-                    this.enterState("scared");
+                    this.enterState("stunned");
                     if (obj === player) this.trigger("stomped_by_player");
                 }
             });
@@ -48,24 +54,58 @@ export function bug(): BugComp {
                 this.applyImpulse(K.RIGHT.scale(this.moveDir * 10));
             });
             this.onGround(() => {
-                if (this.state !== "sleeping") this.play("walk");
+                if (this.moveDir !== 0) this.play("walk");
             });
-            this.onStateEnter("scared", () => {
-                this.moveDir *= 2;
-                this.wait(5, () => {
-                    if (this.state === "scared") this.enterState("walking");
-                });
+            var wTimeout: TimerController | undefined;
+            this.onStateEnter("walking", () => {
+                wTimeout?.cancel();
+                this.moveDir = this.flipX ? -1 : 1;
+                this.play("walk");
+                wTimeout = this.wait(15, () => this.enterState("sleeping"));
             });
-            this.onStateEnd("scared", () => {
-                this.moveDir /= 2;
+            this.onStateEnd("walking", () => {
+                wTimeout?.cancel();
+            });
+            this.onStateEnter("angry", () => {
+                wTimeout?.cancel();
+                this.moveDir = this.flipX ? -1 : 1;
+                this.play("walk");
+                wTimeout = this.wait(15, () => this.enterState("walking"));
+            });
+            var stTimeout: TimerController | undefined;
+            this.onStateEnter("stunned", () => {
+                stTimeout?.cancel();
+                this.moveDir = 0;
+                this.play("stunned");
+                stTimeout = this.wait(5, () => this.enterState("walking"));
+            });
+            this.onStateEnd("stunned", () => {
+                stTimeout?.cancel();
             });
             this.onStateEnter("sleeping", () => {
                 this.moveDir = 0;
                 this.play("stand");
             });
-            this.onStateEnd("sleeping", () => {
-                this.moveDir = this.flipX ? -1 : 1;
-                this.play("walk");
+            var scTimeout: TimerController | undefined;
+            this.onStateEnter("scared", () => {
+                scTimeout?.cancel();
+                this.moveDir = 0;
+                this.play("stand");
+                this.collisionIgnore.add("player");
+                scTimeout = this.wait(5, () => this.enterState("walking"));
+            });
+            this.onStateUpdate("scared", () => {
+                if (this.isGrounded()) this.jump();
+            });
+            this.onStateEnd("scared", () => {
+                scTimeout?.cancel();
+                this.collisionIgnore.delete("player");
+            });
+            this.on("interact", () => {
+                this.enterState("scared");
+            });
+            this.on("portal", () => {
+                this.enterState("scared");
             });
         },
         finish(this: GameObj<StateComp | SpriteComp | BugComp>) {
@@ -85,6 +125,9 @@ export function bug(): BugComp {
                     break;
                 case "scared":
                     this.uniform!.u_targetcolor = K.BLUE;
+                    break;
+                case "stunned":
+                    this.uniform!.u_targetcolor = K.YELLOW;
                     break;
                 case "sleeping":
                     this.uniform!.u_targetcolor = K.WHITE.darken(127);

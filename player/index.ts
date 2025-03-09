@@ -1,8 +1,8 @@
-import { BodyComp, Color, GameObj, PosComp, Vec2 } from "kaplay";
+import { BodyComp, CircleComp, Color, GameObj, PosComp, RotateComp, Vec2 } from "kaplay";
 import { thudder } from "../components/thudder";
 import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { playerBody, PlayerBodyComp } from "./body";
+import { playerBody } from "./body";
 import { copyOpacityOfPlayer } from "./copyOpacityOfPlayer";
 import { playerHead } from "./head";
 import { tail } from "./tail";
@@ -59,8 +59,8 @@ addChain(player, K.vec2(0, 8), 8, 4, K.WHITE, 2, 50, 1 / 2);
 addChain(player.head!, K.vec2(13, -1), 3, 2.7, K.WHITE, 10, 100, 1 / 3);
 
 
-function addChain(start: GameObj, startPos: Vec2, nSeg: number, maxSz: number, color: Color, damping: number, springDamping: number, lenFactor: number) {
-    var previous = start;
+function addChain(start: GameObj<PosComp>, startPos: Vec2, nSeg: number, maxSz: number, color: Color, damping: number, springDamping: number, lenFactor: number) {
+    var previous: GameObj<PosComp | RotateComp | CircleComp> = start as any;
     var pos = K.vec2(0, TILE_SIZE / 2);
     for (var i = 0; i < nSeg; i++) {
         const sz = K.lerp(1, maxSz, (1 - (i / nSeg)) ** 2);
@@ -81,7 +81,7 @@ function addChain(start: GameObj, startPos: Vec2, nSeg: number, maxSz: number, c
                 maxVelocity: TERMINAL_VELOCITY
             }),
             K.spring({
-                other: previous as GameObj<BodyComp | PosComp>,
+                other: previous as any as GameObj<BodyComp | PosComp>,
                 springConstant: 100,
                 springDamping,
                 dampingClamp: 100,
@@ -94,11 +94,11 @@ function addChain(start: GameObj, startPos: Vec2, nSeg: number, maxSz: number, c
                     color,
                 },
             }),
-            tail(),
+            tail(start, startPos),
             copyOpacityOfPlayer(),
             "tail",
             "raycastIgnore",
-        ]);
+        ]) as any;
         pos = pos.add(K.vec2(0, sz));
     }
 }

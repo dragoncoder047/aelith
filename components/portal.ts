@@ -35,6 +35,7 @@ export function portalComp(): PortalComp {
                         player.playSound("portal_teleport", undefined, this.worldPos()!);
                         o.setParent(targetLevel.levelObj, { keep: K.KeepFlags.Pos });
                         o.worldPos(mpp);
+                        o.trigger("portal");
                     }
                     matchingPortal.platformIgnore.add(o);
                 }

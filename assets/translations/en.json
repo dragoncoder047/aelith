@@ -178,5 +178,8 @@
     "noMoreHelp": "Well, that's the end of my tutorial... I suppose I should say more since you're debugging me, but I have the sinking feeling that I'm going to crash again if I do that, so \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd [stderr]Error fetching Unicode table[/stderr] Okay, fine... insert imaginary shrug emoji...",
     "eekBug": "Eek! A bug!",
     "noLadderNoProblem": "No ladder? No problem. You have the tools. I segfaulted trying to figure out how to use them.",
+    "slightlyDifferent": "This one behaves slightly differently... probably a good thing!",
+    "fellOut": "Well, now you're in a pickle...\nContinuations are your friend!",
+    "waterDamage": "There seems to have a bit of a water damage problem here...",
     "DUMMY": "DUMMY"
 }

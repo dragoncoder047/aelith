@@ -1,14 +1,13 @@
 import kaplay from "kaplay";
 import { SCALE } from "./constants";
 import { CONTROLS } from "./controls/buttons";
+import { kaplayControlGroup } from "./plugins/kaplay-control-group";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplayPTY } from "./plugins/kaplay-pty";
 import { kaplaySprings } from "./plugins/kaplay-springs";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
-import { kaplayControlGroup } from "./plugins/kaplay-control-group";
-
 export const K = kaplay({
     debug: true,
     crisp: true,
@@ -28,9 +27,6 @@ export const K = kaplay({
         kaplayControlGroup
     ],
 });
-
-// @ts-expect-error
-window.K = K;
 
 // const oldOnUpdate = K.onUpdate;
 

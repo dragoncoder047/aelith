@@ -4,6 +4,7 @@ import { K } from "../init";
 import { player } from "../player";
 import { playTransition, TextChunk } from "../transitions";
 import { MParser } from "./mparser";
+import { nextFrame } from "../misc/utils";
 
 interface Level {
     id: string;
@@ -27,11 +28,17 @@ export const WorldManager = {
             tiles: {}, // everything is handled by MParser
             wildcardTile: (cmd, pos) => parser.process(cmd, pos),
         }) as GameObj<LevelComp>;
+        console.log("initialized level", id);
         parser.preprocess(levelObj);
+        console.log("preprocessed level", id);
         parser.build(levelObj);
+        console.log("built level", id);
         parser.midprocess(levelObj);
+        console.log("midprocessed level", id);
         parser.merge(levelObj);
+        console.log("merged level", id);
         parser.postprocess(levelObj);
+        console.log("postprocessed level", id);
         this.activateLevel(levelObj, false);
         const playerPositions = levelObj.get<PosComp>("playerPosition");
         const initialPos = playerPositions.at(whichPos)?.pos;

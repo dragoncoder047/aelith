@@ -8,7 +8,7 @@ import { crossover } from "../components/crossover";
 export function crossing(): CompList<any> {
     return [
         K.body({ isStatic: true }),
-        K.rect(TILE_SIZE, TILE_SIZE),
+        K.sprite("crossover", { tiled: true }),
         K.opacity(0),
         mergeable(),
         ...defaults({ friction: FRICTION, collisionIgnore: ["tail", "particle"] }),

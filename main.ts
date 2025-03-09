@@ -31,6 +31,8 @@ K.onLoad(() => {
     });
 });
 
+// @ts-expect-error
+window.K = K;
 // @ts-ignore
 window.playerFollower = player.camFollower!;
 // @ts-ignore

@@ -22,7 +22,8 @@ export function bugger(): CompList<any> {
             u_targetcolor: K.RED,
         }),
         bug(),
-        clicky(["scared"], ["bug_squeak"]),
+        clicky(["scared", "stunned", "angry"], ["bug_squeak", "bug_splat", "bug_screech"]),
         "bug" as Tag,
+        "interactable" as Tag,
     ];
 }
