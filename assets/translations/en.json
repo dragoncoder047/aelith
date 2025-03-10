@@ -126,6 +126,7 @@
             "heading": "Statistics",
             "none": "Nothing significant yet...",
             "continuations_invoked": "continuations invoked",
+            "lightbulbs_illuminated": "lightbulbs lit",
             "bugs_stomped": "bugs stomped",
             "levers_switched": "levers pulled",
             "boxes_cloned": "memory allocated",

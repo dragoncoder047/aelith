@@ -12,6 +12,5 @@ export function grating() {
         mergeable(),
         ...defaults({ friction: FRICTION }),
         "grating" as Tag,
-        "raycastIgnore" as Tag,
     ]
 }

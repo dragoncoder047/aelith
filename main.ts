@@ -2,7 +2,6 @@ import { K } from "./init";
 import "./layers";
 
 import { musicPlay } from "./assets";
-import allLevels from "./assets/level_maps/ALL.json" with { type: "json" };
 import type { LinkComp } from "./components/linked";
 import { GRAVITY } from "./constants";
 import "./controls";
@@ -22,12 +21,10 @@ K.setGravity(GRAVITY);
 
 K.onLoad(() => {
     player.freeze(true);
+    initPauseMenu();
     K.setCamPos(K.vec2(16384, 16384));
-    for (var [name, world] of Object.entries(allLevels))
-        WorldManager.loadLevel(name, world, K._k.globalOpt.debug ? -1 : 0);
     WorldManager.goLevel("start", false, true).then(() => {
         musicPlay.paused = K._k.globalOpt.debug !== false;
-        initPauseMenu();
     });
 });
 

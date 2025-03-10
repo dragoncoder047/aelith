@@ -33,7 +33,7 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
             this.onMessage(msg => {
                 if (msg == this.toggleMsg) {
                     this.togglerState = !this.togglerState;
-                    this.trigger("toggled");
+                    this.trigger("toggle");
                     // this._syncState(); // called implicitly by setter
                 }
             });

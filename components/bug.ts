@@ -41,11 +41,13 @@ export function bug(): BugComp {
                     if (obj === player) this.enterState("angry");
                     if (obj.has("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
                         this.jump();
-                } else if (coll?.isTop() && !obj.has("bug") && !obj.isStatic) {
-                    this.enterState("stunned");
-                    if (obj === player) this.trigger("stomped_by_player");
                 }
             });
+            this.onLand(obj => {
+                if (obj.has("bug")) return;
+                this.enterState("stunned");
+                if (obj === player) this.trigger("stomped_by_player");
+            })
             this.onFallOff(() => {
                 if (this.state === "sleeping") return;
                 this.play("stand");

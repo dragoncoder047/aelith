@@ -9,6 +9,7 @@ export function light() {
         spriteToggle(),
         ...machine(),
         K.anchor("bot"),
+        "light" as Tag,
         "raycastIgnore" as Tag,
     ]
 }

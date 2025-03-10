@@ -1,9 +1,12 @@
 import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
+import { WorldManager } from "../levels";
+import { nextFrame } from "../misc/utils";
 import { aaa, bbb, ccc } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
 import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
+import allLevels from "./level_maps/ALL.json" with { type: "json" };
 import { playMusic } from "./music";
 import rumbleEffects from "./rumbleEffects.json";
 import datapipeShader from "./shaders/dataPipe.glsl";
@@ -22,7 +25,20 @@ import jaStrings from "./translations/ja.json" with { type: "json" };
 
 
 // Load assets
-K.loadSpriteAtlas(spritemapDataURL, spritemapDef);
+// this is just to dummy up the progress bar animation
+const resolvers: (() => void)[] = [];
+for (var _ of Object.entries(allLevels))
+    K.load((async () => {
+        await new Promise<void>(r => resolvers.push(r));
+    })());
+K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
+    // Must wait to load sprites before loading levels
+    for (var [name, def] of Object.entries(allLevels)) {
+        WorldManager.loadLevel(name, def, K._k.globalOpt.debug ? -1 : 0);
+        resolvers.pop()!();
+        await nextFrame();
+    }
+});
 K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
 K.addStrings(strings);

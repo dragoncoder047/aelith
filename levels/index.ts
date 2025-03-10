@@ -4,7 +4,6 @@ import { K } from "../init";
 import { player } from "../player";
 import { playTransition, TextChunk } from "../transitions";
 import { MParser } from "./mparser";
-import { nextFrame } from "../misc/utils";
 
 interface Level {
     id: string;
