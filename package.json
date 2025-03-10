@@ -9,7 +9,7 @@
         "dev:build": "node build.mjs -w",
         "dev:serve": "python3 -m http.server",
         "dev": "pnpm run \"/^dev:.*/\"",
-        "lint": "tsc && python3 scripts/lint_strings.py",
+        "lint": "tsc && python3 scripts/lint_strings.py && python3 scripts/find_no_intros.py",
         "linecount": "for f in `git ls-files -- '[^.]**.*'`; do enca $f -L none | grep -ie \"UTF-8\\|ASCII\" -q && echo $f || true; done | xargs wc -l",
         "showip": "ifconfig | grep \"inet \" | grep -Fv 127.0.0.1 | awk '{print $2}'",
         "genframes": "python3 scripts/gen_random_frames.py"
