@@ -128,7 +128,8 @@
             "continuations_invoked": "continuations invoked",
             "bugs_stomped": "bugs stomped",
             "levers_switched": "levers pulled",
-            "boxes_cloned": "memory allocated"
+            "boxes_cloned": "memory allocated",
+            "deaths": "deaths"
         }
     },
     "dead": {

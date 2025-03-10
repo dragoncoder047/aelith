@@ -6,6 +6,7 @@ import { K } from "../init";
 import { PtyMenu } from "../plugins/kaplay-pty";
 
 const stats = {
+    deaths: 0,
     continuations_invoked: 0,
     bugs_stomped: 0,
     levers_switched: 0,
@@ -14,6 +15,7 @@ const stats = {
 }
 
 const entriesDisplays: [keyof typeof stats, string, boolean][] = [
+    ["deaths", "&msg.pause.stats.deaths", false],
     ["continuations_invoked", "&msg.pause.stats.continuations_invoked", false],
     ["bugs_stomped", "&msg.pause.stats.bugs_stomped", false],
     ["levers_switched", "&msg.pause.stats.levers_switched", false],

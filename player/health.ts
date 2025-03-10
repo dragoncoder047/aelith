@@ -11,6 +11,7 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { TextChunk, typeChunks } from "../transitions";
 import { modalmenu } from "../ui/menuFactory";
+import { StatTracker } from "../stats_tracker";
 
 const deathMessages: TextChunk[] = [
     {
@@ -69,15 +70,17 @@ player.onHurt(() => {
 })
 
 player.onDeath(async () => {
+    StatTracker.bump("deaths");
     resumeEntry.opts = []; // clear in case user died twice
     musicPlay.paused = true;
     K.play("die");
     WorldManager.pause(true);
+    WorldManager.activateLevel(WorldManager.activeLevel!.levelObj, false, true);
     player.scrollInventory(-player.inventory.length);
     player.update();
     K.get("tail").forEach(t => t.paused = true);
     await K.tween(1, 0, 2, o => player.opacity = o);
-    player.hidden = true;
+    WorldManager.pause(true);
     player.opacity = 1;
     DEATH_MENU_OBJ.term.chunks = [];
     await typeChunks(DEATH_MENU_OBJ.term, deathMessages, false);
