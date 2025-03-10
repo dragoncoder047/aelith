@@ -1,6 +1,7 @@
 import { K } from "./init";
 import "./layers";
 
+import { musicPlay } from "./assets";
 import allLevels from "./assets/level_maps/ALL.json" with { type: "json" };
 import type { LinkComp } from "./components/linked";
 import { GRAVITY } from "./constants";
@@ -15,7 +16,6 @@ import "./player/health";
 import "./player/states";
 import "./stats_tracker";
 import "./ui";
-import { musicPlay } from "./assets";
 import("./.p");
 
 K.setGravity(GRAVITY);
@@ -42,3 +42,6 @@ window.WorldManager = WorldManager;
 
 // @ts-ignore
 window.openSesame = (id: string) => (K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === id) ?? { broadcast() { throw "nothing with id " + id; } }).broadcast("toggle");
+
+// @ts-ignore
+window.give = (tName: string) => player.addToInventory(K.get("continuation-trap", { recursive: true }).find(x => x.name === tName))
