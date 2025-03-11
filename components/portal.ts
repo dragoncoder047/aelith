@@ -52,5 +52,8 @@ export function portalComp(): PortalComp {
                 this.angle = 0;
             });
         },
+        inspect() {
+            return `to level: ${this.toLevel}, from portal: ${this.outPortal}`;
+        }
     }
 }

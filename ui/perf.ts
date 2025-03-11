@@ -33,8 +33,8 @@ const countIndicator = UI.add([
 ]);
 
 function updateObjectCount() {
-    var objectCount = K.get("*", { recursive: true }).length
-    countIndicator.text = objectCount + " objects";
+    var objectCount = K.get("*", { recursive: true }).filter(x => !x.paused).length;
+    countIndicator.text = objectCount + " active objects";
     if (objectCount > 1000) countIndicator.color = K.RED;
     else if (objectCount > 300) countIndicator.color = K.YELLOW;
     else countIndicator.color = K.GREEN;
