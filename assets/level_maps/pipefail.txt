@@ -2,10 +2,10 @@
 #############+++++++############################
 #############+#####++++++++#####################
 ######       L  ###+#####++++++################# 1(async_door)gz
-######        ::+++++####+######################
+######        ::+++++##+++######################
 ######P       : ####+##+######################## 90nr(bugrow)(ps)i(outPortal)(br2)s(name)(br2)sz
-###+++Pz    ::: ###++##+++####++++:: P########## 90r(bf2)(ps)iz
-###+########+#!!###+###########+##=: P########## z
+###+++Pz    ::: ###++##++++###++++:: P########## 90r(bf2)(ps)iz
+###+########+#!!###+#####+#####+##=: P########## z
 ###+########++  ###+########++++##=+#+++++######
 ###+#+++++++#+  #++++++#####+#####=+++###+######
 ###++++++####+  #:    :  T  :     =  :  #+###### (name)(setjmp)sz
@@ -30,3 +30,11 @@
 ################################################
 
 [cSpell: ignore bnmz ]
+o(value)o(text)(agdb> )ss1(ns)i
+o(value)o(text)(tutorial --continue%0A)s(typewriter)1s(styles)(command)1(ns)is(delayBefore)1ss(showCursor)1s(pu)i
+o(value)o(text)(&msg.cutscene.pipefail.noMoreHelp)s(typewriter)(llm)s(delayBefore)1 2(/)hss(pu)i
+o(value)o(text)(&msg.cutscene.pipefail.unicodeError%0A)s(styles)(stderr)1(ns)iss(pu)i
+o(value)o(text)(&msg.cutscene.pipefail.gaveUp)s(typewriter)(llm)s(delayBefore)1 2(/)hss(pu)i
+o(value)o(text)()s(delayBefore)1ss(pu)i
+(introduction)d
+([command]pipefail[/command])(name)d

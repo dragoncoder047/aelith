@@ -24,8 +24,15 @@ export function portalComp(): PortalComp {
                     || o.is("promise")
                     || o === player) {
                     const targetLevel = WorldManager.allLevels[this.toLevel!]!;
+                    if (targetLevel === undefined) {
+                        K.debug.error(`No such level ${this.toLevel}`);
+                        return;
+                    }
                     const matchingPortal: GameObj<PosComp | PlatformEffectorComp> | undefined = targetLevel.levelObj.children.find(g => g.name === this.outPortal) as any;
-                    if (!matchingPortal) throw new Error("No matching portal for id " + this.outPortal);
+                    if (matchingPortal === undefined) {
+                        K.debug.error(`No matching portal for id ${this.outPortal} in level ${this.toLevel}`);
+                        return;
+                    }
                     const mpp = matchingPortal.worldPos()!;
                     if (o === player) {
                         K.play("portal_teleport");

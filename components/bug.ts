@@ -74,6 +74,9 @@ export function bug(): BugComp {
                 this.play("walk");
                 wTimeout = this.wait(15, () => this.enterState("walking"));
             });
+            this.onStateEnd("angry", () => {
+                wTimeout?.cancel();
+            });
             var stTimeout: TimerController | undefined;
             this.onStateEnter("stunned", () => {
                 stTimeout?.cancel();
@@ -94,7 +97,7 @@ export function bug(): BugComp {
                 this.moveDir = 0;
                 this.play("stand");
                 this.collisionIgnore.add("player");
-                scTimeout = this.wait(5, () => this.enterState("walking"));
+                scTimeout = this.wait(5, () => this.enterState("sleeping"));
             });
             this.onStateUpdate("scared", () => {
                 if (this.isGrounded()) this.jump();

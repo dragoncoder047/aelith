@@ -33,7 +33,7 @@ o(value)o(text)(&msg.cutscene.startup.answer)s(delayBefore)1s(typewriter)(llm)ss
 o(value)o(text)(%0A[1]  + &startup.pid &msg.cutscene.startup.segfault  ./gpt --no-gui%0A)s(styles)(stderr)1(ns)is(sound)(command_fail)s(delayBefore)2ss(showCursor)1s(pu)i
 (command)(ls *.core)(&startup.pid.core%0A)3 1 2(/)h1 6(ns)i(pu)i
 (command)(&startup.cmd)(&msg.cutscene.startup.startingDebugger)1 4(/)h1 4(/)h 5(ns)i(pu)i
-o(value)()s(showCursor)1s(pu)i
+o(value)o(text)()s(delayBefore)1ss(showCursor)1s(pu)i
 (introduction)d
 (&gamename)(name)d
 1(cutsceneOnce)d

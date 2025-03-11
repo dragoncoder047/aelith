@@ -58,9 +58,8 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
-* [ ] Add a sprite for the crossover component.
 * [ ] Make flash trail that shows activation of things follow the data wires
-* [ ] Fix bugs where horn disappears when invoking continuation
+* [ ] Fix bug where horn doesn't teleport to the player and gets extremely stretched.
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations
@@ -77,6 +76,8 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## DONE
 
+* [X] Fix bugs where horn disappears when invoking continuation
+* [X] Add a sprite for the crossover component.
 * [X] Add a preference to only show the lore cutscene every time or the first time.
 * [X] Add a stats counter in pause menu (boxes cloned, continuations invoked, bugs stomped, levers switched, lightbulbs illuminated)
 * [X] Make call/cc be able to be remotely driven when holding promise

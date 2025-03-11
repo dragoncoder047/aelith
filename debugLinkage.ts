@@ -1,9 +1,8 @@
 import { GameObj, PosComp, Vec2 } from "kaplay";
-import { MParser } from "./levels/mparser";
-import { LinkComp } from "./components/linked";
-import { K } from "./init";
-import { SCALE } from "./constants";
 import COLORS from "./assets/gollyColors.json";
+import { LinkComp } from "./components/linked";
+import { SCALE } from "./constants";
+import { K } from "./init";
 import { WorldManager } from "./levels";
 
 K.add([{

@@ -60,9 +60,10 @@ export function playerBody(): PlayerBodyComp {
         },
         camFollower: undefined,
         footstepsCounter: 0,
-        tpTo(this: GameObj<PosComp>, pos) {
+        tpTo(this: GameObj<PosComp | BodyComp>, pos) {
             const delta = pos.sub(this.pos);
             this.moveBy(delta);
+            this.vel = K.vec2(0);
             K.get<PosComp>("head").forEach(t => t.moveBy(delta));
             K.get<TailComp>("tail").forEach(t => t.restore2Pos());
             K.setCamPos(this.worldPos()!);

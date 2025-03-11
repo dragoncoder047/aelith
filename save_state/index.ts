@@ -116,6 +116,7 @@ export const StateManager = {
                 obj.worldPos(e.location.pos.add(reverseDelta));
                 obj.angle = e.location.angle;
             }
+            obj.vel = K.vec2(0);
             if (e.restoreFlags & RestoreFlags.bug)
                 obj.enterState(e.state.bug!);
             if (e.restoreFlags & RestoreFlags.toggle)
