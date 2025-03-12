@@ -150,7 +150,7 @@ export function playerBody(): PlayerBodyComp {
          * True if overlapping any game object with the tag "type".
          */
         intersectingAny(this: GameObj<AreaComp>, type, where = WorldManager.activeLevel?.levelObj) {
-            return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => this.isColliding(obj));
+            return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => obj.worldArea().collides(this.worldArea()));
         },
         lookingAt: undefined,
         lookingDirection: K.LEFT,

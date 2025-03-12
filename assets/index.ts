@@ -27,13 +27,16 @@ import jaStrings from "./translations/ja.json" with { type: "json" };
 // Load assets
 // this is just to dummy up the progress bar animation
 const resolvers: (() => void)[] = [];
-for (var _ of Object.entries(allLevels))
+const allLevelIDs: (keyof typeof allLevels)[] = Object.keys(allLevels) as any;
+for (var i = 0; i < allLevelIDs.length; i++)
     K.load((async () => {
         await new Promise<void>(r => resolvers.push(r));
     })());
 K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
     // Must wait to load sprites before loading levels
-    for (var [name, def] of Object.entries(allLevels)) {
+    for (var i = 0; i < allLevelIDs.length; i++) {
+        const name = allLevelIDs[i]!;
+        const def = allLevels[name];
         WorldManager.loadLevel(name, def, K._k.globalOpt.debug ? -1 : 0);
         resolvers.pop()!();
         await nextFrame();

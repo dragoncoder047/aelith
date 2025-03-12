@@ -58,6 +58,9 @@ export function linked(tag: string): LinkComp {
         },
         onMessage(this: GameObj, cb: (msg: string) => void): KEventController {
             return this.on("message", cb);
+        },
+        inspect() {
+            return `link ID: ${this.linkGroup}`;
         }
     };
 }

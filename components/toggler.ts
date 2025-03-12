@@ -30,6 +30,12 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
             K.onLoad(() => {
                 this._syncState();
             });
+            const oldBroadcast = this.broadcast;
+            this.broadcast = msg => {
+                if (msg === this.toggleMsg)
+                    this.trigger("toggleInitiate");
+                oldBroadcast.call(this, msg);
+            };
             this.onMessage(msg => {
                 if (msg == this.toggleMsg) {
                     this.togglerState = !this.togglerState;

@@ -1,4 +1,4 @@
-import { Comp, GameObj, SpriteComp, Vec2 } from "kaplay";
+import { Comp, GameObj, PosComp, SpriteComp, Vec2 } from "kaplay";
 import { K } from "../init";
 import { TILE_SIZE } from "../constants";
 
@@ -15,10 +15,16 @@ export function mergeable(): MergeableComp {
         tileDims: K.vec2(0),
         squares: [],
         id: "mergeable",
-        add(this: GameObj<SpriteComp | MergeableComp>) {
-            this.on("postprocess", () => {
+        require: ["pos"],
+        add(this: GameObj<SpriteComp | MergeableComp | PosComp>) {
+            const ec1 = this.on("preprocess", () => {
+                this.squares.push(this.pos);
+                ec1.cancel();
+            });
+            const ec2 = this.on("postprocess", () => {
                 this.width += this.tileDims.x * TILE_SIZE;
                 this.height += this.tileDims.y * TILE_SIZE;
+                ec2.cancel();
             });
         },
         addSquare(pos) {

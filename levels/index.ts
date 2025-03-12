@@ -40,7 +40,7 @@ export const WorldManager = {
         console.log("postprocessed level", id);
         this.activateLevel(levelObj, false);
         const playerPositions = levelObj.get<PosComp>("playerPosition");
-        const initialPos = playerPositions.at(whichPos)?.pos;
+        const initialPos = playerPositions.at(whichPos)?.worldPos()!;
         playerPositions.forEach(p => p.destroy());
         this.allLevels[id] = {
             id,
@@ -83,8 +83,8 @@ export const WorldManager = {
         }
         player.freeze(isPaused);
     },
-    getLevelOf(obj: GameObj): GameObj | null {
+    getLevelOf(obj: GameObj): GameObj<LevelComp> | null {
         while (obj.parent && !obj.has("level")) obj = obj.parent;
-        return obj;
+        return obj as GameObj<LevelComp>;
     }
 };

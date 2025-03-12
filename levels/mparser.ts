@@ -543,7 +543,7 @@ export class MParser {
      */
     merge(w: GameObj<LevelComp>) {
         const c2k = (x: number, y: number) => `${x.toString(16)},${y.toString(16)}`;
-        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "pipe", "portal"];
+        const allowedTags = ["wall", "barrier", "conveyor", "grating", "crossover", "portal"];
         for (var tag of allowedTags) {
             const tiles: { [pos: string]: GameObj<MergeableComp | PosComp | SpriteComp> } = {};
             // get original tiles in a grid
@@ -631,15 +631,16 @@ export class MParser {
     }
     // MARK: postprocess()
     preprocess(world: GameObj) {
-        world!.children.forEach(o => o.trigger("preprocess"));
+        world.children.forEach(o => o.trigger("preprocess"));
     }
     midprocess(world: GameObj) {
-        world!.children.forEach(o => o.trigger("midprocess"));
-        world!.children.forEach(o => o.trigger("midprocess2"));
-        world!.children.forEach(o => o.trigger("midprocess3"));
+        world.children.forEach(o => o.trigger("midprocess"));
+        world.children.forEach(o => o.trigger("midprocess2"));
+        world.children.forEach(o => o.trigger("midprocess3"));
     }
     postprocess(world: GameObj) {
-        world!.children.forEach(o => o.trigger("postprocess"));
+        world.children.forEach(o => o.trigger("postprocess"));
+        world.children.forEach(o => o.trigger("postprocess2"));
     }
     /**
      * Queue of commands to be executed to initialize the game.
