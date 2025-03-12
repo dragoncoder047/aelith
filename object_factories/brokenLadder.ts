@@ -9,7 +9,6 @@ export function brokenLadder() {
         ...defaults(),
         K.offscreen({ hide: true }),
         randomFrame(),
-        "ladder" as Tag,
         "raycastIgnore" as Tag,
         {
             add(this: GameObj) {

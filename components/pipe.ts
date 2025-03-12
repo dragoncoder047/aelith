@@ -1,4 +1,4 @@
-import { AreaComp, Comp, CompList, GameObj, OffScreenComp, PosComp, Rect, SpriteComp, TileComp, Vec2 } from "kaplay";
+import { AreaComp, Comp, CompList, GameObj, OffScreenComp, PosComp, Rect, SpriteComp, TileComp, TimerComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -15,14 +15,19 @@ export interface PipeComp extends Comp {
     zap(): void
 }
 
+enum ZapState {
+    QUIESCENT = 0,
+    HEAD = 4,
+}
+
 export function pipeComp(solid = true, useBackground = true): PipeComp {
-    var zapCooldown = 0;
-    const ZAP_SPEED = 0.05;
+    var zapPhase = ZapState.QUIESCENT;
+    const ZAP_SPEED = 0.02;
     const OFFSET_FRAC = 4 / 7;
     return {
         id: "pipe",
-        require: ["sprite", "pos", "tile", "mergeable"],
-        add(this: GameObj<PipeComp | PosComp>) {
+        require: ["sprite", "pos", "tile", "mergeable", "timer"],
+        add(this: GameObj<PipeComp | PosComp | TimerComp>) {
             const ec1 = this.on("midprocess2", () => {
                 this.chooseSpriteNum();
                 ec1.cancel();
@@ -30,6 +35,9 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             const ec2 = this.on("postprocess2", () => {
                 this.unuse("area");
                 ec2.cancel();
+            });
+            this.loop(ZAP_SPEED, () => {
+                if (zapPhase > ZapState.QUIESCENT) zapPhase--;
             });
         },
         chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp | PipeComp>) {
@@ -90,23 +98,20 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 }
             }
         },
-        update() {
-            if (zapCooldown > 0)
-                zapCooldown -= K.dt();
-        },
-        zap(this: GameObj<MergeableComp | PipeComp | PosComp | OffScreenComp | TileComp>) {
-            if (zapCooldown > 0) return;
+        zap(this: GameObj<MergeableComp | PipeComp | PosComp | OffScreenComp | TileComp | TimerComp>) {
+            if (zapPhase !== ZapState.QUIESCENT) return;
             if (!this.isOffScreen())
                 splash(
                     this.worldPos()!,
                     () => K.choose([K.YELLOW.lighten(100), K.CYAN.lighten(170)]),
                     2,
-                    undefined,
+                    -100,
                     true,
-                    10
+                    10,
+                    0.1
                 );
-            zapCooldown = ZAP_SPEED * 2;
-            K.wait(ZAP_SPEED, () =>
+            zapPhase = ZapState.HEAD;
+            this.wait(ZAP_SPEED, () =>
                 [K.LEFT, K.UP, K.RIGHT, K.DOWN].forEach(
                     d => WorldManager.getLevelOf(this)!
                         .getAt(this.tilePos.add(d))
