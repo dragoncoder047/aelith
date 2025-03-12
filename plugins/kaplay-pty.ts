@@ -140,7 +140,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                 id: "pty",
                 require: ["dynamic-text", "text", "pos"],
                 chunks: [],
-                typeDelay: opt?.typeDelay ?? (() => K.rand(0.02, 0.2)),
+                typeDelay: opt?.typeDelay ?? (() => K.rand(0.04, 0.4)),
                 prompt: opt.cmdPrompt,
                 showCursor: false,
                 cursor: opt.cursor ?? "\u2588",

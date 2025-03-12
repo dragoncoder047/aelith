@@ -117,7 +117,7 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
     term.prompt = createPrompt();
     switchFun();
     if (!fast && !first) {
-        await K.wait(0.2);
+        await K.wait(0.4);
         await K.tween(1, 0, 0.7, a => u_amount = a);
     }
     K.usePostEffect(null!);

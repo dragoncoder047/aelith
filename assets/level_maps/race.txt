@@ -24,11 +24,11 @@
 ##########  #################
 ##########  #################
 
-(command)(ps | grep gpt)( 4246 ttys031  &time -./gpt i /bin%0A 4247 ttys031  &time -./gpt i /home%0A 7215 ttys031  0:00.000 grep gpt%0A)1 5(/)h1 5(ns)i1(ns)i
-(command)(kill 4246)()1 1 0 6(ns)i(pu)i
+(command)(ps | grep gpt)( 4246 ttys031  &time -./gpt i /bin%0A 4247 ttys031  &time -./gpt i /home%0A 7215 ttys031  0:00.000 grep gpt%0A)2 5(/)h2 5(ns)i1(ns)i
+(command)(kill 4246)()2 2 0 6(ns)i(pu)i
 o(value)o(text)(&msg.cutscene.race.cantKill 4246: &msg.cutscene.race.pid 4247 &msg.cutscene.race.mustBeKilledFirst%0A)s(styles)(stderr)1(ns)iss(pu)i
-(command)(kill 4247)()1 1 0 6(ns)i(pu)i
+(command)(kill 4247)()2 2 0 6(ns)i(pu)i
 o(value)o(text)(&msg.cutscene.race.cantKill 4247: &msg.cutscene.race.pid 4246 &msg.cutscene.race.mustBeKilledFirst%0A)s(styles)(stderr)1(ns)iss(pu)i
-(command)()()0 1 5(ns)i(pu)i
+(command)()()0 2 5(ns)i(pu)i
 (introduction)d
 (&msg.cutscene.race.name)(name)d

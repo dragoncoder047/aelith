@@ -19,8 +19,8 @@
 +++++++++###########################
 
 (command)(sudo agdb agent enable)(&msg.cutscene.sudo.password)1 5(/)h1 5(ns)i1(ns)i
-o(value)o(text)(*********)s(typewriter)1s(sound)(typing)s(delayBefore)1ss(showCursor)1s(pu)i
-o(value)o(text)(%0Aagdb: &msg.cutscene.sudo.nomemory%0A)s(delayBefore)1s(sound)(command_fail)s(styles)(stderr)1(ns)iss(pu)i
+o(value)o(text)(*********)s(typewriter)1s(sound)(typing)s(delayBefore)2ss(showCursor)1s(pu)i
+o(value)o(text)(%0Aagdb: &msg.cutscene.sudo.nomemory%0A)s(delayBefore)2s(sound)(command_fail)s(styles)(stderr)1(ns)iss(pu)i
 (command)()()0 1 5(ns)i(pu)i
 (introduction)d
 ([command]sudo[/command])(name)d

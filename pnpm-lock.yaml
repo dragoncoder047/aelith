@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:dragoncoder047/kaplay#af9a62f2063346b8422de4c831314b21ce3e64e2
-        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/af9a62f2063346b8422de4c831314b21ce3e64e2
+        specifier: github:dragoncoder047/kaplay#cc4bcc0e9d89387ee3f50d08c5d250a4acc1c6e9
+        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/cc4bcc0e9d89387ee3f50d08c5d250a4acc1c6e9
       zzfx:
         specifier: ^1.3.0
         version: 1.3.0
@@ -173,8 +173,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/af9a62f2063346b8422de4c831314b21ce3e64e2:
-    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/af9a62f2063346b8422de4c831314b21ce3e64e2}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/cc4bcc0e9d89387ee3f50d08c5d250a4acc1c6e9:
+    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/cc4bcc0e9d89387ee3f50d08c5d250a4acc1c6e9}
     version: 4000.0.0-alpha.16
 
   typescript@5.6.2:
@@ -286,7 +286,7 @@ snapshots:
       '@esbuild/win32-ia32': 0.24.0
       '@esbuild/win32-x64': 0.24.0
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/af9a62f2063346b8422de4c831314b21ce3e64e2: {}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/cc4bcc0e9d89387ee3f50d08c5d250a4acc1c6e9: {}
 
   typescript@5.6.2: {}
 
