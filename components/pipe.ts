@@ -36,6 +36,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 this.unuse("area");
                 ec2.cancel();
             });
+            this.maxLoopsPerFrame = 1;
             this.loop(ZAP_SPEED, () => {
                 if (zapPhase > ZapState.QUIESCENT) zapPhase--;
             });
