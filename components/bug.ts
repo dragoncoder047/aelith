@@ -2,6 +2,7 @@ import { AreaComp, BodyComp, Comp, GameObj, PosComp, ShaderComp, SpriteComp, Sta
 import { FOOTSTEP_INTERVAL, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
+import { WorldManager } from "../levels";
 
 export interface BugComp extends Comp {
     moveDir: number
@@ -97,7 +98,13 @@ export function bug(): BugComp {
                 this.moveDir = 0;
                 this.play("stand");
                 this.collisionIgnore.add("player");
-                scTimeout = this.wait(5, () => this.enterState("sleeping"));
+                scTimeout = this.wait(5, () => {
+                    this.enterState(WorldManager.getLevelOf(this)!
+                        .get<AreaComp>("portal")
+                        .some(o => this.isColliding(o))
+                        ? "walking"
+                        : "sleeping");
+                });
             });
             this.onStateUpdate("scared", () => {
                 if (this.isGrounded()) this.jump();

@@ -1,5 +1,4 @@
 import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
-import { MParser } from "../levels/mparser";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationComp } from "../components/continuationCore";
 import { ControllableComp } from "../components/controllable";
@@ -8,10 +7,10 @@ import { LoreComp } from "../components/lore";
 import { ManpageComp } from "../components/manpage";
 import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
-import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { actuallyRaycast, ballistics } from "../misc/utils";
-import { PlayerHeadComp } from "./head";
 import { WorldManager } from "../levels";
+import { actuallyRaycast, ballistics } from "../misc/utils";
+import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
+import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
 
 
@@ -274,7 +273,6 @@ export function playerBody(): PlayerBodyComp {
         addToInventory(this: GameObj<PlayerBodyComp>, obj) {
             if (this.inventory.includes(obj)) return;
             obj.setParent(this, { keep: K.KeepFlags.Pos });
-            this._pull2Pos(obj);
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
