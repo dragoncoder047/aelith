@@ -11,5 +11,6 @@ export function invisibleTrigger() {
         ...machine(),
         invisibleTriggerComp(),
         "raycastIgnore" as Tag,
+        "dont-highlight" as Tag,
     ];
 }

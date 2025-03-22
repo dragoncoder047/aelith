@@ -260,8 +260,18 @@
     "grabber": {
         "x": 54,
         "y": 318,
-        "width": 32,
-        "height": 32
+        "width": 128,
+        "height": 32,
+        "sliceX": 4,
+        "anims": {
+            "dormant": 0,
+            "grabbing": {
+                "from": 1,
+                "to": 3,
+                "speed": 30,
+                "loop": true
+            }
+        }
     },
     "crossover": {
         "x": 384,

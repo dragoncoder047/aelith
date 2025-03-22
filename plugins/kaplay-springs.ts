@@ -74,7 +74,7 @@ export function kaplaySprings(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     const springForce = targetDisplacement.sub(displacement).scale(this.springConstant);
                     this._applyForces(springForce);
 
-                    const relVel = this.other.vel.sub(this.vel).project(displacement);
+                    const relVel = (this.other.vel ?? K.vec2(0)).sub(this.vel).project(displacement);
                     const rvl = relVel.len();
                     const relVelClamped = rvl > this.dampingClamp ? relVel.scale(this.dampingClamp / rvl) : relVel;
                     const dampingForce = relVelClamped.scale(Math.expm1(-this.springDamping * K.fixedDt()));

@@ -10,10 +10,11 @@ export function pointTowards(what: GameObj<PosComp> | null = null): PointTowards
         id: "pointTowards",
         require: ["rotate", "pos"],
         pointingTowards: what,
-        angleOffset: 0,
+        angleOffset: -90,
         update(this: GameObj<PosComp | PointTowardsComp | RotateComp>) {
             if (this.pointingTowards)
                 this.angle = this.pointingTowards.worldPos()!.sub(this.worldPos()!).angle() + this.angleOffset;
+            else this.angle = 0;
         }
     }
 }

@@ -8,11 +8,11 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 // State functions
 player.onStateUpdate("normal", () => {
     if (player.isGrounded() && Math.abs(getPlayerMotionVector().x) > Number.EPSILON) {
-        if (player.getCurAnim()?.name != "walking") player.play("walking");
+        player.play("walking", { restart: false });
         player.animSpeed = Math.abs(getPlayerMotionVector().x);
     }
     else {
-        if (player.getCurAnim()?.name != "idle") player.play("idle");
+        player.play("idle", { restart: false });
         player.animSpeed = 1;
     }
 });

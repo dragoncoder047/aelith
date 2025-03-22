@@ -1,3 +1,4 @@
+import { Tag } from "kaplay";
 import { STYLES } from "../assets/textStyles";
 import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -16,5 +17,6 @@ export function textNote() {
         K.timer(),
         K.layer("text"),
         K.dynamicText(),
+        "dont-highlight" as Tag,
     ]
 }

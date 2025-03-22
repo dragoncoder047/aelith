@@ -36,6 +36,7 @@ import { windEnd } from "../object_factories/windEnd";
 import { PlayerBodyComp } from "../player/body";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PortalComp } from "../components/portal";
+import { grabber } from "../object_factories/grabber";
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
@@ -56,7 +57,7 @@ export class MParser {
         D: door,
         // E
         F: fan,
-        // G
+        G: grabber,
         // H
         I: invisibleTrigger,
         // J

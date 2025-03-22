@@ -1,6 +1,7 @@
 import { ZzFXMSong } from "../../plugins/kaplay-zzfxm";
 import rawSongs from "./songs.json";
 import { parse } from "./sounds";
-export const aaa: ZzFXMSong = parse(rawSongs.aaa);
-export const bbb: ZzFXMSong = parse(rawSongs.bbb);
-export const ccc: ZzFXMSong = parse(rawSongs.ccc);
+
+export const allSongs: Record<string, ZzFXMSong> = Object.fromEntries(
+    Object.entries(rawSongs).map(([key, value]) => [key, parse(value)])
+);

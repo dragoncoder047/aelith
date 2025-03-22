@@ -2,7 +2,7 @@ import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { nextFrame } from "../misc/utils";
-import { aaa, bbb, ccc } from "./audio/songs";
+import { allSongs } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
 import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
@@ -58,9 +58,7 @@ K.loadShader("invert", undefined, invertShader);
 K.loadShader("portal", undefined, portalShader);
 K.loadShader("dataPipe", undefined, datapipeShader);
 K.loadShader("fuzzy", undefined, fuzzyFadeShader);
-K.loadZzFXM("aaa", aaa);
-K.loadZzFXM("bbb", bbb);
-K.loadZzFXM("ccc", ccc);
+Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 
 // idk where else to put this
 K.strings.fn = {

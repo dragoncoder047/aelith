@@ -219,7 +219,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                 this.zoop.pos = willCapture.playerPos;
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
-                    if ((e.obj as any).has("invisible-trigger")) continue;
+                    if ((e.obj as any).is("dont-highlight")) continue;
                     if (e.location.levelID !== WorldManager.activeLevel!.id) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox)

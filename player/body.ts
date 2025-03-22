@@ -272,6 +272,13 @@ export function playerBody(): PlayerBodyComp {
         holdingIndex: -1,
         addToInventory(this: GameObj<PlayerBodyComp>, obj) {
             if (this.inventory.includes(obj)) return;
+            // find anything that has curPlatform being this
+            // object and make it jump slightly to prevent kaplayjs/kaplay#628
+            K.get<BodyComp>("*", {recursive: true}).forEach(b => {
+                if (b.has("body") && b.stickToPlatform !== false && b.curPlatform() !== null) {
+                    b.jump(10);
+                }
+            });
             obj.setParent(this, { keep: K.KeepFlags.Pos });
             // Put in inventory
             this.inventory.push(obj);

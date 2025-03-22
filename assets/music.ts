@@ -1,7 +1,8 @@
 import { AudioPlay, AudioPlayOpt } from "kaplay";
 import { K } from "../init";
+import { allSongs } from "./audio/songs";
 
-const SONGS = ["aaa", "bbb", "ccc"];
+const SONGS = Object.keys(allSongs);
 
 export function playMusic(options: AudioPlayOpt) {
     options.loop = false; // can't have that, it loops automatically
