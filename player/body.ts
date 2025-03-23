@@ -14,7 +14,7 @@ import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
 
 
-export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | ReturnType<typeof K.platformEffector>>;
+export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | PlatformEffectorComp>;
 // MARK: PlayerComp
 
 export interface PlayerBodyComp extends Comp {

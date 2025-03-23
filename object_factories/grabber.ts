@@ -9,7 +9,7 @@ export function grabber() {
     return [
         K.sprite("grabber"),
         ...machine({ scale: 0.5 }),
-        K.body({ damping: 2, gravityScale: 0 }),
+        K.body({ damping: 1, gravityScale: 0 }),
         grabberComp(),
         K.anchor("bot"),
         pointTowards(null),
