@@ -8,7 +8,6 @@ import { grating } from "../object_factories/grating";
 import { ladder } from "../object_factories/ladder";
 import { bgWall, wall } from "../object_factories/wall";
 import { MergeableComp } from "./mergeable";
-import { TogglerComp } from "./toggler";
 
 export interface PipeComp extends Comp {
     chooseSpriteNum(): void
@@ -17,13 +16,14 @@ export interface PipeComp extends Comp {
 
 enum ZapState {
     QUIESCENT = 0,
-    HEAD = 4,
+    FIRING = 10,
 }
+
+const ZAP_SPEED = 0.02;
+const OFFSET_FRAC = 4 / 7;
 
 export function pipeComp(solid = true, useBackground = true): PipeComp {
     var zapPhase = ZapState.QUIESCENT;
-    const ZAP_SPEED = 0.02;
-    const OFFSET_FRAC = 4 / 7;
     return {
         id: "pipe",
         require: ["sprite", "pos", "tile", "mergeable", "timer"],
@@ -91,7 +91,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 for (var i = 0; i < ds.length; i++) {
                     const lookPos = wp.add(ds[i]!);
                     if (area.collides(lookPos)) {
-                        (o as any as GameObj<TogglerComp>).on("toggleInitiate", () => {
+                        o.on("toggleInitiate", () => {
                             this.zap();
                         });
                         continue bLoop;
@@ -111,7 +111,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                     10,
                     0.1
                 );
-            zapPhase = ZapState.HEAD;
+            zapPhase = ZapState.FIRING;
             this.wait(ZAP_SPEED, () =>
                 [K.LEFT, K.UP, K.RIGHT, K.DOWN].forEach(
                     d => WorldManager.getLevelOf(this)!

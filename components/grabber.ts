@@ -36,7 +36,7 @@ export function grabber(): GrabberComp {
                 length: 0,
                 p2: this.toOther(this.parent! as any, K.vec2(0, -TILE_SIZE / 2)),
                 springConstant: 40,
-                springDamping: 20,
+                springDamping: 100,
                 drawOpts: {
                     color: K.Color.fromHex("#666666"),
                     // @ts-expect-error
@@ -77,8 +77,7 @@ export function grabber(): GrabberComp {
             this.addForce(_force1);
             lookingFor.addForce(_force2);
 
-            const targetState = off.slen() < THRESHOLD_SQUARED && !player.inventory.includes(lookingFor as any);
-            goState(targetState);
+            goState(off.slen() < THRESHOLD_SQUARED && !player.inventory.includes(lookingFor as any));
 
             const displacement = lookingFor.worldPos()!.sub(this.worldPos()!).unit();
             this.vel = this.vel.project(displacement).add(this.vel.reject(displacement).scale(0.6));
