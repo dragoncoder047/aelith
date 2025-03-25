@@ -1,8 +1,9 @@
+import { GameObj } from "kaplay";
 import { UI } from ".";
 import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 
-const FPSIndicator = UI.add([
+const fpsIndicator = UI.add([
     K.text("", { size: 8 / SCALE }),
     K.pos(MARGIN, MARGIN),
     K.color(K.WHITE),
@@ -19,10 +20,10 @@ setInterval(() => {
     }
     lastTime = now;
     frameCounter = 0;
-    FPSIndicator.text = "FPS: " + fps.toFixed(2).padStart(6);
-    if (fps < 20) FPSIndicator.color = K.RED;
-    else if (fps < 30) FPSIndicator.color = K.YELLOW;
-    else FPSIndicator.color = K.GREEN;
+    fpsIndicator.text = "FPS: " + fps.toFixed(2).padStart(6);
+    if (fps < 20) fpsIndicator.color = K.RED;
+    else if (fps < 30) fpsIndicator.color = K.YELLOW;
+    else fpsIndicator.color = K.GREEN;
 }, 100);
 
 const countIndicator = UI.add([
@@ -32,8 +33,12 @@ const countIndicator = UI.add([
     K.layer("ui"),
 ]);
 
+function activeObjectsUnder(obj: GameObj): number {
+    return obj.paused ? 0 : obj.children.reduce((acc, x) => acc + activeObjectsUnder(x), 1);
+}
+
 function updateObjectCount() {
-    var objectCount = K.get("*", { recursive: true }).filter(x => !x.paused).length;
+    const objectCount = activeObjectsUnder(K.getTreeRoot());
     countIndicator.text = objectCount + " active objects";
     if (objectCount > 1000) countIndicator.color = K.RED;
     else if (objectCount > 300) countIndicator.color = K.YELLOW;
