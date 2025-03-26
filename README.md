@@ -58,6 +58,7 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn doesn't teleport to the player and gets extremely stretched.
 * [ ] Add more challenges that test all features of call/cc.
