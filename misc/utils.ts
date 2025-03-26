@@ -47,10 +47,6 @@ export function guessOS() {
     return a.includes("mac") ? "mac" : a.includes("win") ? "windows" : "linux";
 }
 
-export function isTouchscreen() {
-    return navigator.maxTouchPoints > 0;
-}
-
 function getUserAgentString() {
     // @ts-ignore
     return navigator.userAgent || navigator.vendor || window.opera;

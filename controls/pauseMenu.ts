@@ -2,7 +2,7 @@ import { showManpage } from ".";
 import { musicPlay } from "../assets";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { guessOS, isFirefox, isTouchscreen } from "../misc/utils";
+import { guessOS, isFirefox } from "../misc/utils";
 import { player } from "../player";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
@@ -175,8 +175,8 @@ K.onGamepadConnect(g => {
 
 K.onLoad(() => {
     K.wait(0.1, () => {
-        if (isTouchscreen()) {
-            showManpage(true, "&msg.dialog.touchNotSupportedYet", false)
+        if (K.isTouchscreen()) {
+            showManpage(true, "&msg.dialog.touchNotSupportedYet", false);
         }
     });
 });
