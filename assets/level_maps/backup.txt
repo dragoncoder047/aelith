@@ -9,7 +9,7 @@
 ###+#   M     I:  ###+##### 2g(ii)iz(&msg.firstContinuation)(hs)iz
 ###++          :  ###+#####
 ####+ =        : =###+++###
-####+#=#+++##$$+$=#########
+####+#=#+++##$$+$=###+#####
 ###++#=#+#P##  ::-+++###### (sudo)(ps)iz
 ###+##=#+#       =##+######
 ##++##=#+#  AN   =##+###### (t)(&msg.firstCheckpoint)s2z
@@ -28,3 +28,13 @@
 ###########       #########
 ###########       #########
 ###########       #########
+
+[cSpell: ignore aagdb ]
+(command)(assert -Ba . &cutscene.backup.location)(&msg.cutscene.backup.success%0A)1 2 1 6(ns)i1(ns)i
+(command)(bg)([1] &system.debugger.pid &msg.cutscene.continued  &system.command%0Aagdb> )1 0 5(ns)i(pu)i
+o(value)o(text)(explain%0A)s(typewriter)1s(styles)(command)1(ns)is(delayBefore)2s(sound)(typing)ss(showCursor)1s(pu)i
+o(value)o(text)(&msg.cutscene.backup.explanation%0A)s(typewriter)(llm)s(delayBefore)2ss(pu)i
+o(value)o(text)(agdb> )ss(pu)i
+o(value)o(text)()s(delayBefore)1ss(showCursor)1s(pu)i
+(introduction)d
+([command]backup[/command])(name)d

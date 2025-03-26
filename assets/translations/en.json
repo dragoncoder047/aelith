@@ -9,7 +9,7 @@
             "header": "Memory Management",
             "section": "1",
             "secName": "MEM",
-            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a program to run\n\n[b]DESCRIPTION\n&tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It is not tied to any particular program. It may be inserted into any program by throwing it in, and can even be inserted into the currently-running process (which appears to be: [b]&startup.cmd[/b]).\n\n"
+            "body": "[b]NAME\n&tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a program to run\n\n[b]DESCRIPTION\n&tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It is not tied to any particular program. It may be inserted into any program by throwing it in, and can even be inserted into the currently-running process (which appears to be: [b]&system.command[/b]).\n\n"
         },
         "continuation": {
             "throw": {
@@ -141,6 +141,7 @@
         "fromBeginning": "from the beginning"
     },
     "cutscene": {
+        "continued": "continued",
         "startup": {
             "password": "Password for &user: ",
             "loggedInOK": "Logged in!",
@@ -165,6 +166,10 @@
             "noMoreHelp": "Well, that's the end of my tutorial... I suppose I should say more since you're debugging me, but I have the sinking feeling that I'm going to crash again if I do that, so \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd ",
             "unicodeError": "Error fetching Unicode table",
             "gaveUp": "Okay, fine... insert imaginary shrug emoji..."
+        },
+        "backup": {
+            "success": "Backed up 124875 files to [b]&cutscene.backup.location/assert[/b]",
+            "explanation": "The file &cutscene.backup.location/assert is a way for you to be able to start over if you mess up and break things. Just pass it to the assert command again to jump back. Don't lose it!"
         }
     },
     "press": "press",
@@ -179,7 +184,7 @@
     "firstVariable": "This is a variable.\nThese will be very useful!",
     "firstDoor": "To open the door, you will need to press\nand hold that button.\nYou have the memory for that, right?",
     "raceCond": "Maybe that's why I crashed... a race condition? A little continuation juice right there, thanks!",
-    "firstCheckpoint": "&arrow.left Congrats,\n  your first\n  checkpoint!",
+    "firstCheckpoint": "&arrow.left Oops,\n  that's the\n  checkpoint file...",
     "firstContinuation": "That [assert]green[/assert] thing you are holding?\nIt's a [bouncy][rainbow]continuation![/rainbow][/bouncy]\nGo on, invoke it!",
     "firstTrap": "With that [throw]blue[/throw] device, you can capture your own continuations!\nDon't be shy -- grab it!",
     "completedFirstChallenge": "That was easy,\nwasn't it?",

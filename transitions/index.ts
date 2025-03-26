@@ -57,7 +57,7 @@ function command(
         },
         output: {
             text: output,
-            sound: typeof success === "boolean" ? (success ? "command_success" : "command_fail") : undefined,
+            sound: typeof success !== "undefined" ? (success ? "command_success" : "command_fail") : undefined,
             delayBefore: delayAfter,
         },
         workDir,

@@ -428,7 +428,7 @@ export class MParser {
         // new object
         o() {
             this.stack.push({});
-        }
+        },
         // // MARK: ? (debug)
         // // debug command: logs the top object
         // "?"() {

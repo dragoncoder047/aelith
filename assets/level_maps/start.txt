@@ -30,9 +30,9 @@ o(value)o(text)(%0A&msg.cutscene.startup.loggedInOK%0A)s(delayBefore)2ss(showCur
 o(value)(&msg.cutscene.startup.ai.prompt > )s(pu)i
 o(value)o(text)(&msg.cutscene.startup.findAnswer%0A)s(typewriter)1s(delayBefore)2s(styles)(command)1(ns)is(sound)(typing)ss(showCursor)1s(pu)i
 o(value)o(text)(&msg.cutscene.startup.answer)s(delayBefore)2s(typewriter)(llm)ss(showCursor)0s(pu)i
-o(value)o(text)(%0A[1]  + &startup.pid &msg.cutscene.startup.segfault  ./gpt --no-gui%0A)s(styles)(stderr)1(ns)is(sound)(command_fail)s(delayBefore)3ss(showCursor)1s(pu)i
-(command)(ls *.core)(&startup.pid.core%0A)3 1 2(/)h1 6(ns)i(pu)i
-(command)(&startup.cmd)(&msg.cutscene.startup.startingDebugger)1 4(/)h1 4(/)h 5(ns)i(pu)i
+o(value)o(text)(%0A[1]  + &system.pid &msg.cutscene.startup.segfault  ./gpt --no-gui%0A)s(styles)(stderr)1(ns)is(sound)(command_fail)s(delayBefore)3ss(showCursor)1s(pu)i
+(command)(ls *.core)(&system.pid.core%0A)3 1 2(/)h1 6(ns)i(pu)i
+(command)(&system.command)(&msg.cutscene.startup.startingDebugger)1 4(/)h1 4(/)h 5(ns)i(pu)i
 o(value)o(text)()s(delayBefore)2ss(showCursor)1s(pu)i
 (introduction)d
 (&gamename)(name)d
