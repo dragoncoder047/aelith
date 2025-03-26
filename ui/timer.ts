@@ -21,17 +21,17 @@ export const timer = UI.add([
             };
             K.onResize(func);
             func();
-        }
+        },
+        value: 0
     }
 ]);
 
 timer.hidden = true;
-
-var timerValue = 0;
 K.onUpdate(() => {
     if (!player.hidden) {
-        timerValue += K.dt();
+        timer.value += K.dt();
         timer.hidden = false;
+        // it can still be hidden by setting the opacity to 0
     }
-    timer.text = `${Math.floor(timerValue / 60)}:${(timerValue % 60).toFixed(3)}`.replace(/:(\d)\./, ":0$1.");
+    K.strings.time = timer.text = `${Math.floor(timer.value / 60)}:${(timer.value % 60).toFixed(3)}`.replace(/:(\d)\./, ":0$1.");
 });
