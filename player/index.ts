@@ -69,7 +69,6 @@ function addChain(start: GameObj<PosComp>, startPos: Vec2, nSeg: number, maxSz: 
             K.layer("playerTail"),
             K.opacity(0),
             K.pos(pos),
-            K.anchor("center"),
             K.area({
                 collisionIgnore: ["player", "tail", "noCollideWithTail"],
                 friction: FRICTION / 10,
@@ -89,7 +88,6 @@ function addChain(start: GameObj<PosComp>, startPos: Vec2, nSeg: number, maxSz: 
                 p2: previous === start ? startPos : K.vec2(0),
                 forceOther: previous !== start,
                 drawOpts: {
-                    // @ts-expect-error
                     width: sz,
                     color,
                 },

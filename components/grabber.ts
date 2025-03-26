@@ -39,7 +39,6 @@ export function grabber(): GrabberComp {
                 springDamping: 100,
                 drawOpts: {
                     color: K.Color.fromHex("#666666"),
-                    // @ts-expect-error
                     width: 4,
                 }
             }));

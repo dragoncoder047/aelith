@@ -10,7 +10,7 @@ export interface SpringCompOpt {
     springConstant?: number
     springDamping?: number
     dampingClamp?: number
-    drawOpts?: Omit<DrawLineOpt | DrawCircleOpt, "p1" | "p2" | "pos" | "radius">
+    drawOpts?: Omit<DrawLineOpt & DrawCircleOpt, "p1" | "p2" | "pos" | "radius">
 }
 
 export interface SpringComp extends Comp {
