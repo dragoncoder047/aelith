@@ -17,14 +17,14 @@ export function mergeable(): MergeableComp {
         id: "mergeable",
         require: ["pos"],
         add(this: GameObj<SpriteComp | MergeableComp | PosComp>) {
-            const ec1 = this.on("preprocess", () => {
+            this.on("preprocess", () => {
                 this.squares.push(this.pos);
-                ec1.cancel();
+                return K.cancel();
             });
-            const ec2 = this.on("postprocess", () => {
+            this.on("postprocess", () => {
                 this.width += this.tileDims.x * TILE_SIZE;
                 this.height += this.tileDims.y * TILE_SIZE;
-                ec2.cancel();
+                return K.cancel();
             });
         },
         addSquare(pos) {

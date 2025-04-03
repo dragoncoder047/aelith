@@ -9,11 +9,11 @@ export function randomFrame(): RandomFrameComp {
         id: "random-frame",
         require: ["sprite"],
         add(this: GameObj<SpriteComp | RandomFrameComp>) {
-            const x = K.onUpdate(() => {
+            K.onUpdate(() => {
                 if (this.numFrames() > 0) { // Wait for frame data to load
                     this.frame = K.randi(this.numFrames());
-                    x.cancel();
                     this.unuse("random-frame");
+                    return K.cancel();
                 }
             });
         }

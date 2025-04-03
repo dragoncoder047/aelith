@@ -17,9 +17,9 @@ export function fan(): FanComp {
         require: ["pos", "rotate", "toggler"],
         wind: [],
         add(this: GameObj<FanComp>) {
-            const ec = this.on("midprocess3", () => {
+            this.on("midprocess3", () => {
                 this.createWind();
-                ec.cancel();
+                return K.cancel();
             });
         },
         createWind(this: GameObj<PosComp | RotateComp | FanComp>) {

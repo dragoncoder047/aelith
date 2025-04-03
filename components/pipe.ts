@@ -28,13 +28,13 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
         id: "pipe",
         require: ["sprite", "pos", "tile", "mergeable", "timer"],
         add(this: GameObj<PipeComp | PosComp | TimerComp>) {
-            const ec1 = this.on("midprocess2", () => {
+            this.on("midprocess2", () => {
                 this.chooseSpriteNum();
-                ec1.cancel();
+                return K.cancel();
             });
-            const ec2 = this.on("postprocess2", () => {
+            this.on("postprocess2", () => {
                 this.unuse("area");
-                ec2.cancel();
+                return K.cancel();
             });
             this.maxLoopsPerFrame = 1;
             this.loop(ZAP_SPEED, () => {

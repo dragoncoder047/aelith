@@ -179,9 +179,9 @@ export async function showManpage(isShown: boolean, importantMessage?: string, r
         K.eventGroups.delete("specialDialog");
     }
 }
-const foo = player.onUpdate(() => {
+player.onUpdate(() => {
     showManpage(false);
-    foo.cancel();
+    return K.cancel();
 });
 
 
