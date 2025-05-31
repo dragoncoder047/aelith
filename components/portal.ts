@@ -60,7 +60,7 @@ export function portalComp(): PortalComp {
             });
         },
         inspect() {
-            return `to level: ${this.toLevel}, from portal: ${this.outPortal}`;
+            return `to level: ${this.toLevel}, from portal: ${this.outPortal}\ndisplayAngle: ${this.displayAngle / Math.PI}π`;
         }
     }
 }

@@ -2,11 +2,8 @@ import {
     AreaComp,
     BodyComp,
     Comp,
-    GameObj,
-    StateComp,
-    TimerComp
+    GameObj
 } from "kaplay";
-import { LinkComp } from "./linked";
 
 export interface ButtonComp extends Comp {
 }
@@ -15,7 +12,7 @@ export function button(): ButtonComp {
     return {
         id: "button",
         require: ["collisioner"],
-        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | ButtonComp | LinkComp>) {
+        add(this: GameObj<AreaComp | BodyComp | ButtonComp>) {
             this.on("collisionerStart", ([obj, normal]) => {
                 obj.vel = obj.vel.reject(normal);
             });

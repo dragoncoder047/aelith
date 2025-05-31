@@ -26,7 +26,7 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
             closure__state = state;
             this._syncState();
         },
-        add(this: GameObj<StateComp | TogglerComp | LinkComp>) {
+        add(this: GameObj<StateComp<typeof falseState | typeof trueState> | TogglerComp | LinkComp>) {
             K.onLoad(() => {
                 this._syncState();
             });
@@ -44,7 +44,7 @@ export function toggler(falseState: string = "off", trueState: string = "on", in
                 }
             });
         },
-        _syncState(this: GameObj<StateComp | TogglerComp>) {
+        _syncState(this: GameObj<StateComp<typeof falseState | typeof trueState> | TogglerComp>) {
             var targetState = this.togglerState ? this.trueState : this.falseState;
             if (this.state != targetState) this.enterState(targetState);
         },

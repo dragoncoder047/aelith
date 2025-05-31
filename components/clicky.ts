@@ -12,7 +12,7 @@ export function clicky(states: string[] = ["off", "on"], sounds: string[] = ["sw
     return {
         id: "clicky",
         require: ["state", "pos"],
-        add(this: GameObj<StateComp | PosComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | PosComp>) {
             states.forEach((state, i) => {
                 this.onStateEnter(state, () => {
                     player.playSound(sounds[i]!, undefined, this.worldPos()!, undefined, this);

@@ -18,7 +18,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
         require: ["areaEffector", "area", "state", "linked", "toggler"],
         windDirection: direction,
         windForce: WIND_FORCE,
-        add(this: GameObj<AreaEffectorComp | AreaComp | StateComp | LinkComp | TogglerComp | WindComp>) {
+        add(this: GameObj<AreaEffectorComp | AreaComp | LinkComp | TogglerComp | WindComp>) {
             this.onCollideUpdate((obj: GameObj) => {
                 if (this.windDirection == -90
                     && obj.has(["body", "pos"])
@@ -29,15 +29,15 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
                 }
             });
         },
-        update(this: GameObj<WindComp | AreaEffectorComp | StateComp>) {
+        update(this: GameObj<WindComp | AreaEffectorComp | StateComp<(typeof states)[number]>>) {
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state));
             this.paused = fan.paused;
         },
-        draw(this: GameObj<StateComp | AreaComp | RectComp | WindComp | PosComp>) {
+        draw(this: GameObj<StateComp<(typeof states)[number]> | AreaComp | RectComp | WindComp | PosComp>) {
             this.hidden = WorldManager.getLevelOf(fan) !== WorldManager.activeLevel?.levelObj;
             if (this.state == states[1]) {
                 // draw wind indicators
-                const s = this.aabb();
+                const s = this.worldArea().bbox();
                 const maxWisps = s.area() / 1024;
                 K.pushMatrix(new K.Mat23);
                 for (var i = 0; i < wisps.length; i++) {

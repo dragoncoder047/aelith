@@ -17,7 +17,7 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
         id: "ambient-sound",
         require: ["state", "toggler", "pos"],
         cur: undefined,
-        add(this: GameObj<StateComp | TogglerComp | AmbientSoundComp | PosComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | TogglerComp | AmbientSoundComp | PosComp>) {
             this.onStateEnter(states[0], () => {
                 // turning off
                 if (this.cur) this.cur.cancel();

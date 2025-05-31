@@ -21,36 +21,43 @@ export type TextChunk = ({
     workDir?: string
 }));
 
-type TextChunkCompressed =
-    | ["command", string, string, number, number, boolean | undefined, string | undefined]
+export type TextChunkCompressed =
+    | (string | undefined)[]
     | (TextChunk & { waitKey?: string });
 
 function decompressTextChunk(c: TextChunkCompressed): TextChunk {
     if (Array.isArray(c)) {
         if (c[0] !== "command")
             throw new Error("bad command in transition: " + JSON.stringify(c));
-        return command(c[1], c[2], c[3], c[4], c[5], c[6]);
+        console.log(c);
+        return command(c[1]!, c[2]!, c[3]!, c[4]!, Boolean(c[5]), c[6]);
     }
     if (c.waitKey && !c.isCommand) {
         if (typeof c.value === "string") c.value = { text: c.value };
-        c.value.delayBefore = () => new Promise(r => K.onKeyDown(c.waitKey!, () => r()))
+        c.value.delayBefore = () => new Promise(r => K.onKeyDown(c.waitKey!, () => r()));
     }
     return c;
 }
 
-function command(
+function makeNumber(x: number | string): number {
+    if (typeof x === "number") return x;
+    if (typeof x === "string") return parseFloat(x.trim());
+    return 0;
+}
+
+export function command(
     cmd: string,
     output: string,
-    delayBefore: number,
-    delayAfter: number,
-    success: boolean | undefined,
+    delayBefore: number | string,
+    delayAfter: number | string,
+    success?: boolean,
     workDir?: string
 ): TextChunk {
     return {
         isCommand: true,
         command: {
             text: cmd,
-            delayBefore,
+            delayBefore: makeNumber(delayBefore),
             sound: "typing",
             styles: ["command"],
             typewriter: true
@@ -58,7 +65,7 @@ function command(
         output: {
             text: output,
             sound: typeof success !== "undefined" ? (success ? "command_success" : "command_fail") : undefined,
-            delayBefore: delayAfter,
+            delayBefore: makeNumber(delayAfter),
         },
         workDir,
     };

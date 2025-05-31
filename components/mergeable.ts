@@ -3,7 +3,6 @@ import { K } from "../init";
 import { TILE_SIZE } from "../constants";
 
 export interface MergeableComp extends Comp {
-    tileDims: Vec2
     squares: Vec2[]
     addSquare(pos: Vec2): void
     modifyWidth(width: number): void
@@ -12,7 +11,6 @@ export interface MergeableComp extends Comp {
 
 export function mergeable(): MergeableComp {
     return {
-        tileDims: K.vec2(0),
         squares: [],
         id: "mergeable",
         require: ["pos"],
@@ -21,20 +19,17 @@ export function mergeable(): MergeableComp {
                 this.squares.push(this.pos);
                 return K.cancel();
             });
-            this.on("postprocess", () => {
-                this.width += this.tileDims.x * TILE_SIZE;
-                this.height += this.tileDims.y * TILE_SIZE;
-                return K.cancel();
-            });
         },
         addSquare(pos) {
             this.squares.push(pos);
         },
-        modifyWidth(width) {
-            this.tileDims.x += width;
+        modifyWidth(this: GameObj<SpriteComp | PosComp>, width) {
+            this.width += width * TILE_SIZE;
+            this.pos.x += (width * TILE_SIZE) / 2;
         },
-        modifyHeight(height) {
-            this.tileDims.y += height;
+        modifyHeight(this: GameObj<SpriteComp | PosComp>, height) {
+            this.height += height * TILE_SIZE;
+            this.pos.y += (height * TILE_SIZE) / 2;
         }
     };
 }

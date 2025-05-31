@@ -6,11 +6,11 @@
 ######++#=   :::::::=        ##+####
 ######+##=$$$+######=#########++####
 #####++++-:::+######=########++#####
-#####+###=   +######=IM      +###### (t)(&msg.firstVariable)s(width)8bs(sw)i(ii)i
+#####+###=   +######=IM      +###### (t)(&msg.firstVariable)s(width)8bsw(ii)i
 #####+###=  P+######= :::::::+###### 90r(backup)(ps)iz
 #####+####$$$+####++-::   Xz #######
 #####++###   ++++++#=#+++###########
-######++P @         = : L        ### (sw)i90nr(start)(ps)iz
+######++P @         = : L        ### w90nr(start)(ps)iz
 +++++++#Pz          = :MMt       ### (2a1b2a)p4g(&msg.firstButton)(hs)iz(&msg.getMeOneToo)(hs)i3z
 ######+#Pz            ::: B      ### 3g3z
 ######+#################+++#########
@@ -25,3 +25,11 @@ o(value)o(text)(%0Aagdb: &msg.cutscene.sudo.nomemory%0A)s(delayBefore)2s(sound)(
 (introduction)d
 ([command]sudo[/command])(name)d
 [cSpell: ignore aagdb ]
+
+(
+$sudo agdb agent enable;&msg.cutscene.sudo.password; 0.2; 1
+.*********;2
+!\nagdb: &msg.cutscene.sudo.nomemory\n;2
+$;; 0; 1
+)
+(TEST)i

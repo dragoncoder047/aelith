@@ -10,6 +10,8 @@ export const healthbar = UI.add([
     K.text("", { size: 12 / SCALE }),
     K.anchor("botleft"),
     K.color(K.GREEN),
+    K.fixed(),
+    K.layer("ui"),
     K.area(),
     {
         update(this: GameObj<PosComp>) {

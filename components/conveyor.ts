@@ -1,4 +1,4 @@
-import { Comp, GameObj, SpriteComp, SurfaceEffectorComp, StateComp } from "kaplay";
+import { Comp, GameObj, SpriteComp, StateComp, SurfaceEffectorComp } from "kaplay";
 
 export interface ConveyorComp extends Comp {
     turnSpeed: number,
@@ -12,7 +12,7 @@ export function conveyor(states: [string, string] = ["off", "on"], speed: number
         require: ["linked", "sprite", "state", "body", "surfaceEffector"],
         turnSpeed: speed,
         direction: 1,
-        update(this: GameObj<ConveyorComp | StateComp | SurfaceEffectorComp | SpriteComp>) {
+        update(this: GameObj<ConveyorComp | StateComp<(typeof states)[number]> | SurfaceEffectorComp | SpriteComp>) {
             this.speed = this.turnSpeed * states.indexOf(this.state) * this.direction;
             if (__lastState === this.state) return;
             if (this.state === states[0]) {

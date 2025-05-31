@@ -17,16 +17,16 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
         require: ["state", "area", "sprite", "toggler"],
         rollAmount: 0,
         tweener: null,
-        add(this: GameObj<StateComp | AreaComp | SpriteComp | TogglerComp | TimerComp | RollingDoorComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | AreaComp | SpriteComp | TogglerComp | TimerComp | RollingDoorComp>) {
             this.onStateEnter(states[0], () => {
                 this.tweener?.cancel();
                 this.tweener = this.tween(this.rollAmount, 0, 1, val => this.rollAmount = val, K.easings.easeOutBounce);
-                this.collisionIgnore.delete("*");
+                this.collisionIgnore = this.collisionIgnore.filter(x => x !== "*");
             });
             this.onStateEnter(states[1], () => {
                 this.tweener?.cancel();
                 this.tweener = this.tween(this.rollAmount, -1, Math.abs(this.rollAmount - (-1)), val => this.rollAmount = val, K.easings.linear);
-                this.collisionIgnore.add("*");
+                this.collisionIgnore.push("*");
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!

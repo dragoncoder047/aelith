@@ -164,7 +164,7 @@ export function playerBody(): PlayerBodyComp {
 
                 const allObjects = WorldManager.activeLevel!.levelObj.get<AreaComp>("area")
                     .filter(x => !(this.inventory as any[]).includes(x)
-                        && x.collisionIgnore.isDisjointFrom(this.tagsAsSet)
+                        && x.collisionIgnore.every(xx => !this.tags.includes(xx))
                         && !x.is("raycastIgnore")
                         && !x.paused);
 
@@ -192,7 +192,7 @@ export function playerBody(): PlayerBodyComp {
 
             if (this.lookingAt) {
                 // draw outline on object being targeted
-                const r = this.lookingAt.aabb();
+                const r = this.lookingAt.worldArea().bbox();
                 K.drawRect({
                     fill: false,
                     width: r.width,
@@ -274,7 +274,7 @@ export function playerBody(): PlayerBodyComp {
             if (this.inventory.includes(obj)) return;
             // find anything that has curPlatform being this
             // object and make it jump slightly to prevent kaplayjs/kaplay#628
-            K.get<BodyComp>("*", {recursive: true}).forEach(b => {
+            K.get<BodyComp>("*", { recursive: true }).forEach(b => {
                 if (b.has("body") && b.stickToPlatform !== false && b.curPlatform() !== null) {
                     b.jump(10);
                 }

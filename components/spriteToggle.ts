@@ -11,7 +11,7 @@ export function spriteToggle(states: string[] = ["off", "on"]): SpriteToggleComp
     return {
         id: "sprite-toggle",
         require: ["state", "sprite"],
-        add(this: GameObj<StateComp | SpriteComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | SpriteComp>) {
             states.forEach((state, i) => {
                 this.onStateEnter(state, () => {
                     if (this.getCurAnim()) this.stop();

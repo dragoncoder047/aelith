@@ -8,11 +8,11 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 // State functions
 player.onStateUpdate("normal", () => {
     if (player.isGrounded() && Math.abs(getPlayerMotionVector().x) > Number.EPSILON) {
-        player.play("walking", { restart: false });
+        player.play("walking", { preventRestart: true });
         player.animSpeed = Math.abs(getPlayerMotionVector().x);
     }
     else {
-        player.play("idle", { restart: false });
+        player.play("idle", { preventRestart: true });
         player.animSpeed = 1;
     }
 });
@@ -53,7 +53,7 @@ player.onStateEnd("climbing", () => {
         player.footstepsCounter += K.dt() * xy.len();
     if (player.footstepsCounter >= FOOTSTEP_INTERVAL) {
         player.footstepsCounter = 0;
-        player.playSound(player.state === "normal" ? (player.curPlatform()?.sprite == "grating" ? "footsteps_metal" : "footsteps") : "climbing");
+        player.playSound(player.state === "normal" ? (player.curPlatform()?.sprite === "grating" ? "footsteps_metal" : "footsteps") : "climbing");
         if (player.isGrounded())
             splash(player.pos.add(0, player.height / 2), K.WHITE.darken(70), 2, -10);
     }

@@ -7,7 +7,7 @@ export function specialGrating() {
         ...grating(),
         {
             add(this: GameObj<BodyComp | AreaComp>) {
-                this.collisionIgnore.add("bug");
+                this.collisionIgnore.push("bug");
                 this.onBeforePhysicsResolve(col => {
                     const obj = col.target;
                     if (obj.has("continuation-trap")) {

@@ -46,7 +46,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             const connectingThingsWithObjects = areas
                 .filter(x => x.is(["pipe", "ladder", "machine"], "or") && !x.is("box"))
                 .filter(x => x.has("sprite") || x.has("shader"))
-                .map(o => [o, o.aabb()] as const);
+                .map(o => [o, o.worldArea().bbox()] as const);
             const connectingThings = connectingThingsWithObjects.map(([_, a]) => a);
             const collides = (l: Rect[], p: Vec2) => l.some(o => o.collides(p));
             const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * OFFSET_FRAC));
@@ -65,16 +65,16 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 var factory: () => CompList<any>;
                 const walls = areas
                     .filter(x => x.is("wall"))
-                    .map(o => o.aabb());
+                    .map(o => o.worldArea().bbox());
                 const barriers = areas
                     .filter(x => x.is("barrier"))
-                    .map(o => o.aabb());
+                    .map(o => o.worldArea().bbox());
                 const gratings = areas
                     .filter(x => x.is("grating"))
-                    .map(o => o.aabb());
+                    .map(o => o.worldArea().bbox());
                 const ladders = areas
                     .filter(x => x.is("ladder"))
-                    .map(o => o.aabb());
+                    .map(o => o.worldArea().bbox());
                 if (look(gratings) === 0b0101 && solid) factory = grating;
                 else if (look(ladders, 1 / OFFSET_FRAC) === 0b1010 && !solid) factory = ladder;
                 else if (look(walls) !== 0) factory = (solid ? wall : bgWall);

@@ -89,7 +89,7 @@ export function continuationCore(
             StateManager.restore(this.captured, this.color).then(() => {
                 if (this.type === "assert") {
                     // assertion: heal fully
-                    player.heal(Infinity);
+                    player.hp = player.maxHP;
                 }
             });
         },

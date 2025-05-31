@@ -110,7 +110,7 @@ player.onButtonRelease("flyUp", () => {
         player.lookAt(undefined);
     // toWorld is darn bugged kaplayjs/kaplay#325
     else {
-        const lookingWhere = K.toWorld(mousePos.scale(1 / SCALE));
+        const lookingWhere = K.toWorld(mousePos);
         player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
     }
 }) as KEventControllerPatch).forEventGroup("!dialog");

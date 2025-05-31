@@ -58,6 +58,9 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
 
 ## TODO
 
+* [ ] integrate suave's lit shaders
+* [ ] add 2.5D sprite stacking
+* [ ] debug menu via pause menu for magic functions
 * [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn doesn't teleport to the player and gets extremely stretched.
@@ -65,9 +68,8 @@ The AI system crashed, and a debugger is sent in to figure out why the AI crashe
   * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
-* [X] Add algorithmic choosing songs based on where you are in the game
-  * [ ] Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
-  * [ ] Fix the not auto looping onEnd getting dropped (probably Kaplay bug)
+* [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
+* [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?

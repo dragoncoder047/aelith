@@ -57,7 +57,7 @@ DEATH_MENU_OBJ.modal.bg = K.BLACK;
 
 player.onGround(() => {
     if (player.vel.y > FALL_DAMAGE_THRESHOLD)
-        player.hurt(K.map(player.vel.y - FALL_DAMAGE_THRESHOLD, 0, TERMINAL_VELOCITY, 0, MAX_FALL_DAMAGE));
+        player.hp -= K.map(player.vel.y - FALL_DAMAGE_THRESHOLD, 0, TERMINAL_VELOCITY, 0, MAX_FALL_DAMAGE);
 });
 
 player.onHurt(() => {

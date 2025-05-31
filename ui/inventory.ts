@@ -14,6 +14,7 @@ const btnLeft = UI.add([
     K.area(),
     K.layer("ui"),
     K.anchor("botleft"),
+    K.fixed(),
     K.color(K.GREEN.darken(127)),
     {
         update(this: GameObj<PosComp | TextComp>) {

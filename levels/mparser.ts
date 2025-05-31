@@ -2,6 +2,7 @@ import { AreaComp, CompList, GameObj, LevelComp, NamedComp, PosComp, RotateComp,
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
+import { PortalComp } from "../components/portal";
 import { TogglerComp } from "../components/toggler";
 import { FONT_SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -18,6 +19,7 @@ import { crossing } from "../object_factories/crossing";
 import { dataPipe } from "../object_factories/dataPipe";
 import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
+import { grabber } from "../object_factories/grabber";
 import { grating } from "../object_factories/grating";
 import { invisibleTrigger } from "../object_factories/invisibleTrigger";
 import { ladder } from "../object_factories/ladder";
@@ -26,17 +28,16 @@ import { light } from "../object_factories/light";
 import { onetimeCushion } from "../object_factories/onetimeCushion";
 import { playerPosition } from "../object_factories/playerPosition";
 import { popupTextNote } from "../object_factories/popupText";
+import { portal } from "../object_factories/portal";
 import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { specialGrating } from "../object_factories/specialGrating";
 import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
-import { portal } from "../object_factories/portal";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
-import { PlayerBodyComp } from "../player/body";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { PortalComp } from "../components/portal";
-import { grabber } from "../object_factories/grabber";
+import { cutsceneParse } from "./cutscene_parse";
+
 /**
  * Main parser handler for level map data (in WORLD_FILE).
  */
@@ -97,19 +98,11 @@ export class MParser {
         "_": onetimeCushion,
         "+": () => dataPipe(true),
         "-": () => dataPipe(false),
-        ":": () => dataPipe(false, false)
+        ":": () => dataPipe(false, false),
     };
     vars: Record<string, any> = {
         // put the specialized convenience functions here so I don't
         // need to define them at the top of every level file
-
-        // swap
-        sw(this: MParser) {
-            const a = this.stack.pop();
-            const b = this.stack.pop();
-            this.stack.push(a);
-            this.stack.push(b);
-        },
 
         // invisible init
         ii(this: MParser) {
@@ -150,6 +143,19 @@ export class MParser {
             portal.name = "to_" + toLevel;
             portal.toLevel = toLevel;
             portal.outPortal = "to_" + this.cLevelID;
+        },
+
+        // intro setup
+        is(this: MParser) {
+            const s = this.stack.pop() as string;
+            const lines = s.split("\n");
+        },
+
+        TEST(this: MParser) {
+            const a = cutsceneParse(this.stack.pop() as string);
+            const b = this.vars.introduction;
+            console.log(JSON.stringify(a));
+            console.log(JSON.stringify(b));
         }
     };
     // MARK: commands
@@ -158,6 +164,14 @@ export class MParser {
      * to initialize the machines.
      */
     commands: Record<string, (this: MParser) => void> = {
+        // MARK: w (swap)
+        w() {
+            const a = this.stack.pop();
+            const b = this.stack.pop();
+            this.stack.push(a);
+            this.stack.push(b);
+        },
+
         // MARK: z (ndrop)
         // drop/done command: things* n? --
         z() {
@@ -449,6 +463,7 @@ export class MParser {
      */
     buffer: number | string | undefined = undefined;
     parenStack: string[] = [];
+    lastPos: Vec2 = K.vec2(0, 0);
     // MARK: process()
     process(cmd: string, pos?: Vec2): CompList<any> | undefined {
         const oldLen = this.parenStack.length;
@@ -500,10 +515,13 @@ export class MParser {
             }
             if ((oldLen > 0 || this.parenStack.length > 1)) {
                 if (typeof this.buffer !== "string") this.cleanBuffer(), this.buffer = "";
+                if (pos && this.lastPos.y !== pos.y) this.buffer += "\n";
                 this.buffer += cmd;
             }
+            if (pos) this.lastPos = pos;
             return;
         }
+        if (pos) this.lastPos = pos;
         if (/\s/.test(cmd)) {
             this.cleanBuffer();
             // spaces do nothing
@@ -520,14 +538,17 @@ export class MParser {
                 this.commandQueue.push(this.commands[cmd]!);
             }
             else if (pos !== undefined && cmd in this.fixedTiles) {
-                return this.fixedTiles[cmd]!.call(this);
+                const comps = this.fixedTiles[cmd]!.call(this);
+                comps.push(`level-${this.cLevelID}`);
+                return comps;
             }
             else if (pos !== undefined && cmd in this.spawners) {
                 this.commandQueue.push(pos!);
-                var rv = this.spawners[cmd]!.call(this);
+                const rv = this.spawners[cmd]!.call(this);
                 // add "machine" tag if it isn't on already
                 // (kaplay deduplicates tags automatically)
                 rv.push("machine");
+                rv.push(`level-${this.cLevelID}`);
                 rv.push(cmd);
                 return rv;
             }
@@ -563,7 +584,6 @@ export class MParser {
                     if (!tile) continue;
                     // found tile: stretch it across as far as possible
                     var width = 1;
-                    tile.addSquare(tile.pos);
                     for (var merge_x = x + 1; merge_x < w.numColumns(); merge_x++, width++) {
                         const kk = c2k(merge_x, y);
                         if (tiles[kk] && tiles[kk].frame === tile.frame) {
@@ -571,7 +591,6 @@ export class MParser {
                             tiles[kk].destroy();
                             delete tiles[kk];
                             tile.modifyWidth(1);
-                            tile.moveBy(TILE_SIZE / 2, 0);
                         } else break;
                     }
                     // now stretch downwards
@@ -595,7 +614,6 @@ export class MParser {
                             delete tiles[kk];
                         }
                         tile.modifyHeight(1);
-                        tile.moveBy(0, TILE_SIZE / 2);
                     }
                 }
             }
@@ -632,16 +650,21 @@ export class MParser {
     }
     // MARK: postprocess()
     preprocess(world: GameObj) {
-        world.children.forEach(o => o.trigger("preprocess"));
+        this._childEvent(world, "preprocess");
     }
     midprocess(world: GameObj) {
-        world.children.forEach(o => o.trigger("midprocess"));
-        world.children.forEach(o => o.trigger("midprocess2"));
-        world.children.forEach(o => o.trigger("midprocess3"));
+        this._childEvent(world, "midprocess");
+        this._childEvent(world, "midprocess2");
+        this._childEvent(world, "midprocess3");
     }
     postprocess(world: GameObj) {
-        world.children.forEach(o => o.trigger("postprocess"));
-        world.children.forEach(o => o.trigger("postprocess2"));
+        this._childEvent(world, "postprocess");
+        this._childEvent(world, "postprocess2");
+    }
+    _childEvent(world: GameObj, event: string) {
+        for (var i = 0; i < world.children.length; i++) {
+            world.children[i]!.trigger(event);
+        }
     }
     /**
      * Queue of commands to be executed to initialize the game.

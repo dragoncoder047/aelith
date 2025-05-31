@@ -56,19 +56,19 @@ export function grabber(): GrabberComp {
                 }
             }
             if (!lookingFor) {
-                this.play("dormant", { restart: false });
+                this.play("dormant", { preventRestart: true });
                 goState(false);
                 this.pointingTowards = null;
                 return;
             }
             const off = lookingFor.worldPos()!.sub(this.worldPos()!);
             if (off.slen() > GRABBER_MAX * GRABBER_MAX) {
-                this.play("dormant", { restart: false });
+                this.play("dormant", { preventRestart: true });
                 goState(false);
                 this.pointingTowards = null;
                 return;
             }
-            this.play("grabbing", { restart: false });
+            this.play("grabbing", { preventRestart: true });
             this.pointingTowards = lookingFor;
             var forceRaw = clampLen(off.unit().scale(GRABBER_STRETCH / off.len()), GRABBER_MAX_FORCE);
             _force1 = forceRaw.rotate(-this.angle);

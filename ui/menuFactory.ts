@@ -30,14 +30,19 @@ export interface MenuModal {
 export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, enterEC: KEventControllerPatch, closeable: boolean = true, history: boolean = false): MenuModal {
     const THIS_MENU_ID = "___menu" + MParser.uid();
     var origInventoryIndex: number;
-    const theMenuContainer = UI.add([K.pos(K.center()), K.layer("manpage"), {
-        add(this: GameObj<PosComp>) {
-            K.onResize(() => {
-                this.pos = K.center();
-            });
-        },
-    }]);
-    const theModal = theMenuContainer.add([manpage()]);
+    const theMenuContainer = UI.add([
+        K.pos(K.center()),
+        K.layer("manpage"),
+        K.fixed(),
+        {
+            add(this: GameObj<PosComp>) {
+                K.onResize(() => {
+                    this.pos = K.center();
+                });
+            },
+        }
+    ]);
+    const theModal = theMenuContainer.add([manpage(), K.fixed()]);
     const theTerm = K.add([
         K.text("", { styles: STYLES }),
         K.dynamicText(),

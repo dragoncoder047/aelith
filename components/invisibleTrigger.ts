@@ -3,10 +3,10 @@ import { TogglerComp } from "./toggler";
 import { player } from "../player";
 import { LinkComp } from "./linked";
 
-export interface InvisibleTriggerComp extends Comp {
+export interface InvisibleTriggerComp<T extends string = string> extends Comp {
     setup(s: string): void
-    and: GameObj<StateComp | TogglerComp> | undefined
-    andState: string
+    and: GameObj<StateComp<T> | TogglerComp> | undefined
+    andState: T
     triggered: boolean
     resettable: boolean
     _maybeToggle(): void

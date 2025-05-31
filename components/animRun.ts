@@ -11,7 +11,7 @@ export function animRun(animName: string, states: [string, string] = ["off", "on
     return {
         id: "anim-run",
         require: ["state", "sprite", "toggler"],
-        add(this: GameObj<StateComp | SpriteComp | TogglerComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | SpriteComp | TogglerComp>) {
             this.onStateEnter(states[0], this.stop);
             this.onStateEnter(states[1], () => {
                 this.play(animName);

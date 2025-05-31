@@ -26,7 +26,7 @@ export const WorldManager = {
             tileHeight: TILE_SIZE,
             tiles: {}, // everything is handled by MParser
             wildcardTile: (cmd, pos) => parser.process(cmd, pos),
-        }) as GameObj<LevelComp>;
+        });
         console.log("initialized level", id);
         parser.preprocess(levelObj);
         console.log("preprocessed level", id);
@@ -84,7 +84,10 @@ export const WorldManager = {
         player.freeze(isPaused);
     },
     getLevelOf(obj: GameObj): GameObj<LevelComp> | null {
-        while (obj.parent && !obj.has("level")) obj = obj.parent;
-        return obj as GameObj<LevelComp>;
+        while (obj.parent) {
+            if (obj.has("level")) return obj as GameObj<LevelComp>;
+            obj = obj.parent;
+        }
+        return null;
     }
 };

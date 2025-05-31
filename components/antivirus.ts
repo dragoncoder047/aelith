@@ -28,7 +28,7 @@ export function antivirus(): AntivirusComp {
     var tweener: TweenController | undefined = undefined;
     return {
         id: "antivirus",
-        require: ["rotate", "linked", "state", "toggler", "timer", "offscreen"],
+        require: ["rotate", "linked", "state", "toggler", "timer"],
         disallowedContinuations: [],
         alertMessage: "&msg.antivirus.detected",
         allClearMessage: "&msg.antivirus.allClear",
@@ -40,7 +40,7 @@ export function antivirus(): AntivirusComp {
         sweepSpeed: 20,
         laserColor: K.BLUE,
         rayHit: null,
-        add(this: GameObj<TogglerComp | TimerComp | StateComp | AntivirusComp | RotateComp>) {
+        add(this: GameObj<TogglerComp | TimerComp | StateComp<string> | AntivirusComp | RotateComp>) {
             this.onStateEnter(this.falseState, () => this.sweepy());
         },
         sweepy(this: GameObj<TimerComp | AntivirusComp | RotateComp>) {
@@ -81,7 +81,7 @@ export function antivirus(): AntivirusComp {
             const objects = WorldManager.getLevelOf(this)!.get<AreaComp | PosComp | BodyComp>(["area", "body"])
                 .concat([player])
                 .filter((x: any) => x !== this && !x.paused)
-                .filter(x => x.collisionIgnore.isDisjointFrom(this.tagsAsSet));
+                .filter(x => x.collisionIgnore.every(xx => !this.tags.includes(xx)));
             const dontCareDistSquared = Math.pow(this.maxDistance * 1.5, 2);
             const offensiveObjects = objects
                 .filter(o => this.isOffensive(o));

@@ -4,7 +4,6 @@ import {
     Comp,
     GameObj,
     KEventController,
-    StateComp,
     TimerComp
 } from "kaplay";
 import { LinkComp } from "./linked";
@@ -28,7 +27,7 @@ export function collisioner(onDelay: number = 0, offDelay: number | "toggle" = 0
         switchMessage,
         collisioningWith: new Set(),
         ignoreTriggerTimeout: 0,
-        add(this: GameObj<StateComp | TimerComp | AreaComp | BodyComp | CollisionerComp | LinkComp>) {
+        add(this: GameObj<TimerComp | AreaComp | BodyComp | CollisionerComp | LinkComp>) {
             this.on("collisionerUpdate", ([obj, normal]) => {
                 if (this.collisioningWith.has(obj)) return;
                 this.collisioningWith.add(obj);

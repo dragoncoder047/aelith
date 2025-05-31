@@ -45,6 +45,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
                 color: K.WHITE.darken(100),
             });
             const headerTxt = K.formatText({
+                ...this,
                 ...secTxt.opt,
                 text: K.sub(this.header),
                 pos: topLeft.add(theWidth / 2, 0),
@@ -77,6 +78,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
             const toppos = -this.scrollPos + headerHeight + this.margin;
             // background
             K.drawRect({
+                ...this,
                 pos: K.vec2(0),
                 width: theWidth + this.margin * 2,
                 height: theHeight + this.margin * 2,
@@ -87,12 +89,14 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
             K.drawMasked(() => {
                 // the text
                 K.drawFormattedText(K.formatText({
+                    ...this,
                     ...midTxt.opt,
                     pos: K.vec2(0, toppos + (this.sprite ? this.sprite.height + this.margin : 0)).add(topLeft),
                 }));
                 // the sprite
                 if (this.sprite)
                     K.drawSprite({
+                        ...this,
                         ...this.sprite,
                         pos: K.vec2(theWidth / 2, toppos).add(topLeft),
                         anchor: "top",
@@ -110,6 +114,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
             });
             // section
             K.drawRect({
+                ...this,
                 color: this.bg,
                 pos: K.vec2(0, -theHeight / 2 - this.margin / 2),
                 width: theWidth,
@@ -118,6 +123,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
             });
             K.drawFormattedText(secTxt);
             K.drawFormattedText(K.formatText({
+                ...this,
                 ...secTxt.opt,
                 pos: topLeft.add(theWidth, 0),
                 anchor: "topright"
@@ -126,6 +132,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
             if (!this.showFooter) return;
             // footer
             K.drawRect({
+                ...this,
                 color: this.bg,
                 pos: K.vec2(0, theHeight / 2 + this.margin / 2),
                 anchor: "bot",
@@ -136,6 +143,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
                 K.drawFormattedText(botTxt);
             else {
                 K.drawFormattedText(K.formatText({
+                    ...this,
                     ...botTxt.opt,
                     text: "(END)",
                     shader: "invert",

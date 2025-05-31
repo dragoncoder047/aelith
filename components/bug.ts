@@ -10,13 +10,14 @@ export interface BugComp extends Comp {
     footstepsCounter: 0,
 }
 
+type BugStates = "walking" | "sleeping" | "angry" | "stunned" | "scared";
 export function bug(): BugComp {
     return {
         id: "bug",
         require: ["pos", "area", "sprite", "body", "state", "shader", "timer"],
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
-        add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp | TimerComp | SpriteComp>) {
+        add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp<BugStates> | TimerComp | SpriteComp>) {
             // patch EnterState so it only transitions if the state will be changed!
             const oldEnterState = this.enterState;
             this.enterState = (state, ...args) => {
@@ -32,7 +33,7 @@ export function bug(): BugComp {
                 if (this.state === "sleeping" && obj !== player) return;
                 if (coll?.isLeft() || coll?.isRight()) {
                     if (obj === player && this.state === "angry") {
-                        player.hurt();
+                        player.hp--;
                         // apply knockback
                         this.applyImpulse(K.LEFT.scale(WALK_SPEED * this.moveDir).add(K.UP.scale(WALK_SPEED / 2)));
                         player.applyImpulse(K.RIGHT.scale(WALK_SPEED * this.moveDir).add(K.UP.scale(WALK_SPEED / 2)));
@@ -97,7 +98,7 @@ export function bug(): BugComp {
                 scTimeout?.cancel();
                 this.moveDir = 0;
                 this.play("stand");
-                this.collisionIgnore.add("player");
+                this.collisionIgnore.push("player");
                 scTimeout = this.wait(5, () => {
                     this.enterState(WorldManager.getLevelOf(this)!
                         .get<AreaComp>("portal")
@@ -111,7 +112,7 @@ export function bug(): BugComp {
             });
             this.onStateEnd("scared", () => {
                 scTimeout?.cancel();
-                this.collisionIgnore.delete("player");
+                this.collisionIgnore = this.collisionIgnore.filter(t => t !== "player");
             });
             this.on("interact", () => {
                 this.enterState("scared");
@@ -120,11 +121,11 @@ export function bug(): BugComp {
                 this.enterState("scared");
             });
         },
-        finish(this: GameObj<StateComp | SpriteComp | BugComp>) {
+        finish(this: GameObj<StateComp<BugStates> | SpriteComp | BugComp>) {
             this.flipX = this.moveDir < 0;
             this.enterState(this.state);
         },
-        update(this: GameObj<BugComp | PosComp | SpriteComp | ShaderComp | StateComp | BodyComp>) {
+        update(this: GameObj<BugComp | PosComp | SpriteComp | ShaderComp | StateComp<BugStates> | BodyComp>) {
             if (this.isGrounded()) this.move(WALK_SPEED / 3 * this.moveDir, 0);
             if (this.moveDir !== 0) this.flipX = this.moveDir < 0;
             this.animSpeed = Math.abs(this.moveDir);

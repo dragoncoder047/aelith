@@ -7,6 +7,7 @@ const fpsIndicator = UI.add([
     K.text("", { size: 8 / SCALE }),
     K.pos(MARGIN, MARGIN),
     K.color(K.WHITE),
+    K.fixed(),
     K.layer("ui"),
 ]);
 var frameCounter = 0, lastTime = performance.now();
@@ -30,6 +31,7 @@ const countIndicator = UI.add([
     K.text("counting objects...", { size: 8 / SCALE }),
     K.pos(MARGIN, MARGIN + 12 / SCALE),
     K.color(K.WHITE),
+    K.fixed(),
     K.layer("ui"),
 ]);
 

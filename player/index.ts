@@ -33,7 +33,7 @@ export const player = K.add([
     }),
     K.body({ jumpForce: JUMP_FORCE, maxVelocity: TERMINAL_VELOCITY }),
     K.anchor("center"),
-    K.state("normal"),
+    K.state<"normal" | "jump" | "climbing">("normal"),
     "raycastIgnore"
 ]);
 // why is this necessary out here?

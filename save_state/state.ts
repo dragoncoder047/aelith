@@ -12,7 +12,7 @@ export type StateComps =
     | CollisionerComp
     | TogglerComp
     | InvisibleTriggerComp
-    | StateComp
+    | StateComp<string>
     | AreaComp;
 
 export type ObjectLocation = {

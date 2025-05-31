@@ -51,7 +51,7 @@ float chgnoise(vec2 pos) {
     // tweak this to make it look better...
     float moving = perlin(vec3(pos.x, pos.y + u_time, u_staticrand) * 2.);
     float constant = perlin(vec3(pos, u_time) * 3.);
-    return moving * constant * 2.;
+    return moving * constant;
 }
 
 vec3 hsv2rgb(vec3 c) {
@@ -63,12 +63,11 @@ vec3 hsv2rgb(vec3 c) {
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     vec2 uv2 = rotateUV(uv, u_angle);
-    if(uv2.y < .03125)
+    if(uv2.y < .0125)
         return vec4(1.);
     float alpha = (1. - uv2.y) * sin(uv2.x * 3.141592653589);
     float noiseval = chgnoise(uv2);
     alpha *= noiseval;
-    if (alpha <= .1) alpha = .1;
     vec3 rainbow = hsv2rgb(vec3(perlin(vec3(uv2 + u_staticrand, u_time)), 1., .5));
     return vec4(rainbow, alpha);
 }
