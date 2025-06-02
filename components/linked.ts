@@ -29,11 +29,13 @@ export function linked(tag: string): LinkComp {
         },
         broadcast(this: GameObj<PosComp | LinkComp>, msg: string) {
             const self = this;
-            const targets = K.get(this.idTag, { recursive: true }).filter(x => x !== this);
+            this.trigger("broadcasted", msg);
+            const targets = K.get(this.idTag, { recursive: true });
             targets.forEach(target => {
+                target.trigger("message", msg);
+                if (target === this) return;
                 const FADE_TIME = 0.25;
                 const start = K.time();
-                target.trigger("message", msg);
                 if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists() && !target.paused)
                     K.add([
                         {
@@ -54,7 +56,6 @@ export function linked(tag: string): LinkComp {
                         }
                     ]);
             });
-            this.trigger("message", msg);
         },
         onMessage(this: GameObj, cb: (msg: string) => void): KEventController {
             return this.on("message", cb);

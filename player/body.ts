@@ -279,7 +279,7 @@ export function playerBody(): PlayerBodyComp {
                     b.jump(10);
                 }
             });
-            obj.setParent(this, { keep: K.KeepFlags.Pos });
+            obj.parent = this;
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);

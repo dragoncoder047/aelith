@@ -674,7 +674,7 @@ export class MParser {
      * Intermediate stack of objects used during initialization.
      */
     stack: any[] = [];
-    static uid_counter = 10000;
+    static uid_counter = 1024;
     static uid() {
         return (MParser.uid_counter++).toString(16);
     }

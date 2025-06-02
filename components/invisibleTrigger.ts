@@ -1,7 +1,7 @@
 import { AreaComp, Comp, GameObj, StateComp } from "kaplay";
-import { TogglerComp } from "./toggler";
 import { player } from "../player";
 import { LinkComp } from "./linked";
+import { TogglerComp } from "./toggler";
 
 export interface InvisibleTriggerComp<T extends string = string> extends Comp {
     setup(s: string): void
@@ -41,7 +41,7 @@ export function invisibleTriggerComp(): InvisibleTriggerComp {
             this.broadcast(this.toggleMsg);
         },
         inspect() {
-            return "triggered: " + this.triggered;
+            return `triggered: ${this.triggered}, can reset: ${this.resettable}`;
         }
     }
 }
