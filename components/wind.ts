@@ -1,10 +1,11 @@
 import { AreaComp, AreaEffectorComp, BodyComp, Comp, GameObj, PosComp, RectComp, StateComp, Vec2 } from "kaplay";
 import { WALK_SPEED, WIND_FORCE } from "../constants";
 import { K } from "../init";
+import { WorldManager } from "../levels";
+import { PAreaComp } from "../plugins/kaplay-cached-physics";
+import { FanComp } from "./fan";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
-import { FanComp } from "./fan";
-import { WorldManager } from "../levels";
 
 export interface WindComp extends Comp {
     windForce: number
@@ -33,11 +34,11 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state));
             this.paused = fan.paused;
         },
-        draw(this: GameObj<StateComp<(typeof states)[number]> | AreaComp | RectComp | WindComp | PosComp>) {
+        draw(this: GameObj<StateComp<(typeof states)[number]> | PAreaComp | RectComp | WindComp | PosComp>) {
             this.hidden = WorldManager.getLevelOf(fan) !== WorldManager.activeLevel?.levelObj;
             if (this.state == states[1]) {
                 // draw wind indicators
-                const s = this.worldArea().bbox();
+                const s = this.aabb();
                 const maxWisps = s.area() / 1024;
                 K.pushMatrix(new K.Mat23);
                 for (var i = 0; i < wisps.length; i++) {

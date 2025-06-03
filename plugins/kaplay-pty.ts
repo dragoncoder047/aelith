@@ -1,5 +1,5 @@
-import { AreaComp, Comp, GameObj, KAPLAYCtx, PosComp, TextComp, TextInputComp, Vec2, Key } from "kaplay";
-import { DynamicTextComp, KAPLAYDynamicTextPlugin } from "./kaplay-dynamic-text";
+import type { AreaComp, Comp, GameObj, KAPLAYCtx, PosComp, TextComp, TextInputComp, Vec2, Key } from "kaplay";
+import type { DynamicTextComp, KAPLAYDynamicTextPlugin } from "./kaplay-dynamic-text";
 import { nextFrame } from "../misc/utils";
 
 // MARK: PtyChunk

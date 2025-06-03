@@ -1,4 +1,4 @@
-import { Asset, KAPLAYCtx } from "kaplay";
+import type { Asset, KAPLAYCtx } from "kaplay";
 
 export type RumbleArgs =
     | [string] // effect name

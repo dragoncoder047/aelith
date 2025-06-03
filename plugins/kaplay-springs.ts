@@ -1,4 +1,4 @@
-import { BodyComp, Comp, DrawCircleOpt, DrawLineOpt, GameObj, KAPLAYCtx, PosComp, Vec2 } from "kaplay";
+import type { BodyComp, Comp, DrawCircleOpt, DrawLineOpt, GameObj, KAPLAYCtx, PosComp, Vec2 } from "kaplay";
 
 export interface SpringCompOpt {
     other?: GameObj<BodyComp | PosComp>

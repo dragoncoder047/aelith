@@ -192,7 +192,7 @@ export function playerBody(): PlayerBodyComp {
 
             if (this.lookingAt) {
                 // draw outline on object being targeted
-                const r = this.lookingAt.worldArea().bbox();
+                const r = this.lookingAt.aabb();
                 K.drawRect({
                     fill: false,
                     width: r.width,

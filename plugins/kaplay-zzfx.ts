@@ -1,4 +1,4 @@
-import { Asset, KAPLAYCtx } from "kaplay";
+import type { Asset, KAPLAYCtx } from "kaplay";
 import { ZZFX } from "zzfx";
 
 export type ZzFXSound = Parameters<typeof ZZFX.buildSamples>;

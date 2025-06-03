@@ -1,4 +1,4 @@
-import { Asset, Comp, GameObj, KAPLAYCtx, TextComp } from "kaplay";
+import type { Asset, Comp, GameObj, KAPLAYCtx, TextComp } from "kaplay";
 
 export type NestedStrings = {
     [i: string]:

@@ -1,4 +1,4 @@
-import { KAPLAYCtx, KEventController, KEvent, Registry, Vec2 } from "kaplay";
+import type { KAPLAYCtx, KEventController, KEvent, Registry, Vec2 } from "kaplay";
 
 export interface KEventControllerPatch extends KEventController {
     forEventGroup(evGroups: string | string[]): this
