@@ -2,6 +2,8 @@ uniform float u_time;
 uniform float u_staticrand;
 uniform float u_angle;
 
+#define PI 3.141592653589
+
 // perlin noise function from https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 
 float mod289(float x) {
@@ -65,9 +67,9 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     vec2 uv2 = rotateUV(uv, u_angle);
     if(uv2.y < .0125)
         return vec4(1.);
-    float alpha = (1. - uv2.y) * sin(uv2.x * 3.141592653589);
+    float alpha = cos(uv2.y * PI) * sin(uv2.x * PI);
     float noiseval = chgnoise(uv2);
     alpha *= noiseval;
     vec3 rainbow = hsv2rgb(vec3(perlin(vec3(uv2 + u_staticrand, u_time)), 1., .5));
-    return vec4(rainbow, alpha);
+    return vec4(rainbow * alpha, alpha);
 }
