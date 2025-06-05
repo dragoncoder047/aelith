@@ -9,7 +9,7 @@ export interface PSpriteAnimPlayOpt extends SpriteAnimPlayOpt {
 }
 
 export interface PSpriteComp extends SpriteComp {
-    play(anim: string, opt: PSpriteAnimPlayOpt): void;
+    play(anim: string, opt?: PSpriteAnimPlayOpt): void;
 }
 
 export function kaplaySpriteRestart(k: KAPLAYCtx): KAPLAYSpritePlayRestartPlugin {

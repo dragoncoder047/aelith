@@ -35,6 +35,7 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
         promise(controlling, Object.assign({}, controlling.params)),
         ...throwablePlatformEff(),
         grabbable(),
+        K.z(100),
         "continuation" as Tag,
         lore(controlling.lore),
         "saveable" as Tag,

@@ -9,6 +9,7 @@ import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCA
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { actuallyRaycast, ballistics } from "../misc/utils";
+import { PAreaComp } from "../plugins/kaplay-cached-physics";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
@@ -26,7 +27,7 @@ export interface PlayerBodyComp extends Comp {
     camFollower: KEventController | undefined;
     footstepsCounter: number;
     intersectingAny(type: Tag, where?: GameObj): boolean;
-    lookingAt: GameObj<AreaComp> | undefined;
+    lookingAt: GameObj<PAreaComp> | undefined;
     lookingDirection: Vec2 | undefined;
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number, object?: GameObj): { cancel(): void; onEnd(p: () => void): KEventController; } | undefined;
     inventory: PlayerInventoryItem[];
@@ -162,7 +163,7 @@ export function playerBody(): PlayerBodyComp {
                 this.lookingAt = undefined;
                 if (!this.lookingDirection) break;
 
-                const allObjects = WorldManager.activeLevel!.levelObj.get<AreaComp>("area")
+                const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area")
                     .filter(x => !(this.inventory as any[]).includes(x)
                         && x.collisionIgnore.every(xx => !this.tags.includes(xx))
                         && !x.is("raycastIgnore")
@@ -186,7 +187,7 @@ export function playerBody(): PlayerBodyComp {
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
                 if (!(rcr.object.is("interactable") || rcr.object.has("grabbable"))) break;
-                this.lookingAt = rcr.object as GameObj<AreaComp>;
+                this.lookingAt = rcr.object as GameObj<PAreaComp>;
 
             } while (false);
 
@@ -279,7 +280,7 @@ export function playerBody(): PlayerBodyComp {
                     b.jump(10);
                 }
             });
-            obj.parent = this;
+            obj.setParent(this, { keep: K.KeepFlags.Pos });
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
@@ -288,7 +289,7 @@ export function playerBody(): PlayerBodyComp {
         },
         grab(this: GameObj<PlayerBodyComp>, obj) {
             // already have it. Problem.
-            if (this.inventory.indexOf(obj) !== -1) {
+            if (this.inventory.includes(obj)) {
                 K.debug.log("BUG: tried to grab item that i already have");
                 return;
             };
@@ -302,9 +303,7 @@ export function playerBody(): PlayerBodyComp {
             if (i === -1) return;
             obj.paused = obj.hidden = false;
             if (obj.exists()) {
-                const p = obj.worldPos()!;
-                obj.parent = WorldManager.activeLevel!.levelObj;
-                obj.worldPos(p);
+                obj.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
                 obj.vel = K.vec2(0);
                 obj.trigger("inactive");
             }
@@ -396,7 +395,7 @@ export function playerBody(): PlayerBodyComp {
             }
         ]),
         addControlText(text, styles = []) {
-            this.controlText.t = `\n${styles.map(t => `[${t}]`).join("")}${text}${styles.toReversed().map(t => `[/${t}]`).join("")}` + this.controlText.t;
+            this.controlText.t = `\n${styles.map(t => `[${t}]`).join("")}${text}${styles.toReversed().map(t => `[/${t}]`).join("")}${this.controlText.t}`;
         },
 
         // MARK: manpage

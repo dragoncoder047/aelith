@@ -11,7 +11,7 @@ export function checkpoint() {
         K.sprite("checkpoint"),
         ...defaults(),
         K.tile({ isObstacle: false }),
-        nudge(0, TILE_SIZE / 2),
+        nudge(K.vec2(0, TILE_SIZE / 2)),
         K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),

@@ -662,9 +662,7 @@ export class MParser {
         this._childEvent(world, "postprocess2");
     }
     _childEvent(world: GameObj, event: string) {
-        for (var i = 0; i < world.children.length; i++) {
-            world.children[i]!.trigger(event);
-        }
+        world.children.forEach(child => child.trigger(event));
     }
     /**
      * Queue of commands to be executed to initialize the game.

@@ -1,9 +1,9 @@
 import { AreaComp, Comp, GameObj, LayerComp } from "kaplay";
+import { K } from "../init";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 
 export interface GrabbableComp extends Comp {
-    oldLayer: string,
 }
 
 /**
@@ -14,30 +14,13 @@ export function grabbable(): GrabbableComp {
     return {
         id: "grabbable",
         require: ["area", "body", "pos"],
-        oldLayer: "",
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
             this.on("interact", () => {
-                if (player.holdingItem === this) {
-                    player.drop(this);
-                }
-                else {
-                    this.oldLayer = this.layer!;
-                    player.grab(this);
-                }
+                player.grab(this);
             });
             this.onBeforePhysicsResolve(coll => {
                 if (player.inventory.includes(this)) coll.preventResolution();
             });
-        },
-        update(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
-            // there must be a better way to do this
-            if (player.holdingItem === this) {
-                this.layer = "grabbing";
-            }
-            else if (this.oldLayer != "") {
-                this.layer = this.oldLayer;
-                this.oldLayer = "";
-            }
         },
         destroy(this: PlayerInventoryItem) {
             if (player.inventory.includes(this)) player.drop(this);

@@ -20,7 +20,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#76532e5e05542e59936b73f874fbe5da42cc0152",
+        "kaplay": "github:dragoncoder047/kaplay#d00a3a05b38e903410d93cd9c385f3e851134203",
         "zzfx": "^1.3.0"
     },
     "type": "module",

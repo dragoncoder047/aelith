@@ -14,7 +14,6 @@ const manpageContainer = UI.add([
             });
         },
     },
-    K.fixed(),
 ]);
 
 player.manpage = manpageContainer.add([manpage()]);

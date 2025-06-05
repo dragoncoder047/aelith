@@ -97,7 +97,7 @@ export function continuationCore(
             if (this.params.reverseTeleport || !WorldManager.activeLevel?.levelObj.isAncestorOf(this.worldMarker)) return;
             K.pushRotate(-this.angle);
             drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { width: 2 / SCALE, color: this.color });
-            K.popTransform();
+            K.pushRotate(this.angle);
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {
             player.removeFromInventory(this);

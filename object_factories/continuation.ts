@@ -46,6 +46,7 @@ export function continuation(
         },
         ...throwablePlatformEff(),
         grabbable(),
+        K.z(100),
         "continuation" as Tag,
         lore(trap.lore),
         "saveable" as Tag,

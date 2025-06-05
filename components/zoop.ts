@@ -17,7 +17,7 @@ export function zoop(): ZoopComp {
         isZooping: false,
         zoop(this: GameObj<ZoopComp | CircleComp | TimerComp>, radius) {
             this.radius = radius ?? this.radius;
-            const tc = this.tween(this.radius, 0, this.radius / this.zoopSpeed, v => this.radius = v);
+            const tc = this.tween(this.radius, Number.EPSILON, this.radius / this.zoopSpeed, v => this.radius = v);
             this.hidden = false;
             this.isZooping = true;
             tc.onEnd(() => {

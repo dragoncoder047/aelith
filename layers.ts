@@ -5,7 +5,6 @@ K.setLayers([
     "background2",
     "world",
     "text",
-    "boxes",
     "continuations",
     "title",
     "playerTail",

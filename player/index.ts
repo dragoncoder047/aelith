@@ -2,6 +2,7 @@ import { BodyComp, CircleComp, Color, GameObj, PosComp, RotateComp, Vec2 } from 
 import { thudder } from "../components/thudder";
 import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { PSpriteComp } from "../plugins/kaplay-sprite-play-restart";
 import { playerBody } from "./body";
 import { copyOpacityOfPlayer } from "./copyOpacityOfPlayer";
 import { playerHead } from "./head";
@@ -9,7 +10,7 @@ import { tail } from "./tail";
 
 export const player = K.add([
     playerBody(),
-    K.sprite("player_body"),
+    K.sprite("player_body") as PSpriteComp,
     K.layer("player"),
     "player",
     K.pos(0, 0),

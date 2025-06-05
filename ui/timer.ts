@@ -13,7 +13,6 @@ export const timer = UI.add([
     }),
     K.anchor("topright"),
     K.pos(),
-    K.fixed(),
     K.layer("ui"),
     K.opacity(1),
     {

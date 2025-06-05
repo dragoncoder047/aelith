@@ -33,7 +33,6 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
     const theMenuContainer = UI.add([
         K.pos(K.center()),
         K.layer("manpage"),
-        K.fixed(),
         {
             add(this: GameObj<PosComp>) {
                 K.onResize(() => {
@@ -42,7 +41,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             },
         }
     ]);
-    const theModal = theMenuContainer.add([manpage(), K.fixed()]);
+    const theModal = theMenuContainer.add([manpage()]);
     const theTerm = K.add([
         K.text("", { styles: STYLES }),
         K.dynamicText(),

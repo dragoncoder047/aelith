@@ -22,6 +22,7 @@ enum ZapState {
 
 const ZAP_SPEED = 0.02;
 const OFFSET_FRAC = 4 / 7;
+const DIRS = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * OFFSET_FRAC));
 
 export function pipeComp(solid = true, useBackground = true): PipeComp {
     var zapPhase = ZapState.QUIESCENT;
@@ -42,20 +43,20 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 if (zapPhase > ZapState.QUIESCENT) zapPhase--;
             });
         },
-        chooseSpriteNum(this: GameObj<SpriteComp | PosComp | TileComp | PipeComp>) {
+        chooseSpriteNum(this: GameObj<SpriteComp | PAreaComp | PosComp | TileComp | PipeComp>) {
             const areas = WorldManager.getLevelOf(this)!.get<PAreaComp>("area");
             const connectingThingsWithObjects = areas
-                .filter(x => x.is(["pipe", "ladder", "machine"], "or") && !x.is("box"))
+                .filter(x => x.is(["pipe", "machine"], "or") && !x.is("box"))
                 .filter(x => x.has("sprite") || x.has("shader"))
+                .filter(x => x !== this)
                 .map(o => [o, o.aabb()] as const);
             const connectingThings = connectingThingsWithObjects.map(([_, a]) => a);
             const collides = (l: Rect[], p: Vec2) => l.some(o => o.collides(p));
-            const ds = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * OFFSET_FRAC));
             const wp = this.worldPos()!;
             const look = (items: Rect[], scale = 1) => {
                 var n = 0;
-                for (var i = 0; i < ds.length; i++) {
-                    const lookPos = wp.add(ds[i]!.scale(scale));
+                for (var i = 0; i < DIRS.length; i++) {
+                    const lookPos = wp.add(DIRS[i]!.scale(scale));
                     const pipeThere = collides(items, lookPos);
                     if (pipeThere) n |= 1 << i;
                 }
@@ -89,8 +90,8 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
             bLoop: for (var [o, area] of connectingThingsWithObjects) {
                 if (o === <any>this) continue;
                 if (!o.has("toggler")) continue;
-                for (var i = 0; i < ds.length; i++) {
-                    const lookPos = wp.add(ds[i]!);
+                for (var i = 0; i < DIRS.length; i++) {
+                    const lookPos = wp.add(DIRS[i]!);
                     if (area.collides(lookPos)) {
                         o.on("toggleInitiate", () => {
                             this.zap();
@@ -99,6 +100,8 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                     }
                 }
             }
+            // XXX: hack to disable it from being called twice
+            this.chooseSpriteNum = () => console.log("BUG: chooseSpriteNum called twice");
         },
         zap(this: GameObj<MergeableComp | PipeComp | PosComp | OffScreenComp | TileComp | TimerComp>) {
             if (zapPhase !== ZapState.QUIESCENT) return;

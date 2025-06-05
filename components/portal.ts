@@ -40,7 +40,7 @@ export function portalComp(): PortalComp {
                     }
                     else {
                         player.playSound("portal_teleport", undefined, this.worldPos()!);
-                        o.setParent(targetLevel.levelObj, { keep: K.KeepFlags.Pos });
+                        o.parent = targetLevel.levelObj;
                         o.worldPos(mpp);
                         o.trigger("portal");
                     }
@@ -55,12 +55,13 @@ export function portalComp(): PortalComp {
                 };
             }));
             this.on("postprocess", () => {
-                this.displayAngle = this.angle;
+                if (this.angle !== 0) this.displayAngle = this.angle;
                 this.angle = 0;
+                return K.cancel();
             });
         },
         inspect() {
-            return `to level: ${this.toLevel}, from portal: ${this.outPortal}\ndisplayAngle: ${this.displayAngle / Math.PI}π`;
+            return `to level: ${this.toLevel}, from portal: ${this.outPortal}\ndisplayAngle: ${this.displayAngle}`;
         }
     }
 }

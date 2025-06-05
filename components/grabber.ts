@@ -1,8 +1,9 @@
-import { AnchorComp, AreaComp, BodyComp, Comp, GameObj, NamedComp, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, BodyComp, Comp, GameObj, NamedComp, PosComp, RotateComp, Vec2 } from "kaplay";
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
+import { PSpriteComp } from "../plugins/kaplay-sprite-play-restart";
 import { LinkComp } from "./linked";
 import { PointTowardsComp } from "./pointTowards";
 import { TogglerComp } from "./toggler";
@@ -47,7 +48,7 @@ export function grabber(): GrabberComp {
                 this.area.scale = K.vec2(0.25);
             });
         },
-        fixedUpdate(this: GameObj<BodyComp | GrabberComp | PointTowardsComp | PosComp | SpriteComp | RotateComp | TogglerComp | LinkComp>) {
+        fixedUpdate(this: GameObj<BodyComp | GrabberComp | PointTowardsComp | PosComp | PSpriteComp | RotateComp | TogglerComp | LinkComp>) {
             const lookingFor = K.get<NamedComp | PosComp | BodyComp>("continuationTrap", { recursive: true })
                 .find(o => o.name === this.which && !o.hidden);
             const goState = (state: boolean) => {
@@ -100,7 +101,7 @@ export function grabber(): GrabberComp {
                     color: K.Color.fromHex("#00FF00"),
                     width: 2,
                 });
-                K.popTransform();
+                K.pushRotate(this.angle);
             }
         }
     }

@@ -40,6 +40,7 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
                 // draw wind indicators
                 const s = this.aabb();
                 const maxWisps = s.area() / 1024;
+                K.pushTransform();
                 K.pushMatrix(new K.Mat23);
                 for (var i = 0; i < wisps.length; i++) {
                     const x = wisps[i]!;
