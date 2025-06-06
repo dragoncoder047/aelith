@@ -9,7 +9,7 @@ import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCA
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { actuallyRaycast, ballistics } from "../misc/utils";
-import { PAreaComp } from "../plugins/kaplay-cached-physics";
+import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";

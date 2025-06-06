@@ -71,7 +71,7 @@ export function crossover(): CrossoverComp {
         },
         add(this: GameObj<AreaComp | PosComp | BodyComp | RectComp | CrossoverComp>) {
             this.use(K.anchor("center"));
-            detectors.push(K.add([
+            detectors.push(this.add([
                 K.area(),
                 K.pos(),
                 K.anchor("right"),
@@ -80,24 +80,24 @@ export function crossover(): CrossoverComp {
                 K.offscreen({ hide: true }),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
-                    () => this.pos.sub(K.vec2(this.width / 2, 0)),
+                    () => K.vec2(-this.width / 2, 0),
                     () => K.vec2(TILE_SIZE / 2, this.height)),
                 "raycastIgnore" as Tag,
             ]));
-            detectors.push(K.add([
+            detectors.push(this.add([
                 K.area(),
-                K.pos(this.pos.add(K.vec2(this.width / 2, 0))),
+                K.pos(K.vec2(this.width / 2, 0)),
                 K.anchor("left"),
                 K.rect(0, 0),
                 K.opacity(0),
                 K.offscreen({ hide: true }),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
-                    () => this.pos.add(K.vec2(this.width / 2, 0)),
+                    () => K.vec2(this.width / 2, 0),
                     () => K.vec2(TILE_SIZE / 2, this.height)),
                 "raycastIgnore" as Tag,
             ]));
-            detectors.push(K.add([
+            detectors.push(this.add([
                 K.area(),
                 K.pos(),
                 K.anchor("bot"),
@@ -106,11 +106,11 @@ export function crossover(): CrossoverComp {
                 K.offscreen({ hide: true }),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
-                    () => this.pos.sub(K.vec2(0, this.height / 2)),
+                    () => K.vec2(0, -this.height / 2),
                     () => K.vec2(this.width, TILE_SIZE / 2)),
                 "raycastIgnore" as Tag,
             ]));
-            detectors.push(K.add([
+            detectors.push(this.add([
                 K.area(),
                 K.pos(),
                 K.anchor("top"),
@@ -119,7 +119,7 @@ export function crossover(): CrossoverComp {
                 K.offscreen({ hide: true }),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
-                    () => this.pos.add(K.vec2(0, this.height / 2)),
+                    () => K.vec2(0, this.height / 2),
                     () => K.vec2(this.width, TILE_SIZE / 2)),
                 "raycastIgnore" as Tag,
             ]));

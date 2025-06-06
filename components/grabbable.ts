@@ -1,5 +1,4 @@
-import { AreaComp, Comp, GameObj, LayerComp } from "kaplay";
-import { K } from "../init";
+import { AreaComp, Comp, GameObj, KEventController, LayerComp } from "kaplay";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 
@@ -11,11 +10,16 @@ export interface GrabbableComp extends Comp {
  * can be picked up by the player when clicked.
  */
 export function grabbable(): GrabbableComp {
+    var _foo: KEventController;
     return {
         id: "grabbable",
         require: ["area", "body", "pos"],
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
-            this.on("interact", () => {
+            if (_foo) {
+                console.error("grabbable component reused");
+                _foo.cancel();
+            }
+            _foo = this.on("interact", () => {
                 player.grab(this);
             });
             this.onBeforePhysicsResolve(coll => {

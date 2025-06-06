@@ -1,7 +1,7 @@
 import kaplay from "kaplay";
 import { SCALE } from "./constants";
 import { CONTROLS } from "./controls/buttons";
-import { kaplayCachePhysics } from "./plugins/kaplay-cached-physics";
+import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayControlGroup } from "./plugins/kaplay-control-group";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
@@ -29,7 +29,7 @@ export const K = kaplay({
         kaplayPTY,
         kaplayRumble,
         kaplayControlGroup,
-        kaplayCachePhysics,
+        kaplayAABB,
         kaplaySpriteRestart,
     ],
 });

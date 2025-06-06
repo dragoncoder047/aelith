@@ -36,7 +36,7 @@ export function linked(tag: string): LinkComp {
                 if (target === this) return;
                 const FADE_TIME = 0.25;
                 const start = K.time();
-                if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists() && !target.paused)
+                if ((!("opacity" in this) || (this as any).opacity > 0) && target.exists() && !isPaused(target))
                     K.add([
                         {
                             draw(this: GameObj) {
@@ -65,3 +65,5 @@ export function linked(tag: string): LinkComp {
         }
     };
 }
+
+const isPaused = (x: GameObj): boolean => x.paused || (x.parent ? isPaused(x.parent!) : false);

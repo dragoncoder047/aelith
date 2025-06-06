@@ -2,7 +2,7 @@ import { AreaComp, AreaEffectorComp, BodyComp, Comp, GameObj, PosComp, RectComp,
 import { WALK_SPEED, WIND_FORCE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { PAreaComp } from "../plugins/kaplay-cached-physics";
+import { PAreaComp } from "../plugins/kaplay-aabb";
 import { FanComp } from "./fan";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";

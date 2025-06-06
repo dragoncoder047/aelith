@@ -26,10 +26,10 @@ export function fan(): FanComp {
             const obstacles = WorldManager.getLevelOf(this)!.get<AreaComp>("area")
                 .filter(x => x.is(["wall", "barrier", "door", "windEnd"], "or"))
                 .map(o => o.worldArea()!);
-            const collides = (p: Vec2) => obstacles.some(o => o.collides(p as any));
+            const collides = (p: Vec2) => obstacles.some(o => o.collides(this.toWorld(p) as any));
             var a = this.angle;
             var d: Vec2 | undefined = K.UP.rotate(a).scale(TILE_SIZE);
-            var chk_pt = this.pos.add(d);
+            var chk_pt = d;
             while (d !== undefined) {
                 var center = chk_pt;
                 var width = TILE_SIZE, height = TILE_SIZE;
@@ -43,7 +43,7 @@ export function fan(): FanComp {
                 center = center.sub(d.scale(1 / 2));
                 width -= Math.abs(d.x);
                 height -= Math.abs(d.y);
-                this.wind.push(K.add(windTunnel(center, width, height, a, this)));
+                this.wind.push(this.add(windTunnel(center, width, height, a, this)));
                 // check if direct corner
                 const dd: [number | null, Vec2][] = [
                     [a - 90, d.rotate(-90)],

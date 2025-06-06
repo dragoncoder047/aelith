@@ -7,7 +7,7 @@ import { barrier } from "../object_factories/barrier";
 import { grating } from "../object_factories/grating";
 import { ladder } from "../object_factories/ladder";
 import { bgWall, wall } from "../object_factories/wall";
-import { PAreaComp } from "../plugins/kaplay-cached-physics";
+import { PAreaComp } from "../plugins/kaplay-aabb";
 import { MergeableComp } from "./mergeable";
 
 export interface PipeComp extends Comp {
@@ -21,7 +21,7 @@ enum ZapState {
 }
 
 const ZAP_SPEED = 0.02;
-const OFFSET_FRAC = 4 / 7;
+const OFFSET_FRAC = 9 / 16;
 const DIRS = [K.LEFT, K.UP, K.RIGHT, K.DOWN].map(d => d.scale(TILE_SIZE * OFFSET_FRAC));
 
 export function pipeComp(solid = true, useBackground = true): PipeComp {
@@ -46,7 +46,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
         chooseSpriteNum(this: GameObj<SpriteComp | PAreaComp | PosComp | TileComp | PipeComp>) {
             const areas = WorldManager.getLevelOf(this)!.get<PAreaComp>("area");
             const connectingThingsWithObjects = areas
-                .filter(x => x.is(["pipe", "machine"], "or") && !x.is("box"))
+                .filter(x => (x.is("pipe") || x.is("machine")) && !x.is("box"))
                 .filter(x => x.has("sprite") || x.has("shader"))
                 .filter(x => x !== this)
                 .map(o => [o, o.aabb()] as const);
@@ -122,5 +122,14 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                         .getAt(this.tilePos.add(d))
                         .forEach(o => o.zap?.())));
         },
+        drawInspect() {
+            for (var dir of DIRS) {
+                K.drawCircle({
+                    pos: dir,
+                    radius: 2,
+                    color: K.GREEN
+                });
+            }
+        }
     }
 }
