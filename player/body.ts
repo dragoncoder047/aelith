@@ -305,14 +305,18 @@ export function playerBody(): PlayerBodyComp {
             if (i === -1) return;
             obj.paused = obj.hidden = false;
             if (obj.exists()) {
-                obj.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
+                obj.parent = WorldManager.activeLevel!.levelObj;
+                obj.pos = this.worldPos()!;
                 obj.vel = K.vec2(0);
                 obj.trigger("inactive");
             }
             this.inventory.splice(i, 1);
-            if (this.holdingIndex > i || this.holdingIndex === this.inventory.length)
+            if (this.holdingIndex > i) {
                 this.holdingIndex--;
-            this.trigger("inventoryChange");
+                this.trigger("inventoryChange");
+            }
+            else if (this.holdingIndex === this.inventory.length)
+                this.scrollInventory(0);
         },
         drop(this: GameObj<PlayerBodyComp | PosComp>, obj) {
             if (!this.inventory.includes(obj)) {
