@@ -23,8 +23,7 @@ export function bug(): BugComp {
             this.enterState = (state, ...args) => {
                 if (this.state !== state) oldEnterState.call(this, state, ...args);
             };
-            this.onPhysicsResolve(coll => {
-                const obj = coll.target;
+            this.onCollide((obj, coll) => {
                 if (obj.has("bug")) {
                     if (obj.state === "angry") this.enterState("angry");
                     else if (obj.state === "scared" || obj.state === "stunned" || this.state === "sleeping")
