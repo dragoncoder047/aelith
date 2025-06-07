@@ -6,7 +6,7 @@ import { mergeable } from "../components/mergeable";
 
 export function dataPipe(solid = true, useBackground = true) {
     return [
-        K.layer("background2"),
+        K.layer("pipes"),
         K.sprite("pipe", { tiled: true }),
         pipeComp(solid, useBackground),
         ...defaults(),

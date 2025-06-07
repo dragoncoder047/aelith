@@ -81,7 +81,7 @@ export async function playTransition(name: string, tran: TextChunkCompressed[], 
         K.rect(K.width(), K.height()),
         K.color(K.getBackground()!),
         K.opacity(fast ? 0 : 1),
-        K.layer("background"),
+        K.layer("tranFader"),
     ]);
     const term = K.add([
         K.text("", {

@@ -125,14 +125,14 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                         .getAt(this.tilePos.add(d))
                         .forEach(o => o.zap?.())));
         },
-        drawInspect() {
-            for (var dir of DIRS) {
-                K.drawCircle({
-                    pos: dir,
-                    radius: 2,
-                    color: K.GREEN
-                });
-            }
-        }
+        // drawInspect() {
+        //     for (var dir of DIRS) {
+        //         K.drawCircle({
+        //             pos: dir,
+        //             radius: 2,
+        //             color: K.GREEN
+        //         });
+        //     }
+        // }
     }
 }

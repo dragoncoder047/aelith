@@ -25,7 +25,7 @@ export function bgWall() {
 
 function wallCommon() {
     return [
-        K.layer("background1"),
+        K.layer("background"),
         K.sprite("steel", { tiled: true }),
         K.body({ isStatic: true }),
         mergeable(),

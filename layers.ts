@@ -1,15 +1,14 @@
 import { K } from "./init";
 
 K.setLayers([
-    "background1",
-    "background2",
+    "tranFader",
+    "background",
+    "pipes",
     "world",
     "text",
     "continuations",
-    "title",
     "playerTail",
     "player",
-    "grabbing",
     "particles",
     "manpage",
     "ui",
