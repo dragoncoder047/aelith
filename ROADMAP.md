@@ -19,8 +19,10 @@
 ## TODO
 
 * [ ] integrate suave's lit shaders
+  * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
 * [ ] add 2.5D sprite stacking
 * [ ] debug menu via pause menu for magic functions
+  * [ ] make pause menu work with mouse, need text quad character detection for this
 * [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn doesn't teleport to the player and gets extremely stretched.
