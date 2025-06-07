@@ -5,8 +5,8 @@
     "author": "dragoncoder047",
     "main": "main.ts",
     "scripts": {
-        "build": "node build.mjs",
-        "dev:build": "node build.mjs -w",
+        "build": "node scripts/build.mjs",
+        "dev:build": "node scripts/build.mjs -w",
         "dev:serve": "python3 -m http.server",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc && python3 scripts/lint_strings.py && python3 scripts/find_no_intros.py",

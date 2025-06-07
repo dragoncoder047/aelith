@@ -1,6 +1,6 @@
 import * as esbuild from "esbuild";
 import * as fs from "node:fs";
-import packageJSON from "./package.json" with { type: "json" };
+import packageJSON from "../package.json" with { type: "json" };
 
 // sanity check
 if (decompress(compress("a".repeat(100))) !== "a".repeat(100)) throw "bad";
