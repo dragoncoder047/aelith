@@ -12,8 +12,8 @@ export function grating() {
         mergeable(),
         ...defaults({
             friction: FRICTION,
-            scale: K.vec2(1, .5),
-            offset: K.vec2(0, -TILE_SIZE / 4)
+            scale: K.vec2(1, .6),
+            offset: K.vec2(0, -TILE_SIZE / 5)
         }),
         "grating" as Tag,
     ]
