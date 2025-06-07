@@ -8,6 +8,7 @@ import { ManpageComp } from "../components/manpage";
 import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
+import { MParser } from "../levels/mparser";
 import { actuallyRaycast, ballistics } from "../misc/utils";
 import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
@@ -63,6 +64,7 @@ export function playerBody(): PlayerBodyComp {
         tpTo(this: GameObj<PosComp | BodyComp>, pos) {
             const delta = pos.sub(this.pos);
             this.moveBy(delta);
+            MParser.updateTransform(this);
             this.vel = K.vec2(0);
             K.get<PosComp>("head").forEach(t => t.moveBy(delta));
             K.get<TailComp>("tail").forEach(t => t.restore2Pos());
@@ -77,7 +79,7 @@ export function playerBody(): PlayerBodyComp {
         add(this: GameObj<PlayerBodyComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
             this.camFollower = this.on("fixedUpdate", () => {
-                K.setCamPos(K.getCamPos().lerp(this.worldPos()!, ALPHA));
+                K.setCamPos(K.getCamPos().lerp(this.worldPos()!, K.dt() / ALPHA));
             });
         },
         flash(this: GameObj<OpacityComp | TimerComp>, duration = 0.5) {

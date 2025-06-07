@@ -41,7 +41,7 @@ function updateObjectCount() {
     const objectCount = activeObjectsUnder(K.getTreeRoot());
     countIndicator.text = objectCount + " active objects";
     if (objectCount > 1000) countIndicator.color = K.RED;
-    else if (objectCount > 300) countIndicator.color = K.YELLOW;
+    else if (objectCount > 500) countIndicator.color = K.YELLOW;
     else countIndicator.color = K.GREEN;
 }
 K.loop(1, updateObjectCount);

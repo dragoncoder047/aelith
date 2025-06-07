@@ -12,6 +12,7 @@ export function fan() {
         K.body({ isStatic: true }),
         K.tile({ isObstacle: true }),
         ...machine({ friction: FRICTION }),
+        K.offscreen({ hide: false }),
         animRun("spin"),
         ambiance("fan_running", "fan_start", "fan_stop"),
     ];

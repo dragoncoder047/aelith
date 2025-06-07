@@ -2,9 +2,9 @@
  * Pixel size for rendering
  *
  * * Use .5 for debugging
- * * Use 2.01 for standard game play
+ * * Use 2 for standard game play
  */
-export const SCALE = 2.01;
+export const SCALE = 2;
 
 /**
  * Pixel scale for fonts - independent of SCALE
@@ -12,7 +12,7 @@ export const SCALE = 2.01;
 export const FONT_SCALE = 2;
 
 /**
- * Lowpass filter coefficient on camera pan.
+ * Lowpass filter tau coefficient on camera pan.
  */
 export const ALPHA = 0.2;
 

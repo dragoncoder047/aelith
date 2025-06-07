@@ -32,10 +32,9 @@ export function wind(direction: number, states: [string, string] = ["off", "on"]
         },
         update(this: GameObj<WindComp | AreaEffectorComp | StateComp<(typeof states)[number]>>) {
             this.force = K.Vec2.fromAngle(this.windDirection).scale(this.windForce * states.indexOf(this.state));
-            this.paused = fan.paused;
         },
         draw(this: GameObj<StateComp<(typeof states)[number]> | PAreaComp | RectComp | WindComp | PosComp>) {
-            this.hidden = WorldManager.getLevelOf(fan) !== WorldManager.activeLevel?.levelObj;
+            // why it needs to be == over === here i have no clue
             if (this.state == states[1]) {
                 // draw wind indicators
                 const s = this.aabb();

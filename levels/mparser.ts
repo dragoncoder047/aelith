@@ -666,7 +666,7 @@ export class MParser {
         world.children.forEach(child => child.trigger(event));
     }
     _updateTransforms(world: GameObj) {
-        for (var child of world.children) updateTransform(child);
+        for (var child of world.children) MParser.updateTransform(child);
     }
     /**
      * Queue of commands to be executed to initialize the game.
@@ -680,15 +680,14 @@ export class MParser {
     static uid() {
         return (MParser.uid_counter++).toString(16);
     }
-};
-
-function updateTransform(obj: GameObj) {
-    if (obj.parent) {
-        updateTransform(obj.parent);
-        obj.transform.setMat23(obj.parent.transform);
+    static updateTransform(obj: GameObj) {
+        if (obj.parent) {
+            this.updateTransform(obj.parent);
+            obj.transform.setMat23(obj.parent.transform);
+        }
+        else obj.transform.setIdentity();
+        if (obj.pos) obj.transform.translateSelfV(obj.pos);
+        if (obj.angle) obj.transform.rotateSelf(obj.angle);
+        if (obj.scale) obj.transform.scaleSelfV(obj.scale);
     }
-    else obj.transform.setIdentity();
-    if (obj.pos) obj.transform.translateSelfV(obj.pos);
-    if (obj.angle) obj.transform.rotateSelf(obj.angle);
-    if (obj.scale) obj.transform.scaleSelfV(obj.scale);
-}
+};

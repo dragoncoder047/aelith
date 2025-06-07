@@ -57,20 +57,20 @@ float chgnoise(vec2 pos) {
     return moving * constant;
 }
 
+const vec4 HSV_MAGIC = vec4(1., 2. / 3., 1. / 3., 3.);
 vec3 hsv2rgb(vec3 c) {
     // from https://stackoverflow.com/a/17897228/23626926
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+    vec3 p = abs(fract(c.xxx + HSV_MAGIC.xyz) * 6. - HSV_MAGIC.www);
+    return c.z * mix(HSV_MAGIC.xxx, clamp(p - HSV_MAGIC.xxx, 0., 1.), c.y);
 }
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     vec2 uv2 = rotateUV(uv, u_angle);
     if(uv2.y < .03125)
         return vec4(1.);
-    float alpha = sin(HALF_PI * cos(uv2.y * HALF_PI) * sin(uv2.x * PI));
+    float alpha = sin(HALF_PI * (1. - uv2.y) * sin(uv2.x * PI));
     float noiseval = chgnoise(uv2);
-    alpha *= noiseval;
+    alpha *= sqrt(noiseval);
     vec3 rainbow = hsv2rgb(vec3(perlin(vec3(uv2 + u_staticrand, u_time)), 1., .5));
     return vec4(rainbow * alpha, alpha);
 }
