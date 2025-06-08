@@ -17,6 +17,8 @@ export function fan(): FanComp {
         require: ["pos", "rotate", "toggler"],
         wind: [],
         add(this: GameObj<FanComp>) {
+            if ((this as any)._fan) return;
+            (this as any)._fan = true;
             this.on("midprocess3", () => {
                 this.createWind();
                 return K.cancel();
@@ -30,7 +32,7 @@ export function fan(): FanComp {
             var a = this.angle;
             var d: Vec2 | undefined = K.UP.rotate(a).scale(TILE_SIZE);
             var chk_pt = d;
-            while (d !== undefined) {
+            for (; ;) {
                 var center = chk_pt;
                 var width = TILE_SIZE, height = TILE_SIZE;
                 do {
@@ -66,7 +68,9 @@ export function fan(): FanComp {
                         } else oneway = false;
                     }
                 }
-                if (!oneway) break;
+                if (!oneway) {
+                    break;
+                }
             }
         },
         update(this: GameObj<FanComp | TogglerComp>) {

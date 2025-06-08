@@ -101,10 +101,7 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
                 }
             }
             // XXX: hack to disable it from being called twice
-            this.chooseSpriteNum = () => {
-                console.log("BUG: chooseSpriteNum called twice");
-                this.chooseSpriteNum = () => { };
-            }
+            this.chooseSpriteNum = () => { }
         },
         zap(this: GameObj<MergeableComp | PipeComp | PosComp | OffScreenComp | TileComp | TimerComp>) {
             if (zapPhase !== ZapState.QUIESCENT) return;

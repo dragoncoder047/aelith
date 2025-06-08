@@ -18,16 +18,26 @@ export function bug(): BugComp {
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
         add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp<BugStates> | TimerComp | SpriteComp>) {
-            // patch EnterState so it only transitions if the state will be changed!
-            const oldEnterState = this.enterState;
-            this.enterState = (state, ...args) => {
-                if (this.state !== state) oldEnterState.call(this, state, ...args);
+            // Ugly hack to prevent loading twice
+            if ((this as any)._hasBug) return;
+            (this as any)._hasBug = true;
+            const enterNewState: (...x: Parameters<StateComp<BugStates>["enterState"]>) => void = (state, ...args) => {
+                if (this.state !== state) this.enterState(state, ...args);
+            };
+            const changeStateAfter = (timeout: number, state: BugStates | (() => BugStates)) => {
+                const ec: TimerController = this.wait(timeout, () => {
+                    enterNewState(typeof state === "string" ? state : state());
+                });
+                this.onStateEnd(this.state, () => {
+                    ec.cancel();
+                    return K.cancel();
+                });
             };
             this.onCollide((obj, coll) => {
                 if (obj.has("bug")) {
-                    if (obj.state === "angry") this.enterState("angry");
+                    if (obj.state === "angry") enterNewState("angry");
                     else if (obj.state === "scared" || obj.state === "stunned" || this.state === "sleeping")
-                        this.enterState("walking");
+                        enterNewState("walking");
                 }
                 if (this.state === "sleeping" && obj !== player) return;
                 if (coll?.isLeft() || coll?.isRight()) {
@@ -39,14 +49,14 @@ export function bug(): BugComp {
                     } else if (obj.isStatic && this.isGrounded()) {
                         this.moveDir *= -1;
                     }
-                    if (obj === player) this.enterState("angry");
+                    if (obj === player) enterNewState("angry");
                     if (obj.has("bug") && ((coll?.isRight() && this.moveDir > 0 && obj.moveDir < 0) || obj.state === "sleeping"))
                         this.jump();
                 }
             });
             this.onLand(obj => {
                 if (obj.has("bug")) return;
-                this.enterState("stunned");
+                enterNewState("stunned");
                 if (obj === player) this.trigger("stomped_by_player");
             })
             this.onFallOff(() => {
@@ -59,65 +69,48 @@ export function bug(): BugComp {
             this.onGround(() => {
                 if (this.moveDir !== 0) this.play("walk");
             });
-            var wTimeout: TimerController | undefined;
             this.onStateEnter("walking", () => {
-                wTimeout?.cancel();
                 this.moveDir = this.flipX ? -1 : 1;
                 this.play("walk");
-                wTimeout = this.wait(15, () => this.enterState("sleeping"));
-            });
-            this.onStateEnd("walking", () => {
-                wTimeout?.cancel();
+                changeStateAfter(15, "sleeping");
             });
             this.onStateEnter("angry", () => {
-                wTimeout?.cancel();
                 this.moveDir = this.flipX ? -1 : 1;
                 this.play("walk");
-                wTimeout = this.wait(15, () => this.enterState("walking"));
+                changeStateAfter(15, "walking");
             });
-            this.onStateEnd("angry", () => {
-                wTimeout?.cancel();
-            });
-            var stTimeout: TimerController | undefined;
             this.onStateEnter("stunned", () => {
-                stTimeout?.cancel();
                 this.moveDir = 0;
                 this.play("stunned");
-                stTimeout = this.wait(5, () => this.enterState("walking"));
-            });
-            this.onStateEnd("stunned", () => {
-                stTimeout?.cancel();
+                changeStateAfter(5, "walking");
             });
             this.onStateEnter("sleeping", () => {
                 this.moveDir = 0;
                 this.play("stand");
             });
-            var scTimeout: TimerController | undefined;
             this.onStateEnter("scared", () => {
-                scTimeout?.cancel();
                 this.moveDir = 0;
                 this.play("stand");
                 this.collisionIgnore.push("player");
-                scTimeout = this.wait(5, () => {
-                    this.enterState(WorldManager.getLevelOf(this)!
+                changeStateAfter(5, () => {
+                    return WorldManager.getLevelOf(this)!
                         .get<AreaComp>("portal")
                         .some(o => this.isColliding(o))
                         ? "walking"
-                        : "sleeping");
+                        : "sleeping";
                 });
             });
             this.onStateUpdate("scared", () => {
                 if (this.isGrounded()) this.jump();
             });
             this.onStateEnd("scared", () => {
-                scTimeout?.cancel();
                 this.collisionIgnore = this.collisionIgnore.filter(t => t !== "player");
             });
             this.on("interact", () => {
-                this.enterState("scared");
+                enterNewState("scared");
             });
             this.on("portal", () => {
-                this.enterState("scared");
+                enterNewState("scared");
             });
         },
         finish(this: GameObj<StateComp<BugStates> | SpriteComp | BugComp>) {
