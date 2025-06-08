@@ -10,6 +10,7 @@ import { initPauseMenu } from "./controls/pauseMenu";
 import "./debugLinkage";
 import { WorldManager } from "./levels";
 import "./misc/bsod";
+import "./misc/loading";
 import { player } from "./player";
 import "./player/health";
 import "./player/states";

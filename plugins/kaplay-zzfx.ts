@@ -25,7 +25,9 @@ export function kaplayZzFX(K: KAPLAYCtx): ZzFXPlugin {
         },
         loadZzFX(name, parameters) {
             zzfxMap.set(name, parameters);
-            return new K.Asset(Promise.resolve(parameters));
+            // just for load tracking; the fact that it's trying to install a json as a sound data
+            // will never happen as the play intercepts the key here
+            return K._k.assets.sounds.addLoaded(name, parameters as any) as any;
         },
         loadZzFXMultiJSON(json) {
             const out: Asset<ZzFXSound>[] = [];
