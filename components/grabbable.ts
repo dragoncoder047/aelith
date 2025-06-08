@@ -10,16 +10,14 @@ export interface GrabbableComp extends Comp {
  * can be picked up by the player when clicked.
  */
 export function grabbable(): GrabbableComp {
-    var _foo: KEventController;
     return {
         id: "grabbable",
         require: ["area", "body", "pos"],
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
-            if (_foo) {
-                console.error("grabbable component reused");
-                _foo.cancel();
-            }
-            _foo = this.on("interact", () => {
+            // kludge for kaplayjs/kaplay#805
+            if ((this as any)._grab) return;
+            (this as any)._grab = true;
+            this.on("interact", () => {
                 player.grab(this);
             });
             this.onBeforePhysicsResolve(coll => {
