@@ -1,38 +1,21 @@
 
-### Machine types
-
-* Controls
-  * [X] Lever
-  * [X] Button
-  * [X] Laser / laser sensor "firewall"
-* Effectors
-  * [X] Doors
-  * [X] Conveyor belts
-  * [ ] Moving ladders
-  * [ ] mirrors ??
-  * [X] Lights (decorations)
-* Block art
-  * [ ] Generic box
-  * [ ] Tower computer
-  * [ ] Battery
-
 ## TODO
 
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
 * [ ] add 2.5D sprite stacking
 * [ ] debug menu via pause menu for magic functions
-  * [ ] make pause menu work with mouse, need text quad character detection for this
+* [ ] make pause menu work with mouse, need text quad character detection for this
 * [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [ ] Make flash trail that shows activation of things follow the data wires
-* [ ] Fix bug where horn doesn't teleport to the player and gets extremely stretched.
+* [ ] Fix bug where horn / tail doesn't teleport to the player and gets extremely stretched.
 * [ ] Make NEW vacuum object, like a grabber
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
 * [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
-* [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
+  * [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
@@ -82,3 +65,12 @@
 * [X] Fix control hints overlapping with health bar
 * [X] Make gamepad type persistent in localStorage -- OR -- autodetect gamepad type
 * [X] Fix the bug with stuff falling when player opens pause menu
+
+## Other ideas
+
+* Make an animation toolkit where the players' movement is disconnected from the input, and can be animated for like cutscenes and stuff
+* add lasers, mirrors, and laser detectors
+  * need a computer analogy name for it
+* add a sandbox mode at the end called the "assembler"
+  * need a way for player to edit the world and change links
+  * using a special continuation gun thing?
