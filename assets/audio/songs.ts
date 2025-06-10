@@ -3,5 +3,4 @@ import rawSongs from "./songs.json";
 import { parse } from "./sounds";
 
 export const allSongs: Record<string, ZzFXMSong> = Object.fromEntries(
-    Object.entries(rawSongs).map(([key, value]) => [key, parse(value)])
-);
+    rawSongs.map(s => [s.title, parse(s.data)]));
