@@ -1,7 +1,6 @@
-import { AreaComp, BodyComp, Comp, GameObj, PosComp, RectComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, RectComp, Tag, UVQuadComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { drawZapLine } from "../misc/utils";
 
 export interface CrossoverComp extends Comp {
     colliding: {
@@ -10,58 +9,86 @@ export interface CrossoverComp extends Comp {
     }
 }
 
+type Axis = "horizontal" | "vertical";
+interface CrossoverHelperComp extends Comp {
+    otherDir: Axis;
+    passDir: Axis;
+    main: GameObj<AreaComp | CrossoverComp>;
+    posGet: () => Vec2;
+    szGet: () => Vec2;
+    showStripes: boolean;
+}
+
 function passthroughHelper(
-    main: GameObj<AreaComp | CrossoverComp | RectComp>,
-    otherDir: "horizontal" | "vertical",
-    passDir: "horizontal" | "vertical",
+    main: GameObj<AreaComp | CrossoverComp>,
+    otherDir: Axis,
+    passDir: Axis,
     posGet: () => Vec2,
-    szGet: () => Vec2): Comp {
+    szGet: () => Vec2): CrossoverHelperComp {
     return {
         id: "passthroughHelper",
         require: ["body", "area"],
-        add(this: GameObj<BodyComp | AreaComp>) {
+        otherDir,
+        passDir,
+        main,
+        posGet,
+        szGet,
+        showStripes: false,
+        add(this: GameObj<BodyComp | AreaComp | CrossoverHelperComp>) {
+            this.use(K.shader("yellowstripes", () => ({
+                u_time: K.time(),
+                u_angle: this.passDir === "vertical" ? Math.PI / 2 : 0,
+                u_num_spikes: this.szGet()[this.passDir === "vertical" ? "x" : "y"] * (NUM_SPIKES_PER_TILE / TILE_SIZE),
+                u_show: +this.showStripes,
+            })));
             this.onBeforePhysicsResolve(coll => {
                 const obj = coll.target;
                 if (obj.isStatic) return;
-                if (main.colliding[otherDir].has(obj)) {
+                if (this.main.colliding[this.otherDir].has(obj)) {
                     return;
                 }
-                if (main.colliding[passDir].has(obj)) {
+                if (this.main.colliding[this.passDir].has(obj)) {
                     coll.preventResolution();
-                } else if (!main.colliding[passDir].has(obj)) {
-                    main.colliding[passDir].add(obj);
-                    main.colliding[otherDir].delete(obj);
+                } else if (!this.main.colliding[this.passDir].has(obj)) {
+                    this.main.colliding[this.passDir].add(obj);
+                    this.main.colliding[this.otherDir].delete(obj);
                     coll.preventResolution();
-                } else if (!main.colliding[otherDir].has(obj)) {
-                    main.colliding[otherDir].add(obj);
-                    main.colliding[passDir].delete(obj);
+                } else if (!this.main.colliding[this.otherDir].has(obj)) {
+                    this.main.colliding[this.otherDir].add(obj);
+                    this.main.colliding[this.passDir].delete(obj);
                 }
             });
             this.onCollideEnd(obj => {
-                if (!main.isColliding(obj as any)) {
-                    main.colliding[passDir].delete(obj);
-                    main.colliding[otherDir].delete(obj);
+                if (!this.main.isColliding(obj as any)) {
+                    this.main.colliding[this.passDir].delete(obj);
+                    this.main.colliding[this.otherDir].delete(obj);
                 }
             });
         },
-        update(this: GameObj<RectComp | PosComp | AreaComp>) {
-            const { x: width, y: height } = szGet();
+        update(this: GameObj<UVQuadComp | PosComp | AreaComp | CrossoverHelperComp>) {
+            const { x: width, y: height } = this.szGet();
             this.width = width;
             this.height = height;
-            this.pos = posGet();
-            this.collisionIgnore = main.collisionIgnore;
-            this.friction = main.friction;
-            this.restitution = main.restitution;
-            this.paused = main.paused;
+            this.pos = this.posGet();
+            this.collisionIgnore = this.main.collisionIgnore;
+            this.friction = this.main.friction;
+            this.restitution = this.main.restitution;
+            this.paused = this.main.paused;
         },
-        draw(this: GameObj) {
-            this.hidden = main.hidden;
+        inspect() {
+            return "passDir: " + this.passDir;
+        },
+        draw(this: GameObj<CrossoverHelperComp>) {
+            this.hidden = this.main.hidden;
         }
     }
 }
 
+const HELPER_THICKNESS = TILE_SIZE / 4;
+const NUM_SPIKES_PER_TILE = 3;
+
 export function crossover(): CrossoverComp {
-    var detectors: GameObj[] = [];
+    var detectors: GameObj<CrossoverHelperComp>[] = [];
     return {
         id: "crossover",
         require: ["area", "body", "pos"],
@@ -75,52 +102,44 @@ export function crossover(): CrossoverComp {
                 K.area(),
                 K.pos(),
                 K.anchor("right"),
-                K.rect(0, 0),
-                K.opacity(0),
-                K.offscreen({ hide: true }),
+                K.uvquad(0, 0),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
                     () => K.vec2(-this.width / 2, 0),
-                    () => K.vec2(TILE_SIZE / 2, this.height)),
+                    () => K.vec2(HELPER_THICKNESS, this.height)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
                 K.area(),
                 K.pos(K.vec2(this.width / 2, 0)),
                 K.anchor("left"),
-                K.rect(0, 0),
-                K.opacity(0),
-                K.offscreen({ hide: true }),
+                K.uvquad(0, 0),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "vertical", "horizontal",
                     () => K.vec2(this.width / 2, 0),
-                    () => K.vec2(TILE_SIZE / 2, this.height)),
+                    () => K.vec2(HELPER_THICKNESS, this.height)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
                 K.area(),
                 K.pos(),
                 K.anchor("bot"),
-                K.rect(0, 0),
-                K.opacity(0),
-                K.offscreen({ hide: true }),
+                K.uvquad(0, 0),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
                     () => K.vec2(0, -this.height / 2),
-                    () => K.vec2(this.width, TILE_SIZE / 2)),
+                    () => K.vec2(this.width, HELPER_THICKNESS)),
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
                 K.area(),
                 K.pos(),
                 K.anchor("top"),
-                K.rect(0, 0),
-                K.opacity(0),
-                K.offscreen({ hide: true }),
+                K.uvquad(0, 0),
                 K.body({ isStatic: true }),
                 passthroughHelper(this, "horizontal", "vertical",
                     () => K.vec2(0, this.height / 2),
-                    () => K.vec2(this.width, TILE_SIZE / 2)),
+                    () => K.vec2(this.width, HELPER_THICKNESS)),
                 "raycastIgnore" as Tag,
             ]));
             this.onBeforePhysicsResolve(coll => {
@@ -139,21 +158,8 @@ export function crossover(): CrossoverComp {
             detectors.forEach(d => d.hidden = this.hidden);
             const lh = this.colliding.horizontal.size;
             const lv = this.colliding.vertical.size;
-            const w2 = this.width / 2 + TILE_SIZE / 8;
-            const h2 = this.height / 2 + TILE_SIZE / 8;
-            const tl = K.vec2(-w2, -h2);
-            const tr = K.vec2(w2, -h2);
-            const bl = K.vec2(-w2, h2);
-            const br = K.vec2(w2, h2);
-            if (lh > 0 || lv > 0) {
-                if (lh > lv) {
-                    drawZapLine(tl, tr);
-                    drawZapLine(bl, br);
-                } else {
-                    drawZapLine(tl, bl);
-                    drawZapLine(tr, br);
-                }
-            }
+            // shown if: something colliding and shown for this direction
+            detectors.forEach(d => d.showStripes = (lh > 0 || lv > 0) && (lh > lv) === (d.passDir === "vertical"));
         },
         destroy() {
             detectors.forEach(d => d.destroy());

@@ -72,5 +72,5 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     float noiseval = chgnoise(uv2);
     alpha *= sqrt(noiseval);
     vec3 rainbow = hsv2rgb(vec3(perlin(vec3(uv2 + u_staticrand, u_time)), 1., .5));
-    return vec4(rainbow * alpha, alpha);
+    return vec4(rainbow, 1.) * vec4(alpha);
 }

@@ -15,6 +15,7 @@ import invertShader from "./shaders/invert.glsl";
 import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import translateShader from "./shaders/translate.glsl";
+import yellowStripesShader from "./shaders/yellowstripes.glsl";
 import spritemapDef from "./textures/spritemap.json" with { type: "json" };
 import spritemapDataURL from "./textures/spritemap.png";
 import deStrings from "./translations/de.json" with { type: "json" };
@@ -58,6 +59,7 @@ K.loadShader("invert", undefined, invertShader);
 K.loadShader("portal", undefined, portalShader);
 K.loadShader("dataPipe", undefined, datapipeShader);
 K.loadShader("fuzzy", undefined, fuzzyFadeShader);
+K.loadShader("yellowstripes", undefined, yellowStripesShader);
 Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 
 // idk where else to put this
