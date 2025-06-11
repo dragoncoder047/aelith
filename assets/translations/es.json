@@ -15,7 +15,7 @@
             "throw": {
                 "header": "Herramientas de depuracion",
                 "section": "4",
-                "secName": "TIRAR",
+                "secName": "THROW",
                 "body": "NOMBRE\n&tab[throw]throw[/throw] - regresa a una ubicacion previa en el programa\n\nSINOPSIS\n&tab[b]throw[/b] \\[[b]--capture[/b] | [b]--restore[/b]]\n\nDESCRIPCION\n&tab[b]throw[/b] es una herramienta para regresar a una posicion previa en el flujo de trabajo para depurar, sin modificar el estado actual del trabajo.\n\nNOTAS\n&tabThis [b]throw[/b] is specially designed to be usable by the [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to interactively debug exceptional situations.\n\nCAVEATS\n&tab[b]throw[/b] saves the system state to a hard-coded file name. Because of this it is only possible to capture the system state once using [b]throw[/b]. It must be restored first before another snapshot is saved.\n\nHISTORY\n&tab[b]throw[/b] was originally written as a way for a program to signal to the debugger that something has gone wrong and \"throw\" control back to the human operator. Exactly which programming language implemented it first, no one knows."
             },
             "setjmp": {
