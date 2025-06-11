@@ -12,7 +12,7 @@ export function specialGrating() {
                     const obj = col.target;
                     if (obj.has("continuation-trap")) {
                         const trap = obj as GameObj<ContinuationTrapComp>;
-                        if (trap.enabled && !trap.isDeferring)
+                        if (trap.enabled && trap.isDeferring)
                             col.preventResolution();
                     }
                 });
