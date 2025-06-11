@@ -211,7 +211,7 @@ export class MParser {
             const y = this.stack.pop() as number;
             const x = this.stack.pop() as number;
             const obj = this.stack.at(-1) as GameObj<PosComp>;
-            obj.pos = obj.pos.add(K.vec2(x, y));
+            obj.moveBy(x, y);
         },
         // MARK: g(roup)
         // group command: oN ... o3 o2 o1 number id? -- oN ... o3 o2 o1
