@@ -1,10 +1,12 @@
-import { GameObj, PosComp, TextComp } from "kaplay";
+import { GameObj, PosComp, TextComp, TweenController } from "kaplay";
 import { UI } from ".";
 import { uiButton } from "../components/uiButton";
 import { MARGIN, SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
 import { healthbar } from "./healthbar";
+
+const INV_BTN_COLOR = K.GREEN.darken(127);
 
 const btnLeft = UI.add([
     K.text("\u25C4", {
@@ -14,7 +16,7 @@ const btnLeft = UI.add([
     K.area(),
     K.layer("ui"),
     K.anchor("botleft"),
-    K.color(K.GREEN.darken(127)),
+    K.color(INV_BTN_COLOR),
     {
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(MARGIN, K.height() - (MARGIN * 2 + healthbar.height)
@@ -33,7 +35,7 @@ const inventory = UI.add([
     K.area(),
     K.layer("ui"),
     K.anchor("botleft"),
-    K.color(K.GREEN.darken(50)),
+    K.color(INV_BTN_COLOR),
     {
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(
@@ -65,7 +67,7 @@ const btnRight = UI.add([
     K.area(),
     K.layer("ui"),
     K.anchor("botleft"),
-    K.color(K.GREEN.darken(127)),
+    K.color(INV_BTN_COLOR),
     {
         update(this: GameObj<PosComp | TextComp>) {
             this.pos = K.vec2(
@@ -75,3 +77,11 @@ const btnRight = UI.add([
     }
 ]);
 btnRight.use(uiButton(() => player.scrollInventory(1)));
+
+var _tweener: TweenController;
+player.on("inventoryChange", () => {
+    _tweener?.finish();
+    _tweener = K.tween(K.WHITE, INV_BTN_COLOR, .2, c => {
+        btnLeft.color = btnRight.color = inventory.color = c;
+    });
+});
