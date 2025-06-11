@@ -317,6 +317,7 @@ export function playerBody(): PlayerBodyComp {
             }
             else if (this.holdingIndex === this.inventory.length)
                 this.scrollInventory(0);
+            else this.trigger("inventoryChange");
         },
         drop(this: GameObj<PlayerBodyComp | PosComp>, obj) {
             if (!this.inventory.includes(obj)) {
