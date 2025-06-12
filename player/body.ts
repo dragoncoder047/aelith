@@ -232,9 +232,11 @@ export function playerBody(): PlayerBodyComp {
          * @param opt Standard options
          * @param pos Position of the sound in world coordinates
          * @param impactVel Velocity of impact, if provided
+         * @param object The object the is the source of the sound
          */
         playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
+            if (isHidden(object)) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -420,3 +422,5 @@ export function playerBody(): PlayerBodyComp {
         }
     };
 }
+
+const isHidden = (obj?: GameObj): boolean => obj ? (obj.hidden ? true : obj.parent ? isHidden(obj.parent) : false) : false;

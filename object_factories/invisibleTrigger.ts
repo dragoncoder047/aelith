@@ -3,6 +3,7 @@ import { invisibleTriggerComp } from "../components/invisibleTrigger";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
+import { clicky } from "../components/clicky";
 
 export function invisibleTrigger() {
     return [
@@ -10,6 +11,7 @@ export function invisibleTrigger() {
         K.opacity(0),
         ...machine(),
         invisibleTriggerComp(),
+        clicky(["on"], ["alert"]),
         "raycastIgnore" as Tag,
         "dont-highlight" as Tag,
     ];

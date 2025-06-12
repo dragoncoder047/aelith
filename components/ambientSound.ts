@@ -20,7 +20,7 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
         add(this: GameObj<StateComp<(typeof states)[number]> | TogglerComp | AmbientSoundComp | PosComp>) {
             this.onStateEnter(states[0], () => {
                 // turning off
-                if (this.cur) this.cur.cancel();
+                this.cur?.cancel();
                 this.cur = undefined;
                 if (shutdown !== undefined) {
                     this.cur = player.playSound(shutdown, undefined, this.worldPos()!, undefined, this);
@@ -28,7 +28,7 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
             });
             this.onStateEnter(states[1], () => {
                 // turning on
-                if (this.cur) this.cur.cancel();
+                this.cur?.cancel();
                 this.cur = undefined;
                 const recurse = (sound: string) => {
                     this.cur = player.playSound(sound, undefined, this.worldPos()!, undefined, this);

@@ -106,16 +106,6 @@ export const StateManager = {
                 !state.restoreParams.reverseTeleport
                 && (player.inventory.includes(e.obj as any) ? state.playerPos : e.obj.pos)
                     .sdist(state.playerPos) > (state.restoreParams.radius * state.restoreParams.radius))
-            if (e.restoreFlags & RestoreFlags.pos) {
-                if (shouldClone && canClone) {
-                    // It is out of range, clone it
-                    obj = (e.obj as GameObj<StateComps | CloneableComp<StateComps>>).clone();
-                    e.obj.tags.forEach(t => obj.tag(t));
-                }
-                // Update pos, angle
-                obj.worldPos(e.location.pos.add(reverseDelta));
-                obj.angle = e.location.angle;
-            }
             obj.vel = K.vec2(0);
             if (e.restoreFlags & RestoreFlags.bug)
                 obj.enterState(e.state.bug!);
@@ -126,7 +116,7 @@ export const StateManager = {
             if (e.location.levelID !== null) {
                 player.removeFromInventory(obj as any);
                 const tLevel = WorldManager.allLevels[e.location.levelID]!.levelObj;
-                obj.setParent(tLevel, { keep: K.KeepFlags.Pos });
+                obj.parent = tLevel;
                 obj.hidden = tLevel.hidden;
                 obj.paused = tLevel.paused;
                 const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
@@ -139,6 +129,16 @@ export const StateManager = {
             }
             else
                 player.addToInventory(obj as any);
+            if (e.restoreFlags & RestoreFlags.pos) {
+                if (shouldClone && canClone) {
+                    // It is out of range, clone it
+                    obj = (e.obj as GameObj<StateComps | CloneableComp<StateComps>>).clone();
+                    e.obj.tags.forEach(t => obj.tag(t));
+                }
+                // Update pos, angle
+                obj.worldPos(e.location.pos.add(reverseDelta));
+                obj.angle = e.location.angle;
+            }
             // If it is a button or laser that *was* triggered by a box when captured, but
             // isn't triggered currently, the following happens when the continuation is
             // invoked:
