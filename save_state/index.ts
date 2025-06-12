@@ -127,8 +127,10 @@ export const StateManager = {
                     splash(obj.pos, color, undefined, undefined, obj.tags.filter(x => x !== "*"));
                 }
             }
-            else
+            else {
+                obj.paused = obj.hidden = true;
                 player.addToInventory(obj as any);
+            }
             if (e.restoreFlags & RestoreFlags.pos) {
                 if (shouldClone && canClone) {
                     // It is out of range, clone it
