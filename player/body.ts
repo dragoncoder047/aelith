@@ -1,4 +1,4 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, GameObjRaw, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationComp } from "../components/continuationCore";
 import { ControllableComp } from "../components/controllable";
@@ -236,7 +236,7 @@ export function playerBody(): PlayerBodyComp {
          */
         playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
-            if (isHidden(object)) return;
+            if (isHidden(object) || isPaused(object)) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -248,7 +248,7 @@ export function playerBody(): PlayerBodyComp {
                 const dist = this.worldPos()!.dist(pos);
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
                 const rv0 = rv1 * 2;
-                const oExists = !object || !object.hidden || WorldManager.getLevelOf(object) === WorldManager.activeLevel?.levelObj;
+                const oExists = !object || (!isHidden(object) && WorldManager.getLevelOf(object) === WorldManager.activeLevel?.levelObj);
                 zz.volume = oExists ? v * K.mapc(dist, rv1, rv0, 1, 0) : 0;
                 zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);
             };
@@ -285,6 +285,7 @@ export function playerBody(): PlayerBodyComp {
                 }
             });
             obj.setParent(this, { keep: K.KeepFlags.Pos });
+            obj.hidden = obj.paused = true;
             // Put in inventory
             this.inventory.push(obj);
             this.scrollInventory(this.inventory.length);
@@ -423,4 +424,11 @@ export function playerBody(): PlayerBodyComp {
     };
 }
 
-const isHidden = (obj?: GameObj): boolean => obj ? (obj.hidden ? true : obj.parent ? isHidden(obj.parent) : false) : false;
+function is_(o: GameObj | undefined, name: keyof GameObjRaw) {
+    if (!o) return false;
+    if (o[name]) return true;
+    if (!o.parent) return false;
+    return is_(o.parent, name);
+}
+const isPaused = (o?: GameObj) => is_(o, "paused");
+const isHidden = (o?: GameObj) => is_(o, "hidden");

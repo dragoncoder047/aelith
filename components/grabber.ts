@@ -10,6 +10,7 @@ import { TogglerComp } from "./toggler";
 
 export interface GrabberComp extends Comp {
     which: keyof typeof contTypes | "undefined";
+    lookingFor: GameObj<NamedComp | PosComp | BodyComp> | undefined;
 }
 
 const GRABBER_MAX = TILE_SIZE * 4;
@@ -25,6 +26,7 @@ export function grabber(): GrabberComp {
         id: "grabber",
         which: "undefined",
         require: ["sprite", "body", "pos", "pointTowards", "toggler"],
+        lookingFor: undefined,
         add(this: GameObj<GrabberComp | PosComp | AnchorComp | AreaComp | BodyComp>) {
             this.use(K.shader("recolorRed", () => ({
                 u_targetcolor: K.Color.fromHex((contTypes as any)[this.which]?.color ?? "#ff0000"),
@@ -48,20 +50,20 @@ export function grabber(): GrabberComp {
             });
         },
         fixedUpdate(this: GameObj<BodyComp | GrabberComp | PointTowardsComp | PosComp | SpriteComp | RotateComp | TogglerComp | LinkComp>) {
-            const lookingFor = K.get<NamedComp | PosComp | BodyComp>("continuationTrap", { recursive: true })
+            if (!this.lookingFor) this.lookingFor = K.get<NamedComp | PosComp | BodyComp>("continuationTrap", { recursive: true })
                 .find(o => o.name === this.which && !o.hidden);
             const goState = (state: boolean) => {
                 if (state !== this.togglerState) {
                     this.broadcast(this.toggleMsg);
                 }
             }
-            if (!lookingFor) {
+            if (!this.lookingFor) {
                 this.play("dormant", { preventRestart: true });
                 goState(false);
                 this.pointingTowards = null;
                 return;
             }
-            const off = lookingFor.worldPos()!.sub(this.worldPos()!);
+            const off = this.lookingFor.worldPos()!.sub(this.worldPos()!);
             if (off.slen() > GRABBER_MAX * GRABBER_MAX) {
                 this.play("dormant", { preventRestart: true });
                 goState(false);
@@ -69,18 +71,18 @@ export function grabber(): GrabberComp {
                 return;
             }
             this.play("grabbing", { preventRestart: true });
-            this.pointingTowards = lookingFor;
+            this.pointingTowards = this.lookingFor;
             var forceRaw = clampLen(off.unit().scale(GRABBER_STRETCH / off.len()), GRABBER_MAX_FORCE);
             _force1 = forceRaw.rotate(-this.angle);
             _force2 = forceRaw.scale(-1).add(K._k.game.gravity!.scale(-1));
             this.addForce(_force1);
-            lookingFor.addForce(_force2);
+            this.lookingFor.addForce(_force2);
 
-            goState(off.slen() < THRESHOLD_SQUARED && !player.inventory.includes(lookingFor as any));
+            goState(off.slen() < THRESHOLD_SQUARED && !player.inventory.includes(this.lookingFor as any));
 
-            const displacement = lookingFor.worldPos()!.sub(this.worldPos()!).unit();
+            const displacement = this.lookingFor.worldPos()!.sub(this.worldPos()!).unit();
             this.vel = this.vel.project(displacement).add(this.vel.reject(displacement).scale(0.6));
-            lookingFor.vel = lookingFor.vel.project(displacement).add(lookingFor.vel.reject(displacement).scale(0.6));
+            this.lookingFor.vel = this.lookingFor.vel.project(displacement).add(this.lookingFor.vel.reject(displacement).scale(0.6));
         },
         drawInspect(this: GameObj<PosComp | GrabberComp | BodyComp | RotateComp>) {
             K.drawLine({

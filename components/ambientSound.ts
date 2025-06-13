@@ -21,17 +21,15 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
             this.onStateEnter(states[0], () => {
                 // turning off
                 this.cur?.cancel();
-                this.cur = undefined;
                 if (shutdown !== undefined) {
-                    this.cur = player.playSound(shutdown, undefined, this.worldPos()!, undefined, this);
+                    this.cur = player.playSound(shutdown, { loop: false }, this.worldPos()!, undefined, this);
                 }
             });
             this.onStateEnter(states[1], () => {
                 // turning on
                 this.cur?.cancel();
-                this.cur = undefined;
                 const recurse = (sound: string) => {
-                    this.cur = player.playSound(sound, undefined, this.worldPos()!, undefined, this);
+                    this.cur = player.playSound(sound, { loop: false }, this.worldPos()!, undefined, this);
                     if (this.cur) this.cur.onEnd(() => recurse(mainSound));
                     else setTimeout(recurse, 10, mainSound);
                 };

@@ -113,6 +113,16 @@ export const StateManager = {
                 obj.togglerState = state.restoreParams.fuzzStates ? !obj.togglerState : e.state.toggle!;
             if (e.restoreFlags & RestoreFlags.trigger)
                 obj.triggered = e.state.trigger!;
+            if (e.restoreFlags & RestoreFlags.pos) {
+                if (shouldClone && canClone) {
+                    // It is out of range, clone it
+                    obj = (e.obj as GameObj<StateComps | CloneableComp<StateComps>>).clone();
+                    e.obj.tags.forEach(t => obj.tag(t));
+                }
+                // Update pos, angle
+                obj.worldPos(e.location.pos.add(reverseDelta));
+                obj.angle = e.location.angle;
+            }
             if (e.location.levelID !== null) {
                 player.removeFromInventory(obj as any);
                 const tLevel = WorldManager.allLevels[e.location.levelID]!.levelObj;
@@ -127,20 +137,7 @@ export const StateManager = {
                     splash(obj.pos, color, undefined, undefined, obj.tags.filter(x => x !== "*"));
                 }
             }
-            else {
-                obj.paused = obj.hidden = true;
-                player.addToInventory(obj as any);
-            }
-            if (e.restoreFlags & RestoreFlags.pos) {
-                if (shouldClone && canClone) {
-                    // It is out of range, clone it
-                    obj = (e.obj as GameObj<StateComps | CloneableComp<StateComps>>).clone();
-                    e.obj.tags.forEach(t => obj.tag(t));
-                }
-                // Update pos, angle
-                obj.worldPos(e.location.pos.add(reverseDelta));
-                obj.angle = e.location.angle;
-            }
+            else player.addToInventory(obj as any);
             // If it is a button or laser that *was* triggered by a box when captured, but
             // isn't triggered currently, the following happens when the continuation is
             // invoked:
