@@ -1,10 +1,11 @@
-import { AreaComp, BodyComp, GameObj } from "kaplay";
+import { AreaComp, BodyComp, GameObj, Tag } from "kaplay";
 import { ContinuationTrapComp } from "../components/continuationTrap";
 import { grating } from "./grating";
 
 export function specialGrating() {
     return [
         ...grating(),
+        "special" as Tag,
         {
             add(this: GameObj<BodyComp | AreaComp>) {
                 this.collisionIgnore.push("bug");
