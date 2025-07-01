@@ -7,6 +7,7 @@ import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplayPTY } from "./plugins/kaplay-pty";
 import { kaplaySprings } from "./plugins/kaplay-springs";
+import { kaplayPhysicsWasm } from "./plugins/kaplay-wasm-physics";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
 
@@ -21,6 +22,7 @@ export const K = kaplay({
     inspectOnlyActive: true,
     font: "IBM Mono",
     plugins: [
+        kaplayPhysicsWasm,
         kaplayZzFX,
         kaplayZzFXM,
         kaplaySprings,
