@@ -1,9 +1,21 @@
 
 ## TODO
 
+* [ ] Type up lore document
+* [ ] Change continuation objects to frog-like things instead of just spinny circles
+* [ ] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout (or maybe combination of both)
+* [ ] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
+  * [ ] Need to choose controls for this
+    * [ ] something like Minecraft generalized controls?
+      * when empty: pick up item
+      * when have item: use item or throw item
+    * [ ] special kind of line to show what it is about to capture
+      * zoop circle will start at the middle radius
+      * [ ] maybe have all the other cont trap types do this too (lines graphics)
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
 * [ ] add 2.5D sprite stacking
+  * [ ] this might need the drawon component, will need to figure out how to use that
 * [ ] debug menu via pause menu for magic functions
 * [ ] make pause menu work with mouse, need text quad character detection for this
 * [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
@@ -14,13 +26,13 @@
   * [ ] Use firewall somewhere else
 * [X] Finish writing man pages for all the types of continuations
   * [ ] Do translations
-* [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random 33%/33%/33% -- make it choose randomly but influenced based on position
+* [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random & uniformly weighted -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
   * [ ] OR - Add warning about there being no autosave
-* [ ] Add scores for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
+* [ ] Add achievements for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
   * [ ] Connect to Newgrounds for cloud save and medals?
 
 ## DONE
