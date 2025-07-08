@@ -21,8 +21,8 @@ export function bug(): BugComp {
             // kludge for kaplayjs/kaplay#805
             if ((this as any)._hasBug) return;
             (this as any)._hasBug = true;
-            const enterNewState: (...x: Parameters<StateComp<BugStates>["enterState"]>) => void = (state, ...args) => {
-                if (this.state !== state) this.enterState(state, ...args);
+            const enterNewState = (state: BugStates) => {
+                if (this.state !== state) this.enterState(state);
             };
             const changeStateAfter = (timeout: number, state: BugStates | (() => BugStates)) => {
                 const ec: TimerController = this.wait(timeout, () => {

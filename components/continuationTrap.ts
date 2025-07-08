@@ -243,14 +243,13 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.isDeferring = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
-            const cont = K.add(continuation(this.name! as any, data, this)) as any as (PlayerInventoryItem & GameObj<ContinuationComp>);
+            const cont = WorldManager.activeLevel!.levelObj.add(continuation(this.name! as any, data, this)) as any as (PlayerInventoryItem & GameObj<ContinuationComp>);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
             splash(player.pos, this.color);
             this.zoop.radius = zoopRadius(this.params.radius);
             this.zoop.zoop().then(() => {
-                player.addToInventory(cont);
                 cont.activate();
                 this.zoop.hidden = true;
             });

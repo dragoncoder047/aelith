@@ -50,7 +50,7 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
                 // prevent spurious trigger when it is first thrown, or with non-colliding objects like ladders
                 if (player.inventory.includes(this.controlling as any)
                     || (this.controlling as any).platformIgnore.has(player)
-                    || [...(col?.target.collisionIgnore ?? [])].some((t: string) => this.is(t))
+                    || (col?.target.collisionIgnore ?? []).some((t: string) => this.is(t))
                     || (col?.target && !col.target.has("body"))) return;
                 player.trigger("remoteSense", col?.normal, this.controlling);
             }) as unknown as KEventController; // because types are wrong. kaplayjs/kaplay#577

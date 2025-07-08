@@ -41,6 +41,7 @@ player.use(thudder(undefined, { detune: -500 }, (): boolean => !player.intersect
 
 player.head = K.add([
     playerHead(),
+    "player_head",
     K.sprite("player_head"),
     K.layer("player"),
     K.pos(),

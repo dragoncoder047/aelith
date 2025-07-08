@@ -5,7 +5,7 @@ import { ContinuationTrapComp } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { lore, LoreComp } from "../components/lore";
-import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
+import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldSnapshot } from "../save_state/state";
 import { defaults } from "./default";
@@ -17,7 +17,6 @@ export function continuation(
     trap: GameObj<ContinuationTrapComp | LoreComp>
 ) {
     return [
-        K.sprite("continuation_invoker"),
         K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
@@ -26,24 +25,17 @@ export function continuation(
         K.pos(captured.playerPos),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
         ...defaults({
-            shape: new K.Circle(K.vec2(0), 8),
-            collisionIgnore: ["tail"],
+            collisionIgnore: ["tail", "player", "player_head"],
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
-        K.body({ maxVelocity: TERMINAL_VELOCITY }),
+        K.body({
+            maxVelocity: TERMINAL_VELOCITY,
+            jumpForce: JUMP_FORCE / 2
+        }),
         K.named("{undefined}"),
         continuationCore(type, captured, trap),
-        {
-            add(this: GameObj<BodyComp>) {
-                this.onBeforePhysicsResolve(coll => {
-                    if (coll.target.is("player")) coll.preventResolution();
-                });
-            },
-            update(this: GameObj<RotateComp>) {
-                this.angle += 360 * K.dt();
-            }
-        },
+        K.sprite("continuation_invoker"), // must be after so sprite draws on top of line
         ...throwablePlatformEff(),
         grabbable(),
         K.z(100),

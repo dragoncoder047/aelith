@@ -171,9 +171,19 @@
     },
     "continuation_invoker": {
         "x": 0,
-        "y": 318,
-        "width": 16,
-        "height": 16
+        "y": 340,
+        "width": 48,
+        "height": 20,
+        "sliceX": 3,
+        "sliceY": 2,
+        "anims": {
+            "stand": 0,
+            "shy": 1,
+            "oops": 2,
+            "slit_eyes": 3,
+            "ooo": 4,
+            "hi": 5
+        }
     },
     "continuation_trap": {
         "x": 32,

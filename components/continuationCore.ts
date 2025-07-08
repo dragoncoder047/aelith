@@ -1,4 +1,4 @@
-import { Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
+import { BodyComp, Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
 import contTypes from "../assets/trapTypes.json" with { type: "json" };
 import { SCALE } from "../constants";
 import { K } from "../init";
@@ -21,7 +21,10 @@ export interface ContinuationComp extends Comp {
     worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp>
     invoke(): void,
     activate(): void,
+    emoTimer: number,
 }
+
+const EMOS = ["stand", "shy", "oops", "slit_eyes", "ooo", "hi"];
 
 export function continuationCore(
     type: keyof typeof contTypes,
@@ -30,7 +33,7 @@ export function continuationCore(
 ): ContinuationComp {
     return {
         id: "continuation",
-        require: ["sprite", "pos", "shader", "named"],
+        require: ["sprite", "pos", "shader", "named", "body"],
         timestamp: Date.now(),
         type,
         captured,
@@ -69,12 +72,26 @@ export function continuationCore(
                 this.worldMarker.destroy();
             }
         },
-        update(this: GameObj<ContinuationComp | ControllableComp>) {
+        emoTimer: 0,
+        update(this: GameObj<BodyComp | SpriteComp | ContinuationComp | ControllableComp>) {
             this.controls[0]!.hint = K.sub(
                 contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "continuation",
                 });
+            this.emoTimer -= K.dt();
+            if (this.emoTimer <= 0) {
+                this.emoTimer = K.rand(0, 5);
+                if (K.randi() == 0) {
+                    this.play(K.choose(EMOS));
+                } else {
+                    this.flipX = K.randi() == 0;
+                    if (K.randi(3) == 0) {
+                        this.jump();
+                        this.applyImpulse(K.vec2(this.jumpForce / 2 * (this.flipX ? -1 : 1), 0));
+                    }
+                }
+            }
         },
         invoke(this: GameObj<ContinuationComp>) {
             if (this.params.recapture) {

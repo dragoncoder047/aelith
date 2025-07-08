@@ -15,11 +15,13 @@ export function kaplayControlGroup(K: KAPLAYCtx & KAPLAYControlGroupPlugin): KAP
     }
     K.KEvent.prototype.add = function <Args extends any[]>(this: KEvent<Args>,
         action: (...args: Args) => unknown): patchedEC {
-        function handler(...args: Args) {
+        // @ts-expect-error
+        function handler(q, w, e, r, t, y, u, i, o, p) {
             if (ev.paused
                 || (ev.evGroups.length > 0
                     && !eGroupsMatches(ev.evGroups, K.eventGroups))) return;
-            return action(...args);
+            // @ts-expect-error
+            return action(q, w, e, r, t, y, u, i, o, p);
         }
 
         // @ts-ignore
