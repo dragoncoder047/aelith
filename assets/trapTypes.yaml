@@ -1,0 +1,173 @@
+throw:
+  color: "#0000ff"
+  behavior:
+    cName: catch
+    pName: null
+    radius: 0
+    oneshot: true
+    concurrent: false
+    deferred: false
+    useSelfPosition: false
+    recapture: false
+    reverseTeleport: false
+    fuzzStates: false
+    editable: false
+    global: false
+    destroysObjects: false
+    destroyImmune: false
+  hint: null
+  flyingEnabled: false
+  lore:
+    header: "&msg.lore.continuation.throw.header"
+    section: "&msg.lore.continuation.throw.section"
+    secName: "&msg.lore.continuation.throw.secName"
+    body: "&msg.lore.continuation.throw.body"
+setjmp:
+  color: "#00ffff"
+  behavior:
+    cName: longjmp
+    pName: null
+    radius: 4
+    oneshot: true
+    concurrent: false
+    deferred: false
+    useSelfPosition: false
+    recapture: false
+    reverseTeleport: false
+    fuzzStates: false
+    editable: false
+    global: false
+    destroysObjects: false
+    destroyImmune: false
+  hint: null
+  flyingEnabled: false
+  lore:
+    header: "&msg.lore.continuation.setjmp.header"
+    section: "&msg.lore.continuation.setjmp.section"
+    secName: "&msg.lore.continuation.setjmp.secName"
+    body: "&msg.lore.continuation.setjmp.body"
+async:
+  color: "#ff8000"
+  behavior:
+    cName: await
+    pName: promise
+    radius: 0
+    oneshot: true
+    concurrent: false
+    deferred: true
+    useSelfPosition: true
+    recapture: false
+    reverseTeleport: false
+    fuzzStates: false
+    editable: false
+    global: false
+    destroysObjects: false
+    destroyImmune: false
+  hint: >-
+    $fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)
+  flyingEnabled: false
+  lore:
+    header: "&msg.lore.continuation.async.header"
+    section: "&msg.lore.continuation.async.section"
+    secName: "&msg.lore.continuation.async.secName"
+    body: "&msg.lore.continuation.async.body"
+yield:
+  color: "#ffff00"
+  behavior:
+    cName: next
+    pName: null
+    radius: 0
+    oneshot: true
+    concurrent: true
+    deferred: false
+    useSelfPosition: false
+    recapture: true
+    reverseTeleport: false
+    fuzzStates: false
+    editable: false
+    global: false
+    destroysObjects: false
+    destroyImmune: false
+  hint: null
+  flyingEnabled: false
+  lore:
+    header: "&msg.lore.continuation.yield.header"
+    section: "&msg.lore.continuation.yield.section"
+    secName: "&msg.lore.continuation.yield.secName"
+    body: "&msg.lore.continuation.yield.body"
+switch:
+  color: "#ee4466"
+  behavior:
+    cName: case
+    pName: null
+    radius: 2
+    oneshot: true
+    concurrent: false
+    deferred: false
+    useSelfPosition: false
+    recapture: false
+    reverseTeleport: true
+    fuzzStates: false
+    editable: false
+    global: false
+    destroysObjects: false
+    destroyImmune: false
+  hint: null
+  flyingEnabled: false
+  lore:
+    header: "&msg.lore.continuation.switch.header"
+    section: "&msg.lore.continuation.switch.section"
+    secName: "&msg.lore.continuation.switch.secName"
+    body: "&msg.lore.continuation.switch.body"
+call/cc:
+  color: "#aa22ff"
+  behavior:
+    cName: k
+    pName: fut
+    radius: 0
+    oneshot: false
+    concurrent: true
+    deferred: false
+    useSelfPosition: false
+    recapture: false
+    reverseTeleport: false
+    fuzzStates: false
+    editable: true
+    global: false
+    destroysObjects: false
+    destroyImmune: true
+  hint: |
+    $fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)
+    &msg.ctlHint.continuation.modify
+    &msg.ctlHint.continuation.edit&tab&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise
+    &msg.ctlHint.continuation.remoteMove)
+  flyingEnabled: true
+  lore:
+    header: "&msg.lore.continuation.callcc.header"
+    section: "&msg.lore.continuation.callcc.section"
+    secName: "&msg.lore.continuation.callcc.secName"
+    body: "&msg.lore.continuation.callcc.body"
+assert:
+  color: "#00ff00"
+  behavior:
+    cName: assert
+    pName: null
+    radius: 1.79e+308
+    oneshot: false
+    concurrent: false
+    deferred: false
+    useSelfPosition: true
+    recapture: false
+    reverseTeleport: false
+    fuzzStates: false
+    editable: false
+    global: true
+    destroysObjects: true
+    destroyImmune: true
+  hint: "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)"
+  flyingEnabled: true
+  lore:
+    header: "&msg.lore.continuation.assert.header"
+    section: "&msg.lore.continuation.assert.section"
+    secName: "&msg.lore.continuation.assert.secName"
+    body: "&msg.lore.continuation.assert.body"

@@ -17,6 +17,7 @@
     "license": "GPL-3.0-only",
     "devDependencies": {
         "esbuild": "^0.25.0",
+        "esbuild-yaml": "^3.0.1",
         "typescript": "^5.6.2"
     },
     "dependencies": {

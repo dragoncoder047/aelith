@@ -6,9 +6,9 @@ import { allSongs } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
 import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
-import allLevels from "./level_maps/ALL.json" with { type: "json" };
+import allLevels from "./level_maps/ALL.json";
 import { playMusic } from "./music";
-import rumbleEffects from "./rumbleEffects.json";
+import rumbleEffects from "./rumbleEffects.yaml";
 import datapipeShader from "./shaders/dataPipe.glsl";
 import fuzzyFadeShader from "./shaders/fuzzy.glsl";
 import invertShader from "./shaders/invert.glsl";
@@ -16,13 +16,13 @@ import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import translateShader from "./shaders/translate.glsl";
 import yellowStripesShader from "./shaders/yellowstripes.glsl";
-import spritemapDef from "./textures/spritemap.json" with { type: "json" };
+import spritemapDef from "./textures/spritemap.yaml";
 import spritemapDataURL from "./textures/spritemap.png";
-import deStrings from "./translations/de.json" with { type: "json" };
-import enStrings from "./translations/en.json" with { type: "json" };
-import esStrings from "./translations/es.json" with { type: "json" };
-import strings from "./translations/index.json" with { type: "json" };
-import jaStrings from "./translations/ja.json" with { type: "json" };
+import deStrings from "./translations/de.yaml";
+import enStrings from "./translations/en.yaml";
+import esStrings from "./translations/es.yaml";
+import strings from "./translations/index.yaml";
+import jaStrings from "./translations/ja.yaml";
 
 
 // Load assets
@@ -33,7 +33,7 @@ for (var i = 0; i < allLevelIDs.length; i++)
     K.load((async () => {
         await new Promise<void>(r => resolvers.push(r));
     })());
-K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
+K.loadSpriteAtlas(spritemapDataURL, spritemapDef as any).then(async () => {
     // Must wait to load sprites before loading levels
     for (var i = 0; i < allLevelIDs.length; i++) {
         const name = allLevelIDs[i]!;
@@ -43,14 +43,14 @@ K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
         await nextFrame();
     }
 });
-K.loadRumbleEffects(rumbleEffects);
+K.loadRumbleEffects(rumbleEffects as any);
 K.loadZzFXMultiJSON(sounds);
-K.addStrings(strings);
+K.addStrings(strings as any);
 K.setLanguages(["en", "es", "de", "ja"]);
-K.strings.en = enStrings;
-K.strings.es = esStrings;
-K.strings.de = deStrings;
-K.strings.ja = jaStrings;
+K.strings.en = enStrings as any;
+K.strings.es = esStrings as any;
+K.strings.de = deStrings as any;
+K.strings.ja = jaStrings as any;
 K.loadFont("IBM Mono", ibmMonoFontDataURL);
 K.loadFont("Unscii MCR", unsciiMCRFontDataURL);
 K.loadShader("recolorRed", undefined, recolorRedShader);

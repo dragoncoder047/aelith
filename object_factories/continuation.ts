@@ -1,5 +1,5 @@
 import { BodyComp, GameObj, RotateComp, Tag } from "kaplay";
-import continuationTypes from "../assets/trapTypes.json" with { type: "json" };
+import continuationTypes from "../assets/trapTypes.yaml" with { type: "json" };
 import { continuationCore } from "../components/continuationCore";
 import { ContinuationTrapComp } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";

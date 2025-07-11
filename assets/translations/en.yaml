@@ -1,0 +1,539 @@
+dialog:
+  firefoxDontWorkWithGamepads: >-
+    You appear to be using Firefox. Unfortunately for you, Firefox's
+    implementation of the web game controller API is so horribly messed up as to
+    be unusable. You can continue with your mouse and keyboard.
+
+
+    If you really want to use a game controller, please use another browser like
+    Chrome$fn.switch(&os~mac:, Opera, or Safari~windows:, Opera, or Microsoft
+    Edge~linux: or Opera).
+  singleJoyConDontHaveEnoughButtons: >-
+    You appear to have connected a single Joy-Con controller, which does not
+    have enough buttons to play this game. You can try connecting the other
+    Joy-Con, or just use your mouse and keyboard.
+  touchNotSupportedYet: >-
+    This game does not support touchscreen controls. Try connecting a game
+    controller or a mouse and keyboard.
+lore:
+  box:
+    header: Memory Management
+    section: "1"
+    secName: MEM
+    body: >+
+      [b]NAME
+
+      &tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a
+      program to run
+
+
+      [b]DESCRIPTION
+
+      &tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It
+      is not tied to any particular program. It may be inserted into any program
+      by throwing it in, and can even be inserted into the currently-running
+      process (which appears to be: [b]&system.command[/b]).
+
+  continuation:
+    throw:
+      header: Debugging Tools
+      section: "4"
+      secName: THROW
+      body: >-
+        NAME
+
+        &tab[throw]throw[/throw] - return to a previous location in the program
+
+
+        SYNOPSIS
+
+        &tab[b]throw[/b] \[[b]--capture[/b] | [b]--restore[/b]]
+
+
+        DESCRIPTION
+
+        &tab[b]throw[/b] is a tool to instantly return to a previous position in
+        a debugging workflow while modifying nothing about the program's current
+        state.
+
+
+        NOTES
+
+        &tabThis [b]throw[/b] is specially designed to be usable by the
+        [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to
+        interactively debug exceptional situations.
+
+
+        CAVEATS
+
+        &tab[b]throw[/b] saves the system state to a hard-coded file name.
+        Because of this it is only possible to capture the system state once
+        using [b]throw[/b]. It must be restored first before another snapshot is
+        saved.
+
+
+        HISTORY
+
+        &tab[b]throw[/b] was originally written as a way for a program to signal
+        to the debugger that something has gone wrong and "throw" control back
+        to the human operator. Exactly which programming language implemented it
+        first, no one knows.
+    setjmp:
+      header: Debugging Tools
+      section: "4"
+      secName: SETJMP
+      body: >-
+        NAME
+
+        &tab[setjmp]setjmp[/setjmp] - break out of deeply nested functions
+
+
+        SYNOPSIS
+
+        &tab[b]setjmp[/b] \[[b]--capture[/b] | [b]--restore[/b]]
+
+
+        DESCRIPTION
+
+        &tab[b]setjmp[/b] is a tool that allows the program to exit quickly from
+        an exceptional situation via continuations. When invoked via
+        [setjmp]longjmp[/setjmp], it jumps back to the place it was captured
+        from -- no matter how many stack frames it must jump through -- and then
+        restores the value of local variables.
+
+
+        CAVEATS
+
+        &tab[b]setjmp[/b] can only unwind the call stack, so trying to capture a
+        second continuation while one is still active is undefined behavior. To
+        prevent this from happening, when [setjmp]setjmp[/setjmp] detects that a
+        continuation has already been captured, it turns off until the existing
+        continuation is invoked.
+
+
+        &tabAdditionally, if a local variable can not be found when the
+        [setjmp]longjmp[/setjmp] is called, [setjmp]setjmp[/setjmp] will attempt
+        to re-create it. This is a relatively new addition, and has not been
+        debugged thouroughly, so using [setjmp]setjmp[/setjmp] in this manner
+        may cause additional glitches.
+
+
+        HISTORY
+
+        &tab[b]setjmp[/b] was introduced by the [b]C89[/b] standard. While no
+        other programming language implements [b]setjmp[/b] under the same name,
+        other programming languages do setjmp'ing in their C implementations to
+        implement other exotic control flow structures.
+    yield:
+      header: Debugging Tools
+      section: "4"
+      secName: YIELD
+      body: >-
+        NAME
+
+        &tab[yield]yield[/yield] - switch back and forth between two locations
+        in a program
+
+
+        SYNOPSIS
+
+        &tab[b]yield[/b] [b]--to[/b]=[b]<continuation>[/b]
+
+
+        DESCRIPTION
+
+        &tab[b]yield[/b] is a mechanism that allows the program to stop what it
+        is doing, switch to another task, and then return to the original task.
+        This is useful when two operations must be done in parallel, but they
+        are far apart.
+
+
+        HISTORY
+
+        &tab[b]yield[/b] was introduced in the context of coroutines and
+        generators. It allows a function to return a value and later resume from
+        where it left off. This concept is widely used in languages like Python
+        and JavaScript to handle asynchronous programming and cooperative
+        multitasking.
+    async:
+      header: Debugging Tools
+      section: "4"
+      secName: ASYNC
+      body: >-
+        NAME
+
+        &tab[async]async[/async], [async]resolve[/async] - defer capturing a
+        continuation
+
+
+        SYNOPSIS
+
+        &tab[b]async[/b] \[command]
+
+        &tab[b]resolve[/b] <promise>
+
+
+        DESCRIPTION
+
+        &tab[b]async[/b] queues a command in the background, but does not
+        execute it immediately. Instead, it returns a promise that can be used
+        to start the command later using [b]resolve[/b]. This is useful when you
+        want to defer the execution of a command until a later time. Instead of
+        starting the command in the context where it was queued at, the command
+        is started from where the promise was resolved, so the context may be
+        different.
+
+
+        HISTORY
+
+        &tab[b]async[/b] and [b]await[/b] were introduced to simplify
+        asynchronous programming. They allow developers to write asynchronous
+        code that looks synchronous, making it easier to read and maintain. This
+        concept is now a standard feature in many modern programming languages,
+        including JavaScript and Python.
+    switch:
+      header: Debugging Tools
+      section: "4"
+      secName: SWITCH
+      body: >-
+        NAME
+
+        &tab[switch]switch[/switch] - copy previous state to the current point
+        in the program flow
+
+
+        SYNOPSIS
+
+        &tab[b]switch[/b] [b]--which[/b]=[b]<continuation>[/b]
+
+
+        DESCRIPTION
+
+        &tab[b]switch[/b] is a tool that allows the program to force the state
+        of the program at a previous point in the program flow to be mirrored at
+        the current point. This is useful when the debugger wants to see what
+        the program would have done if it returns into a function that it wasn't
+        called by.
+
+
+        &tab[b]switch[/b] is a powerful tool, but it is also dangerous. It can
+        cause the program to enter an infinite loop, or to crash. Use with
+        caution.
+
+
+        CAVEATS
+
+        &tabThis implementation of [b]switch[/b] operates with a fixed size
+        buffer. Data that occupies more than two stack frames will not be
+        copied.
+
+
+        HISTORY
+
+        &tab[b]switch[/b] is a rather low-level construct that in its original
+        form, simply computed a value and then used a lookup table to determine
+        where to go next. In modern computing "switch" is also used in the
+        context of "context switching" where the operating system replaces one
+        process's callstack with that of another process, causing the first
+        process to suspend and the second to resume.
+    callcc:
+      header: Debugging Tools
+      section: "4"
+      secName: CALL/CC
+      body: >-
+        NAME
+
+        &tab[callcc]call/cc[/callcc] - debug the debugger
+
+
+        SYNOPSIS
+
+        &tab[b]call/cc[/b] \[[b]--force-superimpose[/b]]
+        \[[b]--extent[/b]=[b]NFRAMES[/b]] \[[b]--oneshot[/b]]
+        \[[b]--stack-only[/b]] \[[b]--defer[/b]] \[[b]--fuzz[/b]]
+        \[[b]--as-coroutine[/b]]
+
+         DESCRIPTION
+        &tab[b]call/cc[/b] is a tool that allows the program to inspect and
+        manipulate its own state. It captures the current state of the program
+        and then stuffs it in the variable in the program.
+
+
+        &tabOptions:
+
+
+        &tab[b]--force-superimpose[/b]
+
+        &tab&tabThe continuation will replace the state of where it is invoked
+        rather than jumping back to where it was captured from. See
+        [switch]switch(4)[/switch] for details.
+
+
+        &tab[b]--extent[/b]
+
+        &tab&tabHow many stack frames to capture.
+
+
+        &tab[b]--oneshot[/b]
+
+        &tab&tabAutomatically clean up and delete the continuation after it is
+        invoked.
+
+
+        &tab[b]--stack-only[/b]
+
+        &tab&tabOnly capture the stack, ignore the heap. Useful if you want to
+        test a modified control flow without changing the data it operates on.
+
+
+        &tab[b]--defer[/b]
+
+        &tab&tabDefer the capture using [async]async(4)[/async]. This option is
+        rarely useful when used without [b]--stack-only[/b], but remains a
+        separate option for implementation reasons.
+
+
+        &tab[b]--cleanup-subprocesses[/b]
+
+        &tab&tabWhen enabled, this records the currently active subprocesses
+        that are running when a continuation is captured. Then, when it is
+        invoked, any other subprocesses that may have started in the meantime
+        are sent a [b]SIGINT[/b] to stop them.
+
+
+        &tab[b]--fuzz[/b]
+
+        &tab&tabToggle the states of captured variables to test functionality of
+        the program using corrupted data.
+
+
+        &tab[b]--as-coroutine[/b]
+
+        &tab&tabCapture a continuation formatted as a coroutine, so that it can
+        be switched out using [yield]yield(4)[/yield].
+
+
+        HISTORY
+
+        &tab[b]call/cc[/b], also known as [b]call-with-current-continuation[/b],
+        is a [rainbow]unique feature[/rainbow] of some programming languages. It
+        allows a program to capture its current continuation (the rest of the
+        program after it) and return to it later, at any time, for any reason,
+        an unlimited number of times - even after program flow has already
+        returned previously from the same continuation.
+
+
+        &tabCombined with a conditional, call/cc can be used to implement any
+        control structure, including loops, exceptions, generators, asynchronous
+        code, and cooperative multitasking. Because of its infinite extent, it
+        is easy to write code using call/cc that is fairly impossible to
+        understand, and the underlying implementations of call/cc often contain
+        hidden gotchas that can cause the program to crash when call/cc is used
+        in weird ways.
+    assert:
+      header: Debugging Tools
+      section: "4"
+      secName: ASSERT
+      body: >-
+        NAME
+
+        &tab[assert]assert[/assert] - reset the system to a known, safe state
+
+
+        SYNOPSIS
+
+        &tab[b]assert[/b] [b]--checkpoint[/b]=[b]<continuation>[/b]
+
+
+        DESCRIPTION
+
+        &tab[b]assert[/b] is a tool that allows the debugger to reset the entire
+        system to a known, safe state. This is useful when the program has
+        entered an unresponsive state or has crashed.
+
+
+        &tabWith no arguments, [b]assert[/b] saves the current state of the
+        system to a continuation. The [b]--checkpoint[/b] option, when given,
+        will restore the system to the state saved in the specified
+        continuation.
+
+
+        HISTORY
+
+        &tab[b]assert[/b] functions or statements have been used in programming
+        languages like C and Python to catch and diagnose errors during
+        development. They verify that certain conditions hold true during
+        program execution, and if an assertion fails, it indicates a bug that
+        needs to be fixed, and typically causes the program to crash instantly.
+        Type systems like TypeScript can take advantage of assertions to
+        automatically conclude that certain conditions hold true after the
+        assertion, and thus infer things that would otherwise be impossible to
+        determine.
+ctlHint:
+  move: "&control.move move"
+  sprint: "&control.sprint sprint"
+  jump: "&control.jump jump"
+  aim: "&control.aim aim"
+  throw: "&control.throw throw"
+  look: "&control.look look"
+  grab: "&control.interact grab"
+  interact: "&control.interact interact"
+  switchItem: "&control.inventory.scroll switch item"
+  pause:
+    open: "&control.pause pause game"
+    switch: "&control.pMenu.switch switch"
+    select: "&control.pMenu.select select"
+    back: "&control.pMenu.back back"
+    unpause: "&control.pMenu.exit unpause"
+    editSubmit: "&c.keyboard.pMenu.editSubmit submit"
+    editCancel: "&c.keyboard.pMenu.editCancel cancel"
+  viewInfo: "&control.info inspect"
+  dialog:
+    scroll: "&control.dialog.scroll view more"
+    exit: "&control.dialog.exit close"
+    msg.exit: '\[esc] close'
+  continuation:
+    default: "&control.invoke capture a continuation"
+    throw: "&control.invoke capture a promise"
+    promise: "&control.invoke capture continuation from there"
+    usePromise: Use the promise to invoke remotely
+    modify: "&control.modify change capture radius"
+    edit: "&control.edit edit capture flags"
+    stopEdit: "&control.edit finish"
+    fly: "&control.flyUp fly up"
+    remoteMove: "&control.flyUp move trap"
+    invoke:
+      default: "&control.invoke invoke continuation"
+      assert: "&control.invoke invoke checkpoint"
+continuation.edit:
+  flags: Choose flags
+  pName: Change promise name
+  cName: Change continuation name
+  invalidName: Invalid name
+antivirus:
+  allClear: System is clean
+  detected: Rogue code detected!
+pause:
+  paused: Game is paused
+  controllerType: Controller type
+  ngConnect: Connect to Newgrounds.com
+  setLanguage: Language
+  automaticLang: Autodetect language
+  preferences: Options
+  controllerRumble: Enable controller rumble
+  showSpeedrunTimer: Show speedrun timer
+  showControlHints: Show control hints
+  playBgMusic: Play background music
+  playSfx: Play sound effects
+  cutsceneOnlyFirstTime: Only show level transition the first time
+  restart: Restart game
+  reallyRestart: |-
+    Are you sure you want to restart?
+      All progress will be lost!
+  stats:
+    heading: Statistics
+    none: Nothing significant yet...
+    continuations_invoked: continuations invoked
+    lightbulbs_illuminated: lightbulbs lit
+    bugs_stomped: bugs stomped
+    levers_switched: levers pulled
+    boxes_cloned: memory allocated
+    deaths: deaths
+dead:
+  complete: Debugging complete.
+  failed: failed to eliminate all bugs!
+  resume: Resume from a previous checkpoint
+  checkpoint: Checkpoint
+  fromBeginning: from the beginning
+cutscene:
+  continued: continued
+  startup:
+    password: "Password for &user: "
+    loggedInOK: Logged in!
+    pressToBegin: Press ENTER to start...
+    ai.prompt: ask AI
+    findAnswer: Create a new platformer videogame from scratch.
+    answer: "That's a tough task, but here goes nothing..."
+    startingDebugger: Starting debugger...
+    segfault: segmentation fault
+  sudo:
+    password: "Password for &user:"
+    nomemory: out of memory initializing agent mode
+  race:
+    name: deadlock
+    cantKill: can't kill
+    pid: pid
+    mustBeKilledFirst: must be killed first
+  pipefail:
+    noMoreHelp: >-
+      Well, that's the end of my tutorial... I suppose I should say more since
+      you're debugging me, but I have the sinking feeling that I'm going to
+      crash again if I do that, so �������
+    unicodeError: Error fetching Unicode table
+    gaveUp: "Okay, fine... insert imaginary shrug emoji..."
+  backup:
+    success: "Backed up 124875 files to [b]&cutscene.backup.location/assert[/b]"
+    explanation: >-
+      The file &cutscene.backup.location/assert is a way for you to be able to
+      start over if you mess up and break things. Just pass it to the assert
+      command again to jump back. Don't lose it!
+press: press
+notImplemented: "Not implemented yet, sorry"
+bsod.sadfaceMsg: >-
+  The game ran into a problem that it couldn't handle, and now it needs to be
+  restarted.
+bsod.searchOnlineHint: "You can search for the error online:"
+wrongWayRight: Go that way &arrow.right
+newToDebugging: New to debugging? Great! Head on over and I'll show you around.
+firstPortal: |-
+  That's a symlink. It will take you to another part of the filesystem.
+  &arrow.right
+firstButton: |-
+  Buttons trigger things while
+  pressed, like this lightbulb
+getMeOneToo: |-
+  While you're at it, save me some
+  memory too -- y'know, that's probably
+  why I crashed...
+firstVariable: |-
+  This is a variable.
+  These will be very useful!
+firstDoor: |-
+  To open the door, you will need to press
+  and hold that button.
+  You have the memory for that, right?
+raceCond: >-
+  Maybe that's why I crashed... a race condition? A little continuation juice
+  right there, thanks!
+firstCheckpoint: |-
+  &arrow.left Oops, that's
+    the checkpoint
+    file...
+firstContinuation: >-
+  That [assert]green[/assert] thing you are holding?
+
+  That's the backup file that [assert]assert[/assert] just saved, which is a
+  [bouncy][rainbow]continuation![/rainbow][/bouncy]
+
+  Go on, invoke it!
+firstTrap: >-
+  With that [throw]blue[/throw] device, you can capture your own continuation
+  files!
+
+  Don't be shy -- grab it!
+completedFirstChallenge: |-
+  That was easy,
+  wasn't it?
+eekBug: Eek! A bug!
+noLadderNoProblem: >-
+  No ladder? No problem. You have the tools. I segfaulted trying to figure out
+  how to use them.
+slightlyDifferent: This one behaves slightly differently... probably a good thing!
+fellOut: |-
+  Well, now you're in a pickle...
+  Continuations are your friend!
+waterDamage: There seems to have a bit of a water damage problem here...
+noLoneBugs: >-
+  I'm sure you're familiar with the fact that there is no such thing as "one
+  bug"...
+DUMMY: DUMMY

@@ -1,5 +1,5 @@
 import { BodyComp, Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
-import contTypes from "../assets/trapTypes.json" with { type: "json" };
+import contTypes from "../assets/trapTypes.yaml" with { type: "json" };
 import { SCALE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -13,7 +13,7 @@ import { controllable, ControllableComp } from "./controllable";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
-    type: keyof typeof contTypes
+    type: string
     trappedBy: GameObj//<ContinuationTrapComp>
     readonly params: ContinuationTrapComp["params"];
     readonly color: Color
@@ -27,7 +27,7 @@ export interface ContinuationComp extends Comp {
 const EMOS = ["stand", "shy", "oops", "slit_eyes", "ooo", "hi"];
 
 export function continuationCore(
-    type: keyof typeof contTypes,
+    type: string,
     captured: WorldSnapshot,
     trap: GameObj<ContinuationTrapComp>
 ): ContinuationComp {
@@ -47,7 +47,7 @@ export function continuationCore(
             K.area(),
             K.tile(),
             K.shader("recolorRed", {
-                u_targetcolor: K.Color.fromHex(contTypes[type].color ?? "#ff0000"),
+                u_targetcolor: K.Color.fromHex((contTypes[type] as any).color ?? "#ff0000"),
             }),
             "worldMarker" as Tag,
             "raycastIgnore" as Tag,
@@ -56,7 +56,7 @@ export function continuationCore(
             return this.captured.restoreParams!;
         },
         get color() {
-            return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
+            return K.Color.fromHex((contTypes[this.type] as any).color ?? "#ff0000")
         },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp | ControllableComp> & PlayerInventoryItem) {
             this.worldMarker.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
@@ -75,7 +75,7 @@ export function continuationCore(
         emoTimer: 0,
         update(this: GameObj<BodyComp | SpriteComp | ContinuationComp | ControllableComp>) {
             this.controls[0]!.hint = K.sub(
-                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
+                (contTypes[this.type] as any).hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "continuation",
                 });

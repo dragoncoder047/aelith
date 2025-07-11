@@ -1,0 +1,128 @@
+user: anonymous
+tab: "    "
+arrow:
+  left: ←
+  up: ↑
+  right: →
+  down: ↓
+gamename: "[gamename]debugger[/gamename];"
+msg: "&&lang"
+control: "&c.&inputType"
+c:
+  gamepad:
+    move: (lstick)
+    sprint: '\[&button.lstick]'
+    jump: (&button.south)
+    aim: (rstick)
+    look: (rstick)
+    info: (&button.north)
+    interact: '\[&button.rstick]'
+    throw: '\[&button.rtrigger]'
+    invoke: (&button.east)
+    modify: '\[d-pad]'
+    edit: (&button.west)
+    inventory.scroll: '\[&button.lshoulder]/\[&button.rshoulder]'
+    pause: (&button.start)
+    flyUp: '\[&button.ltrigger]'
+    pMenu:
+      switch: '\[d-pad]'
+      select: (&button.south)
+      back: (&button.east)
+      exit: (&button.west)
+    dialog:
+      scroll: (lstick)
+      exit: (&button.north)
+  keyboard:
+    move: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
+    sprint: '\[shift]'
+    jump: '\[space]'
+    aim: '\[mouse]'
+    look: '\[mouse]'
+    info: '\[X]'
+    interact: '\[left click]'
+    throw: '\[right click]'
+    invoke: '\[E]/\[enter]'
+    modify: '\[scroll]'
+    edit: '\[Q]'
+    inventory.scroll: '\[Z]/\[C]'
+    pause: '\[tab]'
+    flyUp: '\[V]'
+    pMenu:
+      switch: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
+      select: '\[enter]'
+      back: '\[backspace]'
+      exit: '\[Q]'
+      editSubmit: '\[enter]'
+      editCancel: '\[esc]'
+    dialog:
+      scroll: '\[scroll]/\[WS]/\[&arrow.up&arrow.down]'
+      exit: '\[X]'
+button: "&&controllerType"
+xbox:
+  north: "Y"
+  east: B
+  south: A
+  west: X
+  lshoulder: LB
+  rshoulder: RB
+  ltrigger: LT
+  rtrigger: RT
+  select: view
+  start: menu
+  lstick: LS
+  rstick: RS
+ps4:
+  north: ▲
+  east: ○
+  south: X
+  west: █
+  lshoulder: L1
+  ltrigger: L2
+  rshoulder: R1
+  rtrigger: R2
+  select: share
+  start: options
+  lstick: L3
+  rstick: R3
+ps5:
+  north: ▲
+  east: ○
+  south: X
+  west: █
+  lshoulder: L1
+  ltrigger: L2
+  rshoulder: R1
+  rtrigger: R2
+  select: create
+  start: options
+  lstick: L3
+  rstick: R3
+switch:
+  north: X
+  east: A
+  south: B
+  west: "Y"
+  lshoulder: L
+  ltrigger: ZL
+  rshoulder: R
+  rtrigger: ZR
+  select: "-"
+  start: +
+  lstick: LS
+  rstick: RS
+system.command: agdb pm &system.pid.core
+system.pid: "4242"
+system.debugger.pid: "4247"
+cutscene.backup.location: /tmp/backups/1
+pauseMenuCtlHint: |-
+  $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
+  &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
+  &msg.ctlHint.pause.select
+  &msg.ctlHint.pause.back
+  &msg.ctlHint.pause.unpause)
+deathMenuCtlHint: "&pauseMenuCtlHint"
+editMenuCtlHint: |-
+  $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
+  &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
+  &msg.ctlHint.pause.select
+  &msg.ctlHint.continuation.stopEdit)

@@ -1,6 +1,6 @@
 import { TextComp } from "kaplay";
 import { K } from "../init";
-import trapTypes from "./trapTypes.json" with { type: "json" };
+import trapTypes from "./trapTypes.yaml" with { type: "json" };
 import { TILE_SIZE } from "../constants";
 
 export const STYLES: TextComp["textStyles"] = {

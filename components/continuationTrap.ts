@@ -1,5 +1,5 @@
 import { CircleComp, Color, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
-import trapTypes from "../assets/trapTypes.json" with { type: "json" };
+import trapTypes from "../assets/trapTypes.yaml" with { type: "json" };
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -23,10 +23,10 @@ export interface ContinuationTrapComp extends Comp {
     isDeferring: boolean
     isConnected: boolean
     captured: GameObj<ContinuationComp>[]
-    readonly data: (typeof trapTypes)[keyof typeof trapTypes] | undefined
+    readonly data: any | undefined
     readonly enabled: boolean
-    readonly behavior: (typeof trapTypes)[keyof typeof trapTypes]["behavior"] | undefined
-    params: (typeof trapTypes)[keyof typeof trapTypes]["behavior"]
+    readonly behavior: any | undefined
+    params: any
     readonly color: Color
     zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
     _menu: MenuModal

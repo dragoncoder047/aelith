@@ -1,5 +1,5 @@
 import { AnchorComp, AreaComp, BodyComp, Comp, GameObj, NamedComp, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
-import contTypes from "../assets/trapTypes.json" with { type: "json" };
+import contTypes from "../assets/trapTypes.yaml" with { type: "json" };
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
