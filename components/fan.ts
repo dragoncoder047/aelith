@@ -17,9 +17,6 @@ export function fan(): FanComp {
         require: ["pos", "rotate", "toggler"],
         wind: [],
         add(this: GameObj<FanComp>) {
-            // kludge for kaplayjs/kaplay#805
-            if ((this as any)._fan) return;
-            (this as any)._fan = true;
             this.on("midprocess3", () => {
                 this.createWind();
                 return K.cancel();

@@ -14,9 +14,6 @@ export function grabbable(): GrabbableComp {
         id: "grabbable",
         require: ["area", "body", "pos"],
         add(this: PlayerInventoryItem & GameObj<AreaComp | LayerComp | GrabbableComp>) {
-            // kludge for kaplayjs/kaplay#805
-            if ((this as any)._grab) return;
-            (this as any)._grab = true;
             this.on("interact", () => {
                 player.grab(this);
             });

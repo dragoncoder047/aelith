@@ -18,9 +18,6 @@ export function bug(): BugComp {
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
         add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp<BugStates> | TimerComp | SpriteComp>) {
-            // kludge for kaplayjs/kaplay#805
-            if ((this as any)._hasBug) return;
-            (this as any)._hasBug = true;
             const enterNewState = (state: BugStates) => {
                 if (this.state !== state) this.enterState(state);
             };

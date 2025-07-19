@@ -30,9 +30,6 @@ export function pipeComp(solid = true, useBackground = true): PipeComp {
         id: "pipe",
         require: ["sprite", "pos", "tile", "mergeable", "timer"],
         add(this: GameObj<PipeComp | PosComp | TimerComp>) {
-            // kludge for kaplayjs/kaplay#805
-            if ((this as any)._pipe) return;
-            (this as any)._pipe = true;
             this.on("midprocess2", () => {
                 this.chooseSpriteNum();
                 return K.cancel();
