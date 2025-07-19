@@ -25,7 +25,7 @@ export function continuation(
         K.pos(captured.playerPos),
         holdOffset(K.vec2(-2.8 * TILE_SIZE / 8, TILE_SIZE / 8)),
         ...defaults({
-            collisionIgnore: ["tail", "player", "player_head"],
+            collisionIgnore: ["tail"],
             friction: FRICTION,
             restitution: RESTITUTION,
         }),
