@@ -70,10 +70,6 @@ export const WorldManager = {
         this.pause(false);
     },
     activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {
-        level.get("*", { recursive: true }).forEach(o => {
-            o.paused = !running;
-            o.hidden = !visible;
-        });
         level.paused = !running;
         level.hidden = !visible;
     },

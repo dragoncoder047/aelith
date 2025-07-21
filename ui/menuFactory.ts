@@ -35,7 +35,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
         K.layer("manpage"),
         {
             add(this: GameObj<PosComp>) {
-                K.onResize(() => {
+                K.onTabResize(() => {
                     this.pos = K.center();
                 });
             },

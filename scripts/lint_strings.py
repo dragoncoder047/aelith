@@ -1,17 +1,17 @@
-import json
+import yaml
 
 LANGS = ["en", "es", "de", "ja"]
 
 
 def get_json(path: str):
     with open(path) as f:
-        return json.load(f)
+        return yaml.load(f, Loader=yaml.FullLoader)
 
 
 LANG_ENTRIES = {}
 
 for lang in LANGS:
-    LANG_ENTRIES[lang] = get_json(f"./assets/translations/{lang}.json")
+    LANG_ENTRIES[lang] = get_json(f"./assets/translations/{lang}.yaml")
 
 PATHS_ALL = set()
 PATHS_BY_LANG = {}

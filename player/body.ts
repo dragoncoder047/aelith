@@ -1,4 +1,4 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, GameObjRaw, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { STYLES } from "../assets/textStyles";
 import { ContinuationComp } from "../components/continuationCore";
 import { ControllableComp } from "../components/controllable";
@@ -9,7 +9,7 @@ import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCA
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { MParser } from "../levels/mparser";
-import { actuallyRaycast, ballistics } from "../misc/utils";
+import { actuallyRaycast, ballistics, isHidden, isPaused } from "../misc/utils";
 import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PlayerHeadComp } from "./head";
@@ -30,7 +30,7 @@ export interface PlayerBodyComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean;
     lookingAt: GameObj<PAreaComp> | undefined;
     lookingDirection: Vec2 | undefined;
-    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number, object?: GameObj): { cancel(): void; onEnd(p: () => void): KEventController; } | undefined;
+    playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number, object?: GameObj): { cancel(): void; onEnd(p: () => void): KEventController; paused: boolean } | undefined;
     inventory: PlayerInventoryItem[];
     holdingIndex: number;
     addToInventory(object: PlayerInventoryItem): void;
@@ -236,7 +236,7 @@ export function playerBody(): PlayerBodyComp {
          */
         playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
-            if (isHidden(object) || isPaused(object)) return;
+            if (isHidden(object!) || isPaused(object!)) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -270,6 +270,12 @@ export function playerBody(): PlayerBodyComp {
                 onEnd(p) {
                     return onEndEvents.add(p);
                 },
+                set paused(p) {
+                    zz.paused = watchUpdate.paused = waiting.paused = p;
+                },
+                get paused() {
+                    return zz.paused;
+                }
             };
         },
         // MARK: inventory
@@ -399,7 +405,7 @@ export function playerBody(): PlayerBodyComp {
                     const func = () => {
                         this.pos = K.vec2(K.center().x, K.height() - MARGIN);
                     };
-                    K.onResize(func);
+                    K.onTabResize(func);
                     func();
                 }
             }
@@ -423,12 +429,3 @@ export function playerBody(): PlayerBodyComp {
         }
     };
 }
-
-function is_(o: GameObj | undefined, name: keyof GameObjRaw) {
-    if (!o) return false;
-    if (o[name]) return true;
-    if (!o.parent) return false;
-    return is_(o.parent, name);
-}
-const isPaused = (o?: GameObj) => is_(o, "paused");
-const isHidden = (o?: GameObj) => is_(o, "hidden");

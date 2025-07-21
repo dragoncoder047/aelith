@@ -20,7 +20,7 @@ export const timer = UI.add([
             const func = () => {
                 this.pos = K.vec2(K.width() - MARGIN, MARGIN);
             };
-            K.onResize(func);
+            K.onTabResize(func);
             func();
         },
         value: 0

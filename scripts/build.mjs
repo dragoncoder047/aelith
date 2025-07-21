@@ -128,7 +128,7 @@ const config = {
     bundle: true,
     sourcemap: true,
     minify: false,
-    keepNames: true,
+    keepNames: false, // this uses a lot of memory, wtf?
     metafile: true,
     platform: "browser",
     charset: "utf8",

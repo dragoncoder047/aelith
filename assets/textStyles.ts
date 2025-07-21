@@ -65,5 +65,5 @@ export const STYLES: TextComp["textStyles"] = {
 
 // add all the continuation colors
 for (var name of Object.getOwnPropertyNames(trapTypes) as (keyof typeof trapTypes)[]) {
-    STYLES[name.replace(/[^\w]/g, "")] = { color: K.rgb(trapTypes[name].color), override: true };
+    STYLES[name.replace(/[^\w]/g, "")] = { color: K.rgb((trapTypes as any)[name].color), override: true };
 }

@@ -2,20 +2,14 @@ import { AssetBucket } from "kaplay";
 import { K } from "../init";
 import { MARGIN } from "../constants";
 
-type Assets = typeof K._k.assets;
-type KeysWhere<T, U> = { [P in keyof T]: T[P] extends U ? P : never }[keyof T];
-
-const keys: KeysWhere<Assets, AssetBucket<any>>[] = [
+const keys = [
     "sprites",
     "sounds",
     "shaders",
     "fonts",
     "bitmapFonts",
     "custom",
-];
-
-var loadFrameCount = 0;
-const spinner = "/-\\|";
+] as const;
 
 K.onLoading(() => {
     K.drawRect({

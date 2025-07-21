@@ -1,4 +1,4 @@
-import { AreaComp, DrawCurveOpt, GameObj, RaycastResult, Vec2 } from "kaplay";
+import { AreaComp, DrawCurveOpt, GameObj, GameObjRaw, RaycastResult, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 
@@ -58,3 +58,11 @@ export type JSONSerializable =
     | null
     | { [key: string]: JSONSerializable; }
     | JSONSerializable[];
+
+const is = (
+    obj: GameObj | null,
+    field: "paused" | "fixed" | "hidden",
+): boolean => obj ? (obj[field] ? true : is(obj.parent, field)) : false;
+
+export const isPaused = (obj: GameObj): boolean => is(obj, "paused");
+export const isHidden = (obj: GameObj): boolean => is(obj, "hidden");

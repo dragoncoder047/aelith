@@ -1,6 +1,7 @@
 import { Comp, GameObj, PosComp, StateComp } from "kaplay";
 import { player } from "../player";
 import { TogglerComp } from "./toggler";
+import { isPaused } from "../misc/utils";
 
 export interface AmbientSoundComp extends Comp {
     cur: ReturnType<typeof player.playSound> | undefined
@@ -29,11 +30,18 @@ export function ambiance(mainSound: string, startup?: string, shutdown?: string,
                 // turning on
                 this.cur?.cancel();
                 const recurse = (sound: string) => {
+                    console.log("playing sound", sound, "on object with tags", this.tags, "me paused=", isPaused(this));
                     this.cur = player.playSound(sound, { loop: false }, this.worldPos()!, undefined, this);
                     if (this.cur) this.cur.onEnd(() => recurse(mainSound));
                     else setTimeout(recurse, 10, mainSound);
                 };
                 recurse(startup || mainSound);
+            });
+            this.onPause(() => {
+                if (this.cur) this.cur.paused = true;
+            });
+            this.onUnpause(() => {
+                if (this.cur) this.cur.paused = false;
             });
         },
     };
