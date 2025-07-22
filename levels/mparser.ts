@@ -645,7 +645,6 @@ export class MParser {
         this._childEvent(world, "preprocess");
     }
     midprocess(world: GameObj) {
-        this._updateTransforms(world);
         this._childEvent(world, "midprocess");
         this._childEvent(world, "midprocess2");
         this._childEvent(world, "midprocess3");
@@ -656,9 +655,6 @@ export class MParser {
     }
     _childEvent(world: GameObj, event: string) {
         world.children.forEach(child => child.trigger(event));
-    }
-    _updateTransforms(world: GameObj) {
-        for (var child of world.children) MParser.updateTransform(child);
     }
     /**
      * Queue of commands to be executed to initialize the game.
@@ -671,15 +667,5 @@ export class MParser {
     static uid_counter = 16384;
     static uid() {
         return (MParser.uid_counter++).toString(16);
-    }
-    static updateTransform(obj: GameObj) {
-        if (obj.parent) {
-            this.updateTransform(obj.parent);
-            obj.transform.setMat23(obj.parent.transform);
-        }
-        else obj.transform.setIdentity();
-        if (obj.pos) obj.transform.translateSelfV(obj.pos);
-        if (obj.angle) obj.transform.rotateSelf(obj.angle);
-        if (obj.scale) obj.transform.scaleSelfV(obj.scale);
     }
 };

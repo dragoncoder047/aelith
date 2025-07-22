@@ -43,7 +43,7 @@ export function fan(): FanComp {
                 center = center.sub(d.scale(1 / 2));
                 width -= Math.abs(d.x);
                 height -= Math.abs(d.y);
-                const wind = this.add(windTunnel(center.rotate(-this.angle), width, height, a, this));
+                const wind = this.add(windTunnel(center.rotate(-this.angle), width, height, a));
                 // account for self rotation
                 wind.rotateBy(-this.angle);
                 this.wind.push(wind);

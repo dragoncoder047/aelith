@@ -36,7 +36,7 @@ export function portalComp(): PortalComp {
                     const mpp = matchingPortal.worldPos()!;
                     if (o === player) {
                         K.play("portal_teleport");
-                        WorldManager.goLevel(this.toLevel!).then(() => player.tpTo(mpp));
+                        WorldManager.goLevel(this.toLevel!, false, mpp);
                     }
                     else {
                         player.playSound("portal_teleport", undefined, this.worldPos()!);

@@ -1,11 +1,8 @@
-import { GameObj, KEventController, TextComp } from "kaplay";
-import { STYLES } from "../assets/textStyles";
-import { FONT_SCALE, TILE_SIZE } from "../constants";
+import { GameObj, KEventController } from "kaplay";
 import { K } from "../init";
+import { nextFrame } from "../misc/utils";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PtyChunk, PtyComp, TypableOne } from "../plugins/kaplay-pty";
-import { createPrompt } from "../ui/menuFactory";
-import { nextFrame } from "../misc/utils";
 
 export type TextChunk = ({
     clear?: boolean,
@@ -71,65 +68,14 @@ export function command(
     };
 }
 
-export async function playTransition(name: string, tran: TextChunkCompressed[], fast = false, first = false, switchFun = () => { }) {
+export async function playTransition(switchFun: () => void) {
     var u_amount = 0;
     K.usePostEffect("fuzzy", () => ({ u_amount }));
-    if (!fast && !first) await K.tween(0, 1, 0.5, a => u_amount = a);
-    const fader = K.add([
-        K.fixed(),
-        K.pos(0, 0),
-        K.rect(K.width(), K.height()),
-        K.color(K.getBackground()!),
-        K.opacity(fast ? 0 : 1),
-        K.layer("tranFader"),
-    ]);
-    const term = K.add([
-        K.text("", {
-            styles: STYLES,
-            size: 16 / FONT_SCALE,
-            width: 12 * TILE_SIZE,
-            align: "left",
-            lineSpacing: 1.15,
-        }),
-        K.dynamicText(),
-        K.pty({
-            maxLines: 16,
-            cursor: { text: "\u2588", styles: ["cursor"] },
-        }),
-        K.fixed(),
-        K.pos(K.width() / 2, K.height() / 3),
-        K.anchor("top"),
-        K.color(K.WHITE.darken(100)),
-        K.opacity(1),
-        K.layer("text"),
-    ]);
-    const head = K.add([
-        {
-            draw(this: GameObj<TextComp>) {
-                K.drawRect({ ...this, pos: K.vec2(0), color: K.getBackground()! });
-            }
-        },
-        K.text("", {
-            font: "Unscii MCR",
-            styles: STYLES,
-            size: 64 / FONT_SCALE,
-        }),
-        K.dynamicText(name),
-        K.fixed(),
-        K.pos(K.width() / 2, K.height() / 6),
-        K.anchor("center"),
-        K.opacity(1),
-        K.layer("text"),
-    ]);
-    term.prompt = createPrompt();
+    await K.tween(0, 1, 0.5, a => u_amount = a);
     switchFun();
-    if (!fast && !first) {
-        await K.wait(0.4);
-        await K.tween(1, 0, 0.7, a => u_amount = a);
-    }
+    await K.wait(0.4);
+    await K.tween(1, 0, 0.7, a => u_amount = a);
     K.usePostEffect(null!);
-    if (!fast) await typeChunks(term, tran, K._k.globalOpt.debug !== false);
-    [fader, head, term].forEach(x => x.fadeOut(1).onEnd(() => x.destroy()));
 };
 
 export async function typeChunks(terminal: GameObj<PtyComp | DynamicTextComp>, chunks: TextChunkCompressed[], isTesting: boolean) {

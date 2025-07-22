@@ -11,7 +11,7 @@ export function tail(start: GameObj<PosComp>, startPos: Vec2): TailComp {
         id: "tail",
         require: ["pos", "spring"],
         restore2Pos(this: GameObj<TailComp | PosComp | SpringComp | BodyComp>) {
-            this.pos = start.toWorld(startPos);
+            this.worldPos(start.worldPos()!);
             this.vel = K.vec2(0);
         },
         fixedUpdate(this: GameObj<PosComp | TailComp>) {

@@ -2,9 +2,9 @@
  * Pixel size for rendering
  *
  * * Use .5 for debugging
- * * Use 3.01 for standard game play
+ * * Use 2.51 for standard game play
  */
-export const SCALE = 3.01;
+export const SCALE = 2.51;
 
 /**
  * Pixel scale for fonts - independent of SCALE

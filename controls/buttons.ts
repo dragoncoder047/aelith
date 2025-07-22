@@ -1,9 +1,9 @@
 import { Key, KGamepadButton, MouseButton } from "kaplay";
 
 type ButtonBinding = {
-    keyboard?: Key | Key[],
-    mouse?: MouseButton | MouseButton[],
-    gamepad?: KGamepadButton | KGamepadButton[]
+    keyboard?: Key[],
+    mouse?: MouseButton[],
+    gamepad?: KGamepadButton[]
 }
 
 type Controls = {

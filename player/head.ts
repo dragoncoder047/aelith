@@ -26,9 +26,7 @@ export function playerHead(): PlayerHeadComp {
             const targetPos = this.offset.add(player.pos).add((player.lookingDirection !== undefined ? player.lookingDirection.x > 0 : player.flipX) ? 2 : -2, 0);
             var offset = K.vec2(0);
             const anim = player.getCurAnim();
-            if (anim !== null) {
-                offset = this.offsetTable[anim.name]?.[player.animFrame]!;
-            }
+            if (anim) offset = this.offsetTable[anim.name]?.[player.animFrame]!;
             this.pos = targetPos.add(offset);
             this.vel = K.vec2(0);
 
@@ -45,7 +43,7 @@ export function playerHead(): PlayerHeadComp {
             }
 
             // copy the anim
-            if (this.getCurAnim()?.name !== anim?.name) this.play(anim!.name);
+            if (anim) this.play(anim.name, { preventRestart: true });
 
             // make sure horn doesn't get close
             const horns = K.get<TailComp | CircleComp | PosComp>("tail");

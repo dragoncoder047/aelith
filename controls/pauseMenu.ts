@@ -43,11 +43,10 @@ export const PAUSE_MENU: PtyMenu = {
                 rumbleOption,
                 { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
                 { text: "&msg.pause.showControlHints", value: "controlHints" },
-                { text: "&msg.pause.cutsceneOnlyFirstTime", value: "cutscenes" },
                 { text: "&msg.pause.playBgMusic", value: "music" },
                 { text: "&msg.pause.playSfx", value: "sfx" },
             ],
-            selected: [0, 1, 2, 3, 4, 5],
+            selected: [0, 1, 2, 3, 4],
             multiple: true
         },
         gcTypeMenu,
@@ -121,7 +120,7 @@ export function initPauseMenu() {
     // sync testing mode for music
     if (musicPlay.paused)
         // @ts-ignore
-        PAUSE_MENU.opts[0].selected.splice(4, 1);
+        PAUSE_MENU.opts[0].selected.splice(3, 1);
 
     PAUSE_MENU_OBJ.onStart(doPause);
     PAUSE_MENU_OBJ.onQuit(doUnpause);
@@ -148,7 +147,6 @@ export function copyPreferences() {
     musicPlay.paused = !switches?.includes("music");
     player.sfxEnabled = switches?.includes("sfx");
     K.rumble.enabled = switches?.includes("rumble");
-    WorldManager.onlyFirstTime = switches?.includes("cutscenes");
     player.controlText.hidden = !switches?.includes("controlHints");
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
 }

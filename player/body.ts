@@ -64,7 +64,6 @@ export function playerBody(): PlayerBodyComp {
         tpTo(this: GameObj<PosComp | BodyComp>, pos) {
             const delta = pos.sub(this.pos);
             this.moveBy(delta);
-            MParser.updateTransform(this);
             this.vel = K.vec2(0);
             K.get<PosComp>("head").forEach(t => t.moveBy(delta));
             K.get<TailComp>("tail").forEach(t => t.restore2Pos());
@@ -164,6 +163,7 @@ export function playerBody(): PlayerBodyComp {
                 // nifty do-while-false loop to basically "goto end-of-this-block"
                 this.lookingAt = undefined;
                 if (!this.lookingDirection) break;
+                if (!WorldManager.activeLevel) break; // oops?
 
                 const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area")
                     .filter(x => !(this.inventory as any[]).includes(x)

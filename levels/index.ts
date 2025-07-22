@@ -2,23 +2,18 @@ import { GameObj, LevelComp, PosComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
-import { playTransition, TextChunk } from "../transitions";
+import { playTransition } from "../transitions";
 import { MParser } from "./mparser";
 
 interface Level {
     id: string;
     levelObj: GameObj<LevelComp>;
-    name: string;
     initialPos: Vec2 | undefined;
-    introduction: TextChunk[];
-    cutsceneOnce: boolean;
 }
 
 export const WorldManager = {
     allLevels: {} as Record<string, Level>,
     activeLevel: undefined as Level | undefined,
-    onlyFirstTime: true,
-    seenCutscenes: {} as Record<string, boolean>,
     loadLevel(id: string, map: string, whichPos: number = 0) {
         const parser = new MParser(id);
         const levelObj = K.addLevel(map.split("\n"), {
@@ -45,29 +40,23 @@ export const WorldManager = {
         this.allLevels[id] = {
             id,
             levelObj,
-            name: parser.vars.name,
             initialPos,
-            introduction: parser.vars.introduction ?? [],
-            cutsceneOnce: parser.vars.cutsceneOnce!,
         }
     },
-    async goLevel(id: string, fast = false, first = false) {
+    async goLevel(id: string, fast: boolean = false, overridePos?: Vec2) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
-        player.freeze(true);
-        if (this.seenCutscenes[id]) {
-            if (this.onlyFirstTime) fast = true;
-            if (levelTo.cutsceneOnce) fast = true;
-        }
-        await playTransition(levelTo.name, levelTo.introduction, fast, first, () => {
+        const doSwitch = () => {
             this.pause(true);
-            player.hidden = true;
             this.activeLevel = levelTo;
-            this.seenCutscenes[id] = true;
-        });
-        player.hidden = false;
-        player.tpTo(levelTo.initialPos ?? K.vec2(0));
-        this.pause(false);
+            player.tpTo(overridePos ?? levelTo.initialPos ?? K.vec2(0));
+            this.pause(false);
+        }
+        if (fast) doSwitch();
+        else {
+            player.freeze(true);
+            await playTransition(doSwitch);
+        }
     },
     activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {
         level.paused = !running;

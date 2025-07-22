@@ -1,7 +1,6 @@
 import { AreaComp, AreaEffectorComp, BodyComp, Comp, GameObj, PosComp, RectComp, StateComp, Vec2 } from "kaplay";
 import { WALK_SPEED, WIND_FORCE } from "../constants";
 import { K } from "../init";
-import { WorldManager } from "../levels";
 import { PAreaComp } from "../plugins/kaplay-aabb";
 import { FanComp } from "./fan";
 import { LinkComp } from "./linked";
@@ -12,7 +11,7 @@ export interface WindComp extends Comp {
     windDirection: number
 }
 
-export function wind(direction: number, states: [string, string] = ["off", "on"], fan: GameObj<FanComp>): WindComp {
+export function wind(direction: number, states: [string, string] = ["off", "on"]): WindComp {
     var wisps: { pos: Vec2, opacity: number, speed: number }[] = [];
     return {
         id: "wind",
