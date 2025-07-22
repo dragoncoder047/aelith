@@ -14,6 +14,8 @@ export interface AmbientSoundComp extends Comp {
  * @param shutdown The sound to play right after the object turns "off".
  */
 export function ambiance(mainSound: string, startup?: string, shutdown?: string, states: [string, string] = ["off", "on"]): AmbientSoundComp {
+    return {} as AmbientSoundComp;
+    // XXX: This component is causing a HUGE amount of lag so I just disabled it so that the game is playable.
     return {
         id: "ambient-sound",
         require: ["state", "toggler", "pos"],

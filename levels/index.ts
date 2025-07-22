@@ -72,6 +72,10 @@ export const WorldManager = {
     activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {
         level.paused = !running;
         level.hidden = !visible;
+        level.children.forEach(c => {
+            c.paused = !running;
+            c.hidden = !visible;
+        });
     },
     pause(isPaused: boolean) {
         if (this.activeLevel) {

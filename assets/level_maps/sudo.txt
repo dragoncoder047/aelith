@@ -25,11 +25,3 @@ o(value)o(text)(%0Aagdb: &msg.cutscene.sudo.nomemory%0A)s(delayBefore)2s(sound)(
 (introduction)d
 ([command]sudo[/command])(name)d
 [cSpell: ignore aagdb ]
-
-(
-$sudo agdb agent enable;&msg.cutscene.sudo.password; 0.2; 1
-.*********;2
-!\nagdb: &msg.cutscene.sudo.nomemory\n;2
-$;; 0; 1
-)
-(TEST)i

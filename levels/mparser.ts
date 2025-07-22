@@ -36,7 +36,6 @@ import { trapdoor } from "../object_factories/trapdoor";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
-import { cutsceneParse } from "./cutscene_parse";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -149,13 +148,6 @@ export class MParser {
         is(this: MParser) {
             const s = this.stack.pop() as string;
             const lines = s.split("\n");
-        },
-
-        TEST(this: MParser) {
-            const a = cutsceneParse(this.stack.pop() as string);
-            const b = this.vars.introduction;
-            console.log(JSON.stringify(a));
-            console.log(JSON.stringify(b));
         }
     };
     // MARK: commands
