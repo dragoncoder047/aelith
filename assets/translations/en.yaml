@@ -20,7 +20,7 @@ lore:
     header: Memory Management
     section: "1"
     secName: MEM
-    body: >+
+    body: >-
       [b]NAME
 
       &tabvar[/b], [b]const[/b], [b]let[/b] - allocate new memory to enable a
@@ -34,6 +34,11 @@ lore:
       by throwing it in, and can even be inserted into the currently-running
       process (which appears to be: [b]&system.command[/b]).
 
+      [b]CAVEATS[/b]
+
+      &tabNone of the versions of [b]var[/b], [b]const[/b], or [b]let[/b] clear
+      the block of memory before returning it to the user, so they may still
+      contain old data. It is advisable to read the memory before overwriting it.
   continuation:
     throw:
       header: Debugging Tools

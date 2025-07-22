@@ -2,12 +2,6 @@
 
 A puzzle platformer game.
 
-## Game premise
-
-The AI system crashed, and a debugger is sent in to figure out why the AI crashed and fix it.
-
-idk what else please help me i suck at writing a good plot for a game
-
 ## DEVELOPING STARTUP---------
 
 1. make sure you have pnpm installed

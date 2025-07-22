@@ -2,16 +2,23 @@
 ## TODO
 
 * [ ] Type up lore document
-* [ ] Change continuation objects to frog-like things instead of just spinny circles
+* [ ] Make the lore popups in-game be from a floating computer AI thingy rather than just floating text
+  * [ ] The player can interact with them to show the latest text
+  * [ ] follow the player around like a minecraft dog or something
+    * [ ] how would the player be able to return the text to the previous thing
 * [ ] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout (or maybe combination of both)
+* [ ] Fix bugs with the ambientSound component that is causing the lag
+* [ ] Fix typewriter code to use [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) to split the text (so it works with the Japanese which doesn't use any spaces)
 * [ ] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
   * [ ] Need to choose controls for this
     * [ ] something like Minecraft generalized controls?
+      * [ ] 2 action controls: action 1, action 2
       * when empty: pick up item
       * when have item: use item or throw item
     * [ ] special kind of line to show what it is about to capture
       * zoop circle will start at the middle radius
       * [ ] maybe have all the other cont trap types do this too (lines graphics)
+* [ ] make the player sprite have hands that come around and hold the thing that they are grabbing
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
 * [ ] add 2.5D sprite stacking
@@ -37,6 +44,7 @@
 
 ## DONE
 
+* [X] Change continuation objects to frog-like things instead of just spinny circles
 * [X] Split into levels to reduce lag
   * [X] Make MParser not depend on the world pointer object
   * [X] Create a WorldManager singleton.
