@@ -68,13 +68,15 @@ export function command(
     };
 }
 
-export async function playTransition(switchFun: () => void) {
-    var u_amount = 0;
-    K.usePostEffect("fuzzy", () => ({ u_amount }));
-    await K.tween(0, 1, 0.5, a => u_amount = a);
+export async function playTransition(half: boolean, switchFun: () => void) {
+    var u_amount = half ? 1 : 0;
+    var u_time = K.time(); // Static, so stable effect
+    K.usePostEffect("glitch", () => ({ u_amount, u_time }));
+    if (!half) await K.tween(0, 1, .5, a => u_amount = a);
     switchFun();
+    u_time = K.time() + K.rand(3);
     await K.wait(0.4);
-    await K.tween(1, 0, 0.7, a => u_amount = a);
+    await K.tween(1, 0, .7, a => u_amount = a);
     K.usePostEffect(null!);
 };
 

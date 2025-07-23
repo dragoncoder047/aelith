@@ -247,7 +247,7 @@ export function playerBody(): PlayerBodyComp {
             const doWatch = () => {
                 const dist = this.worldPos()!.dist(pos);
                 const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
-                const rv0 = rv1 * 2;
+                const rv0 = rv1 * 3;
                 const oExists = !object || (!isHidden(object) && WorldManager.getLevelOf(object) === WorldManager.activeLevel?.levelObj);
                 zz.volume = oExists ? v * K.mapc(dist, rv1, rv0, 1, 0) : 0;
                 zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);

@@ -43,7 +43,7 @@ export const WorldManager = {
             initialPos,
         }
     },
-    async goLevel(id: string, fast: boolean = false, overridePos?: Vec2) {
+    async goLevel(id: string, half = false, fast = false, overridePos?: Vec2) {
         const levelTo = this.allLevels[id];
         if (!levelTo) throw new Error(`no such level: "${id}"`);
         const doSwitch = () => {
@@ -55,7 +55,7 @@ export const WorldManager = {
         if (fast) doSwitch();
         else {
             player.freeze(true);
-            await playTransition(doSwitch);
+            await playTransition(half, doSwitch);
         }
     },
     activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {

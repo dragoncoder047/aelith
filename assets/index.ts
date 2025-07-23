@@ -11,6 +11,7 @@ import { playMusic } from "./music";
 import rumbleEffects from "./rumbleEffects.yaml";
 import datapipeShader from "./shaders/dataPipe.glsl";
 import fuzzyFadeShader from "./shaders/fuzzy.glsl";
+import glitchShader from "./shaders/glitch.glsl";
 import invertShader from "./shaders/invert.glsl";
 import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
@@ -59,6 +60,7 @@ K.loadShader("invert", undefined, invertShader);
 K.loadShader("portal", undefined, portalShader);
 K.loadShader("dataPipe", undefined, datapipeShader);
 K.loadShader("fuzzy", undefined, fuzzyFadeShader);
+K.loadShader("glitch", undefined, glitchShader);
 K.loadShader("yellowstripes", undefined, yellowStripesShader);
 Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 

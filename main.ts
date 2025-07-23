@@ -24,7 +24,7 @@ K.onLoad(() => {
     player.freeze(true);
     initPauseMenu();
     K.setCamPos(K.vec2(16384, 16384));
-    WorldManager.goLevel("start", false).then(() => {
+    WorldManager.goLevel("start", true).then(() => {
         musicPlay.paused = K._k.globalOpt.debug !== false;
     });
 });
