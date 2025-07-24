@@ -9,6 +9,62 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 // Controls
 
+/*
+
+TODO: this all needs to be reworked to be more generic
+
+Current situation:
+
+* the currently held item can be *invoked*
+* the currently held item can be *view_info* inspected
+* the currently targeted item can be *interacted* with
+
+then there are some special cases that look generic but are really only applicable
+to the continuation traps:
+
+* the currently held item can be *modified* up or down
+* the currently held item can be *edited* generically (ie the continuation trap flags)
+
+then there's the whole "flying" weirdness:
+
+* if the player holds the button while the currently held item is a "flying continuation
+  trap" they get pushed up into the air
+* if it instead a "flying promise" that is linked to the trap the motion vector (from
+  arrow keys, right stick, whatever) is redirected to move the promise's controlled trap
+  instead. This is all very much a hack.
+
+
+-----------------------
+Intended situation:
+
+With the things the player can do, they each have a button assigned:
+* Drop/throw the held item
+
+* On targeted item, do action1 (switch on/off for switch, take for grabbable things, just smack a lightbulb or stuff, tell computer to go to next sentence)
+* On targeted item, ask to inspect it (the computer says stuff about it)
+* On held item, do action1 (invoke for continuation, capture for continuation trap, read for memory)
+* On held item, do action2 giving targeted item (add/remove items for continuation trap (if supported))
+* On held item, do action3 (open edit-flags menu for continuation trap (if supported))
+* On held item, do action4 (turn on/off antigravity mode for continuation trap or promise (if supported))
+* On held item, ask to inspect it (the computer says stuff about it)
+
+* The motion vector is sorta handled by the currently held item and if it doesn't handle it, the
+  motion goes to the player (which is usually the default).
+
+-----------------------
+
+Need to implement this using a new BaseInteractableComp type that has hook
+methods and hints for some or of these. Ditch the ControllableComp; the hints
+defined just get shown and the methods all return a boolean indicating if the action
+was successfully executed; if false then the default action will be executed (typically
+nothing but not always, such as for the motion vector stuff).
+
+
+okay I am really tired
+
+
+*/
+
 export function getMotionVector(): Vec2 {
     const leftstickRaw = K.getGamepadStick("left")//.reflect(K.RIGHT);
     const leftstick = leftstickRaw.slen() > 0.01 ? leftstickRaw : K.vec2(0);
@@ -108,7 +164,6 @@ player.onButtonRelease("flyUp", () => {
 (player.onMouseMove(mousePos => {
     if (K.get<AreaComp>("ui-button", { recursive: true }).some(x => x.isHovering()))
         player.lookAt(undefined);
-    // toWorld is darn bugged kaplayjs/kaplay#325
     else {
         const lookingWhere = K.toWorld(mousePos);
         player.lookAt(lookingWhere.sdist(player.head!.worldPos()!) < 25 ? undefined : lookingWhere);
