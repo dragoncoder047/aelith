@@ -1,6 +1,7 @@
 import { AreaComp, BodyComp, Comp, GameObj, PosComp, RectComp, Tag, UVQuadComp, Vec2 } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
+import { player } from "../player";
 
 export interface CrossoverComp extends Comp {
     colliding: {
@@ -16,6 +17,8 @@ interface CrossoverHelperComp extends Comp {
     main: GameObj<AreaComp | CrossoverComp>;
     posGet: () => Vec2;
     szGet: () => Vec2;
+    amount: number;
+    t: number;
     showStripes: boolean;
 }
 
@@ -25,6 +28,7 @@ function passthroughHelper(
     passDir: Axis,
     posGet: () => Vec2,
     szGet: () => Vec2): CrossoverHelperComp {
+    var oldShow = false;
     return {
         id: "passthroughHelper",
         require: ["body", "area"],
@@ -33,30 +37,48 @@ function passthroughHelper(
         main,
         posGet,
         szGet,
-        showStripes: false,
+        amount: 0,
+        t: K.time(),
+        set showStripes(v: boolean) {
+            if (oldShow === v) return;
+            oldShow = v;
+            if (v) {
+                this.t = 0;
+                K.tween(this.amount, 1, .5, x => this.amount = x, K.easings.easeOutBounce);
+            } else {
+                K.tween(this.amount, 0, this.amount / 2, x => this.amount = x);
+            }
+        },
         add(this: GameObj<BodyComp | AreaComp | CrossoverHelperComp>) {
-            this.use(K.shader("yellowstripes", () => ({
-                u_time: K.time(),
-                u_angle: this.passDir === "vertical" ? Math.PI / 2 : 0,
-                u_num_spikes: this.szGet()[this.passDir === "vertical" ? "x" : "y"] * (NUM_SPIKES_PER_TILE / TILE_SIZE),
-                u_show: +this.showStripes,
-            })));
+            this.use(K.shader("stripedoor", () => {
+                const nspikes = this.szGet()[this.passDir === "vertical" ? "x" : "y"] * (NUM_SPIKES_PER_TILE / TILE_SIZE);
+                return {
+                    u_time: this.t + this.amount * nspikes / 2,
+                    u_angle: this.passDir === "vertical" ? Math.PI / 2 : 0,
+                    u_color: K.WHITE.darken(30),
+                    u_num_spikes: nspikes,
+                    u_amount: this.amount,
+                };
+            }));
             this.onBeforePhysicsResolve(coll => {
-                const obj = coll.target;
-                if (obj.isStatic) return;
-                if (this.main.colliding[this.otherDir].has(obj)) {
-                    return;
+                const objs = [coll.target];
+                if (coll.target === player || player.inventory.includes(coll.target as any)) {
+                    objs.push(...player.inventory);
                 }
-                if (this.main.colliding[this.passDir].has(obj)) {
-                    coll.preventResolution();
-                } else if (!this.main.colliding[this.passDir].has(obj)) {
-                    this.main.colliding[this.passDir].add(obj);
-                    this.main.colliding[this.otherDir].delete(obj);
-                    coll.preventResolution();
-                } else if (!this.main.colliding[this.otherDir].has(obj)) {
-                    this.main.colliding[this.otherDir].add(obj);
-                    this.main.colliding[this.passDir].delete(obj);
-                }
+                objs.forEach(o => {
+                    if (o.isStatic) return;
+                    if (this.main.colliding[this.otherDir].has(o)) return;
+                    if (this.main.colliding[this.passDir].has(o)) {
+                        coll.preventResolution();
+                    } else if (!this.main.colliding[this.passDir].has(o)) {
+                        this.main.colliding[this.passDir].add(o);
+                        this.main.colliding[this.otherDir].delete(o);
+                        coll.preventResolution();
+                    } else if (!this.main.colliding[this.otherDir].has(o)) {
+                        this.main.colliding[this.otherDir].add(o);
+                        this.main.colliding[this.passDir].delete(o);
+                    }
+                });
             });
             this.onCollideEnd(obj => {
                 if (!this.main.isColliding(obj as any)) {
@@ -74,6 +96,7 @@ function passthroughHelper(
             this.friction = this.main.friction;
             this.restitution = this.main.restitution;
             this.paused = this.main.paused;
+            if (this.amount === 1) this.t += K.dt();
         },
         inspect() {
             return "passDir: " + this.passDir;

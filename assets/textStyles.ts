@@ -1,6 +1,6 @@
 import { TextComp } from "kaplay";
 import { K } from "../init";
-import trapTypes from "./trapTypes.yaml" with { type: "json" };
+import trapTypes from "./trapTypes.yaml";
 import { TILE_SIZE } from "../constants";
 
 export const STYLES: TextComp["textStyles"] = {
@@ -64,6 +64,6 @@ export const STYLES: TextComp["textStyles"] = {
 };
 
 // add all the continuation colors
-for (var name of Object.getOwnPropertyNames(trapTypes) as (keyof typeof trapTypes)[]) {
+for (var name of Object.getOwnPropertyNames(trapTypes) as string[]) {
     STYLES[name.replace(/[^\w]/g, "")] = { color: K.rgb((trapTypes as any)[name].color), override: true };
 }

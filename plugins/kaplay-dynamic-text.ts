@@ -4,6 +4,7 @@ export type NestedStrings = {
     [i: string]:
     | NestedStrings
     | string
+    | NestedStrings[]
     | ((inside: string) => string)
 };
 
@@ -121,7 +122,13 @@ function flatten(vars: NestedStrings) {
     const flatStrings: Record<string, string> = {};
     const functions: Record<string, ((inside: string) => string)> = {};
     const recur = (curPath: string[], obj: NestedStrings[keyof NestedStrings]) => {
-        if (typeof obj === "string") {
+        if (Array.isArray(obj)) {
+            flatStrings[curPath.join(".") + ".length"] = "" + obj.length;
+            for (var i = 0; i < obj.length; i++) {
+                recur(curPath.concat("" + i), obj[i]!);
+            }
+        }
+        else if (typeof obj === "string") {
             flatStrings[curPath.join(".")] = obj;
         }
         else if (typeof obj === "function") {
@@ -132,7 +139,7 @@ function flatten(vars: NestedStrings) {
                 recur(curPath.concat(next), obj[next]!);
             }
         } else {
-            throw new Error("bad type to flatten()");
+            throw new Error(`bad type to flatten(): ${obj} (${curPath})`);
         }
     };
     recur([], vars);

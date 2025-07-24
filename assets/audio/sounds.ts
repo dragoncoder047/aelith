@@ -3,9 +3,8 @@ import rawSounds from "./sounds.yaml";
 
 export const sounds: Record<string, ZzFXSound> = {};
 
-var k: keyof typeof rawSounds;
-for (k in rawSounds) {
-    sounds[k] = parse(rawSounds[k] as any);
+for (var k in rawSounds) {
+    sounds[k] = parse(rawSounds[k]);
 }
 
 export function parse(str: string) {

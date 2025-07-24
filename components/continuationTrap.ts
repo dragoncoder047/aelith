@@ -1,5 +1,5 @@
 import { CircleComp, Color, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
-import trapTypes from "../assets/trapTypes.yaml" with { type: "json" };
+import trapTypes from "../assets/trapTypes.yaml";
 import { SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -17,7 +17,6 @@ import { ContinuationComp } from "./continuationCore";
 import { controllable, ControllableComp } from "./controllable";
 import { LoreComp } from "./lore";
 import { PromiseComp } from "./promise";
-import { zoop, ZoopComp, zoopRadius } from "./zoop";
 
 export interface ContinuationTrapComp extends Comp {
     isDeferring: boolean
@@ -28,7 +27,6 @@ export interface ContinuationTrapComp extends Comp {
     readonly behavior: any | undefined
     params: any
     readonly color: Color
-    zoop: GameObj<PosComp | CircleComp | OutlineComp | ZoopComp>
     _menu: MenuModal
     prepare(): void
     capture(): void
@@ -103,7 +101,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             destroyImmune: false,
         },
         get data() {
-            return (trapTypes as any)[(this as any).name!];
+            return trapTypes[(this as any).name!];
         },
         get enabled() {
             return this.behavior?.concurrent || this.captured.length === 0
@@ -114,18 +112,8 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         get behavior() {
             return this.data?.behavior;
         },
-        zoop: K.add([
-            K.pos(),
-            K.circle(zoopRadius(Infinity), { fill: false }),
-            K.outline(2, K.RED),
-            K.layer("ui"),
-            zoop(),
-            K.timer(),
-        ]),
         _menu: undefined as any,
         add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp | PosComp>) {
-            this.zoop.hidden = true;
-            this.zoop.pos = this.pos;
             this.use(controllable([{ hint: "" }]));
             this.on("invoke", () => {
                 if (!this.params.deferred || !this.isDeferring) this.prepare();
@@ -134,9 +122,6 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.on("modify", (delta: number) => {
                 if (this.behavior?.editable)
                     this.params.radius = Math.max(0, this.params.radius + delta);
-            });
-            this.on("inactive", () => {
-                this.zoop.hidden = true;
             });
             this.on("thrown", () => {
                 if (this.params.deferred && this.isDeferring) {
@@ -170,20 +155,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.controls[0]!.styles = [this.name.replace(/[^\w]/g, "")];
             this.controls[0]!.hidden = !this.enabled;
 
-            this.zoop.outline.color = this.color;
             this.uniform!.u_targetcolor = this.color;
-
-            if (!this.zoop.isZooping) {
-                if (this.exists()
-                    && this.enabled
-                    && this.params.radius > 0
-                    && player.manpage!.hidden
-                    && player.inventory.includes(this)) {
-                    this.zoop.hidden = false;
-                    this.zoop.radius = zoopRadius(this.params.radius);
-                }
-                else this.zoop.hidden = true;
-            }
 
             const targetAnim = this.isConnected ? "connected" : this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
             if (this.getCurAnim()?.name !== targetAnim) {
@@ -216,7 +188,6 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
             if (this.enabled && this.params.radius > 0 && (player.inventory.includes(this as any) || this.isDeferring)) {
                 const willCapture = this.peekCapture();
-                this.zoop.pos = willCapture.playerPos;
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).is("dont-highlight")) continue;
@@ -239,7 +210,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                 }
             }
         },
-        capture(this: GameObj<ContinuationTrapComp | NamedComp | ShaderComp | LoreComp>) {
+        capture(this: GameObj<PosComp | ContinuationTrapComp | NamedComp | ShaderComp | LoreComp>) {
             this.isDeferring = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
@@ -248,11 +219,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
             splash(player.pos, this.color);
-            this.zoop.radius = zoopRadius(this.params.radius);
-            this.zoop.zoop().then(() => {
-                cont.activate();
-                this.zoop.hidden = true;
-            });
+            splash(this.pos, this.color);
         },
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): WorldSnapshot {
             return StateManager.capture(this.params, this.worldPos()!);

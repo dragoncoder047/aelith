@@ -3,4 +3,4 @@ import rawSongs from "./songs.yaml";
 import { parse } from "./sounds";
 
 export const allSongs: Record<string, ZzFXMSong> = Object.fromEntries(
-    (rawSongs as unknown as any[]).map(s => [s.title, parse(s.data)]));
+    (rawSongs as any[]).map(s => [s.title, parse(s.data)]));

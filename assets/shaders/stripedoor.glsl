@@ -1,10 +1,9 @@
 uniform float u_time;
 uniform float u_angle;
 uniform float u_num_spikes;
-uniform float u_show;
+uniform vec3 u_color;
+uniform float u_amount;
 const float spiketime = 1.5;
-
-const vec4 YELLOW = vec4(1., 1., 0., 1.);
 
 vec2 rotateUV(vec2 uv, float rotation) {
     float cosAngle = cos(rotation);
@@ -14,7 +13,8 @@ vec2 rotateUV(vec2 uv, float rotation) {
 }
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-    if (u_show == 0.) return vec4(0.);
     vec2 uv2 = rotateUV(uv, u_angle);
-    return YELLOW * vec4(1. - fract(u_num_spikes * abs(uv2.y - .5) + u_time / spiketime));
+    float dfc = 2. * abs(uv2.y - .5);
+    if ((1. - dfc) > u_amount) discard;
+    else return vec4(u_color / 255., 1.) * vec4(1. - fract(u_num_spikes * abs(uv2.y - .5) + u_time / spiketime));
 }

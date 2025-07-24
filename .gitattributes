@@ -1,4 +1,5 @@
 *.txt linguist-detectable
 *.json linguist-detectable
+*.yaml linguist-detectable
 package.json linguist-generated
 pnpm-lock.yaml linguist-generated

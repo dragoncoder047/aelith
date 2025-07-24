@@ -10,10 +10,7 @@
         "noFallthroughCasesInSwitch": true,
         "strictNullChecks": true,
         "moduleResolution": "Bundler",
-        "module": "ESNext",
-        "types": [
-            "esbuild-yaml/types"
-        ]
+        "module": "ESNext"
     },
     "include": [
         "./**/*.ts"

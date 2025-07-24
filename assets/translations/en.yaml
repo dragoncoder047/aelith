@@ -16,6 +16,10 @@ dialog:
     This game does not support touchscreen controls. Try connecting a game
     controller or a mouse and keyboard.
 lore:
+  memory:
+    - title: /home/bill/windows/NT/core/ntgdi/test/teff/poo.txt
+      body: >-
+        shit
   box:
     header: Memory Management
     section: "1"

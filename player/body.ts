@@ -30,6 +30,13 @@ export interface PlayerBodyComp extends Comp {
     intersectingAny(type: Tag, where?: GameObj): boolean;
     lookingAt: GameObj<PAreaComp> | undefined;
     lookingDirection: Vec2 | undefined;
+    /**
+     * Play sound, but spatial relative to the player
+     * @param opt Standard options
+     * @param pos Position of the sound in world coordinates
+     * @param impactVel Velocity of impact, if provided
+     * @param object The object the is the source of the sound
+     */
     playSound(soundID: string, opt?: AudioPlayOpt | (() => AudioPlayOpt), pos?: Vec2, impactVel?: number, object?: GameObj): { cancel(): void; onEnd(p: () => void): KEventController; paused: boolean } | undefined;
     inventory: PlayerInventoryItem[];
     holdingIndex: number;
@@ -77,7 +84,7 @@ export function playerBody(): PlayerBodyComp {
         // MARK: add()
         add(this: GameObj<PlayerBodyComp | PosComp | HealthComp | TimerComp | OpacityComp>) {
             // Keep player centered in window
-            this.camFollower = this.on("fixedUpdate", () => {
+            this.camFollower = this.onFixedUpdate(() => {
                 K.setCamPos(K.getCamPos().lerp(this.worldPos()!, K.dt() / ALPHA));
             });
         },
@@ -227,16 +234,9 @@ export function playerBody(): PlayerBodyComp {
             }
         },
         // MARK: playSound()
-        /**
-         * Play sound, but spatial relative to the player
-         * @param opt Standard options
-         * @param pos Position of the sound in world coordinates
-         * @param impactVel Velocity of impact, if provided
-         * @param object The object the is the source of the sound
-         */
         playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
-            if (isHidden(object!) || isPaused(object!)) return;
+            if (object && (isHidden(object) || isPaused(object))) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -246,14 +246,14 @@ export function playerBody(): PlayerBodyComp {
             const zz = K.play(soundID, opt);
             const doWatch = () => {
                 const dist = this.worldPos()!.dist(pos);
-                const rv1 = Math.min(K.width(), K.height()) * 2 / 3;
-                const rv0 = rv1 * 3;
-                const oExists = !object || (!isHidden(object) && WorldManager.getLevelOf(object) === WorldManager.activeLevel?.levelObj);
+                const rv1 = K.width();
+                const rv0 = rv1 * 2;
+                const oExists = !object || (!isHidden(object) && WorldManager.activeLevel?.levelObj.isAncestorOf(object));
                 zz.volume = oExists ? v * K.mapc(dist, rv1, rv0, 1, 0) : 0;
                 zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);
             };
             doWatch();
-            const watchUpdate = this.onUpdate(doWatch);
+            const watchUpdate = K.onUpdate(doWatch);
             const done = () => {
                 zz.stop();
                 watchUpdate.cancel();
@@ -263,7 +263,7 @@ export function playerBody(): PlayerBodyComp {
             const waiting = K.wait(Math.max(zz.duration(), 0.5), done);
             zz.onEnd(done); // why does this never get called?
             return {
-                cancel: () => {
+                cancel() {
                     onEndEvents.clear();
                     done();
                 },

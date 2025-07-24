@@ -7,7 +7,6 @@
   * [ ] follow the player around like a minecraft dog or something
     * [ ] how would the player be able to return the text to the previous thing
 * [ ] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout (or maybe combination of both)
-* [ ] Fix bugs with the ambientSound component that is causing the lag
 * [ ] Fix typewriter code to use [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) to split the text (so it works with the Japanese which doesn't use any spaces)
 * [ ] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
   * [ ] Need to choose controls for this
@@ -44,6 +43,7 @@
 
 ## DONE
 
+* [X] Fix bugs with the ambientSound component that is causing the lag
 * [X] Change continuation objects to frog-like things instead of just spinny circles
 * [X] Split into levels to reduce lag
   * [X] Make MParser not depend on the world pointer object

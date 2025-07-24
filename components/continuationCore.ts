@@ -1,5 +1,5 @@
 import { BodyComp, Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
-import contTypes from "../assets/trapTypes.yaml" with { type: "json" };
+import contTypes from "../assets/trapTypes.yaml";
 import { SCALE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -18,9 +18,8 @@ export interface ContinuationComp extends Comp {
     readonly params: ContinuationTrapComp["params"];
     readonly color: Color
     captured: WorldSnapshot
-    worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp>
+    worldMarker: GameObj<PosComp | SpriteComp | ShaderComp | OffScreenComp> | undefined;
     invoke(): void,
-    activate(): void,
     emoTimer: number,
 }
 
@@ -56,26 +55,25 @@ export function continuationCore(
             return this.captured.restoreParams!;
         },
         get color() {
-            return K.Color.fromHex((contTypes[this.type] as any).color ?? "#ff0000")
+            return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
         },
         add(this: GameObj<ContinuationComp | NamedComp | ShaderComp | ControllableComp> & PlayerInventoryItem) {
-            this.worldMarker.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
             this.use(controllable([{ hint: "" }]));
             this.controls[0]!.styles = [this.trappedBy.name.replace(/[^\w]/g, "")];
             this.on("invoke", () => this.invoke());
             this.name = this.params.cName;
             this.uniform!.u_targetcolor = this.color;
-            this.hidden = true;
-            this.paused = true;
-            this.worldMarker.hidden = true;
             if (this.params.reverseTeleport) {
-                this.worldMarker.destroy();
+                this.worldMarker!.destroy();
+                this.worldMarker = undefined;
+            } else {
+                this.worldMarker!.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
             }
         },
         emoTimer: 0,
         update(this: GameObj<BodyComp | SpriteComp | ContinuationComp | ControllableComp>) {
             this.controls[0]!.hint = K.sub(
-                (contTypes[this.type] as any).hint ?? "&msg.ctlHint.continuation.invoke.default",
+                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "continuation",
                 });
@@ -111,18 +109,14 @@ export function continuationCore(
             });
         },
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
-            if (this.params.reverseTeleport || !WorldManager.activeLevel?.levelObj.isAncestorOf(this.worldMarker)) return;
+            if (this.worldMarker === undefined || !WorldManager.activeLevel?.levelObj.isAncestorOf(this.worldMarker)) return;
             K.pushRotate(-this.angle);
             drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { width: 2 / SCALE, color: this.color });
             K.pushRotate(this.angle);
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {
             player.removeFromInventory(this);
-            this.worldMarker.destroy();
-        },
-        activate(this: GameObj<OpacityComp | ContinuationComp>) {
-            this.worldMarker.hidden = this.hidden = false;
-            this.paused = false;
+            this.worldMarker?.destroy();
         },
         inspect() {
             return `captured ${this.captured.objects.length} objects`

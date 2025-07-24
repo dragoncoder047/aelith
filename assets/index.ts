@@ -16,7 +16,7 @@ import invertShader from "./shaders/invert.glsl";
 import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import translateShader from "./shaders/translate.glsl";
-import yellowStripesShader from "./shaders/yellowstripes.glsl";
+import stripedoorShader from "./shaders/stripedoor.glsl";
 import spritemapDef from "./textures/spritemap.yaml";
 import spritemapDataURL from "./textures/spritemap.png";
 import deStrings from "./translations/de.yaml";
@@ -34,7 +34,7 @@ for (var i = 0; i < allLevelIDs.length; i++)
     K.load((async () => {
         await new Promise<void>(r => resolvers.push(r));
     })());
-K.loadSpriteAtlas(spritemapDataURL, spritemapDef as any).then(async () => {
+K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
     // Must wait to load sprites before loading levels
     for (var i = 0; i < allLevelIDs.length; i++) {
         const name = allLevelIDs[i]!;
@@ -44,14 +44,14 @@ K.loadSpriteAtlas(spritemapDataURL, spritemapDef as any).then(async () => {
         await nextFrame();
     }
 });
-K.loadRumbleEffects(rumbleEffects as any);
+K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
-K.addStrings(strings as any);
+K.addStrings(strings);
 K.setLanguages(["en", "es", "de", "ja"]);
-K.strings.en = enStrings as any;
-K.strings.es = esStrings as any;
-K.strings.de = deStrings as any;
-K.strings.ja = jaStrings as any;
+K.strings.en = enStrings;
+K.strings.es = esStrings;
+K.strings.de = deStrings;
+K.strings.ja = jaStrings;
 K.loadFont("IBM Mono", ibmMonoFontDataURL);
 K.loadFont("Unscii MCR", unsciiMCRFontDataURL);
 K.loadShader("recolorRed", undefined, recolorRedShader);
@@ -61,7 +61,7 @@ K.loadShader("portal", undefined, portalShader);
 K.loadShader("dataPipe", undefined, datapipeShader);
 K.loadShader("fuzzy", undefined, fuzzyFadeShader);
 K.loadShader("glitch", undefined, glitchShader);
-K.loadShader("yellowstripes", undefined, yellowStripesShader);
+K.loadShader("stripedoor", undefined, stripedoorShader);
 Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 
 // idk where else to put this

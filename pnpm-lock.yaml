@@ -15,12 +15,15 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0
     devDependencies:
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
       esbuild:
         specifier: ^0.25.0
         version: 0.25.1
-      esbuild-yaml:
-        specifier: ^3.0.1
-        version: 3.0.1(esbuild@0.25.1)
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -177,15 +180,19 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  esbuild-yaml@3.0.1:
-    resolution: {integrity: sha512-OfEb9rKQ8DShz+jddUyLyeHwhbxDohMfw3tMXY/ZMdKx0/4BeLJ/2V3rw2lDjasNNyRzuYVJpsrUVdsINFkP8g==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      esbuild: '>=0.19.0'
+  '@types/js-yaml@4.0.9':
+    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
+
+  argparse@2.0.1:
+    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
   esbuild@0.25.1:
     resolution: {integrity: sha512-BGO5LtrGC7vxnqucAe/rmvKdJllfGaYWdyABvyMoXQlfYMb2bbRuReWR5tEGE//4LcNJj9XrkovTqNYRFZHAMQ==}
     engines: {node: '>=18'}
+    hasBin: true
+
+  js-yaml@4.1.0:
+    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
 
   kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/62243f4eaba487be9bbc28b540e25200bb791939:
@@ -196,11 +203,6 @@ packages:
   typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
-    hasBin: true
-
-  yaml@2.8.0:
-    resolution: {integrity: sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ==}
-    engines: {node: '>= 14.6'}
     hasBin: true
 
   zzfx@1.3.0:
@@ -283,10 +285,9 @@ snapshots:
   '@esbuild/win32-x64@0.25.1':
     optional: true
 
-  esbuild-yaml@3.0.1(esbuild@0.25.1):
-    dependencies:
-      esbuild: 0.25.1
-      yaml: 2.8.0
+  '@types/js-yaml@4.0.9': {}
+
+  argparse@2.0.1: {}
 
   esbuild@0.25.1:
     optionalDependencies:
@@ -316,10 +317,12 @@ snapshots:
       '@esbuild/win32-ia32': 0.25.1
       '@esbuild/win32-x64': 0.25.1
 
+  js-yaml@4.1.0:
+    dependencies:
+      argparse: 2.0.1
+
   kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/62243f4eaba487be9bbc28b540e25200bb791939: {}
 
   typescript@5.6.2: {}
-
-  yaml@2.8.0: {}
 
   zzfx@1.3.0: {}

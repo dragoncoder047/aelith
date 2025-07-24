@@ -16,8 +16,9 @@
     },
     "license": "GPL-3.0-only",
     "devDependencies": {
+        "@types/js-yaml": "^4.0.9",
         "esbuild": "^0.25.0",
-        "esbuild-yaml": "^3.0.1",
+        "js-yaml": "^4.1.0",
         "typescript": "^5.6.2"
     },
     "dependencies": {

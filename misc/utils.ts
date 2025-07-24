@@ -59,10 +59,13 @@ export type JSONSerializable =
     | { [key: string]: JSONSerializable; }
     | JSONSerializable[];
 
-const is = (
-    obj: GameObj | null,
-    field: "paused" | "fixed" | "hidden",
-): boolean => obj ? (obj[field] ? true : is(obj.parent, field)) : false;
+function is(obj: GameObj | null | undefined, field: "paused" | "fixed" | "hidden"): boolean {
+    while (obj != null) {
+        if (obj[field]) return true;
+        obj = obj.parent;
+    }
+    return false;
+};
 
 export const isPaused = (obj: GameObj): boolean => is(obj, "paused");
 export const isHidden = (obj: GameObj): boolean => is(obj, "hidden");

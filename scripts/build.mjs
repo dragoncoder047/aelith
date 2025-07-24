@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
 import * as fs from "node:fs";
 import packageJSON from "../package.json" with { type: "json" };
-import yamlPlugin from "esbuild-yaml";
+import { load as parseYAML } from "js-yaml";
 
 // sanity check
 if (decompress(compress("a".repeat(100))) !== "a".repeat(100)) throw "bad";
@@ -31,6 +31,16 @@ const ${nameify(path)} = decompress(${nameify(path)}_crunch);
 export default ${nameify(path)};
 `;
     return m;
+}
+
+/**
+ * @param {string} yaml
+ * @param {string} path
+ * @returns {string}
+ */
+function yaml_to_json_compressed(yaml, path) {
+    const json = JSON.stringify(parseYAML(yaml, { filename: path, json: true }));
+    return json_compressed(json, path);
 }
 
 /**
@@ -142,7 +152,6 @@ const config = {
     treeShaking: true,
     outfile: "build/debugger.js",
     plugins: [
-        yamlPlugin(),
         {
             name: "nonexistent_go_bye_bye",
             setup(build) {
@@ -166,6 +175,11 @@ const config = {
                 build.onLoad({ filter: /\.(txt|glsl)$/ }, args => {
                     return {
                         contents: rawstring_compressed(fs.readFileSync(args.path), args.path)
+                    }
+                });
+                build.onLoad({ filter: /\.yaml$/ }, args => {
+                    return {
+                        contents: yaml_to_json_compressed(fs.readFileSync(args.path), args.path)
                     }
                 });
                 build.onLoad({ filter: /\.json$/ }, args => {
@@ -199,9 +213,9 @@ if (process.argv.includes("-w")) {
         setup(build) {
             build.onEnd(result => {
                 if (result.errors.length == 0)
-                    console.error(`rebuilt ${config.outfile} OK`);
+                    console.error(`[${new Date().toLocaleTimeString()}] rebuilt ${config.outfile} OK`);
                 else
-                    console.error(`failed to build ${config.outfile}`);
+                    console.error(`[${new Date().toLocaleTimeString()}] failed to build ${config.outfile}`);
             });
         },
     });

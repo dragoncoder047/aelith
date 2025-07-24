@@ -1,5 +1,5 @@
 import { AnchorComp, AreaComp, BodyComp, Comp, GameObj, NamedComp, PosComp, RotateComp, SpriteComp, Vec2 } from "kaplay";
-import contTypes from "../assets/trapTypes.yaml" with { type: "json" };
+import contTypes from "../assets/trapTypes.yaml";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -29,7 +29,7 @@ export function grabber(): GrabberComp {
         lookingFor: undefined,
         add(this: GameObj<GrabberComp | PosComp | AnchorComp | AreaComp | BodyComp>) {
             this.use(K.shader("recolorRed", () => ({
-                u_targetcolor: K.Color.fromHex((contTypes as any)[this.which]?.color ?? "#ff0000"),
+                u_targetcolor: K.Color.fromHex(contTypes[this.which]?.color ?? "#ff0000"),
             })));
             this.use(K.spring({
                 other: this.parent! as any,

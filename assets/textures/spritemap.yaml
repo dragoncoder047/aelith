@@ -176,7 +176,7 @@ continuation_trap:
       loop: true
       speed: 10
 promise:
-  x: 16
+  x: 0
   y: 318
   width: 32
   height: 16

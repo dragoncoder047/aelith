@@ -1,5 +1,5 @@
 import { AreaComp, BodyComp, Color, Comp, GameObj, KEventController, NamedComp, OffScreenComp, PosComp, ShaderComp } from "kaplay";
-import contTypes from "../assets/trapTypes.yaml" with { type: "json" };
+import contTypes from "../assets/trapTypes.yaml";
 import { SCALE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -57,7 +57,7 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
         },
         update(this: GameObj<ControllableComp | PromiseComp>) {
             this.controls[0]!.hint = K.sub(
-                (contTypes[this.type] as any).hint ?? "&msg.ctlHint.continuation.invoke.default",
+                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
                 {
                     which: "promise",
                 });
