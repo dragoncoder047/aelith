@@ -127,14 +127,6 @@ export class MParser {
             this.stack.splice(this.stack.length - n, n, arr);
         },
 
-        // push
-        pu(this: MParser) {
-            const i = this.stack.pop();
-            const arr = this.stack.at(-1);
-            if (!Array.isArray(arr)) throw new Error("push to non-array");
-            arr.push(i);
-        },
-
         // portal setup
         ps(this: MParser) {
             const toLevel = this.stack.pop() as string;
@@ -143,12 +135,6 @@ export class MParser {
             portal.toLevel = toLevel;
             portal.outPortal = "to_" + this.cLevelID;
         },
-
-        // intro setup
-        is(this: MParser) {
-            const s = this.stack.pop() as string;
-            const lines = s.split("\n");
-        }
     };
     // MARK: commands
     /**
