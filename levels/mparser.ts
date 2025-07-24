@@ -1,4 +1,4 @@
-import { AreaComp, CompList, GameObj, LevelComp, NamedComp, PosComp, RotateComp, SpriteComp, Tag, TextComp, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, NamedComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";
@@ -21,21 +21,17 @@ import { door } from "../object_factories/door";
 import { fan } from "../object_factories/fan";
 import { grabber } from "../object_factories/grabber";
 import { grating } from "../object_factories/grating";
-import { invisibleTrigger } from "../object_factories/invisibleTrigger";
 import { ladder } from "../object_factories/ladder";
 import { lever } from "../object_factories/lever";
 import { light } from "../object_factories/light";
 import { onetimeCushion } from "../object_factories/onetimeCushion";
 import { playerPosition } from "../object_factories/playerPosition";
-import { popupTextNote } from "../object_factories/popupText";
 import { portal } from "../object_factories/portal";
 import { rightDestroyBarrier } from "../object_factories/rightDestroyBarrier";
 import { specialGrating } from "../object_factories/specialGrating";
-import { textNote } from "../object_factories/text";
 import { trapdoor } from "../object_factories/trapdoor";
 import { bgWall, wall } from "../object_factories/wall";
 import { windEnd } from "../object_factories/windEnd";
-import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 
 /**
  * Main parser handler for level map data (in WORLD_FILE).
@@ -59,12 +55,12 @@ export class MParser {
         F: fan,
         G: grabber,
         // H
-        I: invisibleTrigger,
+        // I
         // J
         // K
         L: light,
-        M: popupTextNote,
-        N: textNote,
+        // M
+        // N
         // O
         P: portal,
         // Q
@@ -102,30 +98,6 @@ export class MParser {
     vars: Record<string, any> = {
         // put the specialized convenience functions here so I don't
         // need to define them at the top of every level file
-
-        // invisible init
-        ii(this: MParser) {
-            const obj = this.stack.at(-1) as GameObj<InvisibleTriggerComp>;
-            obj.setup("1 s onCollide|player");
-            this.stack.push("1+y");
-            this.commandQueue.unshift(this.commands.e!);
-        },
-
-        // hall note setup
-        hs(this: MParser) {
-            const string = this.stack.pop() as string;
-            const note = this.stack.at(-1) as GameObj<DynamicTextComp | TextComp | PosComp>;
-            note.t = string;
-            note.width = 10 * TILE_SIZE;
-            note.moveBy(0, -12);
-        },
-
-        // nested
-        ns(this: MParser) {
-            const n = this.stack.pop() as number;
-            const arr = this.stack.slice(-n);
-            this.stack.splice(this.stack.length - n, n, arr);
-        },
 
         // portal setup
         ps(this: MParser) {

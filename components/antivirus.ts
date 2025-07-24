@@ -1,5 +1,5 @@
-import { AreaComp, BodyComp, Color, Comp, GameObj, OffScreenComp, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
-import { SCALE, TILE_SIZE } from "../constants";
+import { AreaComp, BodyComp, Color, Comp, GameObj, OffScreenComp, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, Tag, TimerComp, TweenController } from "kaplay";
+import { FONT_SCALE, SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { actuallyRaycast } from "../misc/utils";
@@ -7,9 +7,10 @@ import { player } from "../player";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
+import { STYLES } from "../assets/textStyles";
 
 export interface AntivirusComp extends Comp {
-    alertTextObj: GameObj<DynamicTextComp> | undefined
+    alertTextObj: GameObj<DynamicTextComp | PosComp>
     disallowedContinuations: string[]
     alertMessage: string
     allClearMessage: string
@@ -21,6 +22,7 @@ export interface AntivirusComp extends Comp {
     laserColor: Color | string
     rayHit: RaycastResult
     sweepy(): void
+    setup(s: string): void
     isOffensive(obj: GameObj | undefined): boolean
 }
 
@@ -34,13 +36,13 @@ export function antivirus(): AntivirusComp {
         allClearMessage: "&msg.antivirus.allClear",
         additionalStyles: ["blink"],
         allClearStyles: ["assert"],
-        alertTextObj: undefined,
+        alertTextObj: undefined as any,
         sweepAngleRange: [-10, -30],
         maxDistance: TILE_SIZE * 100,
         sweepSpeed: 20,
         laserColor: K.BLUE,
         rayHit: null,
-        add(this: GameObj<TogglerComp | TimerComp | StateComp<string> | AntivirusComp | RotateComp>) {
+        add(this: GameObj<TogglerComp | TimerComp | StateComp<string> | AntivirusComp | RotateComp | PosComp>) {
             this.onStateEnter(this.falseState, () => this.sweepy());
         },
         sweepy(this: GameObj<TimerComp | AntivirusComp | RotateComp>) {
@@ -118,6 +120,31 @@ export function antivirus(): AntivirusComp {
             if (obj === player) return player.inventory.some(item => this.isOffensive(item));
             return this.disallowedContinuations.some(c => obj.name === c)
         },
+        setup(this: GameObj<PosComp | AntivirusComp>, s) {
+            this.alertTextObj = WorldManager.getLevelOf(this)!.add([
+                K.pos(this.pos.add(0, -12)),
+                K.tile(),
+                K.text("", {
+                    size: 16 / FONT_SCALE,
+                    width: TILE_SIZE * 10,
+                    align: "left",
+                    lineSpacing: 1.15,
+                    styles: STYLES,
+                    font: "Unscii MCR",
+                }),
+                K.color(K.WHITE),
+                K.dynamicText(this.allClearMessage),
+                K.layer("text"),
+                "dont-highlight" as Tag,
+            ]);
+            const parts = s.split("|");
+            this.alertTextObj.moveBy(K.vec2(parts[0]!.split(",").map(parseFloat) as any).scale(TILE_SIZE));
+            this.disallowedContinuations = parts[1]!.split(",");
+            this.sweepAngleRange = parts[2]!.split(",").map(parseFloat) as any;
+        },
+        destroy() {
+            this.alertTextObj?.destroy();
+        }
     }
 }
 

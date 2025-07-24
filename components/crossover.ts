@@ -81,10 +81,16 @@ function passthroughHelper(
                 });
             });
             this.onCollideEnd(obj => {
-                if (!this.main.isColliding(obj as any)) {
-                    this.main.colliding[this.passDir].delete(obj);
-                    this.main.colliding[this.otherDir].delete(obj);
+                const objs = [obj];
+                if (obj === player || player.inventory.includes(obj as any)) {
+                    objs.push(...player.inventory);
                 }
+                objs.forEach(o => {
+                    if (!this.main.isColliding(o as any)) {
+                        this.main.colliding[this.passDir].delete(o);
+                        this.main.colliding[this.otherDir].delete(o);
+                    }
+                });
             });
         },
         update(this: GameObj<UVQuadComp | PosComp | AreaComp | CrossoverHelperComp>) {
