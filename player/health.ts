@@ -138,7 +138,6 @@ function makeResumer(c: GameObj<ContinuationComp>): () => Promise<void> {
     return async () => {
         await DEATH_MENU_OBJ.close();
         WorldManager.pause(false);
-        player.hidden = false;
         copyPreferences();
         K.eventGroups.delete("menuActive");
         K.eventGroups.delete("pauseMenu");

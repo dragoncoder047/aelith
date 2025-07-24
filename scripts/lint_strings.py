@@ -1,4 +1,5 @@
 import yaml
+import subprocess
 
 LANGS = ["en", "es", "de", "ja"]
 
@@ -13,18 +14,24 @@ LANG_ENTRIES = {}
 for lang in LANGS:
     LANG_ENTRIES[lang] = get_json(f"./assets/translations/{lang}.yaml")
 
-PATHS_ALL = set()
+PATHS_ALL: set[str] = set()
 PATHS_BY_LANG = {}
 
 
 def recursive_all(vars, byLang: set[str]):
-    def recur(curPath, obj):
+    def recur(curPath: list[str], obj):
+        p = ".".join(curPath)
         if isinstance(obj, str):
-            PATHS_ALL.add(".".join(curPath))
-            byLang.add(".".join(curPath))
+            PATHS_ALL.add(p)
+            byLang.add(p)
         elif isinstance(obj, dict):
             for next in obj:
                 recur(curPath + [next], obj[next])
+        elif isinstance(obj, list):
+            PATHS_ALL.add(f"{p}.length")
+            byLang.add(f"{p}.length")
+            for i in range(len(obj)):
+                recur(curPath + [str(i)], obj[i])
     recur([], vars)
 
 
@@ -41,3 +48,14 @@ for lang in LANGS:
             good = False
     if good:
         print("  All good")
+
+found_status = {p: subprocess.Popen(
+    ["grep", "-Rq",
+     "--include", "*.txt",
+     "--include", "*.yaml",
+     "--include", "*.ts", f"&msg.{p}"]).wait()
+    for p in sorted(PATHS_ALL, reverse=True)}
+
+for p, status in found_status.items():
+    if status != 0:
+        print(f"&msg.{p} is not used anywhere")

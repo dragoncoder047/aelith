@@ -91,7 +91,7 @@ export const StateManager = {
         }
 
         if (state.worldID !== WorldManager.activeLevel!.id) {
-            await WorldManager.goLevel(state.worldID, true);
+            await WorldManager.goLevel(state.worldID, false, true);
         }
         if (!delta.isZero()) {
             player.tpTo(p.add(delta));
