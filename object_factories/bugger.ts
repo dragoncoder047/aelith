@@ -1,6 +1,7 @@
 import { CompList, Tag } from "kaplay";
 import { bug } from "../components/bug";
 import { clicky } from "../components/clicky";
+import { interactable } from "../components/interactable";
 import { FRICTION, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
@@ -14,7 +15,7 @@ export function bugger(): CompList<any> {
         ...defaults({
             friction: FRICTION,
             restitution: 0,
-            collisionIgnore: ["tail", "continuation-trap"],
+            collisionIgnore: ["tail", "continuation-trap", "inInventory"],
             scale: K.vec2(7 / 8, 1)
         }),
         K.offscreen({ hide: true }),
@@ -24,6 +25,6 @@ export function bugger(): CompList<any> {
         bug(),
         clicky(["scared", "stunned", "angry"], ["bug_squeak", "bug_splat", "bug_screech"]),
         "bug" as Tag,
-        "interactable" as Tag,
+        interactable(),
     ];
 }

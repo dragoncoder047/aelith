@@ -134,7 +134,7 @@ function flatten(vars: NestedStrings) {
         else if (typeof obj === "function") {
             functions[curPath.join(".")] = obj;
         }
-        else if (typeof obj === "object") {
+        else if (typeof obj === "object" && obj !== null) {
             for (var next of Object.getOwnPropertyNames(obj)) {
                 recur(curPath.concat(next), obj[next]!);
             }

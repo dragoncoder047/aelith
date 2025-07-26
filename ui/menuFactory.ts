@@ -11,9 +11,6 @@ import { PtyChunk, PtyComp, PtyMenu, PtyMenuComp } from "../plugins/kaplay-pty";
 import { nextFrame } from "../misc/utils";
 import { MParser } from "../levels/mparser";
 
-var getMotionVector: () => Vec2;
-import("../controls").then(mod => getMotionVector = mod.getMotionVector);
-
 export interface MenuModal {
     menu: PtyMenu
     term: GameObj<DynamicTextComp | PtyComp | PtyMenuComp | TextComp>
@@ -114,7 +111,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
                 theModal.body = theTerm.text;
                 theModal.header = theTerm.menu.name ?? "";
                 if (theModal.needsToScroll)
-                    theModal.scrollPos += getMotionVector().y * K.dt() * MODIFY_SPEED
+                    theModal.scrollPos += player.lastMotionVector.y * K.dt() * MODIFY_SPEED
                 updateEv.trigger();
             }),
             theMenuContainer.onScroll(xy => {

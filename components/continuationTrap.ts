@@ -1,9 +1,10 @@
-import { CircleComp, Color, Comp, GameObj, NamedComp, OutlineComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
+import { AreaComp, Color, Comp, GameObj, NamedComp, PosComp, ShaderComp, SpriteComp } from "kaplay";
 import trapTypes from "../assets/trapTypes.yaml";
-import { SCALE, TILE_SIZE } from "../constants";
+import { SCALE, TILE_SIZE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { splash } from "../misc/particles";
+import { drawZapLine, style } from "../misc/utils";
 import { continuation } from "../object_factories/continuation";
 import { promiseObj } from "../object_factories/promiseObj";
 import { player } from "../player";
@@ -11,11 +12,10 @@ import { PlayerInventoryItem } from "../player/body";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 import { PtyMenu } from "../plugins/kaplay-pty";
 import { StateManager } from "../save_state";
-import { WorldSnapshot } from "../save_state/state";
+import { StateComps, WorldSnapshot } from "../save_state/state";
 import { MenuModal, modalmenu } from "../ui/menuFactory";
 import { ContinuationComp } from "./continuationCore";
-import { controllable, ControllableComp } from "./controllable";
-import { LoreComp } from "./lore";
+import { InteractableComp } from "./interactable";
 import { PromiseComp } from "./promise";
 
 export interface ContinuationTrapComp extends Comp {
@@ -28,6 +28,7 @@ export interface ContinuationTrapComp extends Comp {
     params: any
     readonly color: Color
     _menu: MenuModal
+    _manualObjects: Set<GameObj<StateComps>>;
     prepare(): void
     capture(): void
     peekCapture(): WorldSnapshot
@@ -76,9 +77,11 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         type: "submenu",
         opts: [switchesMenu, cNameMenu, pNameMenu],
     };
+    var prevObjs = new Set;
+    var forcePlayerFlying = false;
     return {
         id: "continuation-trap",
-        require: ["sprite", "pos", "named", "shader", "lore"],
+        require: ["sprite", "pos", "named", "shader", "area", "interactable"],
         captured: [],
         isDeferring: false,
         isConnected: false,
@@ -113,56 +116,105 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             return this.data?.behavior;
         },
         _menu: undefined as any,
-        add(this: GameObj<ContinuationTrapComp | NamedComp | SpriteComp | LoreComp | PosComp>) {
-            this.use(controllable([{ hint: "" }]));
-            this.on("invoke", () => {
-                if (!this.params.deferred || !this.isDeferring) this.prepare();
+        _manualObjects: new Set,
+        add(this: GameObj<AreaComp | ContinuationTrapComp | NamedComp | SpriteComp | PosComp> & PlayerInventoryItem) {
+            this.action1 = () => {
+                if (!this.params.deferred || !this.isDeferring) {
+                    this.prepare();
+                    return true;
+                }
+                return false;
+            };
+            this.action2 = (targeted: any) => {
+                if (this.behavior?.editable) {
+                    if (this._manualObjects.has(targeted)) this._manualObjects.delete(targeted);
+                    else this._manualObjects.add(targeted);
+                    return true;
+                }
+                return false;
+            };
+            this.onCollide("machine", obj => {
+                this.action2!(obj as any);
             });
-            // TODO: rework this mess
-            this.on("modify", (delta: number) => {
-                if (this.behavior?.editable)
-                    this.params.radius = Math.max(0, this.params.radius + delta);
-            });
+            const dummy = { paused: false, forEventGroup() { return this }, cancel() { } } as KEventControllerPatch;
+            this._menu = modalmenu(topMenu, ["menuActive", "contMenu"], "&editMenuCtlHint", dummy);
+            this._menu.onStart(() => this.startEditing());
+            this._menu.onUpdate(() => this.menuUpdate());
+            this.action3 = () => {
+                if (dummy.paused) return true;
+                if (this.behavior?.editable) {
+                    this._menu.open();
+                    return true;
+                }
+                return false;
+            };
+            this.action4 = () => {
+                if (this.data?.flyingEnabled) {
+                    forcePlayerFlying = !forcePlayerFlying;
+                    player.gravityScale = forcePlayerFlying ? -1 : 1;
+                    return true;
+                }
+                return false;
+            };
+            this.motionHandler = () => {
+                if (forcePlayerFlying) {
+                    player.gravityScale = -1;
+                    splash(player.pos.add(0, player.height / 2), this.color, 5, -10);
+                    if (player.vel.slen() > WALK_SPEED * WALK_SPEED) {
+                        player.vel = player.vel.unit().scale(WALK_SPEED);
+                    }
+                }
+                return false;
+            }
             this.on("thrown", () => {
                 if (this.params.deferred && this.isDeferring) {
                     const newHoldingIndex = player.inventory.findLastIndex(i => (i as any).controlling === this);
                     player.scrollInventory(newHoldingIndex - player.holdingIndex);
                 }
             });
-            this._menu = modalmenu(topMenu, ["menuActive", "contMenu"], "&editMenuCtlHint",
-                this.on("edit", () => this._menu.open()) as KEventControllerPatch);
-            this._menu.onStart(() => this.startEditing());
-            this._menu.onUpdate(() => this.menuUpdate());
+            this.on("active", () => {
+                if (forcePlayerFlying) player.gravityScale = -1;
+            });
+            this.on("inactive", () => {
+                if (forcePlayerFlying) player.gravityScale = 1;
+            });
             K.wait(0.1, () => {
                 Object.assign(this.params, this.behavior);
-                this.params.radius = this.params.radius * TILE_SIZE;
-                this.lore = { seen: false, ...this.data?.lore };
+                this.params.radius *= TILE_SIZE;
+                this.manpage = { ...this.data?.lore, spriteSrc: this };
                 if (!this.behavior?.editable) {
                     this._menu.destroy();
                 }
             });
         },
-        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | ControllableComp>) {
+        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
-            this.controls[0]!.hint = K.sub(
-                this.data?.hint ?? "&msg.ctlHint.continuation.default",
-                {
-                    which: "trap",
+
+            if (this.enabled) {
+                const styles = [this.name.replace(/[^\w]/g, "")];
+                const data = {
                     isDeferring: String(this.isDeferring),
                     willDefer: String(this.params.deferred),
-                });
-            this.controls[0]!.styles = [this.name.replace(/[^\w]/g, "")];
-            this.controls[0]!.hidden = !this.enabled;
+                    editable: String(this.behavior?.editable),
+                    flyEnabled: String(this.data?.flyingEnabled),
+                };
+                const hintsObj = this.data?.hints.trap ?? {};
+                this.action1Hint = hintsObj.action1 ? style(K.sub(hintsObj.action1, data), styles) : undefined;
+                this.action2Hint = hintsObj.action2 ? style(K.sub(hintsObj.action2, data), styles) : undefined;
+                this.action3Hint = hintsObj.action3 ? style(K.sub(hintsObj.action3, data), styles) : undefined;
+                this.action4Hint = hintsObj.action4 ? style(K.sub(hintsObj.action4, data), styles) : undefined;
+            } else {
+                this.action1Hint = this.action2Hint = this.action3Hint = this.action4Hint = undefined;
+            }
 
             this.uniform!.u_targetcolor = this.color;
 
             const targetAnim = this.isConnected ? "connected" : this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
-            if (this.getCurAnim()?.name !== targetAnim) {
-                if (this.hasAnim(targetAnim))
-                    this.play(targetAnim);
-                // if doesn't exist, must be checkpoint type
+            if (this.hasAnim(targetAnim)) {
+                this.play(targetAnim, { preventRestart: true });
             }
+            // if doesn't exist, must be checkpoint type
         },
         menuUpdate(this: GameObj<ContinuationTrapComp | NamedComp>) {
             this._menu.term.data.name = this.name;
@@ -175,7 +227,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             this.params.cName = cNameMenu.value;
             this.params.pName = pNameMenu.value;
         },
-        prepare(this: GameObj<ContinuationTrapComp | LoreComp> & PromiseComp["controlling"]) {
+        prepare(this: GameObj<ContinuationTrapComp> & PromiseComp["controlling"]) {
             if (!this.enabled) return;
             this.isDeferring = true;
             if (this.params.deferred) {
@@ -188,12 +240,17 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
             if (this.enabled && this.params.radius > 0 && (player.inventory.includes(this as any) || this.isDeferring)) {
                 const willCapture = this.peekCapture();
+                const newObjs = new Set(willCapture.objects.map(e => e.obj));
+                if (newObjs.difference(prevObjs).size > 0) {
+                    player.playSound("blorp", {}, this.worldPos()!);
+                }
                 for (var e of willCapture.objects) {
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).is("dont-highlight")) continue;
                     if (e.location.levelID !== WorldManager.activeLevel!.id) continue;
                     const bbox = e.obj.worldArea?.().bbox();
-                    if (bbox)
+                    if (bbox) {
+                        drawZapLine(K.vec2(0), this.fromWorld(e.obj.worldPos()!), { color: this.color }, undefined, 1);
                         K.drawRect({
                             fill: false,
                             color: this.color,
@@ -207,14 +264,17 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                                 join: "miter",
                             }
                         });
+                    }
                 }
+                prevObjs = newObjs;
             }
         },
-        capture(this: GameObj<PosComp | ContinuationTrapComp | NamedComp | ShaderComp | LoreComp>) {
+        capture(this: GameObj<PosComp | ContinuationTrapComp | NamedComp | ShaderComp | InteractableComp>) {
             this.isDeferring = false;
             if (!this.enabled) return;
             const data = this.peekCapture();
             const cont = WorldManager.activeLevel!.levelObj.add(continuation(this.name! as any, data, this)) as any as (PlayerInventoryItem & GameObj<ContinuationComp>);
+            player.addToInventory(cont);
             this.captured.push(cont);
             cont.onDestroy(() => this.captured.splice(this.captured.indexOf(cont), 1));
             player.playSound(soundOnCapture);
@@ -222,7 +282,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
             splash(this.pos, this.color);
         },
         peekCapture(this: GameObj<ContinuationTrapComp | PosComp>): WorldSnapshot {
-            return StateManager.capture(this.params, this.worldPos()!);
+            return StateManager.capture(this.params, this.worldPos()!, this._manualObjects);
         },
         inspect() {
             return `enabled: ${this.enabled}, radius: ${this.params.radius}, preparing: ${this.isDeferring}`;

@@ -1,14 +1,11 @@
 import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
 import { STYLES } from "../assets/textStyles";
-import { ContinuationComp } from "../components/continuationCore";
-import { ControllableComp } from "../components/controllable";
 import { HoldOffsetComp } from "../components/holdOffset";
-import { LoreComp } from "../components/lore";
+import { InteractableComp } from "../components/interactable";
 import { ManpageComp } from "../components/manpage";
 import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { MParser } from "../levels/mparser";
 import { actuallyRaycast, ballistics, isHidden, isPaused } from "../misc/utils";
 import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
@@ -16,7 +13,7 @@ import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
 
 
-export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | PlatformEffectorComp>;
+export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | PlatformEffectorComp | InteractableComp>;
 // MARK: PlayerComp
 
 export interface PlayerBodyComp extends Comp {
@@ -28,7 +25,7 @@ export interface PlayerBodyComp extends Comp {
     camFollower: KEventController | undefined;
     footstepsCounter: number;
     intersectingAny(type: Tag, where?: GameObj): boolean;
-    lookingAt: GameObj<PAreaComp> | undefined;
+    lookingAt: GameObj<PAreaComp | PosComp | InteractableComp> | undefined;
     lookingDirection: Vec2 | undefined;
     /**
      * Play sound, but spatial relative to the player
@@ -51,10 +48,11 @@ export interface PlayerBodyComp extends Comp {
     lookAt(pos: Vec2 | undefined): void;
     controlText: GameObj<DynamicTextComp>;
     addControlText(text: string, styles?: string[]): void;
-    manpage: GameObj<ManpageComp> | undefined;
+    manpage: GameObj<ManpageComp>;
     recalculateManpage(): void;
     tpTo(pos: Vec2): void;
     freeze(paused: boolean): void;
+    lastMotionVector: Vec2;
 }
 export function playerBody(): PlayerBodyComp {
     var flashLoop: KEventController;
@@ -62,6 +60,7 @@ export function playerBody(): PlayerBodyComp {
     return {
         id: "player-body",
         sfxEnabled: true,
+        lastMotionVector: K.vec2(0),
         head: undefined,
         get holdingItem() {
             return this.inventory[this.holdingIndex];
@@ -115,34 +114,32 @@ export function playerBody(): PlayerBodyComp {
             const h = this.holdingItem;
             if (h !== undefined) {
                 // Clear curPlatform() if I'm standing on it
-                if (this.curPlatform() === h) this.jump(1);
+                if (this.curPlatform() === h) this.jump(this.jumpForce / 3);
                 h.paused = h.hidden = false;
                 this._pull2Pos(h);
             }
             // update control text
             this.controlText.t = "";
             if (this.manpage!.hidden) {
-                this.addControlText("&msg.ctlHint.sprint    &msg.ctlHint.pause.open");
-                this.addControlText("&msg.ctlHint.move    &msg.ctlHint.jump");
+                const items: (string | false)[] = [];
+                items.push("&msg.ctlHint.pause.open");
                 if (this.inventory.length > 0) {
-                    if (this.holdingItem?.has("lore")) {
-                        if ((this.holdingItem! as unknown as GameObj<LoreComp>).lore.seen)
-                            this.addControlText("&msg.ctlHint.switchItem    &msg.ctlHint.viewInfo");
-                        else
-                            this.addControlText("&msg.ctlHint.switchItem    [rainbow]&msg.ctlHint.viewInfo[/rainbow]");
-                    }
+                    items.push("&msg.ctlHint.switchItem");
                 }
-                if (this.lookingAt?.has("grabbable"))
-                    this.addControlText("&msg.ctlHint.look    &msg.ctlHint.grab");
-                else if (this.holdingItem?.is("throwable"))
-                    this.addControlText("&msg.ctlHint.aim    &msg.ctlHint.throw");
-                else this.addControlText("&msg.ctlHint.look");
-                if (this.lookingAt?.is("interactable"))
-                    this.addControlText("&msg.ctlHint.interact");
-                if (this.holdingItem?.has("controllable")) {
-                    for (var c of (this.holdingItem as unknown as GameObj<ControllableComp>).controls) {
-                        if (!c.hidden) this.addControlText(c.hint, c.styles);
-                    }
+                for (var [useHolding, expectedHolding, expectedTargeted, hintKey, specialFlag, overrideHint, ifNone] of hintOrder) {
+                    if (expectedHolding !== undefined && expectedHolding !== !!this.holdingItem) continue;
+                    if (expectedTargeted !== undefined && expectedTargeted !== !!this.lookingAt) continue;
+                    if (specialFlag === hintFlags.action2 && !this.lookingAt) continue;
+                    const obj = useHolding ? this.holdingItem : this.lookingAt;
+                    const givenHint = hintKey ? obj?.[hintKey] : !!obj;
+                    const realHint = givenHint ? (overrideHint ?? givenHint) : ifNone;
+                    if (!realHint) continue;
+                    const isSpecial = !!((obj?.specialFlags ?? 0) & (specialFlag ?? 0));
+                    items.push(isSpecial ? `[rainbow]${realHint}[/rainbow]` : "" + realHint);
+                }
+                if (items.length % 2 == 1) items.push(false);
+                for (var i = 0; i < items.length; i += 2) {
+                    this.addControlText(items.slice(i, i + 2).filter(x => !!x).join("&tab"));
                 }
             } else {
                 if (this.manpage!.data.requiresKeyboard === "true") {
@@ -176,10 +173,11 @@ export function playerBody(): PlayerBodyComp {
                     .filter(x => !(this.inventory as any[]).includes(x)
                         && x.collisionIgnore.every(xx => !this.tags.includes(xx))
                         && !x.is("raycastIgnore")
-                        && !x.paused);
+                        && !x.paused
+                        && !x.worldArea().contains(this.worldPos()!));
 
                 // First raycast only the objects we are interested in
-                const interesting = allObjects.filter(x => x.is("interactable") || x.has("grabbable"));
+                const interesting = allObjects.filter(x => x.has("interactable"));
                 rcr = actuallyRaycast(
                     interesting,
                     this.head!.worldPos()!,
@@ -195,8 +193,8 @@ export function playerBody(): PlayerBodyComp {
                     this.lookingDirection,
                     INTERACT_DISTANCE);
                 if (rcr === null || !rcr.object) break;
-                if (!(rcr.object.is("interactable") || rcr.object.has("grabbable"))) break;
-                this.lookingAt = rcr.object as GameObj<PAreaComp>;
+                if (!rcr.object.has("interactable")) break;
+                this.lookingAt = rcr.object as GameObj<PAreaComp | PosComp | InteractableComp>;
 
             } while (false);
 
@@ -224,7 +222,7 @@ export function playerBody(): PlayerBodyComp {
                     width: 2 / SCALE,
                     color: K.WHITE.darken(200)
                 });
-            } else if (this.holdingItem?.is("throwable") && this.throwImpulse) {
+            } else if (this.throwImpulse) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
                 K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
@@ -291,6 +289,7 @@ export function playerBody(): PlayerBodyComp {
                 }
             });
             obj.setParent(this, { keep: K.KeepFlags.Pos });
+            obj.tag("inInventory");
             obj.hidden = obj.paused = true;
             // Put in inventory
             this.inventory.push(obj);
@@ -315,9 +314,9 @@ export function playerBody(): PlayerBodyComp {
             obj.paused = obj.hidden = false;
             if (obj.exists()) {
                 obj.parent = WorldManager.activeLevel!.levelObj;
-                obj.pos = this.worldPos()!;
                 obj.vel = K.vec2(0);
                 obj.trigger("inactive");
+                obj.untag("inInventory");
             }
             this.inventory.splice(i, 1);
             if (this.holdingIndex > i) {
@@ -335,6 +334,7 @@ export function playerBody(): PlayerBodyComp {
                 return;
             };
             this.removeFromInventory(obj);
+            obj.worldPos(this.worldPos()!);
             if (obj.has("platformEffector"))
                 [...this.inventory, this].forEach(item => (obj as unknown as GameObj<PlatformEffectorComp>).platformIgnore.add(item));
             this.trigger("drop", obj);
@@ -349,7 +349,7 @@ export function playerBody(): PlayerBodyComp {
         },
         throw(this: GameObj<PlayerBodyComp>) {
             const thrown = this.holdingItem;
-            if (!thrown || !this.throwImpulse || !thrown.is("throwable")) {
+            if (!thrown || !this.throwImpulse) {
                 this.trigger("whiff");
                 return;
             }
@@ -415,17 +415,57 @@ export function playerBody(): PlayerBodyComp {
         },
 
         // MARK: manpage
-        manpage: undefined,
+        manpage: null as any,
         recalculateManpage() {
-            this.manpage!.sprite = (this.holdingItem?.has("continuation") ? (this.holdingItem as any as GameObj<ContinuationComp>).trappedBy : this.holdingItem?.has("promise") ? (this.holdingItem as any).controlling : this.holdingItem) as any;
-            this.manpage!.scrollPos = 0;
-            if (this.holdingItem && this.holdingItem.has("lore")) {
-                const oo = this.holdingItem as unknown as GameObj<LoreComp>;
-                this.manpage!.section = `${oo.lore?.secName}(${oo.lore?.section})`;
-                this.manpage!.body = String((oo.lore?.body)!);
-                this.manpage!.header = String((oo.lore?.header)!);
-                oo.lore.seen = true;
+            if (!this.holdingItem || !this.holdingItem.manpage) {
+                this.manpage.hidden = true;
+                return;
             }
+            const manData = this.holdingItem.manpage;
+            this.holdingItem.specialFlags &= ~hintFlags.manpage;
+            this.manpage.sprite = manData.spriteSrc;
+            this.manpage.section = `${manData.secName}(${manData.section})`;
+            this.manpage.body = String(manData.body);
+            this.manpage.header = String(manData.header);
+            this.manpage.scrollPos = 0;
         }
     };
 }
+
+export enum hintFlags {
+    action1 = 1,
+    action2 = 2,
+    action3 = 4,
+    action4 = 8,
+    target1 = 16,
+    target2 = 32,
+    manpage = 64,
+    tellMe = 128,
+    all = 255
+}
+
+const hintOrder: [
+    useHolding: boolean,
+    expectedHolding: boolean | undefined,
+    expectedTargeted: boolean | undefined,
+    hintKey: keyof GameObj<InteractableComp> | undefined,
+    specialFlag: number,
+    overrideHint: string | undefined | false,
+    ifNone: string | undefined
+][] = [
+        [true, , , "moveHint", 0, , "&msg.ctlHint.sprint",],
+        [true, , , "moveHint", 0, false, "&msg.ctlHint.move",],
+        [true, , , "moveHint", 0, false, "&msg.ctlHint.jump",],
+        [true, , , "tellMe", hintFlags.tellMe, , ,],
+        [true, , , "manpage", hintFlags.manpage, "&msg.ctlHint.viewInfo", ,],
+        [true, , , "action1Hint", hintFlags.action1, , ,],
+        [false, , , "target1Hint", hintFlags.target1, , ,],
+        [false, false, false, "target1Hint", 0, , "&msg.ctlHint.look",],
+        [true, true, false, , 0, "&msg.ctlHint.aim", ,],
+        [true, true, false, , 0, "&msg.ctlHint.throw", ,],
+        [true, , , "action2Hint", hintFlags.action2, , ,],
+        [true, , , "action3Hint", hintFlags.action3, , ,],
+        [true, , , "action4Hint", hintFlags.action4, , ,],
+        [false, , , "target2Hint", hintFlags.target2, , ,],
+    ];
+

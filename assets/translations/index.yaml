@@ -15,48 +15,56 @@ c:
     jump: (&button.south)
     aim: (rstick)
     look: (rstick)
-    info: (&button.north)
-    interact: '\[&button.rstick]'
-    throw: '\[&button.rtrigger]'
-    invoke: (&button.east)
-    modify: '\[d-pad]'
-    edit: (&button.west)
+    throw: '\[&nutton.rtrigger]'
     inventory.scroll: '\[&button.lshoulder]/\[&button.rshoulder]'
     pause: (&button.start)
-    flyUp: '\[&button.ltrigger]'
+    target1: '\[&button.rstick]'
+    target2: (&button.ltrigger)
+    inspect: (&button.west)
+    action1: (dpad &arrow.down)
+    action2: (dpad &arrow.right)
+    action3: (dpad &arrow.left)
+    action4: (dpad &arrow.up)
+    read_manpage: (&button.north)
+    inspect_next: (&button.east)
     pMenu:
       switch: '\[d-pad]'
       select: (&button.south)
       back: (&button.east)
       exit: (&button.west)
+      editSubmit: "&c.keyboard.pMenu.editSubmit"
+      editCancel: "&c.keyboard.pMenu.editCancel"
     dialog:
       scroll: (lstick)
-      exit: (&button.north)
+      exit: "&control.read_manpage"
   keyboard:
     move: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
     sprint: '\[shift]'
     jump: '\[space]'
     aim: '\[mouse]'
     look: '\[mouse]'
-    info: '\[X]'
-    interact: '\[left click]'
     throw: '\[right click]'
-    invoke: '\[E]/\[enter]'
-    modify: '\[scroll]'
-    edit: '\[Q]'
     inventory.scroll: '\[Z]/\[C]'
     pause: '\[tab]'
-    flyUp: '\[V]'
+    target1: '\[left click]'
+    target2: '\[T]'
+    inspect: '\[F]'
+    action1: '\[E]/\[enter]'
+    action2: '\[R]'
+    action3: '\[Q]'
+    action4: '\[V]'
+    read_manpage: '\[X]'
+    inspect_next: '\[G]'
     pMenu:
       switch: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
       select: '\[enter]'
       back: '\[backspace]'
-      exit: '\[Q]'
+      exit: '\[backspace]'
       editSubmit: '\[enter]'
       editCancel: '\[esc]'
     dialog:
       scroll: '\[scroll]/\[WS]/\[&arrow.up&arrow.down]'
-      exit: '\[X]'
+      exit: "&control.read_manpage"
 button: "&&controllerType"
 xbox:
   north: "Y"
@@ -72,10 +80,10 @@ xbox:
   lstick: LS
   rstick: RS
 ps4:
-  north: ▲
+  north: △
   east: ○
-  south: X
-  west: █
+  south: ⨉
+  west: □
   lshoulder: L1
   ltrigger: L2
   rshoulder: R1
@@ -85,10 +93,10 @@ ps4:
   lstick: L3
   rstick: R3
 ps5:
-  north: ▲
+  north: △
   east: ○
-  south: X
-  west: █
+  south: ⨉
+  west: □
   lshoulder: L1
   ltrigger: L2
   rshoulder: R1
@@ -110,10 +118,6 @@ switch:
   start: +
   lstick: LS
   rstick: RS
-system.command: agdb pm &system.pid.core
-system.pid: "4242"
-system.debugger.pid: "4247"
-cutscene.backup.location: /tmp/backups/1
 pauseMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
@@ -125,4 +129,4 @@ editMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
   &msg.ctlHint.pause.select
-  &msg.ctlHint.continuation.stopEdit)
+  &msg.ctlHint.item.trap.stopEdit)

@@ -1,5 +1,7 @@
-import { AreaComp, Comp, GameObj, SpriteComp, StateComp, TimerComp, TweenController } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, PosComp, SpriteComp, StateComp, TimerComp } from "kaplay";
 import { K } from "../init";
+import { player } from "../player";
+import { InteractableComp } from "./interactable";
 import { TogglerComp } from "./toggler";
 
 
@@ -13,16 +15,14 @@ export interface RollingDoorComp extends Comp {
 export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDoorComp {
     return {
         id: "rolling-door",
-        require: ["state", "area", "sprite", "toggler"],
+        require: ["state", "area", "body", "pos", "sprite", "toggler", "interactable"],
         rollAmount: 0,
-        add(this: GameObj<StateComp<(typeof states)[number]> | AreaComp | SpriteComp | TogglerComp | TimerComp | RollingDoorComp>) {
+        add(this: GameObj<StateComp<(typeof states)[number]> | PosComp | InteractableComp | AreaComp | BodyComp | SpriteComp | TogglerComp | TimerComp | RollingDoorComp>) {
             this.onStateEnter(states[0], () => {
                 this.tween(this.rollAmount, 0, 1, val => this.rollAmount = val, K.easings.easeOutBounce);
-                this.collisionIgnore = this.collisionIgnore.filter(x => x !== "*");
             });
             this.onStateEnter(states[1], () => {
                 this.tween(this.rollAmount, -1, Math.abs(this.rollAmount - (-1)), val => this.rollAmount = val);
-                this.collisionIgnore.push("*");
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!
@@ -34,6 +34,14 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
                     }
                 }));
             });
+            this.onBeforePhysicsResolve(col => {
+                if (this.state === states[1]) col.preventResolution();
+            });
+            this.target1 = () => {
+                player.playSound("knock", {}, this.pos);
+                return true;
+            };
+            this.target1Hint = "&msg.ctlHint.item.door.knock";
         },
     };
 }

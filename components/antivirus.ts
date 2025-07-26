@@ -1,13 +1,13 @@
 import { AreaComp, BodyComp, Color, Comp, GameObj, OffScreenComp, PosComp, RaycastResult, RotateComp, SpriteComp, StateComp, Tag, TimerComp, TweenController } from "kaplay";
+import { STYLES } from "../assets/textStyles";
 import { FONT_SCALE, SCALE, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { actuallyRaycast } from "../misc/utils";
+import { actuallyRaycast, style } from "../misc/utils";
 import { player } from "../player";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { LinkComp } from "./linked";
 import { TogglerComp } from "./toggler";
-import { STYLES } from "../assets/textStyles";
 
 export interface AntivirusComp extends Comp {
     alertTextObj: GameObj<DynamicTextComp | PosComp>
@@ -146,8 +146,4 @@ export function antivirus(): AntivirusComp {
             this.alertTextObj?.destroy();
         }
     }
-}
-
-function style(t: string, ss: string[]): string {
-    return `${ss.map(s => `[${s}]`).join("")}${t}${ss.toReversed().map(s => `[/${s}]`).join("")}`;
 }

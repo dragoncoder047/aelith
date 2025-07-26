@@ -2,7 +2,6 @@ throw:
   color: "#0000ff"
   behavior:
     cName: catch
-    pName: null
     radius: 0
     oneshot: true
     concurrent: false
@@ -15,7 +14,11 @@ throw:
     global: false
     destroysObjects: false
     destroyImmune: false
-  hint: null
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.default"
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
   flyingEnabled: false
   lore:
     header: "&msg.lore.continuation.throw.header"
@@ -26,7 +29,6 @@ setjmp:
   color: "#00ffff"
   behavior:
     cName: longjmp
-    pName: null
     radius: 4
     oneshot: true
     concurrent: false
@@ -39,7 +41,11 @@ setjmp:
     global: false
     destroysObjects: false
     destroyImmune: false
-  hint: null
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.default"
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
   flyingEnabled: false
   lore:
     header: "&msg.lore.continuation.setjmp.header"
@@ -63,8 +69,13 @@ async:
     global: false
     destroysObjects: false
     destroyImmune: false
-  hint: >-
-    $fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.default~trap:$fn.switch(&isDeferring~false:&msg.ctlHint.continuation.throw~true:&msg.ctlHint.continuation.usePromise)~promise:&msg.ctlHint.continuation.promise)
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.$fn.switch(&isDeferring~true:blocked.async~false:async)"
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
+    promise:
+      action1: "&msg.ctlHint.item.promise.capture"
   flyingEnabled: false
   lore:
     header: "&msg.lore.continuation.async.header"
@@ -75,7 +86,6 @@ yield:
   color: "#ffff00"
   behavior:
     cName: next
-    pName: null
     radius: 0
     oneshot: true
     concurrent: true
@@ -88,7 +98,11 @@ yield:
     global: false
     destroysObjects: false
     destroyImmune: false
-  hint: null
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.default"
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
   flyingEnabled: false
   lore:
     header: "&msg.lore.continuation.yield.header"
@@ -99,7 +113,6 @@ switch:
   color: "#ee4466"
   behavior:
     cName: case
-    pName: null
     radius: 2
     oneshot: true
     concurrent: false
@@ -112,7 +125,11 @@ switch:
     global: false
     destroysObjects: false
     destroyImmune: false
-  hint: null
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.default"
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
   flyingEnabled: false
   lore:
     header: "&msg.lore.continuation.switch.header"
@@ -136,11 +153,18 @@ call/cc:
     global: false
     destroysObjects: false
     destroyImmune: true
-  hint: |
-    $fn.switch(&which~trap:$fn.switch(&willDefer~true:&msg.ctlHint.continuation.throw~false:&msg.ctlHint.continuation.default)
-    &msg.ctlHint.continuation.modify
-    &msg.ctlHint.continuation.edit&tab&msg.ctlHint.continuation.fly~continuation:&msg.ctlHint.continuation.invoke.default~promise:&msg.ctlHint.continuation.promise
-    &msg.ctlHint.continuation.remoteMove)
+  hints:
+    trap:
+      action1: "&msg.ctlHint.item.trap.$fn.switch(&willDefer~true:$fn.switch(&isDeferring~true:blocked.async~false:async)~false:default)"
+      action2: $fn.switch(&editable~true:&msg.ctlHint.item.trap.selectObjects)
+      action3: $fn.switch(&editable~true:&msg.ctlHint.item.trap.editFlags)
+      action4: $fn.switch(&editable~true:&msg.ctlHint.item.trap.boostModeToggle)
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.default"
+    promise:
+      action1: "&msg.ctlHint.item.promise.capture"
+      action4: $fn.switch(&flyEnabled~true:&msg.ctlHint.promise.boostModeToggle)
+      motion: $fn.switch(&flying~true:&msg.ctlHint.promise.boostModeToggle)
   flyingEnabled: true
   lore:
     header: "&msg.lore.continuation.callcc.header"
@@ -151,7 +175,6 @@ assert:
   color: "#00ff00"
   behavior:
     cName: assert
-    pName: null
     radius: 1.79e+308
     oneshot: false
     concurrent: false
@@ -164,7 +187,9 @@ assert:
     global: true
     destroysObjects: true
     destroyImmune: true
-  hint: "$fn.switch(&which~continuation:&msg.ctlHint.continuation.invoke.assert)"
+  hints:
+    continuation:
+      action1: "&msg.ctlHint.item.continuation.invoke.checkpoint"
   flyingEnabled: true
   lore:
     header: "&msg.lore.continuation.assert.header"

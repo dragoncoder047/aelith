@@ -38,6 +38,7 @@ lore:
       by throwing it in, and can even be inserted into the currently-running
       process (which appears to be: [b]&system.command[/b]).
 
+
       [b]CAVEATS[/b]
 
       &tabNone of the versions of [b]var[/b], [b]const[/b], or [b]let[/b] clear
@@ -385,9 +386,41 @@ ctlHint:
   aim: "&control.aim aim"
   throw: "&control.throw throw"
   look: "&control.look look"
-  grab: "&control.interact grab"
-  interact: "&control.interact interact"
   switchItem: "&control.inventory.scroll switch item"
+  viewInfo: "&control.read_manpage inspect"
+  dialog:
+    scroll: "&control.dialog.scroll view more"
+    exit: "&control.dialog.exit close"
+    msg.exit: '\[esc] close'
+  item:
+    trap:
+      default: "&control.action1 capture a continuation"
+      async: "&control.action1 capture a promise"
+      blocked.async: Use the promise to invoke remotely
+      selectObjects: "&control.action2 select/deselect"
+      editFlags: "&control.action3 edit capture flags"
+      boostModeToggle: "&control.action4 toggle boost mode"
+      grab: "&control.target1 pick up"
+      stopEdit: "&control.pMenu.back finish"
+    continuation:
+      invoke.default: "&control.action1 invoke continuation"
+      invoke.checkpoint: "&control.action1 reset to checkpoint"
+      grab: "&control.target1 pick up"
+    promise:
+      capture: "&control.action1 capture continuation from there"
+      boostModeToggle: "&control.action4 toggle boost mode"
+      motion: "&control.move move trap"
+      grab: "&control.target1 pick up"
+    box:
+      grab: "&control.target1 grab"
+    bug:
+      stun: "&control.target1 stun"
+    switch:
+      switch: "&control.target1 pull lever"
+    light:
+      smack: "&control.target1 smack"
+    door:
+      knock: "&control.target1 knock"
   pause:
     open: "&control.pause pause game"
     switch: "&control.pMenu.switch switch"
@@ -396,24 +429,6 @@ ctlHint:
     unpause: "&control.pMenu.exit unpause"
     editSubmit: "&c.keyboard.pMenu.editSubmit submit"
     editCancel: "&c.keyboard.pMenu.editCancel cancel"
-  viewInfo: "&control.info inspect"
-  dialog:
-    scroll: "&control.dialog.scroll view more"
-    exit: "&control.dialog.exit close"
-    msg.exit: '\[esc] close'
-  continuation:
-    default: "&control.invoke capture a continuation"
-    throw: "&control.invoke capture a promise"
-    promise: "&control.invoke capture continuation from there"
-    usePromise: Use the promise to invoke remotely
-    modify: "&control.modify change capture radius"
-    edit: "&control.edit edit capture flags"
-    stopEdit: "&control.edit finish"
-    fly: "&control.flyUp fly up"
-    remoteMove: "&control.flyUp move trap"
-    invoke:
-      default: "&control.invoke invoke continuation"
-      assert: "&control.invoke invoke checkpoint"
 continuation.edit:
   flags: Choose flags
   pName: Change promise name
@@ -449,100 +464,15 @@ pause:
     boxes_cloned: memory allocated
     deaths: deaths
 dead:
-  complete: Debugging complete.
+  segfault: Segmentation fault (core dumped)
   failed: failed to eliminate all bugs!
   resume: Resume from a previous checkpoint
   checkpoint: Checkpoint
   fromBeginning: from the beginning
-cutscene:
-  continued: continued
-  startup:
-    password: "Password for &user: "
-    loggedInOK: Logged in!
-    pressToBegin: Press ENTER to start...
-    ai.prompt: ask AI
-    findAnswer: Create a new platformer videogame from scratch.
-    answer: "That's a tough task, but here goes nothing..."
-    startingDebugger: Starting debugger...
-    segfault: segmentation fault
-  sudo:
-    password: "Password for &user:"
-    nomemory: out of memory initializing agent mode
-  race:
-    name: deadlock
-    cantKill: can't kill
-    pid: pid
-    mustBeKilledFirst: must be killed first
-  pipefail:
-    noMoreHelp: >-
-      Well, that's the end of my tutorial... I suppose I should say more since
-      you're debugging me, but I have the sinking feeling that I'm going to
-      crash again if I do that, so �������
-    unicodeError: Error fetching Unicode table
-    gaveUp: "Okay, fine... insert imaginary shrug emoji..."
-  backup:
-    success: "Backed up 124875 files to [b]&cutscene.backup.location/assert[/b]"
-    explanation: >-
-      The file &cutscene.backup.location/assert is a way for you to be able to
-      start over if you mess up and break things. Just pass it to the assert
-      command again to jump back. Don't lose it!
 press: press
 notImplemented: "Not implemented yet, sorry"
 bsod.sadfaceMsg: >-
   The game ran into a problem that it couldn't handle, and now it needs to be
   restarted.
 bsod.searchOnlineHint: "You can search for the error online:"
-wrongWayRight: Go that way &arrow.right
-newToDebugging: New to debugging? Great! Head on over and I'll show you around.
-firstPortal: |-
-  That's a symlink. It will take you to another part of the filesystem.
-  &arrow.right
-firstButton: |-
-  Buttons trigger things while
-  pressed, like this lightbulb
-getMeOneToo: |-
-  While you're at it, save me some
-  memory too -- y'know, that's probably
-  why I crashed...
-firstVariable: |-
-  This is a variable.
-  These will be very useful!
-firstDoor: |-
-  To open the door, you will need to press
-  and hold that button.
-  You have the memory for that, right?
-raceCond: >-
-  Maybe that's why I crashed... a race condition? A little continuation juice
-  right there, thanks!
-firstCheckpoint: |-
-  &arrow.left Oops, that's
-    the checkpoint
-    file...
-firstContinuation: >-
-  That [assert]green[/assert] thing you are holding?
 
-  That's the backup file that [assert]assert[/assert] just saved, which is a
-  [bouncy][rainbow]continuation![/rainbow][/bouncy]
-
-  Go on, invoke it!
-firstTrap: >-
-  With that [throw]blue[/throw] device, you can capture your own continuation
-  files!
-
-  Don't be shy -- grab it!
-completedFirstChallenge: |-
-  That was easy,
-  wasn't it?
-eekBug: Eek! A bug!
-noLadderNoProblem: >-
-  No ladder? No problem. You have the tools. I segfaulted trying to figure out
-  how to use them.
-slightlyDifferent: This one behaves slightly differently... probably a good thing!
-fellOut: |-
-  Well, now you're in a pickle...
-  Continuations are your friend!
-waterDamage: There seems to have a bit of a water damage problem here...
-noLoneBugs: >-
-  I'm sure you're familiar with the fact that there is no such thing as "one
-  bug"...
-DUMMY: DUMMY

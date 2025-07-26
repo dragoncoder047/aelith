@@ -16,29 +16,45 @@ export const CONTROLS: Controls = {
         keyboard: ["space"],
         gamepad: ["south"],
     },
-    interact: {
-        mouse: ["left"],
-        gamepad: ["rstick"],
-    },
     throw: {
         mouse: ["right"],
         gamepad: ["rtrigger"],
     },
-    invoke: {
-        keyboard: ["e", "enter"],
-        gamepad: ["east"],
+    target1: {
+        mouse: ["left"],
+        gamepad: ["rstick"],
     },
-    view_info: {
-        gamepad: ["north"],
-        keyboard: ["x"],
+    target2: {
+        keyboard: ["t"],
+        gamepad: ["ltrigger"],
     },
-    edit: {
+    inspect: {
+        keyboard: ["f"],
         gamepad: ["west"],
-        keyboard: ["q"],
     },
-    flyUp: {
+    action1: {
+        keyboard: ["e", "enter"],
+        gamepad: ["dpad-down"],
+    },
+    action2: {
+        keyboard: ["r"],
+        gamepad: ["dpad-right"],
+    },
+    action3: {
+        keyboard: ["q"],
+        gamepad: ["dpad-left"],
+    },
+    action4: {
         keyboard: ["v"],
-        gamepad: ["ltrigger"]
+        gamepad: ["dpad-up"],
+    },
+    read_manpage: {
+        keyboard: ["x"],
+        gamepad: ["north"],
+    },
+    inspect_next: {
+        keyboard: ["g"],
+        gamepad: ["east"],
     },
     // inventory controls
     inv_previous: {
@@ -48,14 +64,6 @@ export const CONTROLS: Controls = {
     inv_next: {
         keyboard: ["c"],
         gamepad: ["rshoulder"]
-    },
-    // inventory mod controls
-    invoke_increment: {
-        // mouse: scroll wheel
-        gamepad: ["dpad-up"],
-    },
-    invoke_decrement: {
-        gamepad: ["dpad-down"],
     },
     // motion controls
     sprint: {

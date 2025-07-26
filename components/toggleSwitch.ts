@@ -1,4 +1,5 @@
 import { AreaComp, Comp, GameObj, PosComp } from "kaplay";
+import { InteractableComp } from "./interactable";
 import { LinkComp } from "./linked";
 
 export interface TogglerSwitchComp extends Comp {
@@ -10,12 +11,14 @@ export interface TogglerSwitchComp extends Comp {
 export function toggleSwitch(msg: string = "toggle"): TogglerSwitchComp {
     return {
         id: "toggleSwitch",
-        require: ["linked", "area"],
-        add(this: GameObj<AreaComp | PosComp | LinkComp>) {
-            this.on("interact", () => {
+        require: ["linked", "area", "interactable"],
+        add(this: GameObj<InteractableComp | AreaComp | PosComp | LinkComp>) {
+            this.target1 = () => {
                 this.broadcast(msg);
-                this.trigger("pull")
-            });
+                this.trigger("pull");
+                return true;
+            };
+            this.target1Hint = "&msg.ctlHint.item.switch.switch";
         }
     };
 }

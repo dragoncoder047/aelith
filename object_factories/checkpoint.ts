@@ -1,10 +1,10 @@
 import { AreaComp, Comp, GameObj, Tag } from "kaplay";
 import { ContinuationTrapComp, continuationTrapCore } from "../components/continuationTrap";
-import { lore } from "../components/lore";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
+import { interactable, InteractableComp } from "../components/interactable";
 
 export function checkpoint() {
     return [
@@ -15,14 +15,14 @@ export function checkpoint() {
         K.shader("recolorRed", {
             u_targetcolor: K.RED,
         }),
+        interactable(),
         continuationTrapCore("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
-        lore(),
         {
-            add(this: GameObj<AreaComp | ContinuationTrapComp>) {
+            add(this: GameObj<AreaComp | ContinuationTrapComp | InteractableComp>) {
                 this.onCollide("player", () => {
-                    this.trigger("invoke");
+                    this.action1!();
                 });
             }
         } as Comp,

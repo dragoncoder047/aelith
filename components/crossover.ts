@@ -61,36 +61,25 @@ function passthroughHelper(
                 };
             }));
             this.onBeforePhysicsResolve(coll => {
-                const objs = [coll.target];
-                if (coll.target === player || player.inventory.includes(coll.target as any)) {
-                    objs.push(...player.inventory);
+                const o = coll.target;
+                if (o.isStatic) return;
+                if (this.main.colliding[this.otherDir].has(o)) return;
+                if (this.main.colliding[this.passDir].has(o)) {
+                    coll.preventResolution();
+                } else if (!this.main.colliding[this.passDir].has(o)) {
+                    this.main.colliding[this.passDir].add(o);
+                    this.main.colliding[this.otherDir].delete(o);
+                    coll.preventResolution();
+                } else if (!this.main.colliding[this.otherDir].has(o)) {
+                    this.main.colliding[this.otherDir].add(o);
+                    this.main.colliding[this.passDir].delete(o);
                 }
-                objs.forEach(o => {
-                    if (o.isStatic) return;
-                    if (this.main.colliding[this.otherDir].has(o)) return;
-                    if (this.main.colliding[this.passDir].has(o)) {
-                        coll.preventResolution();
-                    } else if (!this.main.colliding[this.passDir].has(o)) {
-                        this.main.colliding[this.passDir].add(o);
-                        this.main.colliding[this.otherDir].delete(o);
-                        coll.preventResolution();
-                    } else if (!this.main.colliding[this.otherDir].has(o)) {
-                        this.main.colliding[this.otherDir].add(o);
-                        this.main.colliding[this.passDir].delete(o);
-                    }
-                });
             });
-            this.onCollideEnd(obj => {
-                const objs = [obj];
-                if (obj === player || player.inventory.includes(obj as any)) {
-                    objs.push(...player.inventory);
+            this.onCollideEnd(o => {
+                if (!this.main.isColliding(o as any)) {
+                    this.main.colliding[this.passDir].delete(o);
+                    this.main.colliding[this.otherDir].delete(o);
                 }
-                objs.forEach(o => {
-                    if (!this.main.isColliding(o as any)) {
-                        this.main.colliding[this.passDir].delete(o);
-                        this.main.colliding[this.otherDir].delete(o);
-                    }
-                });
             });
         },
         update(this: GameObj<UVQuadComp | PosComp | AreaComp | CrossoverHelperComp>) {
@@ -128,7 +117,7 @@ export function crossover(): CrossoverComp {
         add(this: GameObj<AreaComp | PosComp | BodyComp | RectComp | CrossoverComp>) {
             this.use(K.anchor("center"));
             detectors.push(this.add([
-                K.area(),
+                K.area({ collisionIgnore: ["inInventory"] }),
                 K.pos(),
                 K.anchor("right"),
                 K.uvquad(0, 0),
@@ -139,7 +128,7 @@ export function crossover(): CrossoverComp {
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
-                K.area(),
+                K.area({ collisionIgnore: ["inInventory"] }),
                 K.pos(K.vec2(this.width / 2, 0)),
                 K.anchor("left"),
                 K.uvquad(0, 0),
@@ -150,7 +139,7 @@ export function crossover(): CrossoverComp {
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
-                K.area(),
+                K.area({ collisionIgnore: ["inInventory"] }),
                 K.pos(),
                 K.anchor("bot"),
                 K.uvquad(0, 0),
@@ -161,7 +150,7 @@ export function crossover(): CrossoverComp {
                 "raycastIgnore" as Tag,
             ]));
             detectors.push(this.add([
-                K.area(),
+                K.area({ collisionIgnore: ["inInventory"] }),
                 K.pos(),
                 K.anchor("top"),
                 K.uvquad(0, 0),

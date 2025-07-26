@@ -1,7 +1,10 @@
-import { Tag } from "kaplay";
+import { GameObj, PosComp, StateComp, Tag } from "kaplay";
 import { spriteToggle } from "../components/spriteToggle";
 import { K } from "../init";
 import { machine } from "./machine";
+import { interactable } from "../components/interactable";
+import { player } from "../player";
+import { splash } from "../misc/particles";
 
 export function light() {
     return [
@@ -10,7 +13,14 @@ export function light() {
         ...machine(),
         K.anchor("bot"),
         "light" as Tag,
-        "raycastIgnore" as Tag,
+        interactable(),
+        {
+            target1(this: GameObj<PosComp | StateComp<"off" | "on">>) {
+                player.playSound("tink", {}, this.pos);
+                splash(this.pos, this.state === "off" ? K.RED : K.GREEN);
+                return true;
+            },
+            target1Hint: "&msg.ctlHint.item.light.smack"
+        }
     ]
 }
-

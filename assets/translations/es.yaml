@@ -379,9 +379,25 @@ ctlHint:
   aim: "&control.aim apuntar"
   throw: "&control.throw tirar"
   look: "&control.look mirar"
-  grab: "&control.interact agarrar"
-  interact: "&control.interact interactuar"
   switchItem: "&control.inventory.scroll cambiar de item"
+  item:
+    trap:
+      default: "&control.action1 captura una continuacion"
+      async: "&control.action1 captura una promesa"
+      blocked.async: Usa la promesa para invocar remotamente
+      selectObjects: "&control.action2 select/deselect"
+      editFlags: "&control.action3 edita los parametros de captura"
+      boostModeToggle: "&control.action4 vuela hacia arriba"
+      grab: "&control.target1 agarrarlo"
+      stopEdit: "&control.pMenu.back terminar"
+    continuation:
+      invoke.default: "&control.action1 invoca una continuacio"
+      invoke.checkpoint: "&control.action1 invoca un checkpoint"
+      grab: "&control.target1 agarrarlo"
+    promise:
+      capture: "&control.action1 captura una continuacion desde ahi"
+      motion: "&control.move mover trampa"
+      grab: "&control.target1 agarrarlo"
   pause:
     open: "&control.pause pausar"
     switch: "&control.pMenu.switch cambiar"
@@ -395,19 +411,6 @@ ctlHint:
     scroll: "&control.dialog.scroll ver mas"
     exit: "&control.dialog.exit cerrar"
     msg.exit: '\[esc] cerrar'
-  continuation:
-    default: "&control.invoke captura una continuacion"
-    throw: "&control.invoke captura una promesa"
-    promise: "&control.invoke captura una continuacion desde ahi"
-    usePromise: Usa la promesa para invocar remotamente
-    modify: "&control.modify cambia el radio de captura"
-    edit: "&control.edit edita los parametros de captura"
-    stopEdit: "&control.edit terminar"
-    fly: "&control.flyUp vuela hacia arriba"
-    remoteMove: "&control.flyUp mover trampa"
-    invoke:
-      default: "&control.invoke invoca una continuacion"
-      assert: "&control.invoke invoca un checkpoint"
 continuation.edit:
   flags: Elegir parametros
   pName: Cambiar el nombre de la promesa
@@ -448,95 +451,7 @@ dead:
   resume: Resume from a previous checkpoint
   checkpoint: Checkpoint
   fromBeginning: from the beginning
-cutscene:
-  continued: continuado
-  startup:
-    password: "Contraseña para &user: "
-    loggedInOK: Sesion iniciada!
-    pressToBegin: Presiona ENTER para empezar...
-    ai.prompt: preguntale a la IA
-    findAnswer: Crea un juego de plataformas desde cero.
-    answer: "Es una tarea complicada, pero bueno, la suerte esta echada..."
-    startingDebugger: Iniciando depurador...
-    segfault: segmentation fault
-  sudo:
-    password: "Contraseña para &user: "
-    nomemory: sin memoria inicializando modo agente
-  race:
-    name: bloqueo mutuo
-    cantKill: no puede ser terminado
-    pid: pid
-    mustBeKilledFirst: debe ser terminado primero
-  pipefail:
-    noMoreHelp: >-
-      Bueno, ese fue el final de el tutorial... Supongo que deberia decir mas ya
-      que me estas depurando, pero tengo la sensacion angustiante de que voy a
-      crashear de nuevo si hago eso, asi que �������
-    unicodeError: Error obteniendo la tabla Unicode
-    gaveUp: "Okay, esta bien... inserte emoji imaginario de shrug..."
-  backup:
-    success: >-
-      Se han respaldado 124875 archivos a
-      [b]&cutscene.backup.location/assert[/b]
-    explanation: >-
-      EL archivo &cutscene.backup.location/assert es una manera de que puedas
-      empezar de nuevo si te equivocas y rompes las cosas. Solamente usalo en el
-      commando de assert y vuelve ¡No lo pierdas!
 press: presionar
 notImplemented: "Lo siento, no esta implementado aun"
 bsod.sadfaceMsg: "El juego tuvo un problema que no pudo manejar, tienes que reiniciarlo."
 bsod.searchOnlineHint: "Puedes buscar el error online:"
-wrongWayRight: Ve por alla &arrow.right
-newToDebugging: >-
-  Eres nuevo al proceso de depurar? Esta bien! Dirigete aca y te mostrare el
-  lugar.
-firstPortal: |-
-  Eso es un symlink. Te llevara a otra parte del sistema de archivos.
-  &arrow.right
-firstButton: |-
-  Los botones causan cosas cuando los presionas
-  , como esta bombilla
-getMeOneToo: |-
-  Mientras estas ahi, guardame
-  un poco de memoria tambien -- probablemente por eso
-  crashee...
-firstVariable: |-
-  Esta es una variable.
-  ¡Estas serán muy útiles!
-firstDoor: |-
-  Para abrir la puerta, necesitarás mantener
-   presionado ese botón.
-  Tienes la memoria para eso, ¿verdad?
-raceCond: >-
-  ¿Tal vez por eso crashee...? ¿Una condición causada por multiples hilos? Un
-  poco de jugo de continuation justo ahí, ¡gracias!
-firstCheckpoint: |-
-  &arrow.left Oops, ese es
-    el archivo de checkpoint
-    ...
-firstContinuation: >-
-  Esa cosa [assert]verde[/assert] que estás sosteniendo?
-
-  Ese es el archivo de respaldo que [assert]assert[/assert] acaba de guardar,
-  ¡que es una [bouncy][rainbow]continuation![/rainbow][/bouncy]
-
-  ¡Vamos, invócala!
-firstTrap: >-
-  Con ese dispositivo [throw]azul[/throw], ¡puedes capturar tus propios archivos
-  de continuación!
-
-  No seas tímido -- ¡agárralo!
-completedFirstChallenge: |-
-  Eso fue fácil,
-  ¿no?
-eekBug: ¡Eek! ¡Un bug!
-noLadderNoProblem: >-
-  ¿No tienes una escalera? No hay problema. Tienes las herramientas. Hice un
-  segfault tratando de descubrir cómo usarlas.
-slightlyDifferent: Este se comporta un poco diferente... ¡probablemente sea algo bueno!
-fellOut: |-
-  Bueno, ahora estás en un lío...
-  ¡Las continuations son tus amigas!
-waterDamage: Parece que hay un pequeño problema de daño por agua aquí...
-noLoneBugs: Seguramente te suena el hecho de que no hay algo como "un solo bug"...
-DUMMY: TONTO

@@ -1,15 +1,13 @@
 import { BodyComp, GameObj, Tag } from "kaplay";
-import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
-import { lore, LoreComp } from "../components/lore";
+import { interactable } from "../components/interactable";
 import { promise, PromiseComp } from "../components/promise";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { StateManager } from "../save_state";
 
-export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<LoreComp>) {
+export function promiseObj(controlling: PromiseComp["controlling"]) {
     return [
         K.sprite("promise", { anim: "normal" }),
         K.shader("recolorRed", {
@@ -32,12 +30,11 @@ export function promiseObj(controlling: PromiseComp["controlling"] & GameObj<Lor
                 });
             },
         },
+        interactable(),
         promise(controlling, Object.assign({}, controlling.params)),
         ...throwablePlatformEff(),
-        grabbable(),
         K.z(100),
         "continuation" as Tag,
-        lore(controlling.lore),
         "saveable" as Tag,
     ];
 }

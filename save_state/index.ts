@@ -1,15 +1,15 @@
 import { Color, GameObj, OpacityComp, Vec2 } from "kaplay";
+import { CloneableComp } from "../components/cloneable";
+import { ContinuationComp } from "../components/continuationCore";
 import { K } from "../init";
 import { WorldManager } from "../levels";
+import { splash } from "../misc/particles";
 import { player } from "../player";
 import { ObjectSnapshot, RestoreFlags, StateComps, WorldSnapshot } from "./state";
-import { CloneableComp } from "../components/cloneable";
-import { splash } from "../misc/particles";
-import { ContinuationComp } from "../components/continuationCore";
 
 
 export const StateManager = {
-    capture(params: WorldSnapshot["restoreParams"], selfPos: Vec2): WorldSnapshot {
+    capture(params: WorldSnapshot["restoreParams"], selfPos: Vec2, manualObjects: Set<GameObj<StateComps>>): WorldSnapshot {
         // Capture all of the objects
         const data: WorldSnapshot = {
             playerPos: params.useSelfPosition ? selfPos : player.worldPos()!,
@@ -18,11 +18,35 @@ export const StateManager = {
             objects: [],
             afterObjects: new Set,
         };
-        if (params.radius > 0 || params.global) {
+        const save = (obj: GameObj<StateComps>, levelKey: string) => {
+            const inInventory = player.inventory.includes(obj as any);
+            const e: ObjectSnapshot = {
+                obj,
+                restoreFlags: this.getRestoreFlags(obj),
+                location: {
+                    levelID: inInventory ? null : levelKey,
+                    pos: (inInventory ? data.playerPos : obj.worldPos()!).clone(),
+                    angle: obj.angle,
+                },
+                state: {
+                    toggle: obj.togglerState,
+                    trigger: obj.triggered,
+                    bug: obj.state,
+                },
+            };
+            data.objects.push(e);
+        }
+        if (params.editable) {
+            for (var obj of manualObjects) {
+                const theLevel = WorldManager.getLevelOf(obj)!;
+                save(obj, Object.keys(WorldManager.allLevels).find(id => WorldManager.allLevels[id]?.levelObj === theLevel)!);
+            }
+        }
+        else if (params.radius > 0 || params.global) {
             for (var key of (params.global ? Object.keys(WorldManager.allLevels) : [WorldManager.activeLevel!.id])) {
                 // find all the objects
                 const circle = new K.Circle(data.playerPos, params.radius);
-                const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine", { recursive: true })
+                const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine")
                     .filter(obj =>
                         !obj.is("checkpoint")
                         && !obj.is("portal")
@@ -34,22 +58,7 @@ export const StateManager = {
                             ?? obj.worldPos()!.sdist(data.playerPos) < (params.radius * params.radius)))
                     .concat(player.inventory.filter(x => x.has("body")) as any);
                 for (var obj of foundObjects) {
-                    const inInventory = player.inventory.includes(obj as any);
-                    const e: ObjectSnapshot = {
-                        obj,
-                        restoreFlags: this.getRestoreFlags(obj),
-                        location: {
-                            levelID: inInventory ? null : key,
-                            pos: (inInventory ? data.playerPos : obj.worldPos()!).clone(),
-                            angle: obj.angle,
-                        },
-                        state: {
-                            toggle: obj.togglerState,
-                            trigger: obj.triggered,
-                            bug: obj.state,
-                        },
-                    };
-                    data.objects.push(e);
+                    save(obj, key);
                 }
             }
         }
@@ -132,9 +141,13 @@ export const StateManager = {
                 const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
                 if (e.location.levelID === state.worldID
                     && !off
-                    && (obj.has("toggler") || obj.has("bug"))
-                    && (obj.has("body") || obj.is("interactable"))) {
+                    && obj.has("interactable")) {
                     splash(obj.pos, color, undefined, undefined, obj.tags.filter(x => x !== "*"));
+                }
+                if (e.restoreFlags & RestoreFlags.pos) {
+                    // Why is this necessary again?
+                    obj.worldPos(e.location.pos.add(reverseDelta));
+                    obj.angle = e.location.angle;
                 }
             }
             else player.addToInventory(obj as any);

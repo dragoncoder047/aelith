@@ -1,8 +1,10 @@
 import { AreaComp, BodyComp, Comp, GameObj, PosComp, ShaderComp, SpriteComp, StateComp, TimerComp, TimerController } from "kaplay";
 import { FOOTSTEP_INTERVAL, WALK_SPEED } from "../constants";
 import { K } from "../init";
-import { player } from "../player";
 import { WorldManager } from "../levels";
+import { player } from "../player";
+import { InteractableComp } from "./interactable";
+import { hintFlags } from "../player/body";
 
 export interface BugComp extends Comp {
     moveDir: number
@@ -14,10 +16,10 @@ type BugStates = "walking" | "sleeping" | "angry" | "stunned" | "scared";
 export function bug(): BugComp {
     return {
         id: "bug",
-        require: ["pos", "area", "sprite", "body", "state", "shader", "timer"],
+        require: ["pos", "area", "sprite", "body", "state", "shader", "timer", "interactable"],
         moveDir: Math.random() > 0.5 ? 1 : -1,
         footstepsCounter: 0,
-        add(this: GameObj<BugComp | PosComp | AreaComp | BodyComp | StateComp<BugStates> | TimerComp | SpriteComp>) {
+        add(this: GameObj<InteractableComp | BugComp | PosComp | AreaComp | BodyComp | StateComp<BugStates> | TimerComp | SpriteComp>) {
             const enterNewState = (state: BugStates) => {
                 if (this.state !== state) this.enterState(state);
             };
@@ -103,9 +105,12 @@ export function bug(): BugComp {
             this.onStateEnd("scared", () => {
                 this.collisionIgnore = this.collisionIgnore.filter(t => t !== "player");
             });
-            this.on("interact", () => {
+            this.target1 = () => {
                 enterNewState("scared");
-            });
+                this.specialFlags &= ~hintFlags.action1;
+                return true;
+            };
+            this.target1Hint = "&msg.ctlHint.item.bug.stun";
             this.on("portal", () => {
                 enterNewState("scared");
             });

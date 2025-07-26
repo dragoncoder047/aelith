@@ -6,6 +6,7 @@ import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 import { StateManager } from "../save_state";
+import { interactable } from "../components/interactable";
 
 /**
  * Components for a rolling door.
@@ -17,6 +18,7 @@ export function door() {
         K.body({ isStatic: true }),
         ...machine(),
         K.tile({ isObstacle: true }),
+        interactable(),
         rollingDoor(),
         nudge(0, TILE_SIZE / 2),
         clicky(undefined, ["door_closing", "door_opening"]),

@@ -1,5 +1,6 @@
 import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
+import { interactable } from "../components/interactable";
 import { spriteToggle } from "../components/spriteToggle";
 import { toggleSwitch } from "../components/toggleSwitch";
 import { K } from "../init";
@@ -14,6 +15,6 @@ export function lever() {
         toggleSwitch(),
         clicky(),
         "lever" as Tag,
-        "interactable" as Tag,
+        interactable(),
     ];
 }

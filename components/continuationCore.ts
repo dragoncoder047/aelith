@@ -1,15 +1,16 @@
-import { BodyComp, Color, Comp, GameObj, NamedComp, OffScreenComp, OpacityComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
+import { BodyComp, Color, Comp, GameObj, NamedComp, OffScreenComp, PosComp, RotateComp, ShaderComp, SpriteComp, Tag } from "kaplay";
 import contTypes from "../assets/trapTypes.yaml";
 import { SCALE } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { drawZapLine } from "../misc/utils";
+import { drawZapLine, style } from "../misc/utils";
 import { player } from "../player";
 import { PlayerInventoryItem } from "../player/body";
 import { StateManager } from "../save_state";
 import { WorldSnapshot } from "../save_state/state";
 import { ContinuationTrapComp } from "./continuationTrap";
-import { controllable, ControllableComp } from "./controllable";
+import { InteractableComp } from "./interactable";
+import { hintFlags } from "../player/body";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
@@ -28,55 +29,49 @@ const EMOS = ["stand", "shy", "oops", "slit_eyes", "ooo", "hi"];
 export function continuationCore(
     type: string,
     captured: WorldSnapshot,
-    trap: GameObj<ContinuationTrapComp>
+    trap: GameObj<ContinuationTrapComp | InteractableComp>
 ): ContinuationComp {
     return {
         id: "continuation",
-        require: ["sprite", "pos", "shader", "named", "body"],
+        require: ["sprite", "pos", "shader", "named", "body", "interactable"],
         timestamp: Date.now(),
         type,
         captured,
         trappedBy: trap,
-        worldMarker: K.add([
-            K.sprite("continuation_target", { anim: "spin" }),
-            K.pos(captured.playerPos),
-            K.layer("continuations"),
-            K.anchor("center"),
-            K.offscreen(),
-            K.area(),
-            K.tile(),
-            K.shader("recolorRed", {
-                u_targetcolor: K.Color.fromHex((contTypes[type] as any).color ?? "#ff0000"),
-            }),
-            "worldMarker" as Tag,
-            "raycastIgnore" as Tag,
-        ]),
+        worldMarker: undefined,
         get params() {
             return this.captured.restoreParams!;
         },
         get color() {
             return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
         },
-        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp | ControllableComp> & PlayerInventoryItem) {
-            this.use(controllable([{ hint: "" }]));
-            this.controls[0]!.styles = [this.trappedBy.name.replace(/[^\w]/g, "")];
+        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
             this.on("invoke", () => this.invoke());
             this.name = this.params.cName;
             this.uniform!.u_targetcolor = this.color;
-            if (this.params.reverseTeleport) {
-                this.worldMarker!.destroy();
-                this.worldMarker = undefined;
-            } else {
-                this.worldMarker!.setParent(WorldManager.activeLevel!.levelObj, { keep: K.KeepFlags.Pos });
+            if (!this.params.reverseTeleport) {
+                this.worldMarker = WorldManager.activeLevel!.levelObj.add([
+                    K.sprite("continuation_target", { anim: "spin" }),
+                    K.pos(captured.playerPos),
+                    K.layer("continuations"),
+                    K.anchor("center"),
+                    K.offscreen(),
+                    K.area(),
+                    K.tile(),
+                    K.shader("recolorRed", {
+                        u_targetcolor: K.Color.fromHex((contTypes[type] as any).color ?? "#ff0000"),
+                    }),
+                    "worldMarker" as Tag,
+                    "raycastIgnore" as Tag,
+                ]);
             }
+            this.action1 = () => (this.invoke(), true);
+            this.manpage = this.trappedBy.manpage;
         },
         emoTimer: 0,
-        update(this: GameObj<BodyComp | SpriteComp | ContinuationComp | ControllableComp>) {
-            this.controls[0]!.hint = K.sub(
-                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
-                {
-                    which: "continuation",
-                });
+        update(this: GameObj<BodyComp | SpriteComp | ContinuationComp> & PlayerInventoryItem) {
+            this.action1Hint = style(contTypes[this.type].hints.continuation.action1, [this.trappedBy.name.replace(/[^\w]/g, "")]);
+
             this.emoTimer -= K.dt();
             if (this.emoTimer <= 0) {
                 this.emoTimer = K.rand(0, 5);

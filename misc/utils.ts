@@ -69,3 +69,6 @@ function is(obj: GameObj | null | undefined, field: "paused" | "fixed" | "hidden
 
 export const isPaused = (obj: GameObj): boolean => is(obj, "paused");
 export const isHidden = (obj: GameObj): boolean => is(obj, "hidden");
+export function style(t: string, ss: string[]): string {
+    return `${ss.map(s => `[${s}]`).join("")}${t}${ss.toReversed().map(s => `[/${s}]`).join("")}`;
+}

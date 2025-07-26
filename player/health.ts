@@ -15,11 +15,11 @@ import { StatTracker } from "../stats_tracker";
 
 const deathMessages: TextChunk[] = [
     {
-        value: "\n&msg.dead.complete\n"
+        value: "\n&msg.dead.segfault\n"
     },
     {
         value: {
-            text: "agdb: error: &msg.dead.failed\n",
+            text: "make: *** [build] Error 255\n",
             styles: ["stderr"],
             sound: "command_fail"
         }

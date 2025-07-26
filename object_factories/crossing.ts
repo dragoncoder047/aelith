@@ -11,7 +11,7 @@ export function crossing(): CompList<any> {
         K.sprite("crossover", { tiled: true }),
         K.opacity(0),
         mergeable(),
-        ...defaults({ friction: FRICTION, collisionIgnore: ["tail", "particle"] }),
+        ...defaults({ friction: FRICTION, collisionIgnore: ["tail", "particle", "inInventory"] }),
         crossover(),
         "crossover" as Tag,
         "raycastIgnore" as Tag,

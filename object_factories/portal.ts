@@ -9,7 +9,7 @@ export function portal() {
     return [
         K.uvquad(TILE_SIZE, TILE_SIZE),
         "portal" as Tag,
-        ...defaults(),
+        ...defaults({ collisionIgnore: ["inInventory"] }),
         K.tile({ isObstacle: true }),
         K.body({ isStatic: true }),
         K.platformEffector({ ignoreSides: [] }),

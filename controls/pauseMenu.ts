@@ -12,7 +12,7 @@ import { timer } from "../ui/timer";
 import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 
 // save for autodetect
-const availableLangs = K.langs.slice();
+const availableLangs = K.langs;
 
 const gcTypeMenu: PtyMenu = {
     id: "set controllerType",

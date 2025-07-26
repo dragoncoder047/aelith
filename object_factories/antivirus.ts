@@ -1,4 +1,5 @@
 import { antivirus as antivirusComp } from "../components/antivirus";
+import { interactable } from "../components/interactable";
 import { K } from "../init";
 import { machine } from "./machine";
 
@@ -8,5 +9,6 @@ export function antivirus() {
         ...machine(),
         K.offscreen({ hide: false }),
         antivirusComp(),
+        interactable(),
     ];
 }

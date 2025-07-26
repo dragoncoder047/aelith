@@ -1,14 +1,15 @@
 import { AreaComp, BodyComp, Color, Comp, GameObj, KEventController, NamedComp, OffScreenComp, PosComp, ShaderComp } from "kaplay";
 import contTypes from "../assets/trapTypes.yaml";
-import { SCALE } from "../constants";
+import { SCALE, WALK_SPEED } from "../constants";
 import { K } from "../init";
+import { splash } from "../misc/particles";
+import { style } from "../misc/utils";
 import { player } from "../player";
 import { ContinuationTrapComp } from "./continuationTrap";
-import { controllable, ControllableComp } from "./controllable";
-
+import { InteractableComp } from "./interactable";
 
 export interface PromiseComp extends Comp {
-    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp | BodyComp>
+    controlling: GameObj<ContinuationTrapComp | NamedComp | PosComp | OffScreenComp | AreaComp | BodyComp | InteractableComp>
     readonly data: any
 
     params: ContinuationTrapComp["params"]
@@ -18,9 +19,10 @@ export interface PromiseComp extends Comp {
 
 export function promise(controlling: PromiseComp["controlling"], params: ContinuationTrapComp["params"]): PromiseComp {
     var _cre: KEventController;
+    var boostMode = false;
     return {
         id: "promise",
-        require: ["shader"],
+        require: ["shader", "interactable"],
         controlling,
         type: controlling.name as string,
         get data() {
@@ -30,13 +32,10 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
         get color() {
             return K.Color.fromHex(this.data?.color ?? "#ff0000")
         },
-        add(this: GameObj<PromiseComp | ShaderComp | ControllableComp | NamedComp>) {
-            this.use(controllable([{ hint: "" }]));
-            this.controls[0]!.styles = [this.type.replace(/[^\w]/g, "")];
+        add(this: GameObj<PromiseComp | ShaderComp | NamedComp | InteractableComp>) {
             if (this.params.pName !== null)
                 this.use(K.named(this.params.pName));
-            this.on("modify", d => this.controlling.trigger("modify", d));
-            this.on("invoke", () => {
+            this.action1 = () => {
                 player.removeFromInventory(this as any);
                 this.destroy();
                 this.controlling.gravityScale = 1;
@@ -44,7 +43,26 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
                 this.controlling.params = this.params;
                 this.controlling.capture();
                 this.controlling.params = temp;
-            });
+                return true;
+            };
+            this.manpage = controlling.manpage;
+            if (controlling.data?.flyingEnabled) {
+                this.action4 = () => {
+                    boostMode = !boostMode;
+                    if (boostMode) this.controlling.gravityScale = 0;
+                    else this.controlling.gravityScale = 1;
+                    return true;
+                };
+                this.motionHandler = xy => {
+                    if (!boostMode) return false;
+                    this.controlling.gravityScale = 0;
+                    this.controlling.vel = K.vec2(0);
+                    if (this.controlling.curPlatform()) this.controlling.jump(1);
+                    this.controlling.move(xy.scale(WALK_SPEED));
+                    splash(this.controlling.pos, this.controlling.color, 5, -10);
+                    return true;
+                }
+            }
             this.uniform!.u_targetcolor = this.color;
             _cre = (this.controlling as PromiseComp["controlling"]).onCollide((_, col) => {
                 // prevent spurious trigger when it is first thrown, or with non-colliding objects like ladders
@@ -55,12 +73,16 @@ export function promise(controlling: PromiseComp["controlling"], params: Continu
                 player.trigger("remoteSense", col?.normal, this.controlling);
             })
         },
-        update(this: GameObj<ControllableComp | PromiseComp>) {
-            this.controls[0]!.hint = K.sub(
-                contTypes[this.type].hint ?? "&msg.ctlHint.continuation.invoke.default",
-                {
-                    which: "promise",
-                });
+        update(this: GameObj<InteractableComp | PromiseComp>) {
+            const styles = [this.type.replace(/[^\w]/g, "")];
+            const data = {
+                flyEnabled: String(this.data?.flyingEnabled),
+                flying: String(boostMode),
+            };
+            const hintsObj = this.data?.hints.promise ?? {};
+            this.action1Hint = hintsObj.action1 ? style(K.sub(hintsObj.action1, data), styles) : undefined;
+            this.action4Hint = hintsObj.action4 ? style(K.sub(hintsObj.action4, data), styles) : undefined;
+            this.moveHint = hintsObj.motion ? style(K.sub(hintsObj.motion, data), styles) : undefined;
         },
         draw(this: GameObj<PosComp | PromiseComp>) {
             if (this.controlling.hidden) return;
