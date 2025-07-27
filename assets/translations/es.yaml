@@ -32,7 +32,7 @@ lore:
       &tabvar[/b], [b]const[/b], y [b]let[/b] asignan un nuevo pedazo de
       memoria. No está atado a ningún programa en particular, puede ser
       insertado en cualquier programa tirándolo, e incluso puede ser insertado
-      en un proceso actual (el cual parece ser: [b]&system.command[/b]).
+      en un proceso actual.
 
   continuation:
     throw:

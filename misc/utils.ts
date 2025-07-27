@@ -21,15 +21,22 @@ export function actuallyRaycast(objects: GameObj<AreaComp>[], origin: Vec2, dire
     return result;
 }
 
-export function drawZapLine(p1: Vec2, p2: Vec2, opts: Partial<DrawCurveOpt> = {}, segSize: number = TILE_SIZE / 4, jitterSize: number = TILE_SIZE / 8) {
-    const doubledScreenRect = new K.Rect(K.vec2(-K.width(), -K.height()), K.width() * 2, K.height() * 2);
-    const clipped = new K.Line(p1, p2);
-    K.clipLineToRect(doubledScreenRect, clipped, clipped);
-    p1 = clipped.p1;
-    p2 = clipped.p2;
+function hash(t: number) {
+    return Math.sin(65432 * t);
+}
+function hashToPoint(t: number) {
+    const rand1 = hash(t);
+    const rand2 = hash(rand1);
+    return K.vec2(K.lerp(0, 1, rand1), K.lerp(0, 1, rand2));
+}
+
+export function drawZapLine(p1: Vec2, p2: Vec2, opts: Omit<DrawCurveOpt, "segments"> = {}, hash: number, twiddleSpeed = 65432, segSize = TILE_SIZE / 4, jitterSize = TILE_SIZE / 8) {
     const numSegments = p1.sub(p2).len() / segSize;
-    const jitter = () => K.rand(K.vec2(-jitterSize, -jitterSize), K.vec2(jitterSize, jitterSize));
-    const f = (t: number) => K.lerp(p1, p2, t).add(jitter());
+    const t = K.time() * twiddleSpeed;
+    const tFloor = Math.floor(t);
+    const tCeil = tFloor + 1;
+    const jitter = (i: number) => K.lerp(hashToPoint(tFloor + i + hash), hashToPoint(tCeil + i + hash), t - tFloor).scale(jitterSize);
+    const f = (t: number) => K.lerp(p1, p2, t).add(t === 0 || t === 1 ? K.vec2() : jitter(t * numSegments));
     K.drawCurve(f, { ...opts, segments: numSegments });
 }
 

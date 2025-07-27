@@ -166,6 +166,7 @@ export const StateManager = {
         for (var obj of state.afterObjects) {
             if (!obj.exists()) continue;
             if (obj.has("continuation") && (obj as any as GameObj<ContinuationComp>).params?.destroyImmune) continue;
+            if (player.inventory.includes(obj as any)) player.removeFromInventory(obj as any);
             obj.destroy();
         }
     },

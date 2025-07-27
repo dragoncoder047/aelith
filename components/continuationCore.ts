@@ -106,7 +106,7 @@ export function continuationCore(
         draw(this: GameObj<PosComp | ContinuationComp | RotateComp>) {
             if (this.worldMarker === undefined || !WorldManager.activeLevel?.levelObj.isAncestorOf(this.worldMarker)) return;
             K.pushRotate(-this.angle);
-            drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { width: 2 / SCALE, color: this.color });
+            drawZapLine(K.vec2(0), this.fromWorld(this.worldMarker.worldPos()!), { width: 2 / SCALE, color: this.color }, this.id);
             K.pushRotate(this.angle);
         },
         destroy(this: PlayerInventoryItem & GameObj<ContinuationComp>) {

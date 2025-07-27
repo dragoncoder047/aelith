@@ -240,17 +240,14 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
         draw(this: GameObj<ContinuationTrapComp | PosComp>) {
             if (this.enabled && this.params.radius > 0 && (player.inventory.includes(this as any) || this.isDeferring)) {
                 const willCapture = this.peekCapture();
-                const newObjs = new Set(willCapture.objects.map(e => e.obj));
-                if (newObjs.difference(prevObjs).size > 0) {
-                    player.playSound("blorp", {}, this.worldPos()!);
-                }
+                const newObjs = new Set();
                 for (var e of willCapture.objects) {
+                    newObjs.add(e.obj);
                     if ((e.obj as any) === this) continue;
                     if ((e.obj as any).is("dont-highlight")) continue;
                     if (e.location.levelID !== WorldManager.activeLevel!.id) continue;
                     const bbox = e.obj.worldArea?.().bbox();
                     if (bbox) {
-                        drawZapLine(K.vec2(0), this.fromWorld(e.obj.worldPos()!), { color: this.color }, undefined, 1);
                         K.drawRect({
                             fill: false,
                             color: this.color,
@@ -264,7 +261,15 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                                 join: "miter",
                             }
                         });
+                        const origin = this.worldPos()!;
+                        const center = e.obj.worldPos()!;
+                        const direction = center.sub(origin);
+                        const intersection = bbox.raycast(origin, direction);
+                        drawZapLine(K.vec2(0), this.fromWorld(intersection?.point ?? center), { color: this.color, opacity: 0.7 }, e.obj.id, 1);
                     }
+                }
+                if (newObjs.difference(prevObjs).size > 0) {
+                    player.playSound("blorp", {}, this.worldPos()!);
                 }
                 prevObjs = newObjs;
             }

@@ -12,6 +12,7 @@ export const STYLES: TextComp["textStyles"] = {
     },
     gamename: {
         color: K.rgb("#aa22ff"),
+        font: "Unscii MCR"
     },
     selected: {
         color: K.MAGENTA,
@@ -65,5 +66,8 @@ export const STYLES: TextComp["textStyles"] = {
 
 // add all the continuation colors
 for (var name of Object.getOwnPropertyNames(trapTypes) as string[]) {
-    STYLES[name.replace(/[^\w]/g, "")] = { color: K.rgb((trapTypes as any)[name].color), override: true };
+    STYLES[name.replace(/[^\w]/g, "")] = {
+        color: K.rgb((trapTypes as any)[name].color).lighten(100),
+        override: true
+    };
 }

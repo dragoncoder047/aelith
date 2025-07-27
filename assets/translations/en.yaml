@@ -36,7 +36,7 @@ lore:
       &tabvar[/b], [b]const[/b], and [b]let[/b] allocate a chunk of memory. It
       is not tied to any particular program. It may be inserted into any program
       by throwing it in, and can even be inserted into the currently-running
-      process (which appears to be: [b]&system.command[/b]).
+      process.
 
 
       [b]CAVEATS[/b]

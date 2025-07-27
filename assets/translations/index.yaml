@@ -15,7 +15,7 @@ c:
     jump: (&button.south)
     aim: (rstick)
     look: (rstick)
-    throw: '\[&nutton.rtrigger]'
+    throw: '\[&button.rtrigger]'
     inventory.scroll: '\[&button.lshoulder]/\[&button.rshoulder]'
     pause: (&button.start)
     target1: '\[&button.rstick]'
