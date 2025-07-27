@@ -8,10 +8,6 @@
     * [ ] Add Inform-like random text choosing for snarky stuff
   * [ ] follow the player around like a minecraft dog or something
 * [ ] Fix typewriter code to use [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) to split the text (so it works with the Japanese which doesn't use any spaces)
-* [ ] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
-  * [ ] special kind of line to show what it is about to capture
-* [ ] add wibbly line graphics to the continuations
-  * [ ] blorp and unblorp sound effect when objects are selected and unselected
 * [ ] make the player sprite have hands that come around and hold the thing that they are grabbing
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
@@ -38,7 +34,11 @@
 
 ## DONE
 
-* [X] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout (or maybe combination of both)
+* [X] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
+  * [X] special kind of line to show what it is about to capture
+* [X] add wibbly line graphics to the continuations
+  * [X] blorp sound effect when objects are selected and unselected
+* [X] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout
 * [X] Fix bugs with the ambientSound component that is causing the lag
 * [X] Change continuation objects to frog-like things instead of just spinny circles
 * [X] Split into levels to reduce lag
