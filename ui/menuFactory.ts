@@ -77,7 +77,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
         ] : []) as KEventControllerPatch[],
         main: [
             ...(closeable ? [
-                theMenuContainer.onButtonPress("edit", () => {
+                theMenuContainer.onButtonPress("pause_unpause", () => {
                     if (K.isCapturingInput()) return;
                     theObj.close();
                 })
@@ -170,7 +170,6 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
         },
         async close() {
             initEv.forEach(ev => K.eventGroups.delete(ev));
-            quitEv.trigger();
             theObj.term.paused = true;
             theObj.modal.paused = theObj.modal.hidden = true;
             await theObj.term.quitMenu();
@@ -179,6 +178,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             player.freeze(false);
             K.get("tail").forEach(p => p.hidden = p.paused = false);
             player.playSound("typing");
+            quitEv.trigger();
         }
     }
     theObj.onUpdate(() => {

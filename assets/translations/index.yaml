@@ -31,7 +31,7 @@ c:
       switch: '\[d-pad]'
       select: (&button.south)
       back: (&button.east)
-      exit: (&button.west)
+      exit: (&button.start)
       editSubmit: "&c.keyboard.pMenu.editSubmit"
       editCancel: "&c.keyboard.pMenu.editCancel"
     dialog:
@@ -59,7 +59,7 @@ c:
       switch: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
       select: '\[enter]'
       back: '\[backspace]'
-      exit: '\[backspace]'
+      exit: '\[tab]'
       editSubmit: '\[enter]'
       editCancel: '\[esc]'
     dialog:
