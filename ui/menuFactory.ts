@@ -68,13 +68,13 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
     const updateEv = new K.KEvent;
     const handlers = {
         enter: [enterEC],
-        exit: (closeable ? [
+        exit: [
             theMenuContainer.onButtonPress("nav_back", () => {
                 if (K.isCapturingInput()) return;
                 if (theTerm.backStack.length > 0) theTerm.back();
-                else theObj.close();
-            }),
-        ] : []) as KEventControllerPatch[],
+                else if (closeable) theObj.close();
+            })
+        ] as KEventControllerPatch[],
         main: [
             ...(closeable ? [
                 theMenuContainer.onButtonPress("pause_unpause", () => {

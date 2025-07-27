@@ -80,10 +80,10 @@ xbox:
   lstick: LS
   rstick: RS
 ps4:
-  north: △
-  east: ○
-  south: ⨉
-  west: □
+  north: ▲
+  east: ●
+  south: X
+  west: █
   lshoulder: L1
   ltrigger: L2
   rshoulder: R1
@@ -93,10 +93,10 @@ ps4:
   lstick: L3
   rstick: R3
 ps5:
-  north: △
-  east: ○
-  south: ⨉
-  west: □
+  north: ▲
+  east: ●
+  south: X
+  west: █
   lshoulder: L1
   ltrigger: L2
   rshoulder: R1
@@ -124,7 +124,11 @@ pauseMenuCtlHint: |-
   &msg.ctlHint.pause.select
   &msg.ctlHint.pause.back
   &msg.ctlHint.pause.unpause)
-deathMenuCtlHint: "&pauseMenuCtlHint"
+deathMenuCtlHint: |-
+  $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
+  &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
+  &msg.ctlHint.pause.select
+  &msg.ctlHint.pause.back)
 editMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
