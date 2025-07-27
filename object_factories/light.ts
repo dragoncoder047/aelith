@@ -17,7 +17,7 @@ export function light() {
         {
             target1(this: GameObj<PosComp | StateComp<"off" | "on">>) {
                 player.playSound("tink", {}, this.pos);
-                splash(this.pos, this.state === "off" ? K.RED : K.GREEN);
+                splash(this.pos, this.state === "off" ? K.RED : K.GREEN, 2);
                 return true;
             },
             target1Hint: "&msg.ctlHint.item.light.smack"

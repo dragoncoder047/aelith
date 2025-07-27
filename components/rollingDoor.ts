@@ -22,7 +22,8 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
                 this.tween(this.rollAmount, 0, 1, val => this.rollAmount = val, K.easings.easeOutBounce);
             });
             this.onStateEnter(states[1], () => {
-                this.tween(this.rollAmount, -1, Math.abs(this.rollAmount - (-1)), val => this.rollAmount = val);
+                const tRoll = -((this.height - 1) / this.height);
+                this.tween(this.rollAmount, tRoll, Math.abs(this.rollAmount - tRoll), val => this.rollAmount = val);
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!

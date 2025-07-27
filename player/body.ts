@@ -6,7 +6,7 @@ import { ManpageComp } from "../components/manpage";
 import { ALPHA, INTERACT_DISTANCE, MARGIN, MAX_THROW_STRETCH, MAX_THROW_VEL, SCALE, TERMINAL_VELOCITY } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
-import { actuallyRaycast, ballistics, isHidden, isPaused } from "../misc/utils";
+import { actuallyRaycast, ballistics, isPaused } from "../misc/utils";
 import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PlayerHeadComp } from "./head";
@@ -222,7 +222,7 @@ export function playerBody(): PlayerBodyComp {
                     width: 2 / SCALE,
                     color: K.WHITE.darken(200)
                 });
-            } else if (this.throwImpulse) {
+            } else if (this.throwImpulse && this.holdingItem) {
                 // draw throwing line to show trajectory of
                 // item being held when it is thrown
                 K.drawCurve(t => ballistics(K.vec2(0), this.throwImpulse!, t), {
@@ -234,7 +234,7 @@ export function playerBody(): PlayerBodyComp {
         // MARK: playSound()
         playSound(this: GameObj<PosComp | PlayerBodyComp>, soundID, opt = {}, pos = this.worldPos()!, impactVel, object) {
             if (!this.sfxEnabled) return;
-            if (object && (isHidden(object) || isPaused(object))) return;
+            if (object && isPaused(object)) return;
             if (typeof opt === "function") opt = opt();
             const onEndEvents = new K.KEvent<[]>();
             var v = opt.volume ?? 1;
@@ -246,7 +246,7 @@ export function playerBody(): PlayerBodyComp {
                 const dist = this.worldPos()!.dist(pos);
                 const rv1 = K.width();
                 const rv0 = rv1 * 2;
-                const oExists = !object || (!isHidden(object) && WorldManager.activeLevel?.levelObj.isAncestorOf(object));
+                const oExists = !object || (WorldManager.activeLevel?.levelObj.isAncestorOf(object));
                 zz.volume = oExists ? v * K.mapc(dist, rv1, rv0, 1, 0) : 0;
                 zz.pan = K.mapc(pos.x - this.pos.x, -INTERACT_DISTANCE, INTERACT_DISTANCE, -3 / 4, 3 / 4);
             };
