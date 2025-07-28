@@ -145,9 +145,8 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
                 K.drawFormattedText(K.formatText({
                     ...this,
                     ...botTxt.opt,
-                    text: "(END)",
-                    shader: "invert",
-                    uniform: { u_bg_color: K.WHITE },
+                    text: "[inverted](END)[/inverted][cursor]\u2588[/cursor]",
+                    styles: STYLES, 
                 }));
             }
         }

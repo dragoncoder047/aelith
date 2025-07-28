@@ -10,32 +10,32 @@ msg: "&&lang"
 control: "&c.&inputType"
 c:
   gamepad:
-    move: (lstick)
-    sprint: '\[&button.lstick]'
-    jump: (&button.south)
-    aim: (rstick)
-    look: (rstick)
-    throw: '\[&button.rtrigger]'
-    inventory.scroll: '\[&button.lshoulder]/\[&button.rshoulder]'
-    pause: (&button.start)
-    target1: '\[&button.rstick]'
-    target2: (&button.ltrigger)
-    inspect: (&button.west)
-    action1: (dpad &arrow.down)
-    action2: (dpad &arrow.right)
-    action3: (dpad &arrow.left)
-    action4: (dpad &arrow.up)
-    read_manpage: (&button.north)
-    inspect_next: (&button.east)
+    move: '&button.lmove'
+    sprint: '&button.lstick'
+    jump: '&button.south'
+    aim: '&button.rmove'
+    look: '&button.rmove'
+    throw: '&button.rtrigger'
+    inventory.scroll: '&button.lshoulder/&button.rshoulder'
+    pause: '&button.start'
+    target1: '&button.rstick'
+    target2: '&button.ltrigger'
+    inspect: '&button.west'
+    action1: '&button.dpad.down'
+    action2: '&button.dpad.right'
+    action3: '&button.dpad.left'
+    action4: '&button.dpad.up'
+    read_manpage: '&button.north'
+    inspect_next: '&button.east'
     pMenu:
-      switch: '\[d-pad]'
-      select: (&button.south)
-      back: (&button.east)
-      exit: (&button.start)
+      switch: '&button.dpad.vert'
+      select: '&button.south'
+      back: '&button.east'
+      exit: '&button.start'
       editSubmit: "&c.keyboard.pMenu.editSubmit"
       editCancel: "&c.keyboard.pMenu.editCancel"
     dialog:
-      scroll: (lstick)
+      scroll: '&button.lmvert'
       exit: "&control.read_manpage"
   keyboard:
     move: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
@@ -65,59 +65,34 @@ c:
     dialog:
       scroll: '\[scroll]/\[WS]/\[&arrow.up&arrow.down]'
       exit: "&control.read_manpage"
-button: "&&controllerType"
-xbox:
-  north: "Y"
-  east: B
-  south: A
-  west: X
-  lshoulder: LB
-  rshoulder: RB
-  ltrigger: LT
-  rtrigger: RT
-  select: view
-  start: menu
-  lstick: LS
-  rstick: RS
-ps4:
-  north: ▲
-  east: ●
-  south: X
-  west: █
-  lshoulder: L1
-  ltrigger: L2
-  rshoulder: R1
-  rtrigger: R2
-  select: share
-  start: options
-  lstick: L3
-  rstick: R3
-ps5:
-  north: ▲
-  east: ●
-  south: X
-  west: █
-  lshoulder: L1
-  ltrigger: L2
-  rshoulder: R1
-  rtrigger: R2
-  select: create
-  start: options
-  lstick: L3
-  rstick: R3
-switch:
-  north: X
-  east: A
-  south: B
-  west: "Y"
-  lshoulder: L
-  ltrigger: ZL
-  rshoulder: R
-  rtrigger: ZR
-  select: "-"
-  start: +
-  lstick: LS
-  rstick: RS
+gfn: font_&controllerType
+button:
+  # the spaces are important!
+  north: ' [&gfn]N[/&gfn] '
+  east: ' [&gfn]E[/&gfn] '
+  west: ' [&gfn]W[/&gfn] '
+  south: ' [&gfn]S[/&gfn] '
+  lshoulder: ' [&gfn]l[/&gfn] '
+  rshoulder: ' [&gfn]r[/&gfn] '
+  ltrigger: ' [&gfn]L[/&gfn] '
+  rtrigger: ' [&gfn]R[/&gfn] '
+  select: ' [&gfn]e[/&gfn] '
+  start: ' [&gfn]t[/&gfn] '
+  lstick: ' [&gfn]j[/&gfn] '
+  rstick: ' [&gfn]k[/&gfn] '
+  lmove: ' [&gfn]J[/&gfn] ' # cSpell: ignore lmove
+  rmove: ' [&gfn]K[/&gfn] ' # cSpell: ignore rmove
+  lmhoriz: ' [&gfn]X[/&gfn] ' # cSpell: ignore lmhoriz
+  rmhoriz: ' [&gfn]x[/&gfn] ' # cSpell: ignore rmhoriz
+  lmvert: ' [&gfn]Y[/&gfn] ' # cSpell: ignore lmvert
+  rmvert: ' [&gfn]y[/&gfn] ' # cSpell: ignore rmvert
+  dpad:
+    all: ' [&gfn]d[/&gfn] '
+    left: ' [&gfn]1[/&gfn] '
+    up: ' [&gfn]2[/&gfn] '
+    right: ' [&gfn]3[/&gfn] '
+    down: ' [&gfn]4[/&gfn] '
+    vert: ' [&gfn]v[/&gfn] '
 pauseMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch

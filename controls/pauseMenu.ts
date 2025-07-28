@@ -18,12 +18,10 @@ const gcTypeMenu: PtyMenu = {
     id: "set controllerType",
     name: "&msg.pause.controllerType",
     type: "select",
-    opts: [
-        { text: "Xbox   (&xbox.west &xbox.north &xbox.east &xbox.south, &xbox.select/&xbox.start)", value: "xbox" },
-        { text: "Switch (&switch.west &switch.north &switch.east &switch.south, &switch.select/&switch.start)", value: "switch" },
-        { text: "PS5    (&ps5.west &ps5.north &ps5.east &ps5.south, &ps5.select/&ps5.start)", value: "ps5" },
-        { text: "PS4    (&ps4.west &ps4.north &ps4.east &ps4.south, &ps4.select/&ps4.start)", value: "ps4" },
-    ],
+    opts: ["Xbox", "Switch", "PS4", "PS5"].map(name => {
+        const value = name.toLowerCase();
+        return { text: { text: `${name.padEnd(7, " ")}(${[..."WNES, e/t"].map(c => /[a-z]/i.test(c) ? ` [sm][font_${value}]${c}[/font_${value}][/sm] ` : c).join("")})`, raw: true }, value }
+    }),
     selected: 0,
     hidden: true
 };

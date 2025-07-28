@@ -6,6 +6,7 @@ import { nextFrame } from "../misc/utils";
 export type PtyChunk = {
     text: string
     styles?: string[]
+    raw?: boolean
     typewriter?: boolean
     sound?: string | (() => void)
     delayBefore?: number | (() => PromiseLike<void>)
@@ -134,7 +135,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
             var desiredPos: Vec2;
             const redraw = (obj: GameObj<PtyComp | DynamicTextComp>) => {
                 // process the text in the chunks
-                obj.t = obj.chunks.concat(...(obj.showCursor ? obj.toChunks(obj.cursor) : [])).map(chunk => chunk.styles ? style(esc(chunk.text), chunk.styles) : esc(chunk.text)).join("");
+                obj.t = obj.chunks.concat(...(obj.showCursor ? obj.toChunks(obj.cursor) : [])).map(chunk => chunk.raw ? chunk.text : chunk.styles ? style(esc(chunk.text), chunk.styles) : esc(chunk.text)).join("");
             };
             return {
                 id: "pty",

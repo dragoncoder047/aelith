@@ -1,4 +1,4 @@
-import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TimerComp, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, AudioPlayOpt, BodyComp, Comp, GameObj, HealthComp, KEventController, NamedComp, OpacityComp, PlatformEffectorComp, PosComp, RaycastResult, SpriteComp, Tag, TextComp, TimerComp, Vec2 } from "kaplay";
 import { STYLES } from "../assets/textStyles";
 import { HoldOffsetComp } from "../components/holdOffset";
 import { InteractableComp } from "../components/interactable";
@@ -46,8 +46,9 @@ export interface PlayerBodyComp extends Comp {
     scrollInventory(dir: number): void;
     canScrollInventory(dir: number): boolean;
     lookAt(pos: Vec2 | undefined): void;
-    controlText: GameObj<DynamicTextComp>;
+    controlText: GameObj<DynamicTextComp | TextComp>;
     addControlText(text: string, styles?: string[]): void;
+    updateControlTextLineSpacing(): void;
     manpage: GameObj<ManpageComp>;
     recalculateManpage(): void;
     tpTo(pos: Vec2): void;
@@ -150,6 +151,11 @@ export function playerBody(): PlayerBodyComp {
                         this.addControlText("&msg.ctlHint.dialog.scroll");
                 }
             }
+            this.updateControlTextLineSpacing();
+        },
+        updateControlTextLineSpacing() {
+            // TODO: there's got to be a way to do this using the font
+            this.controlText.lineSpacing = K.getLastInputDeviceType() === "gamepad" ? 8 : 2;
         },
         /**
          * True if overlapping any game object with the tag "type".
@@ -394,7 +400,6 @@ export function playerBody(): PlayerBodyComp {
                 size: 12 / SCALE,
                 align: "center",
                 styles: STYLES,
-                lineSpacing: 1.15,
             }),
             K.fixed(),
             K.anchor("bot"),

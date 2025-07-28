@@ -141,7 +141,7 @@ export const StateManager = {
                 const off = typeof (obj as any).isOffScreen === "function" ? (obj as any).isOffScreen() : false;
                 if (e.location.levelID === state.worldID
                     && !off
-                    && obj.has("interactable")) {
+                    && obj.is("machine")) {
                     splash(obj.pos, color, undefined, undefined, obj.tags.filter(x => x !== "*"));
                 }
                 if (e.restoreFlags & RestoreFlags.pos) {

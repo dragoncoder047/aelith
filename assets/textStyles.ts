@@ -46,6 +46,14 @@ export const STYLES: TextComp["textStyles"] = {
         color: K.WHITE,
         override: true
     },
+    sm: {
+        scale: K.vec2(1, .75),
+        pos: K.vec2(0, 2),
+    },
+    inverted: {
+        shader: "invert",
+        uniform: { u_bg_color: K.WHITE }
+    },
     rainbow(i, _ch) {
         return {
             color: K.Color.fromHSL((K.time() - i / 20) % 1, 1, 2 / 3),
@@ -70,4 +78,14 @@ for (var name of Object.getOwnPropertyNames(trapTypes) as string[]) {
         color: K.rgb((trapTypes as any)[name].color).lighten(100),
         override: true
     };
+}
+
+for (var f of ["xbox", "switch", "ps4", "ps5"]) {
+    const n = "font_" + f;
+    STYLES[n] = {
+        font: n,
+        scale: 8,
+        pos: K.vec2(0, -4),
+        stretchInPlace: true
+    }
 }
