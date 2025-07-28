@@ -165,7 +165,6 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             K.get("tail").forEach(p => p.hidden = p.paused = true);
             player.playSound("typing");
             player.controlText.t = hint;
-            player.updateControlTextLineSpacing();
             await theObj.term.beginMenu();
             startEv.trigger();
         },

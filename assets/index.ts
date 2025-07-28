@@ -17,8 +17,8 @@ import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import stripedoorShader from "./shaders/stripedoor.glsl";
 import translateShader from "./shaders/translate.glsl";
-import gamepadFontDataURL from "./textures/gamepadfont.png";
-import gamepadFontDef from "./textures/gamepadfont.yaml";
+import inputsDataURL from "./textures/inputs.png";
+import inputsFontsDef from "./textures/inputs.yaml";
 import spritemapDataURL from "./textures/spritemap.png";
 import spritemapDef from "./textures/spritemap.yaml";
 import deStrings from "./translations/de.yaml";
@@ -46,12 +46,15 @@ K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
         await nextFrame();
     }
 });
-K.loadSpriteAtlas(gamepadFontDataURL, gamepadFontDef);
+K.loadSpriteAtlas(inputsDataURL, inputsFontsDef);
 const GP_FONT_CHARS = "d1234vNEWSlrLRetJKXxYyjk"; // cSpell: ignore yyjk
 K.loadBitmapFontFromSprite("font_xbox", GP_FONT_CHARS);
 K.loadBitmapFontFromSprite("font_switch", GP_FONT_CHARS);
 K.loadBitmapFontFromSprite("font_ps4", GP_FONT_CHARS);
 K.loadBitmapFontFromSprite("font_ps5", GP_FONT_CHARS);
+K.loadBitmapFontFromSprite("keyfont", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789wasd");
+K.loadBitmapFontFromSprite("keyfont2", "tn^eb");
+K.loadBitmapFontFromSprite("keyfont3", "s");
 K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
 K.addStrings(strings);

@@ -50,6 +50,24 @@ export const STYLES: TextComp["textStyles"] = {
         scale: K.vec2(1, .75),
         pos: K.vec2(0, 2),
     },
+    key: {
+        font: "keyfont",
+        scale: 8,
+        pos: K.vec2(0, -4),
+        stretchInPlace: true
+    },
+    key2: {
+        font: "keyfont2",
+        scale: 8,
+        pos: K.vec2(0, -4),
+        stretchInPlace: true
+    },
+    key3: {
+        font: "keyfont3",
+        scale: 8,
+        pos: K.vec2(0, -4),
+        stretchInPlace: true
+    },
     inverted: {
         shader: "invert",
         uniform: { u_bg_color: K.WHITE }

@@ -38,32 +38,32 @@ c:
       scroll: '&button.lmvert'
       exit: "&control.read_manpage"
   keyboard:
-    move: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
-    sprint: '\[shift]'
-    jump: '\[space]'
+    move: ' [key]W[/key]  [key]A[/key]  [key]S[/key]  [key]D[/key] / [key]w[/key]  [key]a[/key]  [key]s[/key]  [key]d[/key] '
+    sprint: ' [key2]^[/key2] '
+    jump: '  [key3]s[/key3]  '
     aim: '\[mouse]'
     look: '\[mouse]'
     throw: '\[right click]'
-    inventory.scroll: '\[Z]/\[C]'
-    pause: '\[tab]'
+    inventory.scroll: ' [key]Z[/key] / [key]C[/key]'
+    pause: ' [key2]t[/key2] '
     target1: '\[left click]'
-    target2: '\[T]'
-    inspect: '\[F]'
-    action1: '\[E]/\[enter]'
-    action2: '\[R]'
-    action3: '\[Q]'
-    action4: '\[V]'
-    read_manpage: '\[X]'
-    inspect_next: '\[G]'
+    target2: ' [key]T[/key] '
+    inspect: ' [key]F[/key] '
+    action1: ' [key]E[/key] /  [key2]n[/key2] '
+    action2: ' [key]R[/key] '
+    action3: ' [key]Q[/key] '
+    action4: ' [key]V[/key] '
+    read_manpage: ' [key]X[/key] '
+    inspect_next: ' [key]G[/key] '
     pMenu:
-      switch: '\[WASD]/\[&arrow.left&arrow.right&arrow.up&arrow.down]'
-      select: '\[enter]'
-      back: '\[backspace]'
-      exit: '\[tab]'
-      editSubmit: '\[enter]'
-      editCancel: '\[esc]'
+      switch: ' [key]W[/key]  [key]S[/key] / [key]w[/key]  [key]s[/key] '
+      select: ' [key2]n[/key2] '
+      back: ' [key2]b[/key2] '
+      exit: ' [key2]t[/key2] '
+      editSubmit: ' [key2]n[/key2] '
+      editCancel: ' [key2]e[/key2] '
     dialog:
-      scroll: '\[scroll]/\[WS]/\[&arrow.up&arrow.down]'
+      scroll: '\[scroll]/ [key]W[/key]  [key]S[/key] / [key]w[/key]  [key]s[/key] '
       exit: "&control.read_manpage"
 gfn: font_&controllerType
 button:
@@ -96,16 +96,13 @@ button:
 pauseMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
-  &msg.ctlHint.pause.select
-  &msg.ctlHint.pause.back
+  &msg.ctlHint.pause.select&tab&msg.ctlHint.pause.back
   &msg.ctlHint.pause.unpause)
 deathMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
-  &msg.ctlHint.pause.select
-  &msg.ctlHint.pause.back)
+  &msg.ctlHint.pause.select&tab&msg.ctlHint.pause.back)
 editMenuCtlHint: |-
   $fn.switch(&stringEditing~true:&msg.ctlHint.pause.editSubmit
   &msg.ctlHint.pause.editCancel~false:&msg.ctlHint.pause.switch
-  &msg.ctlHint.pause.select
-  &msg.ctlHint.item.trap.stopEdit)
+  &msg.ctlHint.pause.select&tab&msg.ctlHint.item.trap.stopEdit)
