@@ -55,6 +55,7 @@ K.loadBitmapFontFromSprite("font_ps5", GP_FONT_CHARS);
 K.loadBitmapFontFromSprite("keyfont", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789wasd");
 K.loadBitmapFontFromSprite("keyfont2", "tn^eb");
 K.loadBitmapFontFromSprite("keyfont3", "s");
+K.loadBitmapFontFromSprite("mousefont", "mlrs"); // cSpell: ignore mlrs
 K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
 K.addStrings(strings);

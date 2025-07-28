@@ -68,6 +68,12 @@ export const STYLES: TextComp["textStyles"] = {
         pos: K.vec2(0, -4),
         stretchInPlace: true
     },
+    mouse: {
+        font: "mousefont",
+        scale: 8,
+        pos: K.vec2(0, -4),
+        stretchInPlace: true
+    },
     inverted: {
         shader: "invert",
         uniform: { u_bg_color: K.WHITE }

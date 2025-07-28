@@ -39,17 +39,17 @@ c:
       exit: "&control.read_manpage"
   keyboard:
     move: ' [key]W[/key]  [key]A[/key]  [key]S[/key]  [key]D[/key] / [key]w[/key]  [key]a[/key]  [key]s[/key]  [key]d[/key] '
-    sprint: ' [key2]^[/key2] '
+    sprint: '  [key2]^[/key2]  '
     jump: '  [key3]s[/key3]  '
-    aim: '\[mouse]'
-    look: '\[mouse]'
-    throw: '\[right click]'
+    aim: ' [mouse]m[/mouse] '
+    look: ' [mouse]m[/mouse] '
+    throw: ' [mouse]r[/mouse] '
     inventory.scroll: ' [key]Z[/key] / [key]C[/key]'
     pause: ' [key2]t[/key2] '
-    target1: '\[left click]'
+    target1: ' [mouse]l[/mouse] '
     target2: ' [key]T[/key] '
     inspect: ' [key]F[/key] '
-    action1: ' [key]E[/key] /  [key2]n[/key2] '
+    action1: ' [key]E[/key] /  [key2]n[/key2]  '
     action2: ' [key]R[/key] '
     action3: ' [key]Q[/key] '
     action4: ' [key]V[/key] '
@@ -63,7 +63,7 @@ c:
       editSubmit: ' [key2]n[/key2] '
       editCancel: ' [key2]e[/key2] '
     dialog:
-      scroll: '\[scroll]/ [key]W[/key]  [key]S[/key] / [key]w[/key]  [key]s[/key] '
+      scroll: ' [mouse]s[/mouse] / [key]W[/key]  [key]S[/key] / [key]w[/key]  [key]s[/key] '
       exit: "&control.read_manpage"
 gfn: font_&controllerType
 button:
