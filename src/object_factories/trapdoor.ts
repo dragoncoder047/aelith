@@ -15,6 +15,7 @@ export function trapdoor() {
         interactable(),
         rollingDoor(),
         clicky(undefined, ["door_closing", "door_opening"]),
+        "2.5D" as Tag,
     ];
 }
 

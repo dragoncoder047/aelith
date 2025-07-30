@@ -169,7 +169,7 @@ export function playerBody(): PlayerBodyComp {
                 if (!this.lookingDirection) break;
                 if (!WorldManager.activeLevel) break; // oops?
 
-                const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area")
+                const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area", { recursive: true })
                     .filter(x => !(this.inventory as any[]).includes(x)
                         && x.collisionIgnore.every(xx => !this.tags.includes(xx))
                         && !x.is("raycastIgnore")

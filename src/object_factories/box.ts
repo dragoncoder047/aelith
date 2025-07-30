@@ -1,15 +1,13 @@
-import { CompList, GameObj } from "kaplay";
+import { CompList, GameObj, Tag } from "kaplay";
 import { cloneable } from "../components/cloneable";
+import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
+import { interactable } from "../components/interactable";
 import { randomFrame } from "../components/randomFrame";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 import { throwablePlatformEff } from "./throwablePlatformEff";
-import { interactable } from "../components/interactable";
-import { hintFlags } from "../player/body";
-import { player } from "../player";
-import { grabbable } from "../components/grabbable";
 
 const S16 = 7 / 16;
 const HALF = 1 / 2;
@@ -60,5 +58,6 @@ export function box(): CompList<any> {
                 this.manpage.spriteSrc = this;
             }
         },
+        "2.5D" as Tag
     ];
 }

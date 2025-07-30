@@ -1,14 +1,15 @@
+import { Tag } from "kaplay";
+import { mergeable } from "../components/mergeable";
 import { BG_WALL_OPACITY, FRICTION } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
-import { mergeable } from "../components/mergeable";
-import { Tag } from "kaplay";
 
 export function wall() {
     return [
         ...wallCommon(),
         ...defaults({ friction: FRICTION, collisionIgnore: ["wall"] }), // micro-optimization
         "wall" as Tag,
+        "2.5D" as Tag,
     ]
 }
 

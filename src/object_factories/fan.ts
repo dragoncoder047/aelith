@@ -1,3 +1,4 @@
+import { Tag } from "kaplay";
 import { ambiance } from "../components/ambientSound";
 import { animRun } from "../components/animRun";
 import { fan as fanComp } from "../components/fan";
@@ -17,5 +18,6 @@ export function fan() {
         animRun("spin"),
         interactable(),
         ambiance("fan_running", "fan_start", "fan_stop"),
+        "2.5D" as Tag,
     ];
 }

@@ -1,12 +1,11 @@
 import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
+import { interactable } from "../components/interactable";
 import { nudge } from "../components/nudge";
 import { rollingDoor } from "../components/rollingDoor";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
-import { StateManager } from "../save_state";
-import { interactable } from "../components/interactable";
 
 /**
  * Components for a rolling door.
@@ -22,5 +21,6 @@ export function door() {
         rollingDoor(),
         nudge(0, TILE_SIZE / 2),
         clicky(undefined, ["door_closing", "door_opening"]),
+        "2.5D" as Tag,
     ];
 }

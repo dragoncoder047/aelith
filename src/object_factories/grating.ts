@@ -16,5 +16,6 @@ export function grating() {
             offset: K.vec2(0, -TILE_SIZE / 5)
         }),
         "grating" as Tag,
+        "2.5D" as Tag,
     ]
 }

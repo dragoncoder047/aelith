@@ -23,5 +23,6 @@ export function button() {
         collisioner(),
         clicky(),
         "noCollideWithTail" as Tag,
+        "2.5D" as Tag,
     ];
 }
