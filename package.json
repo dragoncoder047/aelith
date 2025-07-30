@@ -3,7 +3,7 @@
     "description": "",
     "keywords": [],
     "author": "dragoncoder047",
-    "main": "main.ts",
+    "main": "src/main.ts",
     "scripts": {
         "build": "node scripts/build.mjs",
         "dev:build": "node scripts/build.mjs -w",

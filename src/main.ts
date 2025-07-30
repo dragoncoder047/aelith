@@ -16,7 +16,7 @@ import "./player/health";
 import "./player/states";
 import "./stats_tracker";
 import "./ui";
-import("./.p");
+import("../.p");
 
 K.setGravity(GRAVITY);
 

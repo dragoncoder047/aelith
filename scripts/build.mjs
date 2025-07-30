@@ -193,13 +193,13 @@ const config = {
             name: "all_world_files",
             setup(build) {
                 build.onStart(() => {
-                    const all_files = fs.readdirSync("assets/level_maps/").filter(x => /\.txt$/.test(x));
+                    const all_files = fs.readdirSync("src/assets/level_maps/").filter(x => /\.txt$/.test(x));
                     const worlds = {};
                     for (var f of all_files) {
-                        worlds[f.replace(/\.txt$/, "")] = fs.readFileSync("assets/level_maps/" + f, { encoding: "utf8" });
+                        worlds[f.replace(/\.txt$/, "")] = fs.readFileSync("src/assets/level_maps/" + f, { encoding: "utf8" });
                     }
                     const ws = JSON.stringify(worlds);
-                    fs.writeFileSync("assets/level_maps/ALL.json", ws);
+                    fs.writeFileSync("src/assets/level_maps/ALL.json", ws);
                     console.error(`rebuilt levels/ALL.json`);
                 });
             }

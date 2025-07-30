@@ -12,7 +12,7 @@ def get_json(path: str):
 LANG_ENTRIES = {}
 
 for lang in LANGS:
-    LANG_ENTRIES[lang] = get_json(f"./assets/translations/{lang}.yaml")
+    LANG_ENTRIES[lang] = get_json(f"./src/assets/translations/{lang}.yaml")
 
 PATHS_ALL: set[str] = set()
 PATHS_BY_LANG = {}
