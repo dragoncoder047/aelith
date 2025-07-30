@@ -15,7 +15,6 @@
   * [ ] this might need the drawon component, will need to figure out how to use that
 * [ ] debug menu via pause menu for magic functions
 * [ ] make pause menu work with mouse, need text quad character detection for this
-* [ ] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn / tail doesn't teleport to the player and gets extremely stretched.
 * [ ] Make NEW vacuum object, like a grabber
@@ -34,6 +33,7 @@
 
 ## DONE
 
+* [X] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [X] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
   * [X] special kind of line to show what it is about to capture
 * [X] add wibbly line graphics to the continuations

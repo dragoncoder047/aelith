@@ -1,5 +1,5 @@
 import { AreaComp, Vec2 } from "kaplay";
-import { MAX_THROW_STRETCH, MODIFY_SPEED, SPRINT_FACTOR, WALK_SPEED } from "../constants";
+import { MAX_THROW_STRETCH, MODIFY_SPEED, SPRINT_FACTOR, STICK_DEADZONE, WALK_SPEED } from "../constants";
 import { K } from "../init";
 import { nextFrame } from "../misc/utils";
 import { player } from "../player";
@@ -8,7 +8,7 @@ import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
 function getMotionVector(): Vec2 {
     const leftstickRaw = K.getGamepadStick("left")//.reflect(K.RIGHT);
-    const leftstick = leftstickRaw.slen() > 0.01 ? leftstickRaw : K.vec2(0);
+    const leftstick = leftstickRaw.slen() > (STICK_DEADZONE * STICK_DEADZONE) ? leftstickRaw : K.vec2(0);
     const keystick = K.eventGroups.has("menuActive") ? K.vec2(0) : K.vec2(
         (+K.isButtonDown("move_right")) - (+K.isButtonDown("move_left")),
         (+K.isButtonDown("move_down")) - (+K.isButtonDown("move_up")), // y increases downward

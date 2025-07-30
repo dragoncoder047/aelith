@@ -100,3 +100,4 @@ export const FALL_DAMAGE_THRESHOLD = 300;
 export const MAX_FALL_DAMAGE = 5;
 
 export const BG_WALL_OPACITY = 0.7;
+export const STICK_DEADZONE = 0.1;

@@ -19,6 +19,7 @@ export const K = kaplay({
     buttons: CONTROLS,
     touchToMouse: false,
     inspectOnlyActive: true,
+    tagsAsComponents: false,
     font: "IBM Mono",
     plugins: [
         kaplayZzFX,
