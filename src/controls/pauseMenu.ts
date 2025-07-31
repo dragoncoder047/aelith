@@ -16,7 +16,7 @@ const availableLangs = K.langs;
 
 const gcTypeMenu: PtyMenu = {
     id: "set controllerType",
-    name: "&msg.pause.controllerType",
+    name: "&msg.pause.main.submenu.controller",
     type: "select",
     opts: ["Xbox", "Switch", "PS4", "PS5"].map(name => {
         const value = name.toLowerCase();
@@ -26,23 +26,23 @@ const gcTypeMenu: PtyMenu = {
     hidden: true
 };
 
-const rumbleOption = { text: "&msg.pause.controllerRumble", value: "rumble", hidden: true };
+const rumbleOption = { text: "&msg.pause.options.rumble", value: "rumble", hidden: true };
 
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
-    name: "&msg.pause.paused",
+    name: "&msg.pause.main.title",
     opts: [
         {
             id: "settings -i",
-            name: "&msg.pause.preferences",
+            name: "&msg.pause.options.title",
             type: "select",
             opts: [
                 rumbleOption,
-                { text: "&msg.pause.showSpeedrunTimer", value: "timer" },
-                { text: "&msg.pause.showControlHints", value: "controlHints" },
-                { text: "&msg.pause.playBgMusic", value: "music" },
-                { text: "&msg.pause.playSfx", value: "sfx" },
+                { text: "&msg.pause.options.speedrunTimer", value: "timer" },
+                { text: "&msg.pause.options.controlHints", value: "controlHints" },
+                { text: "&msg.pause.options.music", value: "music" },
+                { text: "&msg.pause.options.soundEffects", value: "sfx" },
             ],
             selected: [0, 1, 2, 3, 4],
             multiple: true
@@ -51,10 +51,10 @@ export const PAUSE_MENU: PtyMenu = {
         StatTracker.menuViewer,
         {
             id: "set language",
-            name: "&msg.pause.setLanguage",
+            name: "&msg.pause.main.submenu.language",
             type: "select",
             opts: [
-                { text: "&msg.pause.automaticLang", value: availableLangs },
+                { text: "&msg.pause.language.auto", value: availableLangs },
                 { text: "English", value: ["en"] },
                 { text: "Español", value: ["es"] },
                 { text: "Deutsch", value: ["de"] },
@@ -64,7 +64,7 @@ export const PAUSE_MENU: PtyMenu = {
         },
         {
             id: "ng-connect",
-            name: "&msg.pause.ngConnect",
+            name: "&msg.pause.main.submenu.newgrounds",
             type: "action",
             async action() {
                 await PAUSE_MENU_OBJ.term.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
@@ -73,12 +73,12 @@ export const PAUSE_MENU: PtyMenu = {
         },
         {
             id: "restart",
-            name: "&msg.pause.restart",
+            name: "&msg.pause.restart.title",
             type: "submenu",
             opts: [
                 {
                     id: "--yes",
-                    name: "&msg.pause.reallyRestart",
+                    name: "&msg.pause.restart.confirm",
                     type: "action",
                     async action() {
                         await PAUSE_MENU_OBJ.term.quitMenu();

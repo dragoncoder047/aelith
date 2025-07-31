@@ -13,7 +13,7 @@ import { machine } from "./machine";
  */
 export function door() {
     return [
-        pseudo3D(),
+        pseudo3D(false, true),
         K.sprite("door", { fill: false }),
         "door" as Tag,
         K.body({ isStatic: true }),

@@ -18,7 +18,7 @@ const HALF = 1 / 2;
  */
 export function box(): CompList<any> {
     return [
-        pseudo3D(),
+        pseudo3D(true, false),
         K.sprite("box", { fill: false }),
         "box",
         K.body({ maxVelocity: TERMINAL_VELOCITY }),

@@ -7,7 +7,7 @@ import { pseudo3D } from "../components/pseudo3D";
 
 export function grating() {
     return [
-        pseudo3D(),
+        pseudo3D(false, true, 8),
         K.sprite("grating", { tiled: true }),
         K.layer("background"),
         K.body({ isStatic: true }),

@@ -1,4 +1,5 @@
 import { GameObj, LevelComp, PosComp, Vec2 } from "kaplay";
+import { p3DHelper } from "../components/pseudo3D";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { player } from "../player";
@@ -37,6 +38,8 @@ export const WorldManager = {
         const playerPositions = levelObj.get<PosComp>("playerPosition");
         const initialPos = playerPositions.at(whichPos)?.worldPos()!;
         playerPositions.forEach(p => p.destroy());
+        // add pseudo-3D stuff
+        levelObj.use(p3DHelper());
         this.allLevels[id] = {
             id,
             levelObj,

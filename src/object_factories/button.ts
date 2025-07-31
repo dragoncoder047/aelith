@@ -11,7 +11,7 @@ import { machine } from "./machine";
 
 export function button() {
     return [
-        pseudo3D(),
+        pseudo3D(false, false),
         K.sprite("button"),
         spriteToggle(),
         nudge(0, 12),

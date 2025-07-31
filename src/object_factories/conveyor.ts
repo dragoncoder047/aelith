@@ -12,7 +12,7 @@ import { machine } from "./machine";
 
 export function conveyor() {
     return [
-        pseudo3D(),
+        pseudo3D(false, true),
         K.sprite("conveyor", { tiled: true }),
         spriteToggle(),
         ...machine(),

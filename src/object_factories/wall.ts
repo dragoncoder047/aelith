@@ -26,7 +26,7 @@ export function bgWall() {
 
 function wallCommon() {
     return [
-        pseudo3D(),
+        pseudo3D(true, true),
         K.layer("background"),
         K.sprite("steel", { tiled: true }),
         K.body({ isStatic: true }),

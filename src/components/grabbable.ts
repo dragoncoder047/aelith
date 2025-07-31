@@ -1,5 +1,4 @@
 import { GameObj } from "kaplay";
-import { K } from "../init";
 import { player } from "../player";
 import { InteractableComp } from "./interactable";
 

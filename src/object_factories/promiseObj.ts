@@ -1,4 +1,5 @@
 import { BodyComp, GameObj, Tag } from "kaplay";
+import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { interactable } from "../components/interactable";
 import { promise, PromiseComp } from "../components/promise";
@@ -31,6 +32,7 @@ export function promiseObj(controlling: PromiseComp["controlling"]) {
             },
         },
         interactable(),
+        grabbable("&msg.ctlHint.item.promise.grab"),
         promise(controlling, Object.assign({}, controlling.params)),
         ...throwablePlatformEff(),
         K.z(100),
