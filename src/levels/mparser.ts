@@ -620,27 +620,36 @@ export class MParser {
         const new_parent = world.add([
             K.tile({ isObstacle: false }),
             K.layer("background"),
-            K.drawon(the_canvas.fb, { childrenOnly: true }),
+            K.drawon(the_canvas.fb, { childrenOnly: true, refreshOnly: false }),
             {
                 add(this: GameObj<DrawonComp>) {
                     K.onTabResize(() => {
                         the_canvas.free();
                         this.target!.destination = (the_canvas = K.makeCanvas(K.width(), K.height())).fb;
-                    })
+                    });
                 },
-                draw() {
+                draw(this: GameObj<DrawonComp>) {
                     K.drawCanvas({
                         canvas: the_canvas,
                         fixed: true, // needed to cheese the renderer into not applying the children's inverse camera transforms twice
                         shader: "spritestack",
+                        uniform: { u_size: K.vec2(K.width(), K.height()) },
                         width: K.width(),
                         height: K.height(),
                         pos: K.vec2(0)
                     });
-                    // clear for next frame
-                    the_canvas.draw(() => {});
-                    the_canvas.draw(() => the_canvas.clear());
                 },
+            }
+        ]);
+        new_parent.add([
+            // make first child so it always starts by clearing the buffer
+            {
+                draw() {
+                    const b = the_canvas.fb;
+                    b.bind();
+                    b.clear();
+                    b.unbind();
+                }
             }
         ]);
         world.onDraw(() => {
