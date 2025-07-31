@@ -2,6 +2,7 @@ import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
 import { interactable } from "../components/interactable";
 import { nudge } from "../components/nudge";
+import { pseudo3D } from "../components/pseudo3D";
 import { rollingDoor } from "../components/rollingDoor";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -12,6 +13,7 @@ import { machine } from "./machine";
  */
 export function door() {
     return [
+        pseudo3D(),
         K.sprite("door", { fill: false }),
         "door" as Tag,
         K.body({ isStatic: true }),
@@ -21,6 +23,5 @@ export function door() {
         rollingDoor(),
         nudge(0, TILE_SIZE / 2),
         clicky(undefined, ["door_closing", "door_opening"]),
-        "2.5D" as Tag,
     ];
 }

@@ -607,57 +607,12 @@ export class MParser {
         this._childEvent(world, "midprocess2");
         this._childEvent(world, "midprocess3");
     }
-    postprocess(world: GameObj<PosComp>) {
+    postprocess(world: GameObj) {
         this._childEvent(world, "postprocess");
         this._childEvent(world, "postprocess2");
-        this._moveToGlobalShadersStuff(world);
     }
     _childEvent(world: GameObj, event: string) {
         world.children.forEach(child => child.trigger(event));
-    }
-    _moveToGlobalShadersStuff(world: GameObj<PosComp>) {
-        var the_canvas = K.makeCanvas(K.width(), K.height());
-        const new_parent = world.add([
-            K.tile({ isObstacle: false }),
-            K.layer("background"),
-            K.drawon(the_canvas.fb, { childrenOnly: true, refreshOnly: false }),
-            {
-                add(this: GameObj<DrawonComp>) {
-                    K.onTabResize(() => {
-                        the_canvas.free();
-                        this.target!.destination = (the_canvas = K.makeCanvas(K.width(), K.height())).fb;
-                    });
-                },
-                draw(this: GameObj<DrawonComp>) {
-                    K.drawCanvas({
-                        canvas: the_canvas,
-                        fixed: true, // needed to cheese the renderer into not applying the children's inverse camera transforms twice
-                        shader: "spritestack",
-                        uniform: { u_size: K.vec2(K.width(), K.height()) },
-                        width: K.width(),
-                        height: K.height(),
-                        pos: K.vec2(0)
-                    });
-                },
-            }
-        ]);
-        new_parent.add([
-            // make first child so it always starts by clearing the buffer
-            {
-                draw() {
-                    const b = the_canvas.fb;
-                    b.bind();
-                    b.clear();
-                    b.unbind();
-                }
-            }
-        ]);
-        world.onDraw(() => {
-            const to_be_moved = world.get("2.5D");
-            for (var i = 0; i < to_be_moved.length; i++) {
-                to_be_moved[i]!.setParent(new_parent, { keep: K.KeepFlags.All });
-            }
-        });
     }
     /**
      * Queue of commands to be executed to initialize the game.

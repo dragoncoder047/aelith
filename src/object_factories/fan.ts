@@ -1,14 +1,15 @@
-import { Tag } from "kaplay";
 import { ambiance } from "../components/ambientSound";
 import { animRun } from "../components/animRun";
 import { fan as fanComp } from "../components/fan";
 import { interactable } from "../components/interactable";
+import { pseudo3D } from "../components/pseudo3D";
 import { FRICTION } from "../constants";
 import { K } from "../init";
 import { machine } from "./machine";
 
 export function fan() {
     return [
+        pseudo3D(),
         K.sprite("fan"),
         fanComp(),
         K.body({ isStatic: true }),
@@ -18,6 +19,5 @@ export function fan() {
         animRun("spin"),
         interactable(),
         ambiance("fan_running", "fan_start", "fan_stop"),
-        "2.5D" as Tag,
     ];
 }

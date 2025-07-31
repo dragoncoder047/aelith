@@ -15,7 +15,6 @@ import glitchShader from "./shaders/glitch.glsl";
 import invertShader from "./shaders/invert.glsl";
 import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
-import spritestackShader from "./shaders/spritestack.glsl";
 import stripedoorShader from "./shaders/stripedoor.glsl";
 import translateShader from "./shaders/translate.glsl";
 import inputsDataURL from "./textures/inputs.png";
@@ -75,7 +74,6 @@ K.loadShader("dataPipe", undefined, datapipeShader);
 K.loadShader("fuzzy", undefined, fuzzyFadeShader);
 K.loadShader("glitch", undefined, glitchShader);
 K.loadShader("stripedoor", undefined, stripedoorShader);
-K.loadShader("spritestack", undefined, spritestackShader);
 Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 
 // idk where else to put this

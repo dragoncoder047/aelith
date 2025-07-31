@@ -4,6 +4,7 @@ import { conveyor as conveyorComp } from "../components/conveyor";
 import { interactable } from "../components/interactable";
 import { mergeable } from "../components/mergeable";
 import { nudge } from "../components/nudge";
+import { pseudo3D } from "../components/pseudo3D";
 import { spriteToggle } from "../components/spriteToggle";
 import { CONVEYOR_SPEED } from "../constants";
 import { K } from "../init";
@@ -11,6 +12,7 @@ import { machine } from "./machine";
 
 export function conveyor() {
     return [
+        pseudo3D(),
         K.sprite("conveyor", { tiled: true }),
         spriteToggle(),
         ...machine(),
@@ -22,6 +24,5 @@ export function conveyor() {
         ambiance("conveyor_running"),
         interactable(),
         "conveyor" as Tag,
-        "2.5D" as Tag,
     ]
 }

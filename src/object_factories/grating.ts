@@ -3,9 +3,11 @@ import { mergeable } from "../components/mergeable";
 import { FRICTION, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
+import { pseudo3D } from "../components/pseudo3D";
 
 export function grating() {
     return [
+        pseudo3D(),
         K.sprite("grating", { tiled: true }),
         K.layer("background"),
         K.body({ isStatic: true }),
@@ -16,6 +18,5 @@ export function grating() {
             offset: K.vec2(0, -TILE_SIZE / 5)
         }),
         "grating" as Tag,
-        "2.5D" as Tag,
     ]
 }

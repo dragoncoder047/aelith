@@ -46,7 +46,7 @@ export const StateManager = {
             for (var key of (params.global ? Object.keys(WorldManager.allLevels) : [WorldManager.activeLevel!.id])) {
                 // find all the objects
                 const circle = new K.Circle(data.playerPos, params.radius);
-                const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine", { recursive: true })
+                const foundObjects = WorldManager.allLevels[key]!.levelObj.get<StateComps>("machine")
                     .filter(obj =>
                         !obj.is("checkpoint")
                         && !obj.is("portal")

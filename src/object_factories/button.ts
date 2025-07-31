@@ -3,6 +3,7 @@ import { button as buttonComp } from "../components/button";
 import { clicky } from "../components/clicky";
 import { collisioner } from "../components/collisioner";
 import { nudge } from "../components/nudge";
+import { pseudo3D } from "../components/pseudo3D";
 import { spriteToggle } from "../components/spriteToggle";
 import { FRICTION } from "../constants";
 import { K } from "../init";
@@ -10,6 +11,7 @@ import { machine } from "./machine";
 
 export function button() {
     return [
+        pseudo3D(),
         K.sprite("button"),
         spriteToggle(),
         nudge(0, 12),
@@ -23,6 +25,5 @@ export function button() {
         collisioner(),
         clicky(),
         "noCollideWithTail" as Tag,
-        "2.5D" as Tag,
     ];
 }

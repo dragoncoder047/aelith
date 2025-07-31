@@ -1,8 +1,9 @@
-import { CompList, GameObj, Tag } from "kaplay";
+import { CompList, GameObj } from "kaplay";
 import { cloneable } from "../components/cloneable";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { interactable } from "../components/interactable";
+import { pseudo3D } from "../components/pseudo3D";
 import { randomFrame } from "../components/randomFrame";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
@@ -17,6 +18,7 @@ const HALF = 1 / 2;
  */
 export function box(): CompList<any> {
     return [
+        pseudo3D(),
         K.sprite("box", { fill: false }),
         "box",
         K.body({ maxVelocity: TERMINAL_VELOCITY }),
@@ -58,6 +60,5 @@ export function box(): CompList<any> {
                 this.manpage.spriteSrc = this;
             }
         },
-        "2.5D" as Tag
     ];
 }
