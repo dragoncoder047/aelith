@@ -391,7 +391,7 @@ ctlHint:
   dialog:
     scroll: "&control.dialog.scroll view more"
     exit: "&control.dialog.exit close"
-    msg.exit: '\[esc] close'
+    msg.exit: '&important.exitControl close'
   item:
     trap:
       default: "&control.action1 capture a continuation"

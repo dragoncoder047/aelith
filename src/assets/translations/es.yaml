@@ -410,7 +410,7 @@ ctlHint:
   dialog:
     scroll: "&control.dialog.scroll ver mas"
     exit: "&control.dialog.exit cerrar"
-    msg.exit: '\[esc] cerrar'
+    msg.exit: '&important.exitControl cerrar'
 continuation.edit:
   flags: Elegir parametros
   pName: Cambiar el nombre de la promesa

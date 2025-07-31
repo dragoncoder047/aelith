@@ -65,6 +65,7 @@ c:
     dialog:
       scroll: ' [mouse]s[/mouse] / [key]W[/key]  [key]S[/key] / [key]w[/key]  [key]s[/key] '
       exit: "&control.read_manpage"
+important.exitControl: ' [key2]e[/key2] '
 gfn: font_&controllerType
 button:
   # the spaces are important!
