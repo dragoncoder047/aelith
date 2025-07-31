@@ -11,8 +11,10 @@
 * [ ] make the player sprite have hands that come around and hold the thing that they are grabbing
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
-* [ ] add 2.5D sprite stacking
-  * [ ] this might need the drawon component, will need to figure out how to use that
+* [X] add 2.5D sprite stacking
+  * [X] this might need the drawon component, will need to figure out how to use that
+  * [ ] fix shader so that it looks right
+  * [ ] add pause menu control that can enable/disable the shader for lag reasons
 * [ ] debug menu via pause menu for magic functions
 * [ ] make pause menu work with mouse, need text quad character detection for this
 * [ ] Make flash trail that shows activation of things follow the data wires
