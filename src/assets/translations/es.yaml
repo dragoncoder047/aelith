@@ -449,10 +449,6 @@ pause:
     levers_switched: palancas jaladas
     boxes_cloned: memoria localizada
     deaths: muertes
-dead:
-  resume: Resume from a previous checkpoint
-  checkpoint: Checkpoint
-  fromBeginning: from the beginning
 press: presionar
 notImplemented: "Lo siento, no esta implementado aun"
 bsod.sadfaceMsg: "El juego tuvo un problema que no pudo manejar, tienes que reiniciarlo."

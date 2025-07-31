@@ -1,4 +1,4 @@
-import { AreaComp, Comp, GameObj, LayerComp, PosComp, Rect, SpriteComp, Tag } from "kaplay";
+import { AreaComp, Comp, GameObj, LayerComp, PosComp, SpriteComp } from "kaplay";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 
@@ -26,6 +26,11 @@ export interface P3DHelperComp extends Comp {
     p3DObjectList: GameObj<SpriteComp | PosComp | Pseudo3DComp | AreaComp>[];
 }
 
+var pseudo3DEnabled = true;
+export function enablePseudo3D(isEnabled: boolean) {
+    pseudo3DEnabled = isEnabled;
+}
+
 export function p3DHelper(layer?: string): P3DHelperComp {
     layer ??= K._k.game.layers![0];
     return {
@@ -38,6 +43,7 @@ export function p3DHelper(layer?: string): P3DHelperComp {
             this.p3DObjectList = this.get("pseudo3D", { liveUpdate: true, only: "comps" });
         },
         draw() {
+            if (!pseudo3DEnabled) return;
             // step one: sort the objects so that faces never
             // lie on top of each other (face culling stuff)
             // const v = K.Vec2;

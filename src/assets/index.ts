@@ -21,11 +21,11 @@ import inputsDataURL from "./textures/inputs.png";
 import inputsFontsDef from "./textures/inputs.yaml";
 import spritemapDataURL from "./textures/spritemap.png";
 import spritemapDef from "./textures/spritemap.yaml";
-import deStrings from "./translations/de.yaml";
+// import deStrings from "./translations/de.yaml";
 import enStrings from "./translations/en.yaml";
 import esStrings from "./translations/es.yaml";
 import strings from "./translations/index.yaml";
-import jaStrings from "./translations/ja.yaml";
+// import jaStrings from "./translations/ja.yaml";
 
 
 // Load assets
@@ -59,11 +59,11 @@ K.loadBitmapFontFromSprite("mousefont", "mlrs"); // cSpell: ignore mlrs
 K.loadRumbleEffects(rumbleEffects);
 K.loadZzFXMultiJSON(sounds);
 K.addStrings(strings);
-K.setLanguages(["en", "es", "de", "ja"]);
+K.setLanguages(["en", "es"/*, "de", "ja"*/]);
 K.strings.en = enStrings;
 K.strings.es = esStrings;
-K.strings.de = deStrings;
-K.strings.ja = jaStrings;
+// K.strings.de = deStrings;
+// K.strings.ja = jaStrings;
 K.loadFont("IBM Mono", ibmMonoFontDataURL);
 K.loadFont("Unscii MCR", unsciiMCRFontDataURL);
 K.loadShader("recolorRed", undefined, recolorRedShader);

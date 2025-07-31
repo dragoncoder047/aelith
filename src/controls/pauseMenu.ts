@@ -1,5 +1,6 @@
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
+import { enablePseudo3D } from "../components/pseudo3D";
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { guessOS, isFirefox } from "../misc/utils";
@@ -47,6 +48,18 @@ export const PAUSE_MENU: PtyMenu = {
             selected: [0, 1, 2, 3, 4],
             multiple: true
         },
+        {
+            id: "settings -xg",
+            name: "&msg.pause.graphics.title",
+            type: "select",
+            header: "&msg.pause.graphics.header",
+            opts: [
+                { text: "&msg.pause.graphics.pseudo3D", value: "pseudo3D" },
+                // { text: "&msg.pause.graphics.lighting", value: "lighting" },
+            ],
+            selected: [0/*, 1 */],
+            multiple: true
+        },
         gcTypeMenu,
         StatTracker.menuViewer,
         {
@@ -55,10 +68,10 @@ export const PAUSE_MENU: PtyMenu = {
             type: "select",
             opts: [
                 { text: "&msg.pause.language.auto", value: availableLangs },
-                { text: "English", value: ["en"] },
-                { text: "Español", value: ["es"] },
-                { text: "Deutsch", value: ["de"] },
-                { text: "日本語", value: ["ja"] }
+                { text: "Use English", value: ["en"] },
+                { text: "Usa Español", value: ["es"] },
+                // { text: "Verwenden sie Deutsch", value: ["de"] },
+                // { text: "日本語を使う", value: ["ja"] }
             ],
             selected: 0
         },
@@ -140,13 +153,15 @@ async function doUnpause() {
 export function copyPreferences() {
     if (!PAUSE_MENU_OBJ || PAUSE_MENU_OBJ.term.topMenu !== PAUSE_MENU) return;
     K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
-    const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i");
+    const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i") as string[];
     timer.opacity = +switches?.includes("timer");
     musicPlay.paused = !switches?.includes("music");
     player.sfxEnabled = switches?.includes("sfx");
     K.rumble.enabled = switches?.includes("rumble");
     player.controlText.hidden = !switches?.includes("controlHints");
-    K.langs = K.getValueFromMenu(PAUSE_MENU, "set language");
+    const graphicsSwitches = K.getValueFromMenu(PAUSE_MENU, "settings -xg") as string[];
+    enablePseudo3D(graphicsSwitches?.includes("pseudo3D"));
+    K.langs = K.getValueFromMenu(PAUSE_MENU, "set language") as string[];
 }
 
 K.onGamepadConnect(g => {

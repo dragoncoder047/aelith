@@ -1,7 +1,12 @@
 import yaml
 import subprocess
 
-LANGS = ["en", "es", "de", "ja"]
+LANGS = [
+    "en",
+    "es",
+    # "de",
+    # "ja",
+]
 
 
 def get_json(path: str):

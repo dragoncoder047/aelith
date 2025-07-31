@@ -3,12 +3,12 @@ import { K } from "./init";
 K.setLayers([
     "tranFader",
     "background",
-    "pipes",
     "world",
     "text",
     "continuations",
     "playerTail",
     "player",
+    "pipes",
     "particles",
     "manpage",
     "ui",

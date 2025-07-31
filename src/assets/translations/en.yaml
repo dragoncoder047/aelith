@@ -451,6 +451,11 @@ pause:
     controlHints: Show control hints
     music: Play background music
     soundEffects: Play sound effects
+  graphics:
+    title: Graphics
+    header: (Turn these off if your computer is a potato.)
+    pseudo3D: Enable pseudo-3D
+    lighting: Enable immersive lighting
   restart:
     title: Restart game
     confirm: |-

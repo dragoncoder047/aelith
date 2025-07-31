@@ -285,7 +285,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     }
                     this.chunks = this.chunks.slice(0, beginLen);
                     commandChunks = this.backStack.concat(this.menu).map(c => ({ text: c.id + " ", styles: [...(c.styles ? c.styles : []), this.cmdStyle] }) as PtyChunk);
-                    const outChunks: PtyChunk[] = typeof this.menu.header === "undefined" ? [] : typeof this.menu.header === "string" ? [{ text: this.menu.header }] : [this.menu.header];
+                    const outChunks: PtyChunk[] = typeof this.menu.header === "undefined" ? [] : typeof this.menu.header === "string" ? [{ text: this.menu.header + "\n" }] : [this.menu.header, { text: "\n" }];
                     cursorChunks = this.menu.type !== "submenu" && this.menu.type !== "string" ? this.toChunks(this.cursor) : [];
                     menuChunks = [];
                     optionChunks = [];
