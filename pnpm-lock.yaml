@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:dragoncoder047/kaplay#e3ae6b994a1f2dc9ca450f780534188df84552c7
-        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/e3ae6b994a1f2dc9ca450f780534188df84552c7
+        specifier: github:dragoncoder047/kaplay#82288ce54a1c5eb53ee44aefe7b421ffd0b96e3d
+        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/82288ce54a1c5eb53ee44aefe7b421ffd0b96e3d
       zzfx:
         specifier: ^1.3.0
         version: 1.3.0
@@ -195,8 +195,8 @@ packages:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/e3ae6b994a1f2dc9ca450f780534188df84552c7:
-    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/e3ae6b994a1f2dc9ca450f780534188df84552c7}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/82288ce54a1c5eb53ee44aefe7b421ffd0b96e3d:
+    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/82288ce54a1c5eb53ee44aefe7b421ffd0b96e3d}
     version: 4000.0.0-alpha.20
     engines: {node: '>=20.0.0'}
 
@@ -321,7 +321,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/e3ae6b994a1f2dc9ca450f780534188df84552c7: {}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/82288ce54a1c5eb53ee44aefe7b421ffd0b96e3d: {}
 
   typescript@5.6.2: {}
 
