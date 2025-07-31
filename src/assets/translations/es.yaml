@@ -1,6 +1,6 @@
 dialog:
   firefoxDontWorkWithGamepads: >-
-    Parece que estas usando Firefox. Desafortunadamente, La implementacion e
+    Parece que estas usando Firefox. Desafortunadamente, la implementacion e
     Firefox de la API para mandos en web apesta tanto que es inutilizable,
     puedes continuar usando tu mouse y teclado.
 
@@ -20,19 +20,21 @@ lore:
     header: Manejo de memoria
     section: "1"
     secName: MEM
-    body: >+
-      [b]NOMBRE
-
-      &tabvar[/b], [b]const[/b], [b]let[/b] - asigna nueva memoria para
-      permitirle al programa ejecutarse
-
-
-      [b]DESCRIPCION
-
-      &tabvar[/b], [b]const[/b], y [b]let[/b] asignan un nuevo pedazo de
-      memoria. No está atado a ningún programa en particular, puede ser
-      insertado en cualquier programa tirándolo, e incluso puede ser insertado
-      en un proceso actual.
+    ################# this was just missing the final section (CAVEATS) regarding uninitialized memory.
+    ################# It's commented out so it will show up in the lint_strings.py output. delete this when done
+    # body: >+
+    #   [b]NOMBRE
+    #
+    #   &tabvar[/b], [b]const[/b], [b]let[/b] - asigna nueva memoria para
+    #   permitirle al programa ejecutarse
+    #
+    #
+    #   [b]DESCRIPCION
+    #
+    #   &tabvar[/b], [b]const[/b], y [b]let[/b] asignan un nuevo pedazo de
+    #   memoria. No está atado a ningún programa en particular, puede ser
+    #   insertado en cualquier programa tirándolo, e incluso puede ser insertado
+    #   en un proceso actual.
 
   continuation:
     throw:
@@ -420,25 +422,27 @@ antivirus:
   allClear: El sistema esta limpio
   detected: ¡Codigo malicioso encontrado!
 pause:
-  paused: Juego pausado
-  controllerType: Tipo de control
-  ngConnect: Conectarse a Newgrounds.com
-  setLanguage: Lenguaje
-  automaticLang: Autodectar lenguaje
-  preferences: Opciones
-  controllerRumble: Habilitar vibracion del mando
-  showSpeedrunTimer: Mostrar temporizador
-  showControlHints: Mostrar pistas sobre controles
-  playBgMusic: Musica de fondo
-  playSfx: Efectos de sonido
-  cutsceneOnlyFirstTime: Solo mostrar la transicion la primera vez
-  restart: Reiniciar juego
-  reallyRestart: |-
-    Estas seguro de que quieres reiniciar?
-    ¡Todo el progreso se perdera!
+  main:
+    title: Juego pausado
+    submenu.controller: Tipo de control
+    submenu.newgrounds: Conectarse a Newgrounds.com
+    submenu.language: Lenguaje
+  language.auto: Autodectar lenguaje
+  options:
+    title: Opciones
+    rumble: Habilitar vibracion del mando
+    speedrunTimer: Mostrar temporizador
+    controlHints: Mostrar pistas sobre controles
+    music: Musica de fondo
+    soundEffects: Efectos de sonido
+  restart:
+    title: Reiniciar juego
+    confirm: |-
+      Estas seguro de que quieres reiniciar?
+      ¡Todo el progreso se perdera!
   stats:
     heading: Estadisticas
-    none: "Nada significante, aun..."
+    none: "Nada significante aun..."
     continuations_invoked: continuations invocadas
     lightbulbs_illuminated: bombillas prendidas
     bugs_stomped: bugs aplastados
@@ -446,8 +450,6 @@ pause:
     boxes_cloned: memoria localizada
     deaths: muertes
 dead:
-  complete: Debugging complete.
-  failed: failed to eliminate all bugs!
   resume: Resume from a previous checkpoint
   checkpoint: Checkpoint
   fromBeginning: from the beginning

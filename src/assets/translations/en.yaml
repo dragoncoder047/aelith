@@ -438,21 +438,23 @@ antivirus:
   allClear: System is clean
   detected: Rogue code detected!
 pause:
-  paused: Game is paused
-  controllerType: Controller type
-  ngConnect: Connect to Newgrounds.com
-  setLanguage: Language
-  automaticLang: Autodetect language
-  preferences: Options
-  controllerRumble: Enable controller rumble
-  showSpeedrunTimer: Show speedrun timer
-  showControlHints: Show control hints
-  playBgMusic: Play background music
-  playSfx: Play sound effects
-  cutsceneOnlyFirstTime: Only show level transition the first time
-  restart: Restart game
-  reallyRestart: |-
-    Are you sure you want to restart?
+  main:
+    title: Game is paused
+    submenu.controller: Controller type
+    submenu.newgrounds: Connect to Newgrounds.com
+    submenu.language: Language
+  language.auto: Autodetect language
+  options:
+    title: Options
+    rumble: Enable controller rumble
+    speedrunTimer: Show speedrun timer
+    controlHints: Show control hints
+    music: Play background music
+    soundEffects: Play sound effects
+  restart:
+    title: Restart game
+    confirm: |-
+      Are you sure you want to restart?
       All progress will be lost!
   stats:
     heading: Statistics
@@ -465,7 +467,6 @@ pause:
     deaths: deaths
 dead:
   segfault: Segmentation fault (core dumped)
-  failed: failed to eliminate all bugs!
   resume: Resume from a previous checkpoint
   checkpoint: Checkpoint
   fromBeginning: from the beginning

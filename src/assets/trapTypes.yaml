@@ -163,8 +163,8 @@ call/cc:
       action1: "&msg.ctlHint.item.continuation.invoke.default"
     promise:
       action1: "&msg.ctlHint.item.promise.capture"
-      action4: $fn.switch(&flyEnabled~true:&msg.ctlHint.promise.boostModeToggle)
-      motion: $fn.switch(&flying~true:&msg.ctlHint.promise.boostModeToggle)
+      action4: $fn.switch(&flyEnabled~true:&msg.ctlHint.item.promise.boostModeToggle)
+      motion: $fn.switch(&flying~true:&msg.ctlHint.item.promise.motion)
   flyingEnabled: true
   lore:
     header: "&msg.lore.continuation.callcc.header"
