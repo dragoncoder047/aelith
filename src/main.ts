@@ -37,9 +37,3 @@ window.playerFollower = player.camFollower!;
 window.player = player;
 // @ts-ignore
 window.WorldManager = WorldManager;
-
-// @ts-ignore
-window.openSesame = (id: string) => (K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === id) ?? { broadcast() { throw "nothing with id " + id; } }).broadcast("toggle");
-
-// @ts-ignore
-window.give = (tName: string) => player.addToInventory(K.get("continuation-trap", { recursive: true }).find(x => x.name === tName))

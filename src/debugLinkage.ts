@@ -7,6 +7,7 @@ import { WorldManager } from "./levels";
 
 K.add([{
     drawInspect() {
+        if (WorldManager.activeLevel?.levelObj.hidden) return;
         const allObjs = WorldManager.activeLevel?.levelObj.get<LinkComp | PosComp>("linked") ?? [];
         const groups = new Map<string, GameObj<LinkComp | PosComp>[]>;
         const names: string[] = [];
@@ -30,7 +31,7 @@ K.add([{
 function sort2shortest(ps: Vec2[]): Vec2[] {
     const best = { arr: [] as Vec2[], score: Infinity };
     for (var c of permutations(ps)) {
-        const score = c.map((p, i) => i > 0 ? p.dist(c[i-1]!) : 0).reduce((a, b) => a + b, 0);
+        const score = c.map((p, i) => i > 0 ? p.dist(c[i - 1]!) : 0).reduce((a, b) => a + b, 0);
         if (score < best.score) {
             best.score = score;
             best.arr = c;

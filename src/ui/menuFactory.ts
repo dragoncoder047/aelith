@@ -26,7 +26,7 @@ export interface MenuModal {
 
 export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, enterEC: KEventControllerPatch, closeable: boolean = true, history: boolean = false): MenuModal {
     const THIS_MENU_ID = "___menu" + MParser.uid();
-    var origInventoryIndex: number;
+    var origInventoryIndex: number, origInventoryLength: number;
     const theMenuContainer = UI.add([
         K.pos(K.center()),
         K.layer("manpage"),
@@ -73,7 +73,10 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
                 if (K.isCapturingInput()) return;
                 if (theTerm.backStack.length > 0) theTerm.back();
                 else if (closeable) theObj.close();
-            })
+            }),
+            theTerm.on("forceQuit", () => {
+                theObj.close();
+            }),
         ] as KEventControllerPatch[],
         main: [
             ...(closeable ? [
@@ -159,6 +162,7 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             initEv.forEach(ev => K.eventGroups.add(ev));
             if (!history) theObj.term.chunks = [];
             origInventoryIndex = player.holdingIndex;
+            origInventoryLength = player.inventory.length;
             player.scrollInventory(-player.inventory.length);
             player.hidden = true;
             player.freeze(true);
@@ -173,7 +177,8 @@ export function modalmenu(theMenu: PtyMenu, initEv: string[], hint: string, ente
             theObj.term.paused = true;
             theObj.modal.paused = theObj.modal.hidden = true;
             await theObj.term.quitMenu();
-            player.scrollInventory(origInventoryIndex - player.holdingIndex);
+            if (player.inventory.length === origInventoryLength)
+                player.scrollInventory(origInventoryIndex - player.holdingIndex);
             player.hidden = false;
             player.freeze(false);
             K.get("tail").forEach(p => p.hidden = p.paused = false);

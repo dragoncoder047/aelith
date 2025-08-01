@@ -1,5 +1,6 @@
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
+import { LinkComp } from "../components/linked";
 import { enablePseudo3D } from "../components/pseudo3D";
 import { K } from "../init";
 import { WorldManager } from "../levels";
@@ -28,6 +29,67 @@ const gcTypeMenu: PtyMenu = {
 };
 
 const rumbleOption = { text: "&msg.pause.options.rumble", value: "rumble", hidden: true };
+
+const debugSubmenu: PtyMenu = {
+    id: "debug",
+    name: "Debug",
+    hidden: true,
+    type: "submenu",
+    opts: [],
+};
+
+K.onLoad(() => {
+    (debugSubmenu as any).opts.push(
+        {
+            id: "yoink",
+            name: "Yoink continuation trap",
+            type: "submenu",
+            opts: K.get("continuationTrap", { recursive: true }).map(t => {
+                return {
+                    type: "action",
+                    id: t.name,
+                    name: t.name,
+                    quit: true,
+                    action() {
+                        player.grab(t as any);
+                    }
+                }
+            }),
+        } satisfies PtyMenu,
+        {
+            id: "tp",
+            name: "Teleport to level",
+            type: "submenu",
+            opts: Object.keys(WorldManager.allLevels).map(name => {
+                return {
+                    id: name,
+                    name: name,
+                    type: "action",
+                    quit: true,
+                    action() {
+                        WorldManager.goLevel(name);
+                    }
+                }
+            }),
+        } satisfies PtyMenu,
+        {
+            id: "sesame",
+            name: "Open Sesame",
+            type: "string",
+            value: "",
+            validator: {
+                test(str) {
+                    return K.get<LinkComp>("linked", { recursive: true }).some(o => o.linkGroup === str);
+                }
+            },
+            invalidMsg: "no such group.",
+            onSubmit(str, menu) {
+                K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === str)!.broadcast("toggle");
+                menu.value = "";
+            },
+            quit: true,
+        } satisfies PtyMenu);
+});
 
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
@@ -93,8 +155,8 @@ export const PAUSE_MENU: PtyMenu = {
                     id: "--yes",
                     name: "&msg.pause.restart.confirm",
                     type: "action",
-                    async action() {
-                        await PAUSE_MENU_OBJ.term.quitMenu();
+                    quit: true,
+                    action() {
                         window.location.reload();
                     }
                 }
@@ -119,7 +181,8 @@ export const PAUSE_MENU: PtyMenu = {
             value: 50,
             barWidth: 25,
             hidden: true
-        }
+        },
+        debugSubmenu
     ]
 }
 
@@ -162,6 +225,10 @@ export function copyPreferences() {
     const graphicsSwitches = K.getValueFromMenu(PAUSE_MENU, "settings -xg") as string[];
     enablePseudo3D(graphicsSwitches?.includes("pseudo3D"));
     K.langs = K.getValueFromMenu(PAUSE_MENU, "set language") as string[];
+    if (debugSubmenu.hidden === K.debug.inspect) {
+        debugSubmenu.hidden = !K.debug.inspect;
+        PAUSE_MENU_OBJ.term.__redraw(false);
+    }
 }
 
 K.onGamepadConnect(g => {

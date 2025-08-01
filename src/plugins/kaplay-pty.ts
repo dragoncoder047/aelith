@@ -77,7 +77,8 @@ export type PtyMenu = {
     opts: PtyMenu[]
 } | ({
     type: "action"
-    action(): PromiseLike<void>,
+    action(): void | PromiseLike<void>,
+    quit?: boolean;
 } & Object) | {
     type: "select"
     opts: { text: Typable, value: any, hidden?: boolean }[]
@@ -100,6 +101,8 @@ export type PtyMenu = {
     value: string
     validator: { test: RegExp["test"] }
     invalidMsg: string
+    onSubmit?(string: string, menu: Extract<PtyMenu, { type: "string" }>): void | PromiseLike<void>;
+    quit?: boolean;
 });
 
 // MARK: PtyMenuCompOpt
@@ -275,6 +278,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     stringChunk = undefined;
                     disabled = true;
                 },
+                // MARK: __redraw()
                 async __redraw(this: GameObj<PtyMenuComp | PtyComp>, isFinishOption) {
                     if (disabled) return;
                     if (isFinishOption) {
@@ -461,6 +465,11 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                 case "action":
                                     await this.__redraw(true);
                                     await this.menu.action();
+                                    if (this.menu.quit) {
+                                        await this.quitMenu();
+                                        this.trigger("forceQuit");
+                                        return;
+                                    }
                                     beginLen = this.chunks.length;
                                     if (disabled) break top;
                                     this.menu = this.backStack.pop()!;
@@ -499,6 +508,12 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                         if (this.menu.type !== "string") throw new Error("unreachable");
                                         if (this.menu.validator.test(inputListener!.typedText)) {
                                             this.menu.value = inputListener!.typedText;
+                                            if (this.menu.onSubmit) await this.menu.onSubmit(this.menu.value, this.menu);
+                                            if (this.menu.quit) {
+                                                await this.quitMenu();
+                                                this.trigger("forceQuit");
+                                                return;
+                                            }
                                             await this.back();
                                         } else {
                                             if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
@@ -580,16 +595,9 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     var changed = false;
                     if (this.menu.type === "submenu" || this.menu.type === "select") {
                         const old = this.selIdx;
-                        this.selIdx += direction.y + direction.x;
                         // skip over hidden entries
-                        while (this.menu.opts[this.selIdx]?.hidden)
-                            this.selIdx += direction.x + direction.y;
-                        // clamp to valid range of entries
-                        this.selIdx = K.clamp(
-                            this.selIdx,
-                            // account for hidden ones at ends
-                            this.menu.opts.findIndex(x => !x.hidden),
-                            this.menu.opts.findLastIndex(x => !x.hidden));
+                        do this.selIdx = (this.selIdx + direction.x + direction.y + this.menu.opts.length) % this.menu.opts.length;
+                        while (this.menu.opts[this.selIdx]?.hidden);
                         changed = old !== this.selIdx;
                     }
                     else if (this.menu.type === "range") {
