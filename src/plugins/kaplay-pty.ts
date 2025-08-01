@@ -56,7 +56,7 @@ export interface PtyMenuComp extends Comp {
     ptrText: string
     useHistory: boolean
     playSoundCb(sound: string): void
-    __updateSelected(): Promise<void>
+    __updateSelected(err?: StringResult): Promise<void>
     __backAll(): void
     __redraw(isFinishOption: boolean): Promise<void>
     __submenuRedraw(outChunks: PtyChunk[]): void
@@ -99,11 +99,13 @@ export type PtyMenu = {
     type: "string"
     prompt?: string
     value: string
-    validator: { test: RegExp["test"] }
+    validator: { test(str: string): boolean | { reject: string } }
     invalidMsg: string
-    onSubmit?(string: string, menu: Extract<PtyMenu, { type: "string" }>): void | PromiseLike<void>;
+    onSubmit?(string: string, menu: Extract<PtyMenu, { type: "string" }>): string | void | PromiseLike<string | void>;
     quit?: boolean;
 });
+
+type StringResult = { ok: boolean, message?: string };
 
 // MARK: PtyMenuCompOpt
 export interface PtyMenuCompOpt {
@@ -400,7 +402,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     commandChunks = [];
                 },
                 // MARK: __updateSelected()
-                async __updateSelected(this: GameObj<PtyMenuComp | PtyComp | TextComp>) {
+                async __updateSelected(this: GameObj<PtyMenuComp | PtyComp | TextComp>, err) {
                     if (disabled) return;
                     switch (this.menu.type) {
                         case "submenu":
@@ -439,7 +441,7 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                         case "string":
                             if (!stringChunk) throw new Error("unreachable");
                             stringChunk.box.text = inputListener!.typedText;
-                            stringChunk.ei.text = "\n" + (this.menu.validator.test(stringChunk.box.text) ? "" : this.menu.invalidMsg);
+                            stringChunk.ei.text = (err ? (err.ok ? "" : "\n" + (err.message ?? this.menu.invalidMsg)) : "");
                             break;
                         case "action":
                             break;
@@ -491,13 +493,22 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                     await nextFrame();
                                     await nextFrame();
                                     inputListener.typedText = this.menu.value;
+                                    const m = this.menu;
+                                    const _check = (): StringResult => {
+                                        const res = m.validator.test(inputListener!.typedText);
+                                        if (res) {
+                                            if (typeof res === "object") return { ok: false, message: res.reject };
+                                            return { ok: true }
+                                        }
+                                        return { ok: false };
+                                    }
                                     inputListener.onCharInput(() => {
                                         if (opt?.sounds?.typing) this.playSoundCb?.(opt.sounds.typing);
-                                        this.__updateSelected();
+                                        this.__updateSelected(_check());
                                     });
                                     inputListener.onKeyPressRepeat("backspace", () => {
                                         if (opt?.sounds?.typing) this.playSoundCb?.(opt.sounds.typing);
-                                        this.__updateSelected();
+                                        this.__updateSelected(_check());
                                     });
                                     inputListener.onKeyPress(opt.stringCancelKey!, async () => {
                                         if (this.menu.type !== "string") throw new Error("unreachable");
@@ -506,15 +517,21 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                                     });
                                     inputListener.onKeyPress(opt.stringSubmitKey!, async () => {
                                         if (this.menu.type !== "string") throw new Error("unreachable");
-                                        if (this.menu.validator.test(inputListener!.typedText)) {
-                                            this.menu.value = inputListener!.typedText;
-                                            if (this.menu.onSubmit) await this.menu.onSubmit(this.menu.value, this.menu);
-                                            if (this.menu.quit) {
+                                        if (_check().ok) {
+                                            m.value = inputListener!.typedText;
+                                            if (m.onSubmit) {
+                                                const err = await m.onSubmit(m.value, m);
+                                                if (err) {
+                                                    await this.__updateSelected({ ok: false, message: err });
+                                                    return;
+                                                }
+                                            }
+                                            await this.back();
+                                            if (m.quit) {
                                                 await this.quitMenu();
                                                 this.trigger("forceQuit");
                                                 return;
                                             }
-                                            await this.back();
                                         } else {
                                             if (opt?.sounds?.error) this.playSoundCb?.(opt.sounds.error);
                                         }

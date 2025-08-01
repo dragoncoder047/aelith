@@ -38,59 +38,6 @@ const debugSubmenu: PtyMenu = {
     opts: [],
 };
 
-K.onLoad(() => {
-    (debugSubmenu as any).opts.push(
-        {
-            id: "yoink",
-            name: "Yoink continuation trap",
-            type: "submenu",
-            opts: K.get("continuationTrap", { recursive: true }).map(t => {
-                return {
-                    type: "action",
-                    id: t.name,
-                    name: t.name,
-                    quit: true,
-                    action() {
-                        player.grab(t as any);
-                    }
-                }
-            }),
-        } satisfies PtyMenu,
-        {
-            id: "tp",
-            name: "Teleport to level",
-            type: "submenu",
-            opts: Object.keys(WorldManager.allLevels).map(name => {
-                return {
-                    id: name,
-                    name: name,
-                    type: "action",
-                    quit: true,
-                    action() {
-                        WorldManager.goLevel(name);
-                    }
-                }
-            }),
-        } satisfies PtyMenu,
-        {
-            id: "sesame",
-            name: "Open Sesame",
-            type: "string",
-            value: "",
-            validator: {
-                test(str) {
-                    return K.get<LinkComp>("linked", { recursive: true }).some(o => o.linkGroup === str);
-                }
-            },
-            invalidMsg: "no such group.",
-            onSubmit(str, menu) {
-                K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === str)!.broadcast("toggle");
-                menu.value = "";
-            },
-            quit: true,
-        } satisfies PtyMenu);
-});
-
 export const PAUSE_MENU: PtyMenu = {
     id: "sysctl",
     type: "submenu",
@@ -199,6 +146,85 @@ export function initPauseMenu() {
     PAUSE_MENU_OBJ.onStart(doPause);
     PAUSE_MENU_OBJ.onQuit(doUnpause);
     PAUSE_MENU_OBJ.onUpdate(copyPreferences);
+
+    (debugSubmenu as any).opts.push(
+        {
+            id: "yoink",
+            name: "Yoink continuation trap",
+            type: "submenu",
+            opts: K.get("continuationTrap", { recursive: true }).map(t => {
+                return {
+                    type: "action",
+                    id: t.name,
+                    name: t.name,
+                    quit: true,
+                    action() {
+                        player.grab(t as any);
+                    }
+                }
+            }),
+        } satisfies PtyMenu,
+        {
+            id: "tp",
+            name: "Teleport to level",
+            type: "submenu",
+            opts: Object.keys(WorldManager.allLevels).map(name => {
+                return {
+                    id: name,
+                    name: name,
+                    type: "action",
+                    quit: true,
+                    action() {
+                        WorldManager.goLevel(name);
+                    }
+                }
+            }),
+        } satisfies PtyMenu,
+        {
+            id: "sesame",
+            name: "Open Sesame",
+            type: "string",
+            value: "",
+            validator: {
+                test(str) {
+                    return K.get<LinkComp>("linked", { recursive: true }).some(o => o.linkGroup === str);
+                }
+            },
+            invalidMsg: "no such group.",
+            onSubmit(str, menu) {
+                K.get<LinkComp>("linked", { recursive: true }).find(x => x.linkGroup === str)!.broadcast("toggle");
+                menu.value = "";
+            },
+            quit: true,
+        } satisfies PtyMenu,
+        {
+            id: "eval",
+            name: "Javascript",
+            type: "string",
+            value: "",
+            validator: {
+                test(str) {
+                    try {
+                        new Function("return " + str);
+                        return true;
+                    } catch (e: any) {
+                        return { reject: e.message ?? String(e) };
+                    }
+                }
+            },
+            invalidMsg: "syntax error.",
+            async onSubmit(str, menu) {
+                try {
+                    await new Function("return " + str)();
+                } catch (e: any) {
+                    console.error(e);
+                    return e.message ?? String(e);
+                }
+                menu.value = "";
+            },
+            quit: true,
+        } satisfies PtyMenu);
+
     copyPreferences();
 }
 
