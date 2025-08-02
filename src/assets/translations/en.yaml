@@ -50,71 +50,71 @@ lore:
       section: "4"
       secName: THROW
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[throw]throw[/throw] - return to a previous location in the program
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]throw[/b] \[[b]--capture[/b] | [b]--restore[/b]]
+        &tabthrow[/b] \[[b]--capture[/b] | [b]--restore[/b]]
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]throw[/b] is a tool to instantly return to a previous position in
+        &tabthrow[/b] is a tool to instantly return to a previous position in
         a debugging workflow while modifying nothing about the program's current
         state.
 
 
-        NOTES
+        [b]NOTES[/b]
 
         &tabThis [b]throw[/b] is specially designed to be usable by the
         [b]agdb[/b] tool (which is currently running: [b]true[/b]) to be able to
         interactively debug exceptional situations.
 
 
-        CAVEATS
+        [b]CAVEATS
 
-        &tab[b]throw[/b] saves the system state to a hard-coded file name.
+        &tabthrow[/b] saves the system state to a hard-coded file name.
         Because of this it is only possible to capture the system state once
         using [b]throw[/b]. It must be restored first before another snapshot is
         saved.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]throw[/b] was originally written as a way for a program to signal
+        &tabthrow[/b] was originally written as a way for a program to signal
         to the debugger that something has gone wrong and "throw" control back
         to the human operator. Exactly which programming language implemented it
         first, no one knows.
     setjmp:
       header: Debugging Tools
       section: "4"
-      secName: SETJMP
+      secName: SETJMP # cSpell: ignore tabsetjmp
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[setjmp]setjmp[/setjmp] - break out of deeply nested functions
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]setjmp[/b] \[[b]--capture[/b] | [b]--restore[/b]]
+        &tabsetjmp[/b] \[[b]--capture[/b] | [b]--restore[/b]]
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]setjmp[/b] is a tool that allows the program to exit quickly from
+        &tabsetjmp[/b] is a tool that allows the program to exit quickly from
         an exceptional situation via continuations. When invoked via
         [setjmp]longjmp[/setjmp], it jumps back to the place it was captured
         from -- no matter how many stack frames it must jump through -- and then
         restores the value of local variables.
 
 
-        CAVEATS
+        [b]CAVEATS
 
-        &tab[b]setjmp[/b] can only unwind the call stack, so trying to capture a
+        &tabsetjmp[/b] can only unwind the call stack, so trying to capture a
         second continuation while one is still active is undefined behavior. To
         prevent this from happening, when [setjmp]setjmp[/setjmp] detects that a
         continuation has already been captured, it turns off until the existing
@@ -128,9 +128,9 @@ lore:
         may cause additional glitches.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]setjmp[/b] was introduced by the [b]C89[/b] standard. While no
+        &tabsetjmp[/b] was introduced by the [b]C89[/b] standard. While no
         other programming language implements [b]setjmp[/b] under the same name,
         other programming languages do setjmp'ing in their C implementations to
         implement other exotic control flow structures.
@@ -139,28 +139,28 @@ lore:
       section: "4"
       secName: YIELD
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[yield]yield[/yield] - switch back and forth between two locations
         in a program
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]yield[/b] [b]--to[/b]=[b]<continuation>[/b]
+        &tabyield[/b] [b]--to[/b]=[b]<continuation>[/b]
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]yield[/b] is a mechanism that allows the program to stop what it
+        &tabyield[/b] is a mechanism that allows the program to stop what it
         is doing, switch to another task, and then return to the original task.
         This is useful when two operations must be done in parallel, but they
         are far apart.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]yield[/b] was introduced in the context of coroutines and
+        &tabyield[/b] was introduced in the context of coroutines and
         generators. It allows a function to return a value and later resume from
         where it left off. This concept is widely used in languages like Python
         and JavaScript to handle asynchronous programming and cooperative
@@ -170,22 +170,22 @@ lore:
       section: "4"
       secName: ASYNC
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[async]async[/async], [async]resolve[/async] - defer capturing a
         continuation
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]async[/b] \[command]
+        &tabasync[/b] \[command]
 
         &tab[b]resolve[/b] <promise>
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]async[/b] queues a command in the background, but does not
+        &tabasync[/b] queues a command in the background, but does not
         execute it immediately. Instead, it returns a promise that can be used
         to start the command later using [b]resolve[/b]. This is useful when you
         want to defer the execution of a command until a later time. Instead of
@@ -194,9 +194,9 @@ lore:
         different.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]async[/b] and [b]await[/b] were introduced to simplify
+        &tabasync[/b] and [b]await[/b] were introduced to simplify
         asynchronous programming. They allow developers to write asynchronous
         code that looks synchronous, making it easier to read and maintain. This
         concept is now a standard feature in many modern programming languages,
@@ -206,20 +206,20 @@ lore:
       section: "4"
       secName: SWITCH
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[switch]switch[/switch] - copy previous state to the current point
         in the program flow
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]switch[/b] [b]--which[/b]=[b]<continuation>[/b]
+        &tabswitch[/b] [b]--which[/b]=[b]<continuation>[/b]
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]switch[/b] is a tool that allows the program to force the state
+        &tabswitch[/b] is a tool that allows the program to force the state
         of the program at a previous point in the program flow to be mirrored at
         the current point. This is useful when the debugger wants to see what
         the program would have done if it returns into a function that it wasn't
@@ -231,16 +231,16 @@ lore:
         caution.
 
 
-        CAVEATS
+        [b]CAVEATS[/b]
 
         &tabThis implementation of [b]switch[/b] operates with a fixed size
         buffer. Data that occupies more than two stack frames will not be
         copied.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]switch[/b] is a rather low-level construct that in its original
+        &tabswitch[/b] is a rather low-level construct that in its original
         form, simply computed a value and then used a lookup table to determine
         where to go next. In modern computing "switch" is also used in the
         context of "context switching" where the operating system replaces one
@@ -251,20 +251,22 @@ lore:
       section: "4"
       secName: CALL/CC
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[callcc]call/cc[/callcc] - debug the debugger
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]call/cc[/b] \[[b]--force-superimpose[/b]]
+        &tabcall/cc[/b] \[[b]--force-superimpose[/b]]
         \[[b]--extent[/b]=[b]NFRAMES[/b]] \[[b]--oneshot[/b]]
         \[[b]--stack-only[/b]] \[[b]--defer[/b]] \[[b]--fuzz[/b]]
         \[[b]--as-coroutine[/b]]
 
-         DESCRIPTION
-        &tab[b]call/cc[/b] is a tool that allows the program to inspect and
+
+        [b]DESCRIPTION
+
+        &tabcall/cc[/b] is a tool that allows the program to inspect and
         manipulate its own state. It captures the current state of the program
         and then stuffs it in the variable in the program.
 
@@ -323,9 +325,9 @@ lore:
         be switched out using [yield]yield(4)[/yield].
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]call/cc[/b], also known as [b]call-with-current-continuation[/b],
+        &tabcall/cc[/b], also known as [b]call-with-current-continuation[/b],
         is a [rainbow]unique feature[/rainbow] of some programming languages. It
         allows a program to capture its current continuation (the rest of the
         program after it) and return to it later, at any time, for any reason,
@@ -345,19 +347,19 @@ lore:
       section: "4"
       secName: ASSERT
       body: >-
-        NAME
+        [b]NAME[/b]
 
         &tab[assert]assert[/assert] - reset the system to a known, safe state
 
 
-        SYNOPSIS
+        [b]SYNOPSIS
 
-        &tab[b]assert[/b] [b]--checkpoint[/b]=[b]<continuation>[/b]
+        &tabassert[/b] [b]--checkpoint[/b]=[b]<continuation>[/b]
 
 
-        DESCRIPTION
+        [b]DESCRIPTION
 
-        &tab[b]assert[/b] is a tool that allows the debugger to reset the entire
+        &tabassert[/b] is a tool that allows the debugger to reset the entire
         system to a known, safe state. This is useful when the program has
         entered an unresponsive state or has crashed.
 
@@ -368,9 +370,9 @@ lore:
         continuation.
 
 
-        HISTORY
+        [b]HISTORY
 
-        &tab[b]assert[/b] functions or statements have been used in programming
+        &tabassert[/b] functions or statements have been used in programming
         languages like C and Python to catch and diagnose errors during
         development. They verify that certain conditions hold true during
         program execution, and if an assertion fails, it indicates a bug that
