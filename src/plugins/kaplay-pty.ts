@@ -126,7 +126,6 @@ export interface PtyMenuCompOpt {
 export interface KAPLAYPtyPlugin {
     pty(opt: PtyCompOpt): PtyComp
     ptyMenu(menu: PtyMenu, opt?: PtyMenuCompOpt): PtyMenuComp
-    getValueFromMenu(mm: PtyMenu, path?: string): any | any[] | undefined
     isCapturingInput(): boolean
 }
 
@@ -628,21 +627,6 @@ export function kaplayPTY(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYPtyPlug
                     await this.__updateSelected();
                 },
             }
-        },
-        getValueFromMenu(mm: PtyMenu, path = "") {
-            const parts = path.split(".");
-            for (var part of parts) {
-                if (!mm) break;
-                if (mm.type !== "submenu") throw "bad";
-                mm = mm.opts.find(m => m.id === part)!;
-            }
-            if (!mm) return undefined;
-            if (mm.type === "select") {
-                return mm.multiple ? mm.selected.map(i => (mm as any).opts[i].value) : mm.opts[mm.selected]!.value;
-            } else if (mm.type === "range" || mm.type === "string") {
-                return mm.value;
-            }
-            throw "bad";
         },
         isCapturingInput() {
             return isCapturingInput_;

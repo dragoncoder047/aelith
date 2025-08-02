@@ -16,10 +16,10 @@ import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 // save for autodetect
 const availableLangs = K.langs;
 
-const gcTypeMenu: PtyMenu = {
+const gcTypeMenu = {
     id: "inputopt",
     name: "&msg.pause.main.submenu.controller",
-    type: "select",
+    type: "select" as const,
     opts: ["Xbox", "Switch", "PS4", "PS5"].map(name => {
         const value = name.toLowerCase();
         return { text: { text: `${name.padEnd(7, " ")}(${[..."WNES, e/t"].map(c => /[a-z]/i.test(c) ? ` [sm][font_${value}]${c}[/font_${value}][/sm] ` : c).join("")})`, raw: true }, value }
@@ -30,12 +30,90 @@ const gcTypeMenu: PtyMenu = {
 
 const rumbleOption = { text: "&msg.pause.options.rumble", value: "rumble", hidden: true };
 
-const debugSubmenu: PtyMenu = {
+const optionsMenu = {
+    id: "options",
+    name: "&msg.pause.options.title",
+    type: "select" as const,
+    opts: [
+        rumbleOption,
+        { text: "&msg.pause.options.speedrunTimer", value: "timer" },
+        { text: "&msg.pause.options.controlHints", value: "controlHints" },
+        { text: "&msg.pause.options.music", value: "music" },
+        { text: "&msg.pause.options.soundEffects", value: "sfx" },
+    ],
+    selected: [0, 1, 2, 3, 4],
+    multiple: true as const
+};
+
+const displayOptMenu = {
+    id: "displayopt",
+    name: "&msg.pause.graphics.title",
+    type: "select" as const,
+    header: "&msg.pause.graphics.header",
+    opts: [
+        { text: "&msg.pause.graphics.pseudo3D", value: "pseudo3D" },
+        { text: "&msg.pause.graphics.lighting", value: "lighting", hidden: true },
+    ],
+    selected: [0, 1],
+    multiple: true as const
+};
+
+const localeMenu = {
+    id: "locale",
+    name: "&msg.pause.main.submenu.language",
+    type: "select" as const,
+    opts: [
+        { text: "&msg.pause.language.auto", value: availableLangs },
+        { text: "Use English", value: ["en"] },
+        { text: "Usa Español", value: ["es"] },
+        { text: "Verwenden sie Deutsch", value: ["de"], hidden: true },
+        { text: "日本語を使う", value: ["ja"], hidden: true }
+    ],
+    selected: 0
+};
+
+const newgroundsMenu = {
+    id: "ng-connect",
+    name: "&msg.pause.main.submenu.newgrounds",
+    type: "action" as const,
+    async action() {
+        await PAUSE_MENU_OBJ.term.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
+    },
+    hidden: true
+};
+
+const debugSubmenu = {
     id: "debug",
     name: "Debug",
     hidden: true,
-    type: "submenu",
-    opts: [],
+    type: "submenu" as const,
+    opts: [
+        {
+            id: "test",
+            name: "Menu Test",
+            type: "submenu" as const,
+            opts: [
+                {
+                    id: "teststring",
+                    name: "testing string",
+                    prompt: "Enter an IP address:",
+                    type: "string" as const,
+                    value: "0.0.0.0",
+                    validator: /^(\d{1,3}\.){3}\d{1,3}$/,
+                    invalidMsg: "Invalid IP address",
+                },
+                {
+                    id: "testrange",
+                    name: "testing range",
+                    type: "range" as const,
+                    range: [0, 100] as [number, number],
+                    displayRange: [0, 100] as [number, number],
+                    value: 50,
+                    barWidth: 25,
+                }
+            ]
+        }
+    ],
 };
 
 export const PAUSE_MENU: PtyMenu = {
@@ -43,56 +121,12 @@ export const PAUSE_MENU: PtyMenu = {
     type: "submenu",
     name: "&msg.pause.main.title",
     opts: [
-        {
-            id: "options",
-            name: "&msg.pause.options.title",
-            type: "select",
-            opts: [
-                rumbleOption,
-                { text: "&msg.pause.options.speedrunTimer", value: "timer" },
-                { text: "&msg.pause.options.controlHints", value: "controlHints" },
-                { text: "&msg.pause.options.music", value: "music" },
-                { text: "&msg.pause.options.soundEffects", value: "sfx" },
-            ],
-            selected: [0, 1, 2, 3, 4],
-            multiple: true
-        },
-        {
-            id: "displayopt",
-            name: "&msg.pause.graphics.title",
-            type: "select",
-            header: "&msg.pause.graphics.header",
-            opts: [
-                { text: "&msg.pause.graphics.pseudo3D", value: "pseudo3D" },
-                // { text: "&msg.pause.graphics.lighting", value: "lighting" },
-            ],
-            selected: [0/*, 1 */],
-            multiple: true
-        },
+        optionsMenu,
+        displayOptMenu,
         gcTypeMenu,
         StatTracker.menuViewer,
-        {
-            id: "locale",
-            name: "&msg.pause.main.submenu.language",
-            type: "select",
-            opts: [
-                { text: "&msg.pause.language.auto", value: availableLangs },
-                { text: "Use English", value: ["en"] },
-                { text: "Usa Español", value: ["es"] },
-                // { text: "Verwenden sie Deutsch", value: ["de"] },
-                // { text: "日本語を使う", value: ["ja"] }
-            ],
-            selected: 0
-        },
-        {
-            id: "ng-connect",
-            name: "&msg.pause.main.submenu.newgrounds",
-            type: "action",
-            async action() {
-                await PAUSE_MENU_OBJ.term.type({ text: "&msg.notImplemented\n", styles: ["stderr"] });
-            },
-            hidden: true
-        },
+        localeMenu,
+        newgroundsMenu,
         {
             id: "restart",
             name: "&msg.pause.restart.title",
@@ -107,26 +141,6 @@ export const PAUSE_MENU: PtyMenu = {
                     }
                 }
             ]
-        },
-        {
-            id: "teststring",
-            name: "testing string",
-            prompt: "Enter an IP address:",
-            type: "string",
-            value: "0.0.0.0",
-            validator: /^(\d{1,3}\.){3}\d{1,3}$/,
-            invalidMsg: "Invalid IP address",
-            hidden: true
-        },
-        {
-            id: "testrange",
-            name: "testing range",
-            type: "range",
-            range: [0, 100],
-            displayRange: [0, 100],
-            value: 50,
-            barWidth: 25,
-            hidden: true
         },
         debugSubmenu
     ]
@@ -154,7 +168,7 @@ export function initPauseMenu() {
             opts: K.get("continuationTrap", { recursive: true }).map(t => {
                 return {
                     type: "action",
-                    id: t.name,
+                    id: t.name + "@" + t.id,
                     name: t.name,
                     quit: true,
                     action() {
@@ -240,16 +254,16 @@ async function doUnpause() {
 
 export function copyPreferences() {
     if (!PAUSE_MENU_OBJ || PAUSE_MENU_OBJ.term.topMenu !== PAUSE_MENU) return;
-    K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "inputopt");
-    const switches = K.getValueFromMenu(PAUSE_MENU, "options") as string[];
-    timer.opacity = +switches?.includes("timer");
-    musicPlay.paused = !switches?.includes("music");
-    player.sfxEnabled = switches?.includes("sfx");
-    K.rumble.enabled = switches?.includes("rumble");
+    K.strings.controllerType = gcTypeMenu.opts[gcTypeMenu.selected]!.value;
+    const switches = optionsMenu.selected.map(i => optionsMenu.opts[i]!.value);
+    timer.opacity = +switches.includes("timer");
+    musicPlay.paused = !switches.includes("music");
+    player.sfxEnabled = switches.includes("sfx");
+    K.rumble.enabled = switches.includes("rumble");
     player.controlText.hidden = !switches?.includes("controlHints");
-    const graphicsSwitches = K.getValueFromMenu(PAUSE_MENU, "displayopt") as string[];
-    enablePseudo3D(graphicsSwitches?.includes("pseudo3D"));
-    K.langs = K.getValueFromMenu(PAUSE_MENU, "locale") as string[];
+    const graphicsSwitches = displayOptMenu.selected.map(i => displayOptMenu.opts[i]!.value);
+    enablePseudo3D(graphicsSwitches.includes("pseudo3D"));
+    K.langs = localeMenu.opts[localeMenu.selected]!.value;
     if (debugSubmenu.hidden === K.debug.inspect) {
         debugSubmenu.hidden = !K.debug.inspect;
         PAUSE_MENU_OBJ.term.__redraw(false);
