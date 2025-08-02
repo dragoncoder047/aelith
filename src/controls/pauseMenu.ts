@@ -17,7 +17,7 @@ import { detectGamepadType, isSingleJoyCon } from "./autodetectGamepad";
 const availableLangs = K.langs;
 
 const gcTypeMenu: PtyMenu = {
-    id: "set controllerType",
+    id: "inputopt",
     name: "&msg.pause.main.submenu.controller",
     type: "select",
     opts: ["Xbox", "Switch", "PS4", "PS5"].map(name => {
@@ -44,7 +44,7 @@ export const PAUSE_MENU: PtyMenu = {
     name: "&msg.pause.main.title",
     opts: [
         {
-            id: "settings -i",
+            id: "options",
             name: "&msg.pause.options.title",
             type: "select",
             opts: [
@@ -58,7 +58,7 @@ export const PAUSE_MENU: PtyMenu = {
             multiple: true
         },
         {
-            id: "settings -xg",
+            id: "displayopt",
             name: "&msg.pause.graphics.title",
             type: "select",
             header: "&msg.pause.graphics.header",
@@ -72,7 +72,7 @@ export const PAUSE_MENU: PtyMenu = {
         gcTypeMenu,
         StatTracker.menuViewer,
         {
-            id: "set language",
+            id: "locale",
             name: "&msg.pause.main.submenu.language",
             type: "select",
             opts: [
@@ -102,9 +102,8 @@ export const PAUSE_MENU: PtyMenu = {
                     id: "--yes",
                     name: "&msg.pause.restart.confirm",
                     type: "action",
-                    quit: true,
                     action() {
-                        window.location.reload();
+                        setTimeout(() => window.location.reload(), 0);
                     }
                 }
             ]
@@ -241,16 +240,16 @@ async function doUnpause() {
 
 export function copyPreferences() {
     if (!PAUSE_MENU_OBJ || PAUSE_MENU_OBJ.term.topMenu !== PAUSE_MENU) return;
-    K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "set controllerType");
-    const switches = K.getValueFromMenu(PAUSE_MENU, "settings -i") as string[];
+    K.strings.controllerType = K.getValueFromMenu(PAUSE_MENU, "inputopt");
+    const switches = K.getValueFromMenu(PAUSE_MENU, "options") as string[];
     timer.opacity = +switches?.includes("timer");
     musicPlay.paused = !switches?.includes("music");
     player.sfxEnabled = switches?.includes("sfx");
     K.rumble.enabled = switches?.includes("rumble");
     player.controlText.hidden = !switches?.includes("controlHints");
-    const graphicsSwitches = K.getValueFromMenu(PAUSE_MENU, "settings -xg") as string[];
+    const graphicsSwitches = K.getValueFromMenu(PAUSE_MENU, "displayopt") as string[];
     enablePseudo3D(graphicsSwitches?.includes("pseudo3D"));
-    K.langs = K.getValueFromMenu(PAUSE_MENU, "set language") as string[];
+    K.langs = K.getValueFromMenu(PAUSE_MENU, "locale") as string[];
     if (debugSubmenu.hidden === K.debug.inspect) {
         debugSubmenu.hidden = !K.debug.inspect;
         PAUSE_MENU_OBJ.term.__redraw(false);
@@ -263,8 +262,7 @@ K.onGamepadConnect(g => {
     const id = navigator.getGamepads()[g.index]!.id;
     const which = detectGamepadType(id);
     if (which !== undefined) {
-        // @ts-ignore
-        PAUSE_MENU.opts[1].selected = PAUSE_MENU.opts[1].opts.findIndex(x => x.value === which);
+        gcTypeMenu.selected = gcTypeMenu.opts.findIndex(x => x.value === which);
         copyPreferences();
     }
     PAUSE_MENU_OBJ.term.__redraw(false);
