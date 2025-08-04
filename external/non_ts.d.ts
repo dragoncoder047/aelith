@@ -1,5 +1,5 @@
-declare module "*.txt" {
-    const value: string;
+declare module "\*.txt" {
+    const value: Record<string, string>;
     export default value;
 }
 declare module "*.png" {

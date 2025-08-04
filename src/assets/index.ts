@@ -6,7 +6,7 @@ import { allSongs } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
 import ibmMonoFontDataURL from "./fonts/Web437_IBM_EGA_8x8.woff";
-import allLevels from "./level_maps/ALL.json";
+import allLevels from "./level_maps/*.txt";
 import { playMusic } from "./music";
 import rumbleEffects from "./rumbleEffects.yaml";
 import datapipeShader from "./shaders/dataPipe.glsl";
@@ -40,7 +40,7 @@ K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
     // Must wait to load sprites before loading levels
     for (var i = 0; i < allLevelIDs.length; i++) {
         const name = allLevelIDs[i]!;
-        const def = allLevels[name];
+        const def = allLevels[name]!;
         WorldManager.loadLevel(name, def, K._k.globalOpt.debug ? -1 : 0);
         resolvers.pop()!();
         await nextFrame();

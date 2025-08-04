@@ -1,6 +1,5 @@
 **/node_modules/
 **/build/
-src/assets/level_maps/ALL.json
 **/.p
 # kill all apple crap files
 .DS_Store
