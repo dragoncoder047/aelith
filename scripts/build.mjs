@@ -16,6 +16,19 @@ function exists(path) {
 // ---------------------------------------------------------------------------
 // MARK: config and CLI
 
+// why do I need this??? YAML supports merge keys
+// but I cannot get esbuild-yaml to enable it!!
+function transform(val) {
+    if (typeof val !== "object") return val;
+    if (Array.isArray(val)) return val.map(transform);
+    const out = {};
+    const names = Object.keys(val);
+    for (var name of names) {
+        if (name === "<<") Object.assign(out, transform(val[name]));
+        else out[name] = transform(val[name]);
+    }
+    return out;
+}
 
 /** @type {esbuild.BuildOptions} */
 const config = {
@@ -37,16 +50,12 @@ const config = {
     outfile: "build/debugger.js",
     plugins: [
         glslPlugin(),
-        yamlPlugin({
-            json: true,
-            version: "1.1",
-            merge: true
-        }),
+        yamlPlugin({ transform }),
         {
             name: "nonexistent_go_bye_bye",
             setup(build) {
                 build.onResolve({ filter: /\.p$/ }, async args => {
-                    if (!(await exists(args.path))) return { external: true };
+                    if (!(await exists(path.join(args.resolveDir, args.path)))) return { external: true };
                 })
             },
         },

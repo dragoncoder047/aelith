@@ -3,7 +3,6 @@ import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 
 interface Pseudo3DComp extends Comp {
-    p3DReflectSide: boolean;
     p3DDrawTiled: boolean;
     p3DDepthSteps: number;
 }
@@ -12,11 +11,10 @@ const DEPTH = 0.1;
 const COLOR_FACTOR = 5;
 const IDENTITY_MATRIX = new K.Mat23();
 
-export function pseudo3D(flip: boolean, tiled = true, steps = TILE_SIZE): Pseudo3DComp {
+export function pseudo3D(tiled = true, steps = TILE_SIZE): Pseudo3DComp {
     return {
         id: "pseudo3D",
         require: ["sprite", "pos", "area"],
-        p3DReflectSide: flip,
         p3DDrawTiled: tiled,
         p3DDepthSteps: steps,
     }
@@ -80,28 +78,21 @@ export function p3DHelper(layer?: string): P3DHelperComp {
 }
 
 function handleDrawObject(obj: GameObj<Pseudo3DComp | SpriteComp | PosComp>) {
-    if (obj.p3DReflectSide && Math.random() === 2) {
-        // chop polygons
-        // top
-        // bottom
-        // left
-        // right
-    } else {
-        // just draw a bunch of times in relation to the camera
-        for (var i = obj.p3DDepthSteps - 1; i >= 0; i--) {
-            const t = DEPTH * i / obj.p3DDepthSteps;
-            const pos = K.lerp(obj.worldPos()!, K.getCamPos(), t);
-            const scale = K.vec2(1 - t);
-            K.pushTranslate(pos);
-            K.pushScale(scale);
-            K.drawSprite({
-                ...obj,
-                pos: K.vec2(0),
-                color: K.WHITE.darken(255 * t * COLOR_FACTOR),
-                tiled: obj.p3DDrawTiled
-            });
-            K.pushScale(K.vec2(1).invScale(scale));
-            K.pushTranslate(pos.scale(-1));
-        }
+    // just draw a bunch of times in relation to the camera
+    for (var i = obj.p3DDepthSteps - 1; i >= 0; i--) {
+        const t = DEPTH * i / obj.p3DDepthSteps;
+        const pos = K.lerp(obj.worldPos()!, K.getCamPos(), t);
+        const scale = K.vec2(1 - t);
+        K.pushTranslate(pos);
+        K.pushScale(scale);
+        K.drawSprite({
+            ...obj,
+            pos: K.vec2(0),
+            color: K.WHITE.darken(255 * t * COLOR_FACTOR),
+            opacity: 1 - t,
+            tiled: obj.p3DDrawTiled
+        });
+        K.pushScale(K.vec2(1).invScale(scale));
+        K.pushTranslate(pos.scale(-1));
     }
 }

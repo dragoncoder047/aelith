@@ -388,15 +388,17 @@ ctlHint:
     trap:
       default: "&control.action1 captura una continuacion"
       async: "&control.action1 captura una promesa"
-      blocked.async: Usa la promesa para invocar remotamente
+      blocked:
+        async: Usa la promesa para invocar remotamente
       selectObjects: "&control.action2 select/deselect"
       editFlags: "&control.action3 edita los parametros de captura"
       boostModeToggle: "&control.action4 vuela hacia arriba"
       grab: "&control.target1 agarrarlo"
       stopEdit: "&control.pMenu.back terminar"
     continuation:
-      invoke.default: "&control.action1 invoca una continuacio"
-      invoke.checkpoint: "&control.action1 invoca un checkpoint"
+      invoke:
+        default: "&control.action1 invoca una continuacio"
+        checkpoint: "&control.action1 invoca un checkpoint"
       grab: "&control.target1 agarrarlo"
     promise:
       capture: "&control.action1 captura una continuacion desde ahi"
@@ -414,7 +416,8 @@ ctlHint:
   dialog:
     scroll: "&control.dialog.scroll ver mas"
     exit: "&control.dialog.exit cerrar"
-    msg.exit: '&important.exitControl cerrar'
+    msg:
+      exit: '&important.exitControl cerrar'
 continuation.edit:
   flags: Elegir parametros
   pName: Cambiar el nombre de la promesa
@@ -426,10 +429,12 @@ antivirus:
 pause:
   main:
     title: Juego pausado
-    submenu.controller: Tipo de control
-    submenu.newgrounds: Conectarse a Newgrounds.com
-    submenu.language: Lenguaje
-  language.auto: Autodectar lenguaje
+    submenu:
+      controller: Tipo de control
+      newgrounds: Conectarse a Newgrounds.com
+      language: Lenguaje
+  language:
+    auto: Autodectar lenguaje
   options:
     title: Opciones
     rumble: Habilitar vibracion del mando
@@ -453,5 +458,6 @@ pause:
     deaths: muertes
 press: presionar
 notImplemented: "Lo siento, no esta implementado aun"
-bsod.sadfaceMsg: "El juego tuvo un problema que no pudo manejar, tienes que reiniciarlo."
-bsod.searchOnlineHint: "Puedes buscar el error online:"
+bsod:
+  sadfaceMsg: "El juego tuvo un problema que no pudo manejar, tienes que reiniciarlo."
+  searchOnlineHint: "Puedes buscar el error online:"

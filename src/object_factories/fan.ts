@@ -9,7 +9,7 @@ import { machine } from "./machine";
 
 export function fan() {
     return [
-        pseudo3D(false, false),
+        pseudo3D(false),
         K.sprite("fan"),
         fanComp(),
         K.body({ isStatic: true }),

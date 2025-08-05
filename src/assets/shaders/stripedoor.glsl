@@ -4,13 +4,7 @@ uniform float u_num_spikes;
 uniform vec3 u_color;
 uniform float u_amount;
 const float spiketime = 1.5;
-
-vec2 rotateUV(vec2 uv, float rotation) {
-    float cosAngle = cos(rotation);
-    float sinAngle = sin(rotation);
-    vec2 p = uv - vec2(0.5);
-    return vec2(cosAngle * p.x + sinAngle * p.y + 0.5, cosAngle * p.y - sinAngle * p.x + 0.5);
-}
+#include "rotateUV.glsl"
 
 vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     vec2 uv2 = rotateUV(uv, u_angle);

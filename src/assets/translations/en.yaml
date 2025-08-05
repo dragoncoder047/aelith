@@ -393,20 +393,23 @@ ctlHint:
   dialog:
     scroll: "&control.dialog.scroll view more"
     exit: "&control.dialog.exit close"
-    msg.exit: '&important.exitControl close'
+    msg:
+      exit: '&important.exitControl close'
   item:
     trap:
       default: "&control.action1 capture a continuation"
       async: "&control.action1 capture a promise"
-      blocked.async: Use the promise to invoke remotely
+      blocked:
+        async: Use the promise to invoke remotely
       selectObjects: "&control.action2 select/deselect"
       editFlags: "&control.action3 edit capture flags"
       boostModeToggle: "&control.action4 toggle boost mode"
       grab: "&control.target1 pick up"
       stopEdit: "&control.pMenu.back finish"
     continuation:
-      invoke.default: "&control.action1 invoke continuation"
-      invoke.checkpoint: "&control.action1 reset to checkpoint"
+      invoke:
+        default: "&control.action1 invoke continuation"
+        checkpoint: "&control.action1 reset to checkpoint"
       grab: "&control.target1 pick up"
     promise:
       capture: "&control.action1 capture continuation from there"
@@ -431,21 +434,24 @@ ctlHint:
     unpause: "&control.pMenu.exit unpause"
     editSubmit: "&c.keyboard.pMenu.editSubmit submit"
     editCancel: "&c.keyboard.pMenu.editCancel cancel"
-continuation.edit:
-  flags: Choose flags
-  pName: Change promise name
-  cName: Change continuation name
-  invalidName: Invalid name
+continuation:
+  edit:
+    flags: Choose flags
+    pName: Change promise name
+    cName: Change continuation name
+    invalidName: Invalid name
 antivirus:
   allClear: System is clean
   detected: Rogue code detected!
 pause:
   main:
     title: Game is paused
-    submenu.controller: Controller type
-    submenu.newgrounds: Connect to Newgrounds.com
-    submenu.language: Language
-  language.auto: Autodetect language
+    submenu:
+      controller: Controller type
+      newgrounds: Connect to Newgrounds.com
+      language: Language
+  language:
+    auto: Autodetect language
   options:
     title: Options
     rumble: Enable controller rumble
@@ -479,8 +485,7 @@ dead:
   fromBeginning: from the beginning
 press: press
 notImplemented: "Not implemented yet, sorry"
-bsod.sadfaceMsg: >-
-  The game ran into a problem that it couldn't handle, and now it needs to be
-  restarted.
-bsod.searchOnlineHint: "You can search for the error online:"
+bsod:
+  sadfaceMsg: "The game ran into a problem that it couldn't handle, and now it needs to be restarted."
+  searchOnlineHint: "You can search for the error online:"
 

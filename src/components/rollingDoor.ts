@@ -13,6 +13,7 @@ export interface RollingDoorComp extends Comp {
  * Performs the "roll-up door" animation and changes collision stuff
  */
 export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDoorComp {
+    var unrollTimer = 0;
     return {
         id: "rolling-door",
         require: ["state", "area", "body", "pos", "sprite", "toggler", "interactable"],
@@ -24,6 +25,7 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
             this.onStateEnter(states[1], () => {
                 const tRoll = -((this.height - 1) / this.height);
                 this.tween(this.rollAmount, tRoll, Math.abs(this.rollAmount - tRoll), val => this.rollAmount = val);
+                unrollTimer = 1;
             });
             K.onLoad(() => {
                 const fq = K.getSprite(this.sprite)!.data!.frames[0]!
@@ -36,7 +38,7 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
                 }));
             });
             this.onBeforePhysicsResolve(col => {
-                if (this.state === states[1]) col.preventResolution();
+                if (this.state === states[1] && unrollTimer <= 0) col.preventResolution();
             });
             this.target1 = () => {
                 player.playSound("knock", {}, this.pos);
@@ -44,5 +46,8 @@ export function rollingDoor(states: [string, string] = ["off", "on"]): RollingDo
             };
             this.target1Hint = "&msg.ctlHint.item.door.knock";
         },
+        update() {
+            if (unrollTimer > 0) unrollTimer -= K.dt();
+        }
     };
 }

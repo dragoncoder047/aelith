@@ -1,13 +1,10 @@
+#include "rand.glsl"
 uniform float u_amount;
 uniform float u_time;
 const vec4 BLACK = vec4(0., 0., 0., 1.);
 #define MAX_BOX 100
 #define WIBBLE_SCALE .06
 #define COLOR_SCALE 10.
-
-float rand(vec2 co) {
-    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-}
 float rand(float f) {
     return rand(vec2(u_time, f * rand(vec2(f, f))));
 }

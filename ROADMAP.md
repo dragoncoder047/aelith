@@ -14,7 +14,7 @@
 * [X] add 2.5D sprite stacking
   * [X] this might need the drawon component, will need to figure out how to use that
   * [ ] fix shader so that it looks right
-  * [ ] add pause menu control that can enable/disable the shader for lag reasons
+  * [X] add pause menu control that can enable/disable the shader for lag reasons
 * [ ] make pause menu work with mouse, need text quad character detection for this
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn / tail doesn't teleport to the player and gets extremely stretched.

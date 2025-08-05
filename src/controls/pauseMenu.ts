@@ -263,6 +263,7 @@ export function copyPreferences() {
     player.controlText.hidden = !switches?.includes("controlHints");
     const graphicsSwitches = displayOptMenu.selected.map(i => displayOptMenu.opts[i]!.value);
     enablePseudo3D(graphicsSwitches.includes("pseudo3D"));
+    // enableLighting(graphicsSwitches.includes("lighting"));
     K.langs = localeMenu.opts[localeMenu.selected]!.value;
     if (debugSubmenu.hidden === K.debug.inspect) {
         debugSubmenu.hidden = !K.debug.inspect;
