@@ -155,11 +155,10 @@ const DOWN_BIT = 0b00010;
 const LEFT_BIT = 0b00001;
 
 // values are 1 if obj2 should be drawn second (on top) or don't care, and 0 if obj2 should be drawn first (on bottom)
-// (obj2 is the yellow one here; it always draws on top)
-// columns are line from object1 point to object 2 point (green->yellow)
+// columns are line from object1 point to object 2 point
 // angle: up, right, down, left
 // h is swap order hack
-//0bhurdl
+//  0bhurdl
 const OBJ2_SECOND_TAB = [
     // 0 = no intersection anywhere
     0b01111,
