@@ -45,3 +45,68 @@ function updateObjectCount() {
     else countIndicator.color = K.GREEN;
 }
 K.loop(1, updateObjectCount);
+
+const drawIndicator = UI.add([
+    K.text("analyzing...", { size: 8 / SCALE }),
+    K.pos(MARGIN, MARGIN + 24 / SCALE),
+    K.color(K.WHITE),
+    K.layer("ui"),
+]);
+
+K.system("analyze", () => {
+    drawIndicator.text = `${K.debug.drawCalls()} draw calls last frame`;
+}, [K.SystemPhase.AfterDraw]);
+
+const loadIndicator = UI.add([
+    K.text("analyzing...", { size: 8 / SCALE }),
+    K.pos(MARGIN, MARGIN + 36 / SCALE),
+    K.color(K.WHITE),
+    K.layer("ui"),
+]);
+
+var startUpdate = 0;
+var endUpdate = 0;
+var startDraw = 0;
+var endDraw = 0;
+var startFixedUpdate = 0;
+var endFixedUpdate = 0;
+var physicsLoad = 0;
+var updateT = 0;
+
+K.system("analyze_fixedUpdate_before", () => {
+    startFixedUpdate = performance.now() / 1000;
+}, [K.SystemPhase.BeforeFixedUpdate]);
+const xx = K._k.game.systemsByEvent[K.SystemPhase.BeforeFixedUpdate];
+xx.unshift(xx.pop()!);
+
+K.system("analyze_update_before", () => {
+    startUpdate = performance.now() / 1000;
+}, [K.SystemPhase.BeforeUpdate]);
+const yy = K._k.game.systemsByEvent[K.SystemPhase.BeforeUpdate];
+yy.unshift(yy.pop()!);
+
+K.system("analyze_draw_before", () => {
+    startDraw = performance.now() / 1000;
+}, [K.SystemPhase.BeforeDraw]);
+const zz = K._k.game.systemsByEvent[K.SystemPhase.BeforeDraw];
+zz.unshift(zz.pop()!);
+
+K.system("analyze_fixedUpdate_after", () => {
+    endFixedUpdate = performance.now() / 1000;
+    physicsLoad = ((endFixedUpdate - startFixedUpdate) / K.fixedDt() * 100);
+}, [K.SystemPhase.AfterFixedUpdate]);
+
+K.system("analyze_update_after", () => {
+    endUpdate = performance.now() / 1000
+}, [K.SystemPhase.AfterUpdate]);
+
+K.system("analyze_draw_after", () => {
+    endDraw = performance.now() / 1000;
+    updateT += K.dt();
+    if (updateT > 0.5) {
+        const updateLoad = ((endUpdate - startUpdate) / K.dt() * 100);
+        const drawLoad = ((endDraw - startDraw) / K.dt() * 100);
+        loadIndicator.text = `physics ${physicsLoad.toFixed(2)}%\nupdate  ${updateLoad.toFixed(2)}%\ndraw    ${drawLoad.toFixed(2)}%`;
+        updateT = 0;
+    }
+}, [K.SystemPhase.AfterDraw]);
