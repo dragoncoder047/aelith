@@ -4,6 +4,7 @@ import { pseudo3D } from "../components/pseudo3D";
 import { BG_WALL_OPACITY, FRICTION } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
+import { litShaderHelper } from "../components/light_helpers";
 
 export function wall() {
     return [
@@ -29,6 +30,7 @@ function wallCommon() {
         pseudo3D(true),
         K.layer("background"),
         K.sprite("steel", { tiled: true }),
+        litShaderHelper(),
         K.body({ isStatic: true }),
         mergeable(),
     ]

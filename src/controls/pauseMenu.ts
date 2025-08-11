@@ -1,5 +1,6 @@
 import { showManpage } from ".";
 import { musicPlay } from "../assets";
+import { enableLighting } from "../components/light_helpers";
 import { LinkComp } from "../components/linked";
 import { enablePseudo3D } from "../components/pseudo3D";
 import { K } from "../init";
@@ -52,7 +53,7 @@ const displayOptMenu = {
     header: "&msg.pause.graphics.header",
     opts: [
         { text: "&msg.pause.graphics.pseudo3D", value: "pseudo3D" },
-        { text: "&msg.pause.graphics.lighting", value: "lighting", hidden: true },
+        { text: "&msg.pause.graphics.lighting", value: "lighting" },
     ],
     selected: [0, 1],
     multiple: true as const
@@ -263,7 +264,7 @@ export function copyPreferences() {
     player.controlText.hidden = !switches?.includes("controlHints");
     const graphicsSwitches = displayOptMenu.selected.map(i => displayOptMenu.opts[i]!.value);
     enablePseudo3D(graphicsSwitches.includes("pseudo3D"));
-    // enableLighting(graphicsSwitches.includes("lighting"));
+    enableLighting(graphicsSwitches.includes("lighting"));
     K.langs = localeMenu.opts[localeMenu.selected]!.value;
     if (debugSubmenu.hidden === K.debug.inspect) {
         debugSubmenu.hidden = !K.debug.inspect;

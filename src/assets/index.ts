@@ -2,6 +2,7 @@ import { MUSIC_VOLUME } from "../constants";
 import { K } from "../init";
 import { WorldManager } from "../levels";
 import { nextFrame } from "../misc/utils";
+import { loadNormals } from "../normalmapgen/normal";
 import { allSongs } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
@@ -16,7 +17,7 @@ import invertShader from "./shaders/invert.glsl";
 import portalShader from "./shaders/portal.glsl";
 import recolorRedShader from "./shaders/recolorRed.glsl";
 import stripedoorShader from "./shaders/stripedoor.glsl";
-import translateShader from "./shaders/translate.glsl";
+import lightingOnlyShader from "./shaders/bgLight.glsl";
 import inputsDataURL from "./textures/inputs.png";
 import inputsFontsDef from "./textures/inputs.yaml";
 import spritemapDataURL from "./textures/spritemap.png";
@@ -46,6 +47,7 @@ K.loadSpriteAtlas(spritemapDataURL, spritemapDef).then(async () => {
         await nextFrame();
     }
 });
+["steel", "ladder", "broken_ladder", "grating", "conveyor", "fan", "door", "antivirus", "bug", "button", "door_half", "box", "player_body", "crossover", "player_head"].forEach(s => loadNormals(s));
 K.loadSpriteAtlas(inputsDataURL, inputsFontsDef);
 const GP_FONT_CHARS = "d1234vNEWSlrLRetJKXxYyjk"; // cSpell: ignore yyjk
 K.loadBitmapFontFromSprite("font_xbox", GP_FONT_CHARS);
@@ -66,14 +68,14 @@ K.strings.es = esStrings;
 // K.strings.ja = jaStrings;
 K.loadFont("IBM Mono", ibmMonoFontDataURL);
 K.loadFont("Unscii MCR", unsciiMCRFontDataURL);
-K.loadShader("recolorRed", undefined, recolorRedShader);
-K.loadShader("translate", undefined, translateShader);
-K.loadShader("invert", undefined, invertShader);
-K.loadShader("portal", undefined, portalShader);
-K.loadShader("dataPipe", undefined, datapipeShader);
-K.loadShader("fuzzy", undefined, fuzzyFadeShader);
-K.loadShader("glitch", undefined, glitchShader);
-K.loadShader("stripedoor", undefined, stripedoorShader);
+K.loadShader("recolorRed", null, recolorRedShader);
+K.loadLitShader("bg", null, lightingOnlyShader);
+K.loadShader("invert", null, invertShader);
+K.loadShader("portal", null, portalShader);
+K.loadShader("dataPipe", null, datapipeShader);
+K.loadShader("fuzzy", null, fuzzyFadeShader);
+K.loadShader("glitch", null, glitchShader);
+K.loadShader("stripedoor", null, stripedoorShader);
 Object.keys(allSongs).forEach(key => K.loadZzFXM(key, allSongs[key]!));
 
 // idk where else to put this

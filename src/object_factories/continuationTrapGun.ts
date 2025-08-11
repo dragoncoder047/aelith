@@ -3,6 +3,7 @@ import { continuationTrapCore } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { interactable } from "../components/interactable";
+import { lightComp } from "../components/light_helpers";
 import { FRICTION, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
@@ -23,6 +24,7 @@ export function continuationTrap(): CompList<any> {
         }),
         K.offscreen({ hide: true }),
         K.opacity(1),
+        lightComp(K.Vec2.ZERO),
         continuationTrapCore("capture"),
         interactable(),
         grabbable("&msg.ctlHint.item.trap.grab"),

@@ -9,6 +9,7 @@ import { kaplayPTY } from "./plugins/kaplay-pty";
 import { kaplaySprings } from "./plugins/kaplay-springs";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
+import kaplayLighting from "kaplay-lighting";
 
 export const K = kaplay({
     debug: true,
@@ -30,6 +31,7 @@ export const K = kaplay({
         kaplayRumble,
         kaplayControlGroup,
         kaplayAABB,
+        kaplayLighting
     ],
 });
 

@@ -1,8 +1,8 @@
-import { GameObj, Tag } from "kaplay";
+import { Tag } from "kaplay";
 import { clicky } from "../components/clicky";
 import { interactable } from "../components/interactable";
 import { pseudo3D } from "../components/pseudo3D";
-import { rollingDoor, RollingDoorComp } from "../components/rollingDoor";
+import { rollingDoor } from "../components/rollingDoor";
 import { K } from "../init";
 import { machine } from "./machine";
 

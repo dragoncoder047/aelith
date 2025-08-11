@@ -10,7 +10,8 @@ import { StateManager } from "../save_state";
 import { WorldSnapshot } from "../save_state/state";
 import { ContinuationTrapComp } from "./continuationTrap";
 import { InteractableComp } from "./interactable";
-import { hintFlags } from "../player/body";
+import { LightHelperComp } from "./light_helpers";
+import { LightComp } from "kaplay-lighting";
 
 export interface ContinuationComp extends Comp {
     timestamp: number
@@ -33,7 +34,7 @@ export function continuationCore(
 ): ContinuationComp {
     return {
         id: "continuation",
-        require: ["sprite", "pos", "shader", "named", "body", "interactable"],
+        require: ["sprite", "pos", "shader", "named", "body", "interactable", "light"],
         timestamp: Date.now(),
         type,
         captured,
@@ -45,7 +46,7 @@ export function continuationCore(
         get color() {
             return K.Color.fromHex(contTypes[this.type].color ?? "#ff0000")
         },
-        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp> & PlayerInventoryItem) {
+        add(this: GameObj<ContinuationComp | NamedComp | ShaderComp | LightComp> & PlayerInventoryItem) {
             this.on("invoke", () => this.invoke());
             this.name = this.params.cName;
             this.uniform!.u_targetcolor = this.color;
@@ -61,6 +62,7 @@ export function continuationCore(
                     K.shader("recolorRed", {
                         u_targetcolor: K.Color.fromHex((contTypes[type] as any).color ?? "#ff0000"),
                     }),
+                    K.light({ radius: this.light!.radius, strength: this.light!.strength / 2, color: this.color }),
                     "worldMarker" as Tag,
                     "raycastIgnore" as Tag,
                 ]);
@@ -69,9 +71,9 @@ export function continuationCore(
             this.manpage = this.trappedBy.manpage;
         },
         emoTimer: 0,
-        update(this: GameObj<BodyComp | SpriteComp | ContinuationComp> & PlayerInventoryItem) {
+        update(this: GameObj<BodyComp | SpriteComp | ContinuationComp | LightHelperComp> & PlayerInventoryItem) {
             this.action1Hint = style(contTypes[this.type].hints.continuation.action1, [this.trappedBy.name.replace(/[^\w]/g, "")]);
-
+            this.light!.color = this.color;
             this.emoTimer -= K.dt();
             if (this.emoTimer <= 0) {
                 this.emoTimer = K.rand(0, 5);

@@ -1,7 +1,7 @@
 import { K } from "./init";
 
 K.setLayers([
-    "tranFader",
+    "behindEverything",
     "background",
     "world",
     "text",

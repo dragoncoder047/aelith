@@ -64,6 +64,7 @@ export const WorldManager = {
     activateLevel(level: GameObj<LevelComp>, running: boolean, visible = running) {
         level.paused = !running;
         level.hidden = !visible;
+        // This shouldn't be necessary, but it is and I cannot figure out why
         level.get("*", { recursive: true }).forEach(c => {
             c.paused = !running;
             c.hidden = !visible;

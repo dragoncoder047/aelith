@@ -10,10 +10,11 @@ export type RumbleArgs =
 
 export type RumbleEffect = number[][]
 
-export type GamepadRumbleObj = {
+export interface GamepadRumbleObj {
     enabled: boolean
     onlyWhenGamepadInUse: boolean
-} & ((...args: RumbleArgs) => Promise<void>)
+    (...args: RumbleArgs): Promise<void>;
+};
 
 export interface KAPLAYRumblePlugin {
     rumble: GamepadRumbleObj

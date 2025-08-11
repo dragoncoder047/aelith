@@ -1,10 +1,11 @@
 import { AreaComp, Comp, GameObj, Tag } from "kaplay";
 import { ContinuationTrapComp, continuationTrapCore } from "../components/continuationTrap";
+import { interactable, InteractableComp } from "../components/interactable";
+import { lightComp } from "../components/light_helpers";
 import { nudge } from "../components/nudge";
 import { TILE_SIZE } from "../constants";
 import { K } from "../init";
 import { defaults } from "./default";
-import { interactable, InteractableComp } from "../components/interactable";
 
 export function checkpoint() {
     return [
@@ -19,6 +20,7 @@ export function checkpoint() {
         continuationTrapCore("checkpoint"),
         K.offscreen({ hide: true }),
         K.named("assert"),
+        lightComp(K.vec2(0, -TILE_SIZE * 2 / 3)),
         {
             add(this: GameObj<AreaComp | ContinuationTrapComp | InteractableComp>) {
                 this.onCollide("player", () => {

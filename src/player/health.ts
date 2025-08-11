@@ -40,7 +40,7 @@ const DEATH_MENU: PtyMenu = {
         resumeEntry,
         {
             id: "restart",
-            name: "&msg.pause.restart &msg.dead.fromBeginning",
+            name: "&msg.pause.restart.title &msg.dead.fromBeginning",
             type: "action",
             async action() {
                 await DEATH_MENU_OBJ.term.quitMenu();

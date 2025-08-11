@@ -15,7 +15,7 @@ export function defaults(areaOpts?: AreaCompOpt) {
         {
             add(this: GameObj<OffScreenComp | SpriteComp>) {
                 this.on("postprocess", () => {
-                    this.offscreenDistance = K.vec2(Math.max(this.width, this.height)).len();
+                    this.offscreenDistance = Math.max(K.center().len(), K.vec2(Math.max(this.width, this.height)).len());
                     return K.cancel();
                 })
             }

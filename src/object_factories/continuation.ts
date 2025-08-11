@@ -4,9 +4,9 @@ import { ContinuationTrapComp } from "../components/continuationTrap";
 import { grabbable } from "../components/grabbable";
 import { holdOffset } from "../components/holdOffset";
 import { interactable, InteractableComp } from "../components/interactable";
+import { lightComp } from "../components/light_helpers";
 import { FRICTION, JUMP_FORCE, RESTITUTION, TERMINAL_VELOCITY, TILE_SIZE } from "../constants";
 import { K } from "../init";
-import { player } from "../player";
 import { WorldSnapshot } from "../save_state/state";
 import { defaults } from "./default";
 import { throwablePlatformEff } from "./throwablePlatformEff";
@@ -33,6 +33,7 @@ export function continuation(
             maxVelocity: TERMINAL_VELOCITY,
             jumpForce: JUMP_FORCE / 2
         }),
+        lightComp(K.Vec2.ZERO),
         K.named("{undefined}"),
         continuationCore(type, captured, trap),
         K.sprite("continuation_invoker"), // must be after so sprite draws on top of line

@@ -11,6 +11,7 @@ import { PAreaComp } from "../plugins/kaplay-aabb";
 import { DynamicTextComp } from "../plugins/kaplay-dynamic-text";
 import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
+import { LightHelperComp } from "../components/light_helpers";
 
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | PlatformEffectorComp | InteractableComp>;
@@ -26,6 +27,7 @@ export interface PlayerBodyComp extends Comp {
     footstepsCounter: number;
     intersectingAny(type: Tag, where?: GameObj): boolean;
     lookingAt: GameObj<PAreaComp | PosComp | InteractableComp> | undefined;
+    rcr: RaycastResult;
     lookingDirection: Vec2 | undefined;
     /**
      * Play sound, but spatial relative to the player
@@ -107,17 +109,22 @@ export function playerBody(): PlayerBodyComp {
             other.pos = fOffset;
         },
         // MARK: update()
-        update(this: GameObj<PlayerBodyComp | BodyComp>) {
+        update(this: GameObj<PlayerBodyComp | BodyComp | PosComp>) {
             // hide all inventory items
-            this.inventory.forEach(item => item.paused = item.hidden = true);
-            // move the grabbing to self
-            const h = this.holdingItem;
-            if (h !== undefined) {
-                // Clear curPlatform() if I'm standing on it
-                if (this.curPlatform() === h) this.jump(this.jumpForce / 3);
-                h.paused = h.hidden = false;
-                this._pull2Pos(h);
-            }
+            for (var i = 0; i < this.inventory.length; i++) {
+                const h = this.inventory[i]!;
+                if (i === this.holdingIndex) {
+                    // Clear curPlatform() if I'm standing on it
+                    if (this.curPlatform() === h) this.jump(this.jumpForce / 3);
+                    h.paused = h.hidden = false;
+                    (h as any as GameObj<LightHelperComp>).turnOn?.();
+                    // move the grabbing to self
+                    this._pull2Pos(h);
+                } else {
+                    h.paused = h.hidden = true;
+                    (h as any as GameObj<LightHelperComp>).turnOff?.();
+                }
+            };
             // update control text
             this.controlText.t = "";
             if (this.manpage!.hidden) {
@@ -150,6 +157,41 @@ export function playerBody(): PlayerBodyComp {
                         this.addControlText("&msg.ctlHint.dialog.scroll");
                 }
             }
+
+            // find targeted object
+            this.rcr = null;
+            // nifty do-while-false loop to basically "goto end-of-this-block"
+            this.lookingAt = undefined;
+            if (!this.lookingDirection) return;
+            if (!WorldManager.activeLevel) return; // oops?
+
+            const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area")
+                .filter(x => !(this.inventory as any[]).includes(x)
+                    && x.collisionIgnore.every(xx => !this.tags.includes(xx))
+                    && !x.is("raycastIgnore")
+                    && !x.paused
+                    && !x.worldArea().contains(this.worldPos()!));
+
+            // First raycast only the objects we are interested in
+            const interesting = allObjects.filter(x => x.has("interactable"));
+            this.rcr = actuallyRaycast(
+                interesting,
+                this.head!.worldPos()!,
+                this.lookingDirection,
+                INTERACT_DISTANCE);
+            if (this.rcr === null || !this.rcr.object) return;
+
+            // If we are in range of an interesting object, check to see
+            // if it is obscured
+            this.rcr = actuallyRaycast(
+                allObjects,
+                this.head!.worldPos()!,
+                this.lookingDirection,
+                INTERACT_DISTANCE);
+            if (this.rcr === null || !this.rcr.object) return;
+            if (!this.rcr.object.has("interactable")) return;
+            this.lookingAt = this.rcr.object as GameObj<PAreaComp | PosComp | InteractableComp>;
+
         },
         /**
          * True if overlapping any game object with the tag "type".
@@ -158,45 +200,10 @@ export function playerBody(): PlayerBodyComp {
             return !!where?.get<AreaComp>(type).some((obj: GameObj<AreaComp>) => obj.worldArea().collides(this.worldArea()));
         },
         lookingAt: undefined,
+        rcr: null,
         lookingDirection: K.LEFT,
         // MARK: draw()
         draw(this: GameObj<PosComp | PlayerBodyComp>) {
-            // find targeted object
-            var rcr: RaycastResult = null;
-            do {
-                // nifty do-while-false loop to basically "goto end-of-this-block"
-                this.lookingAt = undefined;
-                if (!this.lookingDirection) break;
-                if (!WorldManager.activeLevel) break; // oops?
-
-                const allObjects = WorldManager.activeLevel!.levelObj.get<PAreaComp>("area")
-                    .filter(x => !(this.inventory as any[]).includes(x)
-                        && x.collisionIgnore.every(xx => !this.tags.includes(xx))
-                        && !x.is("raycastIgnore")
-                        && !x.paused
-                        && !x.worldArea().contains(this.worldPos()!));
-
-                // First raycast only the objects we are interested in
-                const interesting = allObjects.filter(x => x.has("interactable"));
-                rcr = actuallyRaycast(
-                    interesting,
-                    this.head!.worldPos()!,
-                    this.lookingDirection,
-                    INTERACT_DISTANCE);
-                if (rcr === null || !rcr.object) break;
-
-                // If we are in range of an interesting object, check to see
-                // if it is obscured
-                rcr = actuallyRaycast(
-                    allObjects,
-                    this.head!.worldPos()!,
-                    this.lookingDirection,
-                    INTERACT_DISTANCE);
-                if (rcr === null || !rcr.object) break;
-                if (!rcr.object.has("interactable")) break;
-                this.lookingAt = rcr.object as GameObj<PAreaComp | PosComp | InteractableComp>;
-
-            } while (false);
 
             if (this.lookingAt) {
                 // draw outline on object being targeted
@@ -214,11 +221,11 @@ export function playerBody(): PlayerBodyComp {
                     }
                 });
             }
-            if (rcr && this.lookingAt) {
+            if (this.rcr && this.lookingAt) {
                 // draw line to object being hovered
                 K.drawLine({
                     p1: this.fromWorld(this.head!.worldPos()!),
-                    p2: this.fromWorld(rcr.point),
+                    p2: this.fromWorld(this.rcr.point),
                     width: 2 / SCALE,
                     color: K.WHITE.darken(200)
                 });
@@ -315,7 +322,6 @@ export function playerBody(): PlayerBodyComp {
             if (obj.exists()) {
                 obj.parent = WorldManager.activeLevel!.levelObj;
                 obj.vel = K.vec2(0);
-                obj.trigger("inactive");
                 obj.untag("inInventory");
             }
             this.inventory.splice(i, 1);

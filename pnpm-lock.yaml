@@ -9,8 +9,11 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:dragoncoder047/kaplay#a1b64afd167d146593aa48d454f1610eba6b350f
-        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/a1b64afd167d146593aa48d454f1610eba6b350f
+        specifier: github:dragoncoder047/kaplay#9f2f40ae1fb46e5e4e7043f82c329f0476354a40
+        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/9f2f40ae1fb46e5e4e7043f82c329f0476354a40
+      kaplay-lighting:
+        specifier: github:tristanperrow/kaplay-lighting#2aeb008e9e214c08f2f12509209521b51ad97548
+        version: https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548
       zzfx:
         specifier: ^1.3.0
         version: 1.3.0
@@ -203,9 +206,17 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/a1b64afd167d146593aa48d454f1610eba6b350f:
-    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/a1b64afd167d146593aa48d454f1610eba6b350f}
-    version: 4000.0.0-alpha.20
+  kaplay-lighting@https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548:
+    resolution: {tarball: https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548}
+    version: 0.1.6
+
+  kaplay@4000.0.0-alpha.21:
+    resolution: {integrity: sha512-f8Ki2UPfIUKEsbSdL0z2BNVXYkCqXvILavSMdA18mVo45v0Alo3yEsIJNv7Z9rBBrzNDwhBTJYnQQzfCHBXo0w==}
+    engines: {node: '>=20.0.0'}
+
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/9f2f40ae1fb46e5e4e7043f82c329f0476354a40:
+    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/9f2f40ae1fb46e5e4e7043f82c329f0476354a40}
+    version: 4000.0.0-alpha.21
     engines: {node: '>=20.0.0'}
 
   typescript@5.6.2:
@@ -337,7 +348,13 @@ snapshots:
       '@esbuild/win32-ia32': 0.25.1
       '@esbuild/win32-x64': 0.25.1
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/a1b64afd167d146593aa48d454f1610eba6b350f: {}
+  kaplay-lighting@https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548:
+    dependencies:
+      kaplay: 4000.0.0-alpha.21
+
+  kaplay@4000.0.0-alpha.21: {}
+
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/9f2f40ae1fb46e5e4e7043f82c329f0476354a40: {}
 
   typescript@5.6.2: {}
 

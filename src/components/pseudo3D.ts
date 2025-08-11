@@ -15,8 +15,8 @@ interface Pseudo3DComp extends Comp {
 }
 
 const DEPTH = 0.1;
-const COLOR_FACTOR = 0//7;
-const OPACITY_FACTOR = 0//8;
+const COLOR_FACTOR = 5;
+const OPACITY_FACTOR = 5;
 const IDENTITY_MATRIX = new K.Mat23();
 
 export function pseudo3D(tiled = true, steps = TILE_SIZE): Pseudo3DComp {

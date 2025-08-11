@@ -16,6 +16,7 @@ import { StateComps, WorldSnapshot } from "../save_state/state";
 import { MenuModal, modalmenu } from "../ui/menuFactory";
 import { ContinuationComp } from "./continuationCore";
 import { InteractableComp } from "./interactable";
+import { LightHelperComp } from "./light_helpers";
 import { PromiseComp } from "./promise";
 
 export interface ContinuationTrapComp extends Comp {
@@ -81,7 +82,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
     var forcePlayerFlying = false;
     return {
         id: "continuation-trap",
-        require: ["sprite", "pos", "named", "shader", "area", "interactable"],
+        require: ["sprite", "pos", "named", "shader", "area", "interactable", "light"],
         captured: [],
         isDeferring: false,
         isConnected: false,
@@ -187,7 +188,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                 }
             });
         },
-        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp>) {
+        update(this: PlayerInventoryItem & GameObj<SpriteComp | ContinuationTrapComp | NamedComp | ShaderComp | LightHelperComp>) {
             if (this === player.holdingItem)
                 this.flipX = player.flipX;
 
@@ -212,9 +213,15 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
 
             const targetAnim = this.isConnected ? "connected" : this.enabled ? (this.isDeferring ? "armed" : "ready") : "disabled";
             if (this.hasAnim(targetAnim)) {
+                // if doesn't exist, must be checkpoint type
                 this.play(targetAnim, { preventRestart: true });
             }
-            // if doesn't exist, must be checkpoint type
+            if (this.frame === this.numFrames() - 1) {
+                this.turnOff();
+            } else {
+                this.turnOn();
+                this.light!.color = this.color;
+            }
         },
         menuUpdate(this: GameObj<ContinuationTrapComp | NamedComp>) {
             this._menu.term.data.name = this.name;
