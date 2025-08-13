@@ -30,7 +30,7 @@ function wallCommon() {
         pseudo3D(true),
         K.layer("background"),
         K.sprite("steel", { tiled: true }),
-        litShaderHelper(),
+        // litShaderHelper(),
         K.body({ isStatic: true }),
         mergeable(),
     ]
