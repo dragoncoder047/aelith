@@ -6,6 +6,7 @@ import { player } from "../player";
 import { hintFlags } from "../player/body";
 import { KEventControllerPatch } from "../plugins/kaplay-control-group";
 
+var isSprinting = false;
 function getMotionVector(): Vec2 {
     const leftstickRaw = K.getGamepadStick("left")//.reflect(K.RIGHT);
     const leftstick = leftstickRaw.slen() > (STICK_DEADZONE * STICK_DEADZONE) ? leftstickRaw : K.vec2(0);
@@ -15,7 +16,7 @@ function getMotionVector(): Vec2 {
     ).unit();
     const sum = leftstick.add(keystick);
     const clampedSum = sum.slen() > 1 ? sum.unit() : sum;
-    const factor = K.isButtonDown("sprint") ? SPRINT_FACTOR : 1;
+    const factor = isSprinting ? SPRINT_FACTOR : 1;
     return clampedSum.scale(factor);
 }
 
@@ -59,6 +60,18 @@ K.onUpdate(() => {
             player.playSound("jump");
     }
 }) as KEventControllerPatch).forEventGroup("!dialog");
+
+(K.onButtonPress("sprint", () => {
+    isSprinting = !isSprinting || K.getLastInputDeviceType() !== "gamepad";
+    K.strings.isSprinting = "" + (isSprinting && K.getLastInputDeviceType() === "gamepad");
+}) as KEventControllerPatch).forEventGroup("!dialog");
+(K.onButtonRelease("sprint", () => {
+    if (K.getLastInputDeviceType() !== "gamepad") {
+        isSprinting = false;
+        K.strings.isSprinting = "false";
+    }
+}) as KEventControllerPatch).forEventGroup("!dialog");
+K.strings.isSprinting = "false";
 
 (player.onButtonPress("throw", () => player.throw()) as KEventControllerPatch).forEventGroup("!dialog");
 

@@ -383,7 +383,7 @@ lore:
         determine.
 ctlHint:
   move: "&control.move move"
-  sprint: "&control.sprint sprint"
+  sprint: "&control.sprint $fn.switch(&isSprinting~true:stop sprinting~false:sprint)"
   jump: "&control.jump jump"
   aim: "&control.aim aim"
   throw: "&control.throw throw"
