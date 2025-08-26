@@ -378,7 +378,7 @@ lore:
         imposibles de deducir de otra manera.
 ctlHint:
   move: "&control.move mover"
-  sprint: "&control.sprint correr"
+  sprint: "&control.sprint $fn.switch(&isSprinting~true:deja de correr~false:correr)"
   jump: "&control.jump saltar"
   aim: "&control.aim apuntar"
   throw: "&control.throw tirar"
