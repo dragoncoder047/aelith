@@ -16,10 +16,11 @@ jobs:
       - name: Build static files
         id: build
         run: |
-          pnpm build
+          pnpm build --release
           mkdir www
           sed s~build/~~ >www/index.html <index.html
           cp build/debugger.js www/
+          cp build/debugger.js.map www/
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3
