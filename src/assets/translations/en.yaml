@@ -484,6 +484,8 @@ dead:
   checkpoint: Checkpoint
   fromBeginning: from the beginning
 press: press
+inventory:
+  nothing: nothing
 notImplemented: "Not implemented yet, sorry"
 bsod:
   sadfaceMsg: "The game ran into a problem that it couldn't handle, and now it needs to be restarted."

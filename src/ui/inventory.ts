@@ -47,7 +47,7 @@ const inventory = UI.add([
                 return;
             }
             if (player.holdingItem === undefined) {
-                this.text = "nothing";
+                this.text = K.sub("&msg.inventory.nothing");
                 return;
             }
             const name = player.holdingItem.name;
