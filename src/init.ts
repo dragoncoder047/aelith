@@ -21,7 +21,7 @@ export const K = kaplay({
     touchToMouse: false,
     inspectOnlyActive: true,
     tagComponentIds: false,
-    font: "IBM Mono",
+    font: "Unscii",
     plugins: [
         kaplayZzFX,
         kaplayZzFXM,
