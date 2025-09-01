@@ -397,10 +397,9 @@ export function playerBody(): PlayerBodyComp {
         controlText: K.add([
             K.dynamicText(""),
             K.text("", {
-                size: 12 / SCALE,
+                size: 16 / SCALE,
                 align: "center",
                 styles: STYLES,
-                lineSpacing: 8,
             }),
             K.fixed(),
             K.anchor("bot"),

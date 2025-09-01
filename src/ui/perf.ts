@@ -4,7 +4,7 @@ import { MARGIN, SCALE } from "../constants";
 import { K } from "../init";
 
 const fpsIndicator = UI.add([
-    K.text("", { size: 8 / SCALE }),
+    K.text("", { size: 16 / SCALE }),
     K.pos(MARGIN, MARGIN),
     K.color(K.WHITE),
     K.layer("ui"),
@@ -27,8 +27,8 @@ setInterval(() => {
 }, 100);
 
 const countIndicator = UI.add([
-    K.text("counting objects...", { size: 8 / SCALE }),
-    K.pos(MARGIN, MARGIN + 12 / SCALE),
+    K.text("counting objects...", { size: 16 / SCALE }),
+    K.pos(MARGIN, MARGIN + 16 / SCALE),
     K.color(K.WHITE),
     K.layer("ui"),
 ]);
@@ -47,8 +47,8 @@ function updateObjectCount() {
 K.loop(1, updateObjectCount);
 
 const drawIndicator = UI.add([
-    K.text("analyzing...", { size: 8 / SCALE }),
-    K.pos(MARGIN, MARGIN + 24 / SCALE),
+    K.text("analyzing...", { size: 16 / SCALE }),
+    K.pos(MARGIN, MARGIN + 32 / SCALE),
     K.color(K.WHITE),
     K.layer("ui"),
 ]);
@@ -58,8 +58,8 @@ K.system("analyze", () => {
 }, [K.SystemPhase.AfterDraw]);
 
 const loadIndicator = UI.add([
-    K.text("analyzing...", { size: 8 / SCALE }),
-    K.pos(MARGIN, MARGIN + 36 / SCALE),
+    K.text("analyzing...", { size: 16 / SCALE }),
+    K.pos(MARGIN, MARGIN + 48 / SCALE),
     K.color(K.WHITE),
     K.layer("ui"),
 ]);

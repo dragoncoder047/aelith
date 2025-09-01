@@ -7,7 +7,7 @@ import { player } from "../player";
 
 export const healthbar = UI.add([
     K.pos(),
-    K.text("", { size: 12 / SCALE }),
+    K.text("", { size: 16 / SCALE }),
     K.anchor("botleft"),
     K.color(K.GREEN),
     K.layer("ui"),
@@ -19,7 +19,7 @@ export const healthbar = UI.add([
         showHealth(this: GameObj<PosComp | TextComp | ColorComp>,
             health: number, maxHealth: number) {
             const fraction = health / maxHealth;
-            const barWidthChars = Math.floor(K.width() / this.textSize / 5 - 2);
+            const barWidthChars = Math.floor(K.width() / this.textSize / 5 - 2) * 2; // * 2 because font is 2:1 so we can have twice as many characters
             const numFilled = K.clamp(Math.floor(fraction * barWidthChars), 0, barWidthChars);
             const numEmpty = K.clamp(Math.ceil((1 - fraction) * barWidthChars), 0, barWidthChars);
             this.text = `[${"#".repeat(numFilled)}${" ".repeat(numEmpty)}] ${(fraction * 100).toFixed(0)}%`;

@@ -10,7 +10,7 @@ const INV_BTN_COLOR = K.GREEN.darken(127);
 
 const btnLeft = UI.add([
     K.text("\u25C4", {
-        size: 32 / SCALE,
+        size: 48 / SCALE,
     }),
     K.pos(),
     K.area(),
@@ -27,7 +27,7 @@ const btnLeft = UI.add([
 btnLeft.use(uiButton(() => player.scrollInventory(-1)));
 const inventory = UI.add([
     K.text("foo", {
-        size: 16 / SCALE,
+        size: 32 / SCALE,
         width: TILE_SIZE * 6 / SCALE,
         align: "center"
     }),
@@ -61,7 +61,7 @@ const inventory = UI.add([
 ]);
 const btnRight = UI.add([
     K.text("\u25BA", {
-        size: 32 / SCALE,
+        size: 48 / SCALE,
     }),
     K.pos(),
     K.area(),

@@ -23,7 +23,7 @@ export function manpage(opt: { bg?: Color } = {}): ManpageComp {
         id: "manpage",
         section: "undefined",
         header: "undefined",
-        size: 12 / SCALE,
+        size: 16 / SCALE,
         body: "undefined",
         bg: opt.bg ?? K.BLACK.lighten(20),
         scrollPos: 0,

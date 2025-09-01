@@ -54,8 +54,7 @@ export const STYLES: TextComp["textStyles"] = {
         const which = { w: "up", a: "left", s: "down", d: "right" }[ch] ?? ch.toLowerCase();
         return {
             font: "keyfont",
-            scale: 8,
-            pos: K.vec2(0, -4),
+            scale: 4,
             stretchInPlace: true,
             color: K.isKeyDown(which) ? K.YELLOW : K.WHITE
         }
@@ -64,8 +63,7 @@ export const STYLES: TextComp["textStyles"] = {
         const which = { t: "tab", n: "enter", "^": "shift", e: "escape", b: "backspace" }[ch]!;
         return {
             font: "keyfont2",
-            scale: 8,
-            pos: K.vec2(0, -4),
+            scale: 4,
             stretchInPlace: true,
             color: K.isKeyDown(which) ? K.YELLOW : K.WHITE
         }
@@ -74,8 +72,7 @@ export const STYLES: TextComp["textStyles"] = {
         const which = { s: "space" }[ch]!;
         return {
             font: "keyfont3",
-            scale: 8,
-            pos: K.vec2(0, -4),
+            scale: 4,
             stretchInPlace: true,
             color: K.isKeyDown(which) ? K.YELLOW : K.WHITE
         }
@@ -84,8 +81,7 @@ export const STYLES: TextComp["textStyles"] = {
         const c = ch === "m" ? K.isMouseMoved() : ch === "s" ? false : K.isMouseDown(ch === "l" ? "left" : "right");
         return {
             font: "mousefont",
-            scale: 8,
-            pos: K.vec2(0, -4),
+            scale: 4,
             stretchInPlace: true,
             color: c ? K.YELLOW : K.WHITE
         }
@@ -125,8 +121,7 @@ for (var f of ["xbox", "switch", "ps4", "ps5"]) {
     STYLES[n] = (_, ch) => {
         return {
             font: n,
-            scale: 8,
-            pos: K.vec2(0, -4),
+            scale: 4,
             stretchInPlace: true,
             color: checkControllerButton(ch) ? K.YELLOW : K.WHITE,
         }
