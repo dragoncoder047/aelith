@@ -1,4 +1,4 @@
-declare module "\*.txt" {
+declare module "*.txt" {
     const value: Record<string, string>;
     export default value;
 }

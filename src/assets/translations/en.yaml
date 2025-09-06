@@ -466,9 +466,7 @@ pause:
     lighting: Enable immersive lighting
   restart:
     title: Restart game
-    confirm: |-
-      Are you sure you want to restart?
-      All progress will be lost!
+    confirm: Are you sure you want to restart? All progress will be lost!
   stats:
     heading: Statistics
     none: Nothing significant yet...

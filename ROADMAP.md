@@ -2,20 +2,36 @@
 ## TODO
 
 * [ ] Type up lore document
-* [ ] Make the lore popups in-game be from a floating computer AI thingy rather than just floating text
+* [ ] Make the loading screen more fun
+* [ ] Memory boxes contain some bits of Scheme code and small comments, or are entirely text
+  * [ ] Add Scheme syntax highlighter
+  * [ ] User must 'open' the box to get the program if it contains one, and then 'run' it using a standalone computer terminal
+    * [ ] Need to add 'computer terminals' player can interact with to get the continuation trap rather than just picking it up.
+  * [ ] Add "program" item that looks like a flash drive and can't be dropped, but can be used on computer terminals
+  * [ ] Add "mainframe" big things that the player must turn on via a switch and then read their memory to be able to go to the next level
+* [ ] Make the bugs aggro'ed at the continuation frogs and run towards them (and the player if they are holding one)
+* [ ] Make the portals look like a 2nd kind of door instead of rainbow, and also teleport when the player knocks on it
+  * [ ] Make the normal portal type that triggers the transition shader only when colliding, invisible (for like falling down to the bottom; the bottom can be a separate room)
+* [ ] Add background manager (that uses parallax scrolling) for different room types
+* [ ] Make the lore popups in-game be from a floating computer AI thingy "NIC" rather than just floating text
   * [ ] The player can interact with them to show the latest text
     * [ ] Add dddddddd sound when the words come out
-    * [ ] Add Inform-like random text choosing for snarky stuff
+    * [ ] Add Inform-like random text choosing for snarky comments
   * [ ] follow the player around like a minecraft dog or something
-* [ ] Fix typewriter code to use [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) to split the text (so it works with the Japanese which doesn't use any spaces)
+* [ ] remove the rainbow special control thing on items, only have NIC use them
+  * [ ] make the links for all of the same class of things that would show the same manpage, use the same specials bits
+  * [ ] add more random text stuff
+* [ ] Fix typewriter code to use [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) to split the text (so it works with Japanese which doesn't use any spaces)
 * [ ] make the player sprite have hands that come around and hold the thing that they are grabbing
+* [ ] Once MF adds CCD kinematic constraints, make the arms and legs using bones instead of spritesheet animation (smaller spritesheet etc & more expressive animations defined in code vs anim).
+  * [ ] would prefer to wait on cached physics too
+  * [ ] Hands can be in their own layer, on top of grabbing but below wires
+* [ ] Make the spaceship sprite be like a vehicle the player can get in
+  * [ ] separate the player
 * [ ] integrate suave's lit shaders
   * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
-* [X] add 2.5D sprite stacking
-  * [X] this might need the drawon component, will need to figure out how to use that
-  * [ ] fix shader so that it looks right
-  * [X] add pause menu control that can enable/disable the shader for lag reasons
-* [ ] make pause menu work with mouse, need text quad character detection for this
+* [ ] Make pause menu NOT a terminal since aesthetic is changing away from that
+* [ ] Make pause menu work with mouse, need text quad character detection for this
 * [ ] Make flash trail that shows activation of things follow the data wires
 * [ ] Fix bug where horn / tail doesn't teleport to the player and gets extremely stretched.
 * [ ] Make NEW vacuum object, like a grabber
@@ -34,6 +50,8 @@
 
 ## DONE
 
+* [X] add 2.5D sprite stacking
+  * [X] add pause menu control that can enable/disable the shader for lag reasons
 * [X] debug menu via pause menu for magic functions
 * [X] Add indication when button is being pressed in control hints (for streams and stuff...)
 * [X] Change call/cc controls to not have simple radius, you click on objects to select or deselect them

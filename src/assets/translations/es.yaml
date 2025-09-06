@@ -444,9 +444,7 @@ pause:
     soundEffects: Efectos de sonido
   restart:
     title: Reiniciar juego
-    confirm: |-
-      Estas seguro de que quieres reiniciar?
-      ¡Todo el progreso se perdera!
+    confirm: Estas seguro de que quieres reiniciar? ¡Todo el progreso se perdera!
   stats:
     heading: Estadisticas
     none: "Nada significante aun..."

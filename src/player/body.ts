@@ -400,6 +400,7 @@ export function playerBody(): PlayerBodyComp {
                 size: 16 / SCALE,
                 align: "center",
                 styles: STYLES,
+                lineSpacing: 2,
             }),
             K.fixed(),
             K.anchor("bot"),
