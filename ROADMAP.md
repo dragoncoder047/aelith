@@ -9,7 +9,12 @@
     * [ ] Need to add 'computer terminals' player can interact with to get the continuation trap rather than just picking it up.
   * [ ] Add "program" item that looks like a flash drive and can't be dropped, but can be used on computer terminals
   * [ ] Add "mainframe" big things that the player must turn on via a switch and then read their memory to be able to go to the next level
+* [ ] Change the continuation traps' definitions to be built using 'feature flags' `concurrent`, `global`, `radius 4`, `defer stay`, `edit`, `kill type`; `recapture`, `where invoked`, `tp catcher`, `fuzz`, `killer`, `immortal`, `die`, the player gets these flags to be able to put them in call/cc from the programs they use to get the other traps
+* [ ] Make the setjmp and throw traps interfere with each other (capturing one kills the other's continuation) so the player can't use setjmp+throw together to cheese the bf1/bf2 swapping without using yield.
 * [ ] Make the bugs aggro'ed at the continuation frogs and run towards them (and the player if they are holding one)
+  * [ ] Make continuations auto-invoke when they are hit by a bug?
+    * [ ] Need to add a new flag to continuations to determine whether they teleport the entity that captured (all others), the entity that invoked or nobody (flag on call/cc).
+* [ ] Make the bugs never get angry at the player if they don't have a continuation in their inventory
 * [ ] Make the portals look like a 2nd kind of door instead of rainbow, and also teleport when the player knocks on it
   * [ ] Make the normal portal type that triggers the transition shader only when colliding, invisible (for like falling down to the bottom; the bottom can be a separate room)
 * [ ] Add background manager (that uses parallax scrolling) for different room types

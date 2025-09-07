@@ -1,0 +1,237 @@
+I'm working on a 2D puzzle platformer game. It's a casual game (no fighting or skill-based actions or speed or split-second timing required) with an extraterrestrial retro-futurist pixel art style and 8-bit music. It includes a cool mechanic where the player can use a tool called a 'continuation trap' to create 'continuations' which allow them to teleport back to where they were when they captured the continuation, cause doors to open and close, and clone grabbable items in order to stack them and climb up. However, all good games need good background/plot/lore/story/whatever, but I am having trouble with the game's story.
+
+The player is an alien who crash-lands on a dusty planet and is unable to leave because their spaceship is broken. Thankfully, they survived the landing, and so did their AI companion, NIC.
+
+The (pre-player-appearing) story is that the previous aliens who found this planet wanted to use this planet to build a digital archive or something (doesn't have to be that, but it needs to be something definitive) and so they dig into the hills to bury it underground for cooling, and while they're building it they are dealing with these annoying bugs (that I drew to look like 8-pin DIP microchips in side view), and eventually they hit a cave deep beneath the world containing the continuations and other glowing plants (this is the 'incident' I mentioned in the first draft), that latch on and infect the servers when they install them, and when the bugs meet the continuations, they fight each other and cause problems.
+
+NIC directs the player to go search for parts they can use to fix their spaceship -- this means exploring the surface of the planet, as there was clearly something technological left over from something that happened sometime in the past (although it's not clear what).
+
+The player finds a door mounted on the side of a hill, finds it unlocked, enters, and discovers that there is an old abandoned datacenter built inside the hill. All of the servers are turned off, and it appears that whoever left it that way wasn't in any hurry to leave and took care to clean up behind themselves. (Weird!)
+
+The player goes to investigate and discovers that the servers have been infected by these little parasitic aliens called continuations. NIC examines the servers' long term storage (a tape drive!) and finds code and comments stating that the system started to behave strangely, and it just so happened that management 'decided' to publish a new release way off schedule and informed the junior devs to start using the "assert" command for backups 'in order to test it' but they were still quite suspicious as to why this suddely happened out of the blue.
+
+At all times, NIC doesn't know any more than the player does because they are the player's *personal* AI companion and had nothing to do with the datacenter project.
+
+During the gameplay, the lore shows up as a 'readout' of a tape that a player can pick up and put in a tape drive nearby and eventually they gain the tools to read tapes without a standalone tape drive. I was also thinking of reading out the tapes as though they are a Scheme code file, with some S-expression code showing what the tape will do when loaded in a tape drive and the player presses 'run' on the linked computer, which for all of the runnable ones (that contain .scm files vs just .txt files with comments and devlogs) will either save an "assert" continuation which functions as a checkpoint, or grant the player a new kind of continuation trap that they can use to trap their own continuations. I have implemented the following trap types, which are introduced to the player in these rooms:
+
+- throw: which only saves the player's location, and when invoked, the continuation teleports the player back to the place they were when they captured it, and then dies (it's single use). The player must use this to get past a security interlock vestibule, where pulling a lever opens one door and closes the other, so without throw, they player can't pass because one door is always closed, but with throw, they can turn it so the first door is open and the second is closed, then enter the vestibule and capture a continuation using throw, and then go out and switch the lever so that the second door is open, and then use the continuation to teleport into the vestibule and through the closed door.
+
+- setjmp: like throw, it teleports the player, but also saves and surreptitiously restores the state of interractable objects within 4 tiles of the capture site, the player has to use this for another security door setup where one door is always closed if the other is open, but there's no space in between to stand when capturing a continuation. The solution is to stand so that the radius of capture of setjmp captures the first door, but not the second, capture, then turn the lever so the second door changes state, and then restore using the continuation, but critically, it only restores the first door, so now both doors are the same state and can be opened simultaneously. setjmp continuations are single use only like throw.
+
+  setjmp is also used in another challenge, where the player has only a few file boxes and tapes and they aren't tall enough to stack up to reach a high button, but they can use setjmp to duplicate the file boxes by capturing near the box, then throwing the box out of range, and when restoring, the box can't be found so it's cloned instead. However this cannot clone bugs (it just does nothing if they are out of range).
+
+- async: unlike the other traps, this one doesn't capture a continuation upon being used, instead, it gives the player a 'promise' (which I have yet to work out the visual appearance of; it should be something related to the continuations and glowing plants and stuff), and then the player can throw the trap itself somewhere and owing to its smallness it can go places that the player won't fit. When the player activates the promise, it remotely causes the trap to capture a continuation from where it's at and then the player gets the continuation, they can then invoke it to teleport to where the trap is at. async continuations are also single use only.
+
+- yield: this one works such that when the continuation is invoked, before it teleports the player, it captures a new yield continuation there, so the player can go back and forth as much as they want. The player finds it by falling down the trash chute into a cave in the bottom below the datacenter. But they have to use one of the other continuations (throw or setjmp) to get back up since there's no ladder. This actually gets found before players can get to the async trap type, but not used until now. The wya it is used is that the player gets access to two corridors, with alternating lever - open door - lever - closed door, and the levers in corridor A open and close the doors in corridor B and vice versa. Without yield, players can't pass easily, but using yield they can jump back and forth between the two corridors, and eventually reach the end of each. At the end of each there is a lever, and both levers must be turned on to access the next room.
+
+- switch: like setjmp, it captures interactable items and restores their state (with radius 2 this time), but instead of teleporting the player back to where they were, they leave the player in place and teleport the other movable items to the same relative offset as they were when captured. This works on the continuations, continuation traps, and bugs. The way it is used, is after the player is given the switch trap, they have to enter a high-security area of the datacenter, that is cordoned off by a scanner device that is set to look for continuation traps and keep them out of the area, but it doesn't care about switch. The player is advised by NIC that they shouldn't just ditch their continuation traps to pass because they could be needed later, and switch can't teleport them. But what it can do is that the player can drop all of their traps in a pile, then stand near it and capture a switch continuation. Then they can pass, and once they are out of range of the scanner they can invoke the switch continuation and it will teleport the pile to them and they can grab them again.
+
+  After the switch challenge, the player enters an R&D lab themed room, which has built into the wall a complicated setup of four conveyor belts, pressure plates, and doors, that function as a 4 bit binary counter, that can only be activated by dropping bugs into it (nothing else fits). At this point the player has passed a total of 16 bugs in other rooms, and so they must go back (for some almost to the beginning) and use the continuation traps they have to teleport the bugs to the binary counter. When it overflows the room's trash chute is unlocked and the player can fall down it into another cave.
+
+- call/cc: this is the ultimate and most powerful trap type, and I haven't exactly worked out how it will be given to the player, but it will be in the second cave, and the player will have to give up all of the other trap types to some environmental eater plant or something which will then bloom and grow a call/cc. the feature of call/cc is that the player can access a settings menu for the item, and scan the different tape reels that they had into it, and this allows them to turn on and off feature flags that in the right combination will make call/cc behave like any of the other trap types. call/cc also allows the player to select specific items they want the state of captured rather than just being proximity based like setjmp and switch. There are also some new flags that make it so that the player can do other new things, such as a flag that makes it restore the *opposite* state of doors n' stuff, so they can still get through doors that have no lever to open them, because they can just turn this flag on, capture the door, and then immediately invoke the continuation, opening the door. There's also another flag that when set causes the continuation to teleport the entity that invoked it, rather than the entity that captured it, and since bugs attack continuations and continuations defend by invoking themselves, this can be used to send bugs away from the player by capturing a continuation from where you want the bug to end up, and then finding the bug and throwing the continuation at it.
+
+For reference, some of the inspiration for this game came from a short 'Jargon File'-esque definition I wrote for continuations:
+
+> **continuation**: (noun) a small, parasitic animal, *functionus schemus*, that lives in the circuit boards of computers. Infected devices show the curious symptom of being able to run the programming language Scheme. Despite being extremely easy to catch using the right trap (the two leading models are called *setjmp* and *call/cc*), few people thoroughly understand how continuations work inside. What is known is that they display a very interesting and useful property once caught: when they are fed, they instantly teleport back to the exact place where they were initially caught and then barf up what they were fed. This process can be repeated indefinitely with mature continuations. With the juvenile continuations (called "continulets") this process can only be repeated once. The reader should be cautioned that feeding a continulet caught using a *setjmp* trap twice will usually cause irreversible tears in spacetime.
+
+And here are the Scheme files that are presented before the player gains access to the corresponding continuation trap:
+
+[due to token limit I will send them in the next message, please wait...]
+
+;;;;;;;;;;;;;;;;;;;;;ASSERT
+
+; $file: backup-job.scm $
+
+; the (assert) call is probably the shoddiest thing here by a long run.
+; I got no documentation for it - just a bit of example code from management.
+; They said I have to use it to do backups now. Beats the heck out of me why
+; because the old stuff still worked *and* it didn't attract any of those
+; pesky bugs!
+(define (back-up the-server)
+    (let ((what 'everything))
+                ; FIXME: hack to try saving even if system isn't idle
+        (when (or #t (get-status the-server 'ok-to-back-up))
+            (dynamic-wind
+                (lambda () (set! (the-server :run-mode) 'backing-up))
+                (lambda ()
+                (save-file
+                    (assert :system the-server :backup what)
+                    :to 'external))
+                (lambda () (set! (the-server :run-mode) 'idle))))))
+; this is called like: (back-up (get-server "M32L3.112")) and is run
+; daily by a cron job
+; ideally I wouldn't interrupt servers to do a backup,
+; but they're *alway* busy ;)
+
+
+;;;;;;;;;;;;;;;;;;;;;;THROW
+
+; $file: lol.scm $
+
+; welp, they really broke stuff today. I was told that (throw) will raise
+; an error if you try to throw to a non-existent catch point, and
+; that the :locked option should never be used since it has problems.
+; Turns out that if I do use it -- and deliberately make the throw fail --
+; it will just give me a continuation that will jump *back* even if
+; we're in kernel mode now. It's even worse then the ol' Pentium F00F bug
+; because it *doesn't* cause a lock-up. Massive security hole if you ask me!!
+
+(define (cheese)
+    (let ((point '()))
+        (set! point
+            (throw
+                :to 'nonexistent-section
+                :locked #t))
+        point))
+
+; definitely don't use it like this ;)
+; (let ((the-cheese (cheese)))
+;     (if (callable? the-cheese)
+;         ; trigger a race condition and get the-cheese
+;         ; called in kernel mode
+;         (concurrently
+;             (fork the-cheese)
+;             (switch-task-now))
+;         (begin
+;             (display "lol pwned"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;SETJMP
+
+; $file: command-safecall.scm $
+
+; look, ma! a new command! (jumps up and down)
+; implemented using the most undocumented and confusing function ever!
+;
+; but for real this time: from what I've played around with, (setjmp)
+; set!s a continuation into its first argument and then returns #f.
+; when it's invoked, the continuation forcibly restores :depth frames of
+; state, duplicates stuff it can't find, then jumps back to the setjmp call
+; and returns #t this time, so we know whether we're in the first time
+; or not. If I use the global jump buffer it ends up acting like a limited
+; sandbox.
+;
+; Probably not that great security-wise -- they know that I got
+; my pants burned off by (throw) and then gave me this! The audacity!
+;
+; But yes, yes, management said that they know better and I *had* to use this
+; for security rather than just issuing a SIGKILL to the sandboxed process
+; when it does something evil. Oh well. Rest in pieces, management!
+; Also congrats on reading this far lol
+(define (safe-call command)
+    (if (setjmp *global-security-continuation* :depth 4)
+        (report-error :type 'security-violation)
+        (command :sandboxed #t)))
+; please don't delete this, it's the only documentation for (setjmp) I have
+
+;;;;;;;;;;;;;;;;;;;;;YIELD
+
+; $file: lockstep.scm $
+
+; Great, another potential security hole -- they're asking an idiot
+; who knows nothing about security to directly call an OS-level scheduling
+; function, (yield). What could go wrong? Stuff like this, of course.
+;
+; I'm convinced I don't have to use (yield) and could just use two loops,
+; but since it uses (yield) I have to get management to approve all
+; changes to this. And they seem to like (yield).
+(define (run-in-lockstep func1 func2)
+    (fork (forever (begin
+        (func1)
+        (yield))))
+    (fork (forever (begin
+        (func2)
+        (yield)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;ASYNC
+
+; $file: mock-inject-hack.scm $
+
+; so apparently management really does think I'm an idiot, because only an
+; insane person would willingly use (async). It forks its body into a
+; subprocess. The main thread then gets a 'promise' that when invoked, captures
+; a continuation of the subprocess' position, and invoking the continuation
+; forces the subprocess to jump back to there and use the value provided.
+;
+; Really the only thing this is good for is making test mocks. But it's still a
+; hack, and I could be adding operator overloading instead, which would
+; make test mocks so much easier.
+(define (inject-value-for name value body)
+    (letrec ((promise '())
+             (injector (lambda (name2)
+                (when (equal? name name2)
+                    (let ((continuation (promise)))
+                        (continuation value))))))
+        (set! promise
+            (async
+                (lambda () (body))
+                injector))))
+
+
+;;;;;;;;;;;;;;;;;;;;;SWITCH
+
+; $file: yank.scm $
+
+; now that's weird... really weird. It's called (switch) but it does
+; not do what it says on the tin at all. Instead it just saves the current
+; scope's state in a continuation, but it's also not really a continuation
+; either too.
+;
+; If I invoke the continuation elsewhere, rather than jumping back to where
+; I captured it from, it just replaces my globals with the globals of the
+; source scope, which usually ends up breaking stuff. The only way I can see
+; it being useful is for nefarious purposes, like to bypass a secure enclave
+; boundary that scans your globals when you enter. Which is what I needed to
+; do, hence this function ;) It's not threadsafe, but oh well.
+(define (sneak-globals body)
+    (let ((bad-globals (switch)))
+        (clear! *globals*)
+        (with-secure-features
+            (lambda ()
+                (bad-globals)
+                (body)))))
+
+
+------------------------------------------------------------
+[One of the follwing prompts is then used to direct the AI to do other things.]
+
+What I need you to do now, is to develop my TODO bullets 'Add more challenges that test all features of call/cc' and 'Use scanner (from switch challenge) somewhere else because it's only used in one place as opposed to other things (doors, levers, lightbulbs, plants, etc)'.
+
+Can you help me develop:
+
+- the plot to weave into the existing part of the game, and
+- the next part of the game where the player uses call/cc?
+
+------------------------------------------------------------
+
+What I need you to do now, is to draft some dialogues for NIC to say when key events occur such as the player discovering a new computer tape, gaining a new continuation trap (which NIC would then examine and explain), invoking a continuation and causing a particular thing to happen (which NIC will hint at but not overtly reveal), or just random things regarding the current situation, such as angst regarding the player's broken spaceship, curiosity about what lies ahead, or just expresing interest in a random object lying around (such as a rock, if outside, or a lightbulb, inside).
+
+NIC's personality is that of someone with multiple personality disorder, with two personas: one that is sickeningly sycophantic but quite clueless as to what is going on, and the other one which is snarky and overtly unhelpful, but hints at what is known.
+
+Each dialogue should be about a paragraph, and should also hint at the rest of the story gained from what the player has already seen, regardless of the tone. They should hint at what the player needs to do next.
+
+Do not sort the phrases by sycophantic or snarky, as that data won't be used by the dialog system (it won't even be included). Simply give the topic header, and then list some phrases of each kind.
+
+In-between sentences, you can insert action commands which will make NIC do different things besides just talk. The commands are:
+
+* `<anim:foo>` to cause NIC to play a one-off animation like a facial expression or emote
+* `<lookat:tag>` to make NIC go to and look (and possibly take, if it's takeable) at a particular thing (like note blocks to allays in Minecraft) which can be an item, a nearby server, a tape, a door, a continuation trap, a continuation, or the player.
+* `<do:action>` to perform an action on the item that NIC is currently holding or looking at (like action1, target1, etc)
+* `<dropitem>` to cause NIC to drop the item so the player can grab it
+* `<splash:n:colors>` to spawn a splash of particles,
+* `<think:time>` to display a '...' thinking animation and then continue
+* add anything else expressive that may be necessary
+
+-------------------------------------------------------------
+
+What I need you to do now, is draft additional plot files to be scattered around the world that the player will discover, giving more lore about the story. They should be markdown or plain text files, and can be styled in a variety of different ways, such as a financial plan brief, press release, email, bug report, etc. Choose an appropriate format for each idea, or come up with your own ideas.
+
+Ideas:
+
+* Q3 Goals - note from management to the junior developer, explaining they will take tighter control of the datacenter in order to streamline releases. The junior adds comments interleaved in their copy expressing suspicion as to what is going on and why.
+* Bug Report - junior reports that some of the new continuation manipulation functions aren't behaving as the (minimalistic) documentation provided said they should, and management just closed the issue as 'User error.' even though the junior proved it wasn't user error.
+* Legal cease-and-desist - sent to a junior who is trying to reverse-engineer the continuation functions from the management's personal lawyers (not the company's).
+* Security audit report - junior expresses concern about the very obvious security holes in the code they were tasked to write.
+* Diary entry - private notes from the junior developer about an encounter with a bug, which seemed unusually agitated when the junior opened the door to the server room and calmed down when the door was closed.
+* README put in the top level - junior's warning to future developers that the code is extremely cursed and is probably signs that management is up to no good.
