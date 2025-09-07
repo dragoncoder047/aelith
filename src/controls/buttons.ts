@@ -25,7 +25,7 @@ export const CONTROLS: Controls = {
         gamepad: ["rstick"],
     },
     target2: {
-        keyboard: ["t"],
+        keyboard: ["x"],
         gamepad: ["ltrigger"],
     },
     inspect: {
@@ -49,7 +49,7 @@ export const CONTROLS: Controls = {
         gamepad: ["dpad-up"],
     },
     read_manpage: {
-        keyboard: ["x"],
+        keyboard: ["t"],
         gamepad: ["north"],
     },
     inspect_next: {
