@@ -38,6 +38,7 @@ And here are the Scheme files that are presented before the player gains access 
 
 [due to token limit I will send them in the next message, please wait...]
 
+scheme files.
 ;;;;;;;;;;;;;;;;;;;;;ASSERT
 
 ; $file: backup-job.scm $
@@ -235,3 +236,16 @@ Ideas:
 * Security audit report - junior expresses concern about the very obvious security holes in the code they were tasked to write.
 * Diary entry - private notes from the junior developer about an encounter with a bug, which seemed unusually agitated when the junior opened the door to the server room and calmed down when the door was closed.
 * README put in the top level - junior's warning to future developers that the code is extremely cursed and is probably signs that management is up to no good.
+
+-------------------------------------------------------------------
+
+There will also be random text files scattered around that contain the follwing general ideas, but formatted as emails, bug reports, diary entries etc.
+
+* Q3 Goals - note from management to the junior developer, explaining they will take tighter control of the datacenter in order to streamline releases. The junior adds comments interleaved in their copy expressing suspicion as to what is going on and why.
+* Bug Report - junior reports that some of the new continuation manipulation functions aren't behaving as the (minimalistic) documentation provided said they should, and management just closed the issue as 'User error.' even though the junior proved it wasn't user error.
+* Legal cease-and-desist - sent to a junior who is trying to reverse-engineer the continuation functions from the management's personal lawyers (not the company's).
+* Security audit report - junior expresses concern about the very obvious security holes in the code they were tasked to write.
+* Diary entry - private notes from the junior developer about an encounter with a bug, which seemed unusually agitated when the junior opened the door to the server room and calmed down when the door was closed.
+* README put in the top level - junior's warning to future developers that the code is extremely cursed and is probably signs that management is up to no good.
+
+What I need you to do now is to determine and state exactly why the management is being so squirrely and nontransparent with the junior developer. What are they hiding? And how will NIC and the player find out? How will the game end?
