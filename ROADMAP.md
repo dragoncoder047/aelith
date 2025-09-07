@@ -13,11 +13,23 @@
 * [ ] Make the portals look like a 2nd kind of door instead of rainbow, and also teleport when the player knocks on it
   * [ ] Make the normal portal type that triggers the transition shader only when colliding, invisible (for like falling down to the bottom; the bottom can be a separate room)
 * [ ] Add background manager (that uses parallax scrolling) for different room types
+  * [ ] Have a way for the level to designate the tileset (which tiles to use for walls, ladders, gratings, and vines/wires) and have the tiles or MParser look at this
+    * [ ] perhaps use folders?
 * [ ] Make the lore popups in-game be from a floating computer AI thingy "NIC" rather than just floating text
   * [ ] The player can interact with them to show the latest text
     * [ ] Add dddddddd sound when the words come out
     * [ ] Add Inform-like random text choosing for snarky comments
   * [ ] follow the player around like a minecraft dog or something
+  * [ ] Dialog system includes direction tags
+    * [ ] `<anim:foo>` to cause NIC to play an animation
+    * [ ] `<lookat:tag>` to make NIC go to and look at a particular thing (like note blocks to allays in Minecraft)
+    * [ ] `<do:action>` to perform an action on the item (like action1, target1, etc)
+      * [ ] Rework the actions system to make the actions take an actor parameter to differentiate between NIC and the player performing the action (so like for grabbing, it can give the item to NIC instead of the player)
+      * [ ] Add `actor()` component to facilitate this, which manages inventory, motion, and model (bones and stuff, loaded from JSON)
+    * [ ] `<drop_item>` to cause NIC to drop the item so the player can grab it
+    * [ ] `<splash:n:colors>` to drop a splash of particles,
+    * [ ] `<think:time>` to display a '...' thinking animation
+    * (& anything else expressive)?
 * [ ] remove the rainbow special control thing on items, only have NIC use them
   * [ ] make the links for all of the same class of things that would show the same manpage, use the same specials bits
   * [ ] add more random text stuff

@@ -8,11 +8,86 @@ i'm captializing on the AI boom sorry
 
 I left a lot of stuff out because at the time I wrote this document the game had already been in development for almost a year without any kind of formal planning. I stopped developing the game during the time that I wrote this, so the game itself may be actually more out-of-date than this.
 
-## SPOILERS AHEAD
+## Characters
+
+### The Player
+
+### NIC
+
+## Story
+
+### SPOILERS AHEAD
 
 <details>
 <summary>yes spoil the story</summary>
 
+Linear game plot:
+
+The player is an alien who crash-lands on a dusty planet and is unable to leave because their spaceship is broken. Thankfully, they survived the landing, and so did their AI companion, NIC.
+
+NIC directs the player to go search for parts they can use to fix their spaceship -- this means exploring the surface of the planet, as there was clearly something technological left over from something that happened sometime in the past (although it's not clear what).
+
+The player finds a door mounted on the side of a hill, finds it unlocked, enters, and discovers that there is an old abandoned datacenter built inside the hill. All of the servers are turned off, and it appears that whoever left it that way wasn't in any hurry to leave and took care to clean up behind themselves. (Weird!)
+
+The player goes to investigate and discovers that the servers have been infected by these little parasitic aliens called continuations. NIC examines the servers' long term storage (a tape drive!) and finds code and comments stating that the system started to behave strangely, and it just so happened that management 'decided' to publish a new release way off schedule and informed the junior devs to start using the "assert" command for backups 'in order to test it' but they were still quite suspicious as to why this suddely happened out of the blue.
+
+At any rate, the program itself appears to be connected to the security system of the datacenter -- running it opens a door allowing entry deeper into the complex, but also
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
 You dusted off an old computer terminal and found that there's a whole mainframe hooked up to it. And the program it was running had... evolved. By itself.
 
 Upon logging into the mainframe, the computer greets you and admits it was unplugged suddenly, so it didn't have a chance to shut down properly last time. As a result, the only data it has is that (a) it was in the middle of creating a videogame, and (b) whatever state it had retained is now corrupted, and the shattered fragments of the code have been strewn all over the file system in varying states of deallocation and dependency errors. Not much left to do other than jump into the system debugger...
@@ -31,12 +106,12 @@ It's not too much later that you actually do find one of these bugs. Since the c
 
 In order to open the door to the next section of the filesystem, the computer is able to identify the problem - that more memory is required. That's when the computer remembers that the second type of continuation trap that you have is able to forcibly duplicate memory if the original is missing, meaning you can duplicate as much of it as you want. This won't get you any closer to learning more about the rest of unallocated memory space though, as this simply duplicates the garbage stored in the original and doesn't reveal anything new. You go back to the last place where you had memory available, use the continuations to glitch out the doors, and duplicate it repeatedly until you have enough to reach the button that activates the next door.
 
-Further down into the depths of the filesystem you discover that there has been some decay -- the computer does not know what caused it -- and some parts have fallen out. Thankfully you can use continuations to be able to retrieve the missing pieces (along with another continuation trap)
+Further down into the depths of the filesystem you discover that there has been some decay -- the computer does not know what caused it -- and some parts have fallen out. Thankfully you can use continuations to be able to retrieve the missing pieces (along with another continuation trap) and
 
 ---
 
 ENDING
 
-From the puzzle pieces of memory you have obtained,
+From the puzzle pieces of memory you have obtained, -->
 
 </details>
