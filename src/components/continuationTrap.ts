@@ -276,7 +276,7 @@ export function continuationTrapCore(soundOnCapture: string): ContinuationTrapCo
                     }
                 }
                 if (newObjs.difference(prevObjs).size > 0) {
-                    player.playSound("blorp", {}, this.worldPos()!);
+                    player.playSound("worb", {}, this.worldPos()!);
                 }
                 prevObjs = newObjs;
             }

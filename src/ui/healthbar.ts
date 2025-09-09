@@ -19,10 +19,10 @@ export const healthbar = UI.add([
         showHealth(this: GameObj<PosComp | TextComp | ColorComp>,
             health: number, maxHealth: number) {
             const fraction = health / maxHealth;
-            const barWidthChars = Math.floor(K.width() / this.textSize / 5 - 2) * 2; // * 2 because font is 2:1 so we can have twice as many characters
+            const barWidthChars = Math.floor(K.width() / this.textSize / 7 - 2) * 2; // * 2 because font is 2:1 so we can have twice as many characters
             const numFilled = K.clamp(Math.floor(fraction * barWidthChars), 0, barWidthChars);
             const numEmpty = K.clamp(Math.ceil((1 - fraction) * barWidthChars), 0, barWidthChars);
-            this.text = `[${"#".repeat(numFilled)}${" ".repeat(numEmpty)}] ${(fraction * 100).toFixed(0)}%`;
+            this.text = `♡ [${"#".repeat(numFilled)}${" ".repeat(numEmpty)}] ${(fraction * 100).toFixed(0)}%`;
             this.color = fraction > 0.5 ? K.GREEN : fraction > 0.2 ? K.YELLOW : K.RED;
         }
     }
