@@ -47,7 +47,7 @@ const config = {
     format: "esm",
     target: "esnext",
     treeShaking: true,
-    outfile: "build/debugger.js",
+    outfile: "build/aelith.js",
     plugins: [
         glslPlugin(),
         yamlPlugin({ transform }),

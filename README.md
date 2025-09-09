@@ -1,6 +1,11 @@
-# debugger
+# AELITH
 
 A puzzle platformer game.
+
+> **continuation**: (noun) a small, parasitic animal, *functionus schemus*, that lives in the circuit boards of computers. Infected devices show the curious symptom of being able to run the programming language Scheme. Despite being extremely easy to catch using the right trap (the two leading models are called *setjmp* and *call/cc*), few people thoroughly understand how continuations work inside. What is known is that they display a very interesting and useful property once caught: when they are fed, they instantly teleport back to the exact place where they were initially caught and then barf up what they were fed. This process can be repeated indefinitely with mature continuations. With the juvenile continuations (called "continulets") this process can only be repeated once. The reader should be cautioned that feeding a continulet caught using a *setjmp* trap twice will usually cause irreversible tears in spacetime.
+
+> [!NOTE]
+> This game has no relation to the [Minecraft modpack of the same name](https://www.curseforge.com/minecraft/modpacks/aelith).
 
 ## DEVELOPING STARTUP---------
 

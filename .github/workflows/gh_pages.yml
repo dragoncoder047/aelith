@@ -19,8 +19,8 @@ jobs:
           pnpm build --release
           mkdir www
           sed s~build/~~ >www/index.html <index.html
-          cp build/debugger.js www/
-          cp build/debugger.js.map www/
+          cp build/aelith.js www/
+          cp build/aelith.js.map www/
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3

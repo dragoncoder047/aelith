@@ -5,7 +5,7 @@ arrow:
   up: ↑
   right: →
   down: ↓
-gamename: "[gamename]debugger[/gamename];"
+gamename: "[gamename]AELITH[/gamename]"
 msg: "&&lang"
 control: "&c.&inputType"
 c:
