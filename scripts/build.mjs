@@ -42,6 +42,7 @@ const config = {
     loader: {
         ".png": "dataurl",
         ".woff": "dataurl",
+        ".otf": "dataurl",
     },
     entryPoints: [packageJSON.main],
     format: "esm",

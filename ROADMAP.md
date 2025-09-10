@@ -74,7 +74,7 @@
 * [X] Change call/cc controls to not have simple radius, you click on objects to select or deselect them
   * [X] special kind of line to show what it is about to capture
 * [X] add wibbly line graphics to the continuations
-  * [X] blorp sound effect when objects are selected and unselected
+  * [X] worb sound effect when objects are selected and unselected
 * [X] Change level cutscene transition shader to use a glitch effect rather than fuzzy fadeout
 * [X] Fix bugs with the ambientSound component that is causing the lag
 * [X] Change continuation objects to frog-like things instead of just spinny circles

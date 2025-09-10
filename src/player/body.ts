@@ -13,6 +13,18 @@ import { PlayerHeadComp } from "./head";
 import { TailComp } from "./tail";
 import { LightHelperComp } from "../components/light_helpers";
 
+// TODO TODO TODO
+// make this not such an everything component
+// * actor()
+// --> motion, IK animations of parts (flipX), control stack management
+// * inventory()
+// --> holding item, inventory popup
+// * climbing()
+// --> climbing state management
+// * listener()
+// --> controls sound panning stuff & sound enable/disable
+
+// so that some of the components can be used for NIC
 
 export type PlayerInventoryItem = GameObj<PosComp | SpriteComp | BodyComp | NamedComp | AnchorComp | PlatformEffectorComp | InteractableComp>;
 // MARK: PlayerComp

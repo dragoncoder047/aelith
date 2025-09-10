@@ -6,7 +6,7 @@ import { loadNormals } from "../normalmapgen/normal";
 import { allSongs } from "./audio/songs";
 import { sounds } from "./audio/sounds";
 import unsciiMCRFontDataURL from "./fonts/unscii-8-mcr.woff";
-import unsciiFontDataURL from "./fonts/unscii-16-full.woff";
+import unsciiFontDataURL from "./fonts/unscii-16.woff";
 import allLevels from "./level_maps/*.txt";
 import { playMusic } from "./music";
 import rumbleEffects from "./rumbleEffects.yaml";
