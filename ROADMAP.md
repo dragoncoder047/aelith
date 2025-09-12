@@ -20,6 +20,8 @@
 * [ ] Add background manager (that uses parallax scrolling) for different room types
   * [ ] Have a way for the level to designate the tileset (which tiles to use for walls, ladders, gratings, and vines/wires) and have the tiles or MParser look at this
     * [ ] perhaps use folders?
+* [ ] Port all 9 of that_dos_server's songs to zzfxm
+    `Co-authored-by: that_dos_server <ihatebluescreens@proton.me>`
 * [ ] Make the lore popups in-game be from a floating computer AI thingy "NIC" rather than just floating text
   * [ ] The player can interact with them to show the latest text
     * [ ] Add dddddddd sound when the words come out
@@ -58,6 +60,11 @@
   * [ ] Do translations
 * [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random & uniformly weighted -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
+  * [ ] Could also have the songs for each biome be the different genres. Core Aelith be my conventional meter songs, surface be tds's slower songs, and the caves be the weird odd time signature songs
+* [ ] Add static level baking using the build script (MParser runs at build time and produces JSON imported using a onLoad plugin, savefiles are then deltas to transform this master state into the saved state)
+  * [ ] For large collider instances, make them `{ kind: whatever, instances: [x,y,w,h][] }` in tiles from 0,0
+  * [ ] Use build script to roll all of the data into one giant JSON file using dataURLs for the images in the JSON
+* [ ] Make the Windows crash screen at the end use the newer QR code format and link to a secret page with the epilogue? (Using <https://www.npmjs.com/package/qr.js> to not have to create a texture for the image)
 * [ ] Add autosave (last checkpoint) and option to restore when webpage is reloaded
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
