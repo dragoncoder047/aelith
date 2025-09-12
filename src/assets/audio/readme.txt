@@ -1,0 +1,4 @@
+* the sounds are just a sequence of numbers being fed to ZzFX (itself MIT licensed) so I'm not even sure these can be copyrighted.
+* the songs that are written by me (@dragoncoder047) are Creative Commons BY-NC-SA 4.0. do what you like with them.
+* the song written by kala Kiso (@Matto58 on youtube and github, @toastermatt on discord) is Creative Commons BY-SA 3.0.
+* the songs by that_dos_server (@that_dos_server_84595 on discord) I received explicit permission to use from them, they are "all rights reserved" so you must contact that_dos_server directly if you want to use them yourself elsewhere.
