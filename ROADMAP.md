@@ -3,18 +3,22 @@
 
 * [ ] Make ZzFXM loading async so that it can not freeze the game when it loads all the songs
 * [ ] Make the loading screen more fun
+* [ ] Code renaming to support new story names
+* [ ] Make control text for controls be defined as a transformation of the BUTTONS variable
+* [ ] Move contextual actions for targeted items be below them like in the original demo
+* [ ] Copy the LemmBox squish sounds for the vurble squish easter egg
 * [ ] Memory boxes contain some bits of Scheme code and small comments, or are entirely text
   * [ ] Add Scheme syntax highlighter
   * [ ] User must 'open' the box to get the program if it contains one, and then 'run' it using a standalone computer terminal
-    * [ ] Need to add 'computer terminals' player can interact with to get the continuation trap rather than just picking it up.
+    * [ ] Need to add 'computer terminals' player can interact with to get the vurbilizer rather than just picking it up.
   * [ ] Add "program" item that looks like a flash drive and can't be dropped, but can be used on computer terminals
   * [ ] Add "mainframe" big things that the player must turn on via a switch and then read their memory to be able to go to the next level
-* [ ] Change the continuation traps' definitions to be built using 'feature flags' `concurrent`, `global`, `radius 4`, `defer stay`, `edit`, `kill type`; `recapture`, `where invoked`, `tp catcher`, `fuzz`, `killer`, `immortal`, `die`, the player gets these flags to be able to put them in call/cc from the programs they use to get the other traps
-* [ ] Make the setjmp and throw traps interfere with each other (capturing one kills the other's continuation) so the player can't use setjmp+throw together to cheese the bf1/bf2 swapping without using yield.
-* [ ] Make the bugs aggro'ed at the continuation frogs and run towards them (and the player if they are holding one)
-  * [ ] Make continuations auto-invoke when they are hit by a bug
-    * [ ] Need to add a new flag to continuations to determine whether they teleport the entity that captured (all others), the entity that invoked or nobody (flag on call/cc).
-* [ ] Make the bugs never get angry at the player if they don't have a continuation in their inventory
+* [ ] Change the vurbilizers' definitions to be built using 'feature flags' `concurrent`, `global`, `radius 4`, `defer stay`, `edit`, `kill type`; `recapture`, `where invoked`, `tp catcher`, `fuzz`, `killer`, `immortal`, `die`, the player gets these flags to be able to put them in call/cc from the programs they use to get the other traps
+* [ ] Make the setjmp and throw traps interfere with each other (capturing one kills the other's vurble spore) so the player can't use setjmp+throw together to cheese the bf1/bf2 swapping without using yield.
+* [ ] Make the bugs aggro'ed at the vurble spore frogs and run towards them (and the player if they are holding one)
+  * [ ] Make vurble spores auto-invoke when they are hit by a bug
+    * [ ] Need to add a new flag to vurble spores to determine whether they teleport the entity that captured (all others), the entity that invoked or nobody (flag on call/cc).
+* [ ] Make the bugs never get angry at the player if they don't have a vurble spore in their inventory
 * [ ] Make the portals look like a 2nd kind of door instead of rainbow, and also teleport when the player knocks on it
   * [ ] Make the normal portal type that triggers the transition shader only when colliding, invisible (for like falling down to the bottom; the bottom can be a separate room)
 * [ ] Add background manager (that uses parallax scrolling) for different room types
@@ -48,7 +52,7 @@
 * [ ] Make the spaceship sprite be like a vehicle the player can get in
   * [ ] separate the player
 * [ ] integrate suave's lit shaders
-  * glowing lights go on lights (duh), continuation traps, continuations, continuation world markers, etc.
+  * glowing lights go on lights (duh), vurbilizers, vurble spores, vurble spore world markers, etc.
 * [ ] Make pause menu NOT a terminal since aesthetic is changing away from that
 * [ ] Make pause menu work with mouse, need text quad character detection for this
 * [ ] Make flash trail that shows activation of things follow the data wires
@@ -56,8 +60,6 @@
 * [ ] Make NEW vacuum object, like a grabber
 * [ ] Add more challenges that test all features of call/cc.
   * [ ] Use firewall somewhere else
-* [X] Finish writing man pages for all the types of continuations
-  * [ ] Do translations
 * [ ] Add algorithmic choosing songs based on where you are in the game. Currently just random & uniformly weighted -- make it choose randomly but influenced based on position
   * [ ] Fix the not auto looping onEnd getting dropped for music (probably Kaplay bug)
   * [ ] Could also have the songs for each biome be the different genres. Core Aelith be my conventional meter songs, surface be tds's slower songs, and the caves be the weird odd time signature songs
@@ -69,7 +71,7 @@
   * [ ] How to refer to objects in-memory in serialized form?
     * [ ] Ones that don't exist, when savegame is loaded initially at start?
   * [ ] OR - Add warning about there being no autosave
-* [ ] Add achievements for stuff? (Collecting continuations, creating continuations, cloning boxes, etc?)
+* [ ] Add achievements for stuff? (Collecting vurble spores, creating vurble spores, cloning boxes, etc?)
   * [ ] Connect to Newgrounds for cloud save and medals?
 * [ ] IN-GAME MAP EDITOR!!! would make my life so much easier
 
