@@ -37,13 +37,13 @@ interface RenderData extends JSONObject {
 
 interface AssetData extends JSONObject {
     id: string;
-    kind: "font" | "shader" | "sprite" | "spritemap" | "sound" | "song";
+    kind: "font" | "shader" | "sprite" | "spritemap" | "sound" | "song" | "translation";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
     loader?: "url" | "bin" | "zzfx" | "zzfxm";
-    /** url, base64, or inline */
-    src: string;
-    /** for spritemap, this is the slice data etc., for songs it is the author and song tags */
-    metadata?: JSONObject;
+    /** url, base64, or inline JSON */
+    src: JSONValue;
+    /** for spritemap, this is the slice data etc., for songs it is the author and song tags, for translations it is the language */
+    metadata?: JSONValue;
 }
 
 /** The static (unchangeable) data for a single room */
