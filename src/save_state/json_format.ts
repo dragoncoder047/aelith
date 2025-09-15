@@ -127,14 +127,16 @@ interface EntityModelData extends JSONObject {
     /** the body parts of the sprite */
     skeleton: EntityModelBoneData;
     /** the decorational or functional tentacles (spring sim thingies) */
-    tentacles: Record<string, EntityModelTentacleData>;
+    tentacles?: Record<string, EntityModelTentacleData>;
     /** definition of animations or emotes */
-    anims: Record<string, EntityAnimData>;
+    anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
-    moveBones: {
+    move: {
         walk: EntityMotionAnimDef[];
         climb: EntityMotionAnimDef[];
         look: EntityMotionAnimDef[];
+        /** anim to be played while sprinting */
+        sprint: EntityAnimData;
     }
 }
 
@@ -272,7 +274,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * anim/w <name> <speed> <force-restart?> - entity model play animation
  * * unanim <name> - remove anim from running list if it is an infinite anim
  * * playsound/w <name> <global?> - if global=false, the current player hears it
- * * say <string> - says it in speech bubble, waits for player to continue
+ * * say <scene?> <string> - says it in speech bubble, waits for player to continue, if scene is true then it uses the named dialog scene
  * * the <name> - get context variable
  * * set <global?> <name> <value> - local variable
  * * get <global?> <name> - local variable
@@ -290,7 +292,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * ask <entity> <question-name>
  * * answer <value> - respond to question from another entity
  * * set-player <entity> - switch controls and camera following to it
- * * set-won - causes the bluescreen
+ * * win - causes the bluescreen and hasWon to be set to true
  * * look-at <entity> - rotates to look at it
  * * goto <location> - sets navigation goal
  * * +, -, *, /, ^, &, |, <, >, <=, >=, ==, !=, !, null?, # (len) - math stuff, work with vectors too if it would make sense (+, -, and / have 1-arity overloads: abs, neg, and inverse)
@@ -305,6 +307,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * rand <min> <max> | rand <list>
  * * me
  * * time
+ * * template <value> <subs> - recursively substitutes the strings in values with the values in subs where they occur
  * * 
  *
  * TODO - figure out how to create/define inventory and config screens via this functionality.
@@ -341,6 +344,7 @@ interface LoreDocumentData extends JSONObject {
 
 interface DataDataData extends JSONObject {
     assets: AssetData[];
+    dialogs: Record<string, CrustyJSONCode[]>;
     loreDocuments: Record<string, LoreDocumentData>;
     /** mapping of tileset name -> tile index -> definition */
     tilesets: Record<string, TilesetData>;
