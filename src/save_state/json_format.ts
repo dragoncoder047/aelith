@@ -217,7 +217,8 @@ interface EntityModelTentacleData extends JSONObject {
  * * hit-entity - context includes entity and collision direction
  * * hit-tile - both collision events are run in the onBeforePhysicsResolve phase so they can be canceled
  * * taken - context includes entity taking it
- * * state_changed - context includes whether it is supposed to be silent
+ * * message - context includes the message and the sending entity
+ * * state-changed - context includes whether it is supposed to be silent
  * * room_load
  * * room_unload
  * * game_load
@@ -227,7 +228,7 @@ interface EntityModelTentacleData extends JSONObject {
  * * climb
  * * leash - context includes leashing entity
  * * question - context includes what was asked and who asked
- * * became_player
+ * * became-player
  */
 interface HookData extends JSONObject {
     /** hint to be displayed for direct control input hooks */
@@ -248,6 +249,8 @@ interface EntityData extends JSONObject {
     loc?: [string, XY | number];
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
     leashed?: [string, number];
+    /** name of the link group to receive messages on */
+    linkGroup?: string;
     /** if this is in some other entity's inventory */
     parent?: string;
     /** lighting lights things */
@@ -274,12 +277,13 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * anim/w <name> <speed> <force-restart?> - entity model play animation
  * * unanim <name> - remove anim from running list if it is an infinite anim
  * * playsound/w <name> <global?> - if global=false, the current player hears it
- * * say <scene?> <string> - says it in speech bubble, waits for player to continue, if scene is true then it uses the named dialog scene
+ * * say <scene?> <string> - says it in speech bubble, waits for player to continue, if scene is true then it uses the named dialogue scene vs the string verbatim
  * * the <name> - get context variable
  * * set <global?> <name> <value> - local variable
  * * get <global?> <name> - local variable
  * * here - get current entity's coordinates
  * * get <"all" | "first" | "random"> <type> <"near" radius in tiles> <"everywhere"> - get entities within radius
+ * * send <message> - broadcasts message to all with the same link group (loaded or unloaded)
  * * spawn <entity_type> <location> -
  * * die - destroys self
  * * tp <entity> <room> <pos> - teleports
@@ -342,9 +346,9 @@ interface LoreDocumentData extends JSONObject {
     sprite?: [name: string, width?: number, height?: number];
 }
 
-interface DataDataData extends JSONObject {
+interface DataPackData extends JSONObject {
     assets: AssetData[];
-    dialogs: Record<string, CrustyJSONCode[]>;
+    dialogues: Record<string, CrustyJSONCode[]>;
     loreDocuments: Record<string, LoreDocumentData>;
     /** mapping of tileset name -> tile index -> definition */
     tilesets: Record<string, TilesetData>;
