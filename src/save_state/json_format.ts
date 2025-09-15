@@ -1,22 +1,49 @@
-import { Anchor, UniformKey } from "kaplay";
+import { LineCap, LineJoin, TextAlign } from "kaplay";
 
 type JSONPrimitive = number | string | boolean | null;
-type JSONArray = JSONValue[];
+type JSONArray = (JSONValue | undefined)[];
 interface JSONObject {
-    [key: string]: JSONValue;
+    [key: string]: JSONValue | undefined;
 }
 type JSONValue = JSONPrimitive | JSONArray | JSONObject;
 
 type XY = [x: number, y: number];
 
+interface RenderData extends JSONObject {
+    p: "rect" | { s: string; f: number };
+    d: [width: number, height: number]
+    pos?: XY;
+    scale?: XY;
+    angle?: number;
+    skew?: XY;
+    color?: string;
+    opacity?: number;
+    shader?: string;
+    /** & = intersect, - = subtract */
+    mask?: "&" | "-";
+    uniform?: Record<string, JSONValue>;
+    blend?: "normal" | "+" | "*" | "screen" | "over";
+    outline?: {
+        width?: number;
+        color?: string;
+        opacity?: number;
+        join?: LineJoin;
+        miterLimit?: number;
+        cap?: LineCap;
+    };
+    layer?: string;
+    z?: number;
+}
+
 interface AssetData extends JSONObject {
     id: string;
     kind: "font" | "shader" | "sprite" | "spritemap" | "sound" | "song";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
-    loader: "url" | "bin" | "zzfx" | "zzfxm" | null;
+    loader?: "url" | "bin" | "zzfx" | "zzfxm";
     /** url, base64, or inline */
     src: string;
-    metadata: JSONObject | null;
+    /** for spritemap, this is the slice data etc., for songs it is the author and song tags */
+    metadata?: JSONObject;
 }
 
 /** The static (unchangeable) data for a single room */
@@ -39,22 +66,26 @@ interface RoomData extends JSONObject {
 }
 
 interface StaticTileDefinition extends JSONObject {
-    /** The id of the tile's sprite, such as rusty_steel */
-    sprite: string | null;
+    r: RenderData;
     /** if present, overrides frame set by tilemap bits */
-    frame: number | null;
+    frame?: number;
     /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
-    hitbox: [...pos: XY, width: number, height: number] | null;
+    hitbox?: [...pos: XY, width: number, height: number];
     /** whether the obj can be merged to make more efficient colliders */
-    merge: [boolean, boolean] | null;
+    merge?: [boolean, boolean];
     physics: {
         /** function or tags list to determine what to not collide with */
-        ignore: CrustyJSONCode | { tags: string[] } | null;
+        ignore?: CrustyJSONCode | { tags: string[] };
         /** if not null, this is a ladder, these are the rung y-offsets */
-        rungs: number[] | null;
+        rungs?: number[];
     };
-    /** if not null, the number of sprites to stack for the 2.5D effect */
-    depth: number | null;
+    /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
+    depth?: number;
+}
+
+interface TilesetData extends JSONObject {
+    songTags: string[];
+    tiles: StaticTileDefinition[];
 }
 
 interface DoorData extends JSONObject {
@@ -65,30 +96,30 @@ interface DoorData extends JSONObject {
     /** in tiles */
     size: XY;
     /** how to render the door */
-    sprite: string | null;
+    render?: string;
     /** if false, the player will have to "enter" the door manually; if true, it will teleport as soon as the player collides with it */
     auto: boolean;
 }
 
 interface EntityPrototypeData extends JSONObject {
     /** name of entity prototype to extend (via recursive Object.assign) */
-    extends: string | null;
+    extends?: string;
     /** tags for "get" function; names and stuff also are used as tags */
     tags: string[];
     /** name of the sprite model to use for this */
     model: EntityModelData;
     /** polygonal hitbox */
     hitbox: XY[];
-    /** restrict bounds on navigation height (in tiles) for pathfinding */
+    /** restricted bounds on navigation height (in tiles) for pathfinding */
     navHeight: [low: number, high: number];
     /** if true, won't fall and can fly upwards and downwards */
     canFly: boolean;
     /** maximum move speed; sprint is always 1.5X higher */
     moveSpeed: number;
     /** the number of internal inventory slots this entity has */
-    inventorySlots: number | null;
+    inventorySlots?: number;
     /** the number of slots that this entity takes up when held in an inventory */
-    inventorySize: number;
+    inventorySize?: number;
     hooks: Record<string, HookData>;
 }
 
@@ -99,9 +130,7 @@ interface EntityModelData extends JSONObject {
     tentacles: Record<string, EntityModelTentacleData>;
     /** definition of animations or emotes */
     anims: Record<string, EntityAnimData>;
-    /** the bone that will be made to turn to face whatever the entity is looking at */
-    eyeTarget: string | null;
-    /** The inverse-kinematics points that will be moved to create the */
+    /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
     moveBones: {
         walk: EntityMotionAnimDef[];
         climb: EntityMotionAnimDef[];
@@ -113,14 +142,16 @@ interface EntityMotionAnimDef extends JSONObject {
     /** which bone target gets moved */
     bone: string;
     /** randomize jitter */
-    jitter: {
-        pos: XY | null;
-        angle: number | null;
-    } | null;
+    jitter?: {
+        pos?: XY;
+        angle?: number;
+    };
+    /** if the bone should be flipped to follow the motion */
+    flip?: [boolean, boolean];
 }
 
 interface EntityAnimData extends JSONObject {
-    /** animations listed here will NOT blend with this one */
+    /** animations listed here will NOT blend with this one; if 2 try to override each other the last one wins */
     override: string[];
     mode: "once" | "loop" | "pingpong";
     channels: EntityAnimChannelData[];
@@ -133,24 +164,18 @@ interface EntityAnimChannelData extends JSONObject {
     keyframes: [
         duration: number,
         value: string | number | XY,
-        lerp: string | null, // null = linear
+        lerp?: string, // none = linear
     ][];
+    /** if a sprite animation should be played concurrently */
+    sprAnim: string;
 }
 
 interface EntityModelBoneData extends JSONObject {
     /** child bones */
-    children: EntityModelBoneData[] | null;
+    children?: EntityModelBoneData[];
     /** name of the bone for targeting it in animations */
     name: string;
-    render: {
-        sprite: string;
-        layer: string;
-        color: string | null;
-        anchor: Anchor | XY | null;
-        shader: string | null;
-        scale: XY | null;
-        uniform: Record<UniformKey, number | number[] | string | string[]>;
-    };
+    render: RenderData;
     /** The rotation center */
     pos: XY;
     /** inverse kinematics definition */
@@ -158,9 +183,9 @@ interface EntityModelBoneData extends JSONObject {
         /** maximum bending angles */
         angleRange: [number, number];
         /** angle ranges at which scale(-1, 1) or scale(1, -1) should be applied */
-        flipRanges: [[number, number] | null, [number, number] | null];
+        flipRanges: [[number, number] | null, [number, number] | undefined];
         /** should only be set on the end */
-        depth: number | null;
+        depth?: number;
     }
 }
 
@@ -176,7 +201,7 @@ interface EntityModelTentacleData extends JSONObject {
     /** local position on the attached bone */
     offset: XY;
     /** size range, optional interpolation function */
-    sizes: [number, number, string | null];
+    sizes: [start: number, end: number, easingFunc?: string];
 }
 
 /**
@@ -204,7 +229,7 @@ interface EntityModelTentacleData extends JSONObject {
  */
 interface HookData extends JSONObject {
     /** hint to be displayed for direct control input hooks */
-    hint: string | null;
+    hint?: string;
     /** hooks with a lower priority will be paused while this one runs */
     priority: number;
     impl: CrustyJSONCode;
@@ -218,16 +243,16 @@ interface EntityData extends JSONObject {
     /** this entity's state */
     state: JSONObject;
     /** location: room and tile xy pos, or room and tile slot */
-    loc: [string, XY | number] | null;
+    loc?: [string, XY | number];
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
-    leash: [string, number] | null;
+    leashed?: [string, number];
     /** if this is in some other entity's inventory */
-    parent: string | null;
+    parent?: string;
     /** lighting lights things */
     lights: LightData[];
 }
 
-type LightData = [pos: XY, radius: number, intensity: number, color: string | number, only_lights: (string | null)[] | null];
+type LightData = [pos: XY, radius: number, intensity: number, color: string | number, only_lights?: (string | null)[]];
 
 /**
  * like LISP.
@@ -255,7 +280,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * get <"all" | "first" | "random"> <type> <"near" radius in tiles> <"everywhere"> - get entities within radius
  * * spawn <entity_type> <location> -
  * * die - destroys self
- * * tp <entity> <pos> - teleports
+ * * tp <entity> <room> <pos> - teleports
  * * take <item> - insert item into current entity's inventory, returns true or false if the other entity accepted or refused
  * * hold <item> - puts the item in the currently holding slot; returns false if not in inventory
  * * drop <item>
@@ -272,9 +297,9 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * join - concatenate strings or lists
  * * list <items...> - make list
  * * wait <time> <thinking?>
- * * run-hook <hook_name> <context> - triggers hook on self
+ * * hook <hook_name> <context> - triggers hook on self
  * * particles <amount> <color>
- * * set-lights <lights array>
+ * * lights <lights array>
  * * set-collision-ignore <tags array>
  * * conf <name> - get global configuration value
  * * rand <min> <max> | rand <list>
@@ -298,11 +323,27 @@ interface Savefile extends JSONObject {
     currentPlayer: string;
 }
 
+/** drawn using a PICTURE for optimization */
+interface LoreDocumentData extends JSONObject {
+    kind: "stack" | "row" | "col" | "text" | "pic";
+    /** a color */
+    background?: string;
+    widths?: number[];
+    /** For "stack" and "row" and "col" */
+    children?: LoreDocumentData[];
+    /** For "text" */
+    text?: string;
+    // TODO: specify styles and animated styles via data pack
+    align?: TextAlign;
+    /** For "pic" */
+    sprite?: [name: string, width?: number, height?: number];
+}
+
 interface DataDataData extends JSONObject {
     assets: AssetData[];
     loreDocuments: Record<string, LoreDocumentData>;
     /** mapping of tileset name -> tile index -> definition */
-    tilesets: Record<string, StaticTileDefinition[]>;
+    tilesets: Record<string, TilesetData>;
     /** crustyfunctions that can be called by user code */
     functions: Record<string, CrustyJSONCode>;
     /** configuration constants */
