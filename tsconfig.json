@@ -15,4 +15,7 @@
     "include": [
         "./**/*.ts"
     ],
+    "exclude": [
+        "./archive/**"
+    ]
 }

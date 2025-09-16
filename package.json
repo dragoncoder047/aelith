@@ -5,8 +5,10 @@
     "author": "dragoncoder047",
     "main": "src/main.ts",
     "scripts": {
-        "build": "node scripts/build.mjs",
-        "dev:build": "node scripts/build.mjs -w",
+        "build:data": "python3 scripts/build_datapack.py",
+        "build:js": "node scripts/build.mjs",
+        "dev:build:js": "node scripts/build.mjs -w",
+        "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,txt,glsl -i build --exec \"pnpm build:data\"",
         "dev:serve": "python3 -m http.server",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc && python3 scripts/lint_strings.py",
@@ -20,6 +22,7 @@
         "esbuild": "^0.25.0",
         "esbuild-plugin-glsl": "^1.4.0",
         "esbuild-yaml": "^3.0.3",
+        "nodemon": "^3.1.10",
         "typescript": "^5.6.2"
     },
     "dependencies": {

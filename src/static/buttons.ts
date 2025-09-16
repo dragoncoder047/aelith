@@ -1,17 +1,40 @@
-import { Key, KGamepadButton, MouseButton } from "kaplay";
+import { Key, KGamepadButton, KGamepadStick, MouseButton, Vec2 } from "kaplay";
+import { K } from "../context";
 
 type ButtonBinding = {
     keyboard?: Key[],
     mouse?: MouseButton[],
-    gamepad?: KGamepadButton[]
+    gamepad?: KGamepadButton[],
+    directional?: {
+        gamepad?: [KGamepadStick, Vec2];
+        buttons?: [[string, string] | undefined, [string, string] | undefined];
+    }
 }
 
 type Controls = {
     [button: string]: ButtonBinding
 }
 
-export const CONTROLS: Controls = {
+export const BUTTONS: Controls = {
     // action controls
+    move: {
+        directional: {
+            gamepad: ["left", K.Vec2.ONE],
+            buttons: [["move_left", "move_right"], ["move_down", "move_up"]],
+        }
+    },
+    move_left: {
+        keyboard: ["a", "left"],
+    },
+    move_right: {
+        keyboard: ["d", "right"],
+    },
+    move_up: {
+        keyboard: ["w", "up"],
+    },
+    move_down: {
+        keyboard: ["s", "down"],
+    },
     jump: {
         keyboard: ["space"],
         gamepad: ["south"],
@@ -48,10 +71,6 @@ export const CONTROLS: Controls = {
         keyboard: ["v"],
         gamepad: ["dpad-up"],
     },
-    read_manpage: {
-        keyboard: ["t"],
-        gamepad: ["north"],
-    },
     inspect_next: {
         keyboard: ["g"],
         gamepad: ["east"],
@@ -69,18 +88,6 @@ export const CONTROLS: Controls = {
     sprint: {
         keyboard: ["shift"],
         gamepad: ["lstick"],
-    },
-    move_left: {
-        keyboard: ["a", "left"],
-    },
-    move_right: {
-        keyboard: ["d", "right"],
-    },
-    move_up: {
-        keyboard: ["w", "up"],
-    },
-    move_down: {
-        keyboard: ["s", "down"],
     },
     // pause menu controls
     pause_unpause: {

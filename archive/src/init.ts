@@ -1,6 +1,6 @@
 import kaplay from "kaplay";
 import { SCALE } from "./constants";
-import { CONTROLS } from "./controls/buttons";
+import { CONTROLS } from "../../src/static/buttons";
 import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayControlGroup } from "./plugins/kaplay-control-group";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";

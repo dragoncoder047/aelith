@@ -1,0 +1,35 @@
+import kaplay from "kaplay";
+import kaplayLighting from "kaplay-lighting";
+import { SCALE } from "../static/constants";
+import { kaplayAABB } from "./plugins/kaplay-aabb";
+import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
+import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
+import { kaplaySprings } from "./plugins/kaplay-springs";
+import { kaplayZzFX } from "./plugins/kaplay-zzfx";
+import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
+
+export const K = kaplay({
+    debug: true,
+    crisp: true,
+    global: false,
+    scale: SCALE,
+    background: "#000000",
+    touchToMouse: false,
+    inspectOnlyActive: true,
+    tagComponentIds: false,
+    buttons: {} as any,
+    font: "Unscii",
+    plugins: [
+        kaplayZzFX,
+        kaplayZzFXM,
+        kaplaySprings,
+        kaplayDynamicStrings,
+        kaplayRumble,
+        kaplayAABB,
+        kaplayLighting
+    ],
+});
+
+K.onLoadError((which, e) => {
+    throw `Error while loading ${which}: ${e.error}${e.error?.stack ? `\n\nBacktrace:\n${e.error.stack}` : ""}`;
+});

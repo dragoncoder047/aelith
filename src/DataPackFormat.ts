@@ -10,8 +10,8 @@ type JSONValue = JSONPrimitive | JSONArray | JSONObject;
 type XY = [x: number, y: number];
 
 interface RenderData extends JSONObject {
-    p: "rect" | { s: string; f: number };
-    d: [width: number, height: number]
+    p: "rect" | "ellipse" | "polygon" | { s: string; f: number };
+    d: [width: number, height: number] | [rx: number, ry: number, center: XY] | XY[];
     pos?: XY;
     scale?: XY;
     angle?: number;
@@ -30,6 +30,7 @@ interface RenderData extends JSONObject {
         join?: LineJoin;
         miterLimit?: number;
         cap?: LineCap;
+        layer?: string;
     };
     layer?: string;
     z?: number;
@@ -37,7 +38,7 @@ interface RenderData extends JSONObject {
 
 interface AssetData extends JSONObject {
     id: string;
-    kind: "font" | "shader" | "sprite" | "spritemap" | "sound" | "song" | "translation";
+    kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
     loader?: "url" | "bin" | "zzfx" | "zzfxm";
     /** url, base64, or inline JSON */
@@ -188,6 +189,9 @@ interface EntityModelBoneData extends JSONObject {
         flipRanges: [[number, number] | null, [number, number] | undefined];
         /** should only be set on the end */
         depth?: number;
+    },
+    constraint: {
+        angle: [which: string, scale?: number, offset?: number];
     }
 }
 
@@ -346,7 +350,7 @@ interface LoreDocumentData extends JSONObject {
     sprite?: [name: string, width?: number, height?: number];
 }
 
-interface DataPackData extends JSONObject {
+export interface DataPackData extends JSONObject {
     assets: AssetData[];
     dialogues: Record<string, CrustyJSONCode[]>;
     loreDocuments: Record<string, LoreDocumentData>;
@@ -362,4 +366,12 @@ interface DataPackData extends JSONObject {
     entityTypes: Record<string, EntityPrototypeData>;
     /** initial world state */
     initial: Savefile;
+    /** metadata for the main menu stuff */
+    meta: {
+        title: string;
+        sprite: string;
+    };
+    menuParams: {
+        // TODO
+    }
 }

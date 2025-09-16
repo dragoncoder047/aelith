@@ -3,7 +3,6 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import packageJSON from "../package.json" with { type: "json" };
 import yamlPlugin from "esbuild-yaml";
-import glslPlugin from "esbuild-plugin-glsl";
 
 /**
  * @param {string} path
@@ -50,7 +49,6 @@ const config = {
     treeShaking: true,
     outfile: "build/aelith.js",
     plugins: [
-        glslPlugin(),
         yamlPlugin({ transform }),
         {
             name: "nonexistent_go_bye_bye",

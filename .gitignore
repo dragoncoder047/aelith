@@ -6,3 +6,5 @@
 **/.DS_Store
 ._.DS_Store
 **/._.DS_Store
+# python build script stuff
+**/__pycache__
