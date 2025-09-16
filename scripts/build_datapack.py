@@ -55,7 +55,7 @@ def construct_include(loader: Loader, node: yaml.Node) -> typing.Any:
             ".png": "image/png",
             ".woff": "font/woff",
             ".otf": "font/otf"}[extension])};base64,{
-            base64.b64encode(file.read_bytes())!a}"
+            base64.b64encode(file.read_bytes()).decode()}"
     else:
         return file.read_text()
 

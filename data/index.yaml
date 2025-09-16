@@ -1,2 +1,4 @@
 assets: !flatten
-  - !include songs.yaml
+  - !include audio/songs.yaml
+  - !include audio/sounds.yaml
+  - !include fonts/fonts.yaml

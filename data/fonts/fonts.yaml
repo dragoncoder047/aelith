@@ -1,0 +1,12 @@
+- id: Galactico
+  kind: font
+  loader: url
+  src: !include Galactico-Basic.otf
+- id: Unscii
+  kind: font
+  loader: url
+  src: !include unscii-16.woff
+- id: Unscii MCR
+  kind: font
+  loader: url
+  src: !include unscii-8-mcr.woff
