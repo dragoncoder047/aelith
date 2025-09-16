@@ -1,0 +1,110 @@
+# cSpell: disable
+# too meany foreign words in here
+bsod:
+  sadfaceMsg: "El juego tuvo un problema que no pudo manejar, tienes que reiniciarlo."
+  searchOnlineHint: "Puedes buscar el error online:"
+
+dialog:
+  firefoxDontWorkWithGamepads: >-
+    Parece que estas usando Firefox. Desafortunadamente, la implementacion e
+    Firefox de la API para mandos en web apesta tanto que es inutilizable,
+    puedes continuar usando tu mouse y teclado.
+
+
+    Si realmente quieres usar un mando, por favor usa un navegador distinto,
+    como Chrome$fn.switch(&os~mac:, Opera, o Safari~windows:, Opera, o Microsoft
+    Edge~linux: o Opera).
+  singleJoyConDontHaveEnoughButtons: >-
+    Parece que has conectado un solo mando Joy-Con, el cual no tiene suficientes
+    botones para jugar este juego. Puedes intentar conectando el otro Joy-Con o
+    simplemente usar tu mouse y teclado.
+  touchNotSupportedYet: >-
+    Este juego no tiene soporte para controles con pantalla tactil, por favor
+    conecta un mando o mouse y teclado.
+# lore:
+#   memory:
+#     - title: /home/bill/windows/NT/core/ntgdi/test/teff/poo.txt
+#       body: >-
+#         shit
+# ctlHint:
+#   move: "&control.move mover"
+#   sprint: "&control.sprint $fn.switch(&isSprinting~true:deja de correr~false:correr)"
+#   jump: "&control.jump saltar"
+#   aim: "&control.aim apuntar"
+#   throw: "&control.throw tirar"
+#   look: "&control.look mirar"
+#   switchItem: "&control.inventory.scroll cambiar de item"
+#   item:
+#     trap:
+#       default: "&control.action1 captura una continuacion"
+#       async: "&control.action1 captura una promesa"
+#       blocked:
+#         async: Usa la promesa para invocar remotamente
+#       selectObjects: "&control.action2 select/deselect"
+#       editFlags: "&control.action3 edita los parametros de captura"
+#       boostModeToggle: "&control.action4 vuela hacia arriba"
+#       grab: "&control.target1 agarrarlo"
+#       stopEdit: "&control.pMenu.back terminar"
+#     continuation:
+#       invoke:
+#         default: "&control.action1 invoca una continuacio"
+#         checkpoint: "&control.action1 invoca un checkpoint"
+#       grab: "&control.target1 agarrarlo"
+#     promise:
+#       capture: "&control.action1 captura una continuacion desde ahi"
+#       motion: "&control.move mover trampa"
+#       grab: "&control.target1 agarrarlo"
+#   pause:
+#     open: "&control.pause pausar"
+#     switch: "&control.pMenu.switch cambiar"
+#     select: "&control.pMenu.select seleccionar"
+#     back: "&control.pMenu.back back"
+#     unpause: "&control.pMenu.exit renaudar"
+#     editSubmit: "&c.keyboard.pMenu.editSubmit subir"
+#     editCancel: "&c.keyboard.pMenu.editCancel cancelar"
+#   viewInfo: "&control.info inspeccionar"
+#   dialog:
+#     scroll: "&control.dialog.scroll ver mas"
+#     exit: "&control.dialog.exit cerrar"
+#     msg:
+#       exit: '&important.exitControl cerrar'
+# continuation.edit:
+#   flags: Elegir parametros
+#   pName: Cambiar el nombre de la promesa
+#   cName: Cambiar el nombre de la continuacion
+#   invalidName: Nombre invalido
+# antivirus:
+#   allClear: El sistema esta limpio
+#   detected: ¡Codigo malicioso encontrado!
+# pause:
+#   main:
+#     title: Juego pausado
+#     submenu:
+#       controller: Tipo de control
+#       newgrounds: Conectarse a Newgrounds.com
+#       language: Lenguaje
+#   language:
+#     auto: Autodectar lenguaje
+#   options:
+#     title: Opciones
+#     rumble: Habilitar vibracion del mando
+#     speedrunTimer: Mostrar temporizador
+#     controlHints: Mostrar pistas sobre controles
+#     music: Musica de fondo
+#     soundEffects: Efectos de sonido
+#   restart:
+#     title: Reiniciar juego
+#     confirm: Estas seguro de que quieres reiniciar? ¡Todo el progreso se perdera!
+#   stats:
+#     heading: Estadisticas
+#     none: "Nada significante aun..."
+#     continuations_invoked: continuations invocadas
+#     lightbulbs_illuminated: bombillas prendidas
+#     bugs_stomped: bugs aplastados
+#     levers_switched: palancas jaladas
+#     boxes_cloned: memoria localizada
+#     deaths: muertes
+# press: presionar
+# inventory:
+#   nothing: nada
+# notImplemented: "Lo siento, no esta implementado aun"

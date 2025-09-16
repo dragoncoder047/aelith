@@ -2,3 +2,7 @@
   loader: url
   src: !include spritemap.png
   metadata: !include spritemap.yaml
+- kind: sprite
+  id: gameLogo
+  loader: url
+  src: !include logo.png

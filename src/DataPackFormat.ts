@@ -376,7 +376,5 @@ export interface DataPackData extends JSONObject {
         title: string;
         sprite: string;
     };
-    menuParams: {
-        // TODO
-    }
+    background?: string;
 }

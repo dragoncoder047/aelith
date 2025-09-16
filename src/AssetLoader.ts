@@ -1,5 +1,7 @@
 import { K } from "./context";
+import { NestedStrings } from "./context/plugins/kaplay-dynamic-text";
 import { AssetData } from "./DataPackFormat";
+import * as DownloadManager from "./DownloadManager";
 
 declare global {
     interface Uint8ArrayConstructor {
@@ -26,7 +28,7 @@ function zzParse(str: string) {
     });
 }
 
-export function loadAsset(asset: AssetData) {
+export function loadAsset(asset: AssetData): unknown {
     var kindOK = false;
     switch (asset.kind) {
         case "font": kindOK = true;
@@ -87,6 +89,16 @@ export function loadAsset(asset: AssetData) {
                     return K.loadBitmapFontFromSprite(asset.id, asset.src as string);
             }
             break;
+        case "translation": kindOK = true;
+            switch (asset.loader) {
+                case "url":
+                    return DownloadManager.loadJSON(asset.src as string, lang => {
+                        K.strings[asset.id] = lang;
+                    });
+                case null:
+                case undefined:
+                    return K.strings[asset.id] = asset.src as NestedStrings;
+            }
     }
     throw new Error(kindOK ? `unknown loader ${JSON.stringify(asset.loader)} for kind ${asset.kind}` : `unknown asset kind ${JSON.stringify(asset.kind)}`);
 }

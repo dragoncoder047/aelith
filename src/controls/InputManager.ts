@@ -42,6 +42,7 @@ export function loadAssets() {
     K[m]("keyfont_2", "tn^eb");
     K[m]("keyfont_3", "s");
     K[m]("mousefont", "mlrs"); // cSpell: ignore mlrs
+    K.strings.msg = "&&lang";
     K.strings.button = (s: string) => getDisplayForInput(s, false);
     K.strings.pr_btn = (s: string) => getDisplayForInput(s, true);
 }

@@ -1,0 +1,6 @@
+- kind: translation
+  id: en
+  src: !include en.yaml
+- kind: translation
+  id: es
+  src: !include es.yaml

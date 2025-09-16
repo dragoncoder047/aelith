@@ -12,7 +12,7 @@ import * as TextStyles from "./TextStyles";
 
 enum SceneName {
     MAIN_MENU = "mainMenu",
-    SOME_ROOM = "room",
+    ROOM = "room",
 }
 
 
@@ -24,15 +24,14 @@ export function loadSystemStuff() {
 }
 export function setupScenes() {
     // K.scene(SceneName.MAIN_MENU, frontMenu);
-    // K.scene(SceneName.SOME_ROOM, enterRoom);
+    // K.scene(SceneName.ROOM, enterRoom);
 }
 export function downloadDatapack() {
     DownloadManager.loadJSON("build/aelith.json", (pack: DataPackData) => {
+        if (pack.background) K.setBackground(K.rgb(pack.background));
         for (var asset of pack.assets) {
             AssetLoader.loadAsset(asset);
         }
-        // XXX: TEST
-        K.add([K.text("", { styles: TextStyles.STYLES, size: 16 / SCALE }), K.dynamicText("$pr_btn(scroll_inventory)")]);
     });
 }
 export function main() {
@@ -43,4 +42,10 @@ export function main() {
     setupScenes();
     downloadDatapack();
     // K.onLoad(() => K.go(SceneName.MAIN_MENU));
+    K.onLoad(() => {
+        // XXX: TEST
+        K.add([
+            K.sprite("gameLogo"),
+        ]);
+    })
 }

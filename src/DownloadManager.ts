@@ -90,7 +90,6 @@ export function loadJSON(path: string, complete: (value: any) => void) {
             bytes.set(chunk, pos);
             pos += chunk.length;
         }
-        drawLoadingScreen();
         complete(JSON.parse(new TextDecoder("utf-8").decode(bytes)));
     })());
 }
