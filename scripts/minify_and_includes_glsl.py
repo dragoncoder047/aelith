@@ -1,12 +1,12 @@
 import pathlib
 import re
-import sys
 
 COMMENT_RE = re.compile(r"(?:\/\*[\s\S]*?\*\/)|(?:\/\/.*\n)")
 SYMBOL_RE = re.compile(r"\s*([{}=*,+/><&|[\]()\\!?:;-])\s*")
 GENERIC_RE = re.compile(r"(\w<\w+>)\s*(\w)")
 
-INCLUDE_RE: re.Pattern[str] = re.compile(r"""#include +["']([.\\/\w-]+)["']""", re.MULTILINE)
+INCLUDE_RE: re.Pattern[str] = re.compile(
+    r"""#include +["']([.\\/\w-]+)["']""", re.MULTILINE)
 
 # based on:
 # https://github.com/vanruesc/esbuild-plugin-glsl/blob/main/src/minifyShader.ts
@@ -60,9 +60,3 @@ def process_includes(src: str, me_path: pathlib.Path,
     for include in imports:
         src = src.replace(include, imports[include])
     return src
-
-
-# that's literally it
-src = sys.stdin.read()
-path = sys.argv[2]  # 0 = python3, 1 = this script
-print(minify_shader(process_includes(src, pathlib.Path(path))))

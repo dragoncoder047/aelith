@@ -33,7 +33,7 @@ function transform(val) {
 const config = {
     bundle: true,
     sourcemap: true,
-    minify: process.argv.includes("--release"),
+    minify: process.argv.includes("--minify"),
     keepNames: false, // this uses a lot of memory, wtf?
     metafile: true,
     platform: "browser",
