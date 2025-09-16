@@ -1,2 +1,2 @@
-import { GameManager } from "./GameManager";
+import * as GameManager from "./GameManager";
 GameManager.main();

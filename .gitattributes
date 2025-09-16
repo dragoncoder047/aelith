@@ -3,3 +3,4 @@
 *.yaml linguist-detectable
 pnpm-lock.yaml linguist-generated
 brainstorming/*duck.ai*.txt linguist-vendored
+archive/** linguist-vendored

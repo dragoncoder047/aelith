@@ -29,39 +29,42 @@ class Loader(yaml.FullLoader):
         super().__init__(stream)
 
 
-def construct_flattened(loader: Loader, node: yaml.Node) -> list[typing.Any]:
+def flatten(loader: Loader, node: yaml.Node) -> list[typing.Any]:
     lists = loader.construct_sequence(node)
     return list(itertools.chain.from_iterable(lists))
 
 
-def construct_include(loader: Loader, node: yaml.Node) -> typing.Any:
-    """Include file referenced at node."""
-
+def include(loader: Loader, node: yaml.Node) -> typing.Any:
     file = pathlib.Path(
         loader._root, loader.construct_scalar(node)).resolve()
-    extension = file.suffix
+    ext = file.suffix
 
-    if extension in (".yaml", ".yml"):
+    if ext in (".yaml", ".yml"):
         return yaml.load(file.open(), Loader)
-    elif extension in (".json", ):
+    elif ext in (".json", ):
         return json.load(file.open)
-    elif extension in (".glsl", ".frag", ".vert"):
+    elif ext in (".glsl", ".frag", ".vert"):
         text = process_includes(file.read_text(), file)
         if minify:
             text = minify_shader(text)
         return text
-    elif extension in (".png", ".woff", ".otf"):
-        return f"data:{({
-            ".png": "image/png",
-            ".woff": "font/woff",
-            ".otf": "font/otf"}[extension])};base64,{
+    elif ext in (".png",):
+        return f"data:{({".png": "image/png"}[ext])};base64,{
             base64.b64encode(file.read_bytes()).decode()}"
+    elif ext in (".mp3", ".wav", ".ogg", ".woff", ".otf"):
+        return base64.b64encode(file.read_bytes()).decode()
     else:
         return file.read_text()
 
 
-yaml.add_constructor("!include", construct_include, Loader)
-yaml.add_constructor("!flatten", construct_flattened, Loader)
+def includelines(loader: Loader, node: yaml.Node) -> typing.Any:
+    return pathlib.Path(
+        loader._root, loader.construct_scalar(node)).read_text().splitlines()
+
+
+yaml.add_constructor("!include", include, Loader)
+yaml.add_constructor("!includelines", includelines, Loader)
+yaml.add_constructor("!flatten", flatten, Loader)
 
 # main stuff
 

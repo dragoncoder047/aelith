@@ -36,7 +36,7 @@ interface RenderData extends JSONObject {
     z?: number;
 }
 
-interface AssetData extends JSONObject {
+export interface AssetData extends JSONObject {
     id: string;
     kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
@@ -47,8 +47,11 @@ interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
+type IndexMapping = number | { i: number, f: number };
 /** The static (unchangeable) data for a single room */
 interface RoomData extends JSONObject {
+    /** Text map rows */
+    map: string[];
     /**
      * The noninteractable environment tiles that make up the bulk of the world.
      *
@@ -57,13 +60,15 @@ interface RoomData extends JSONObject {
      *
      * list of numbers -> spawn multiple tiles here
      *
-     * empty list -> nothing of course
+     * undefined or empty list -> nothing of course
      */
-    tiles: (number | number[] | null)[][];
+    indexMapping: Record<string, IndexMapping | IndexMapping[]>;
     /** ID of the tileset to use, such as office */
     tileset: string;
     /** List of the doors going in and out of this room */
     doors: DoorData[];
+    /** Entities directly in here */
+    entities: Record<string, EntityData>
 }
 
 interface StaticTileDefinition extends JSONObject {
@@ -249,8 +254,8 @@ interface EntityData extends JSONObject {
     kind: string;
     /** this entity's state */
     state: JSONObject;
-    /** location: room and tile xy pos, or room and tile slot */
-    loc?: [string, XY | number];
+    /** if in a room, the tile slot */
+    tileSlot?: number;
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
     leashed?: [string, number];
     /** name of the link group to receive messages on */
@@ -328,8 +333,8 @@ interface Savefile extends JSONObject {
     hasWon: boolean;
     /** mapping of room name -> room data */
     rooms: Record<string, RoomData>;
-    /** list of entities */
-    entities: EntityData[];
+    /** list of entities that are not directly in a room */
+    ownedEntities: EntityData[];
     /** id of the entity that is the current player */
     currentPlayer: string;
 }

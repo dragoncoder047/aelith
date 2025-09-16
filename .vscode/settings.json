@@ -58,6 +58,7 @@
     ],
     "yaml.customTags": [
         "!flatten sequence",
-        "!include scalar"
+        "!include scalar",
+        "!includelines scalar"
     ],
 }

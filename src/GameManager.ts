@@ -1,7 +1,9 @@
+import * as AssetLoader from "./AssetLoader";
 import { K } from "./context";
-import { InputManager } from "./controls/InputManager";
+import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
-import { LoadingManager } from "./LoadingManager";
+import * as LoadingManager from "./LoadingManager";
+import * as BlueScreen from "./BlueScreen";
 import inputsPNG from "./static/system_assets/inputs.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
 
@@ -10,26 +12,28 @@ enum SceneName {
     SOME_ROOM = "room",
 }
 
-export const GameManager = {
-    loadStuff() {
-        K.loadSpriteAtlas(inputsPNG, inputsYAML);
-        InputManager.loadFonts();
-    },
-    setupScenes() {
-        // K.scene(SceneName.MAIN_MENU, () => this.frontMenu());
-        // K.scene(SceneName.SOME_ROOM, (roomName: string) => this.enterRoom(roomName));
-    },
-    downloadDatapack() {
-        LoadingManager.loadJSON("build/aelith.json", (pack: DataPackData) => {
-            console.log(pack);
-        });
-    },
-    main() {
-        LoadingManager.installLoadingScreen();
-        this.loadStuff();
-        InputManager.setupControls();
-        this.setupScenes();
-        this.downloadDatapack();
-        K.onLoad(() => K.go(SceneName.MAIN_MENU));
-    }
-};
+
+export function loadSystemStuff() {
+    K.loadSpriteAtlas(inputsPNG, inputsYAML);
+    InputManager.loadFonts();
+}
+export function setupScenes() {
+    // K.scene(SceneName.MAIN_MENU, frontMenu);
+    // K.scene(SceneName.SOME_ROOM, enterRoom);
+}
+export function downloadDatapack() {
+    LoadingManager.loadJSON("build/aelith.json", (pack: DataPackData) => {
+        for (var asset of pack.assets) {
+            AssetLoader.loadAsset(asset);
+        }
+    });
+}
+export function main() {
+    BlueScreen.install();
+    LoadingManager.installLoadingScreen();
+    loadSystemStuff();
+    InputManager.setupControls();
+    setupScenes();
+    downloadDatapack();
+    K.onLoad(() => K.go(SceneName.MAIN_MENU));
+}
