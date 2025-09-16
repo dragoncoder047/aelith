@@ -18,3 +18,13 @@ export class ButtonsDpadInput extends DirectionalInput {
     constructor(public left: string = NOT_A_BUTTON, public right: string = NOT_A_BUTTON, public down: string = NOT_A_BUTTON, public up: string = NOT_A_BUTTON) { super(K.Vec2.ONE); }
     raw() { return K.vec2(+K.isButtonDown(this.right) - +K.isButtonDown(this.left), +K.isButtonDown(this.down) - +K.isButtonDown(this.up)).unit(); }
 }
+
+export class MouseWheelInput extends DirectionalInput {
+    delta: Vec2 = K.Vec2.ZERO;
+    constructor(axes: Vec2) {
+        super(axes);
+        K.onScroll(delta => this.delta = delta);
+        K.onDraw(() => this.delta = K.Vec2.ZERO);
+    }
+    raw() { return this.delta; }
+}

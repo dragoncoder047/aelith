@@ -45,20 +45,6 @@ export function ballistics(pos: Vec2, vel: Vec2, t: number) {
     return pos.add(vel.scale(t)).add(K.getGravityDirection().scale(K.getGravity() * t * t / 2));
 }
 
-export function isFirefox() {
-    // @ts-ignore
-    return typeof window.mozInnerScreenX !== 'undefined';
-}
-
-export function guessOS() {
-    const a = getUserAgentString().toLowerCase();
-    return a.includes("mac") ? "mac" : a.includes("win") ? "windows" : "linux";
-}
-
-function getUserAgentString() {
-    // @ts-ignore
-    return navigator.userAgent || navigator.vendor || window.opera;
-}
 export type JSONSerializable =
     | number
     | boolean

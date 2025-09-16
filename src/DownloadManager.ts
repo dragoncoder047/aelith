@@ -90,6 +90,7 @@ export function loadJSON(path: string, complete: (value: any) => void) {
             bytes.set(chunk, pos);
             pos += chunk.length;
         }
+        drawLoadingScreen();
         complete(JSON.parse(new TextDecoder("utf-8").decode(bytes)));
     })());
 }
@@ -102,11 +103,7 @@ function niceBytes(count: number): string {
 }
 
 function niceTime(t: number): string {
-    var sec = t % 60;
-    var tMin = (t / 60) | 0;
-    if (tMin < 1) return sec.toFixed(3) + "s"
-    var min = tMin % 60;
-    var h = (tMin / 60) | 0;
-    if (h < 1) return `${min}m ${sec.toFixed(3)}s`;
-    return `${h}h ${min}m ${sec.toFixed(3)}s`
+    if (t > 3600) return ((t / 3600) | 0) + "h " + niceTime(t % 3600);
+    if (t > 60) return ((t / 60) | 0) + "m " + niceTime(t % 60);
+    return t.toFixed(3) + "s";
 }

@@ -1,18 +1,19 @@
-import { Key, KGamepadButton, KGamepadStick, MouseButton, Vec2 } from "kaplay";
+import { ButtonBinding, Key, KGamepadButton, KGamepadStick, MouseButton, Vec2 } from "kaplay";
 import { K } from "../context";
 
-type ButtonBinding = {
+export interface ExtendedButtonBinding extends ButtonBinding {
+    mouse?: MouseButton,
     keyboard?: Key[],
-    mouse?: MouseButton[],
-    gamepad?: KGamepadButton[],
     directional?: {
         gamepad?: [KGamepadStick, Vec2];
         buttons?: [[string, string] | undefined, [string, string] | undefined];
+        mouseWheel?: Vec2;
+        mouseMove?: boolean;
     }
 }
 
 type Controls = {
-    [button: string]: ButtonBinding
+    [button: string]: ExtendedButtonBinding;
 }
 
 export const BUTTONS: Controls = {
@@ -21,6 +22,12 @@ export const BUTTONS: Controls = {
         directional: {
             gamepad: ["left", K.Vec2.ONE],
             buttons: [["move_left", "move_right"], ["move_down", "move_up"]],
+        }
+    },
+    look: {
+        directional: {
+            gamepad: ["right", K.Vec2.ONE],
+            mouseMove: true,
         }
     },
     move_left: {
@@ -40,11 +47,11 @@ export const BUTTONS: Controls = {
         gamepad: ["south"],
     },
     throw: {
-        mouse: ["right"],
+        mouse: "right",
         gamepad: ["rtrigger"],
     },
     target1: {
-        mouse: ["left"],
+        mouse: "left",
         gamepad: ["rstick"],
     },
     target2: {
@@ -76,6 +83,11 @@ export const BUTTONS: Controls = {
         gamepad: ["east"],
     },
     // inventory controls
+    scroll_inventory: {
+        directional: {
+            buttons: [["inv_previous", "inv_next"], ,],
+        }
+    },
     inv_previous: {
         keyboard: ["z"],
         gamepad: ["lshoulder"]

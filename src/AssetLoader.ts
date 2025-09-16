@@ -51,9 +51,11 @@ export function loadAsset(asset: AssetData) {
         case "song": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadMusic(asset.id, asset.src as string);
+                    return K.loadSound(asset.id, asset.src as string);
                 case "bin":
                     return K.loadSound(asset.id, binSrc(asset));
+                case "zzfxm":
+                    return K.loadZzFXM(asset.id, zzParse(asset.src as string));
             }
             break;
         case "sound": kindOK = true;

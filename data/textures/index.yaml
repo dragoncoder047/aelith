@@ -1,0 +1,4 @@
+- kind: spritemap
+  loader: url
+  src: !include spritemap.png
+  metadata: !include spritemap.yaml
