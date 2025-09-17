@@ -7,6 +7,7 @@ import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
 import inputsPNG from "./static/system_assets/inputs.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
+import * as ScriptHandler from "./script/ScriptHandler";
 
 enum SceneName {
     MAIN_MENU = "mainMenu",
@@ -45,5 +46,7 @@ export function main() {
         K.add([
             K.sprite("gameLogo"),
         ]);
-    })
+        ScriptHandler.spawnTask(10, ["say", "hello"], null as any, {});
+        ScriptHandler.advanceAsFarAsPossible();
+    });
 }

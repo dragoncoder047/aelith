@@ -215,22 +215,22 @@ interface EntityModelTentacleData extends JSONObject {
  *
  * * setup
  * * action1, action2, action3, action4, target1, target2 - context includes actor and opposing
- * * random_tick
- * * hit-entity - context includes entity and collision direction
- * * hit-tile - both collision events are run in the onBeforePhysicsResolve phase so they can be canceled
+ * * randomTick
+ * * hitEntity - context includes entity and collision direction
+ * * hitTile - both collision events are run in the onBeforePhysicsResolve phase so they can be canceled
  * * taken - context includes entity taking it
  * * message - context includes the message and the sending entity
- * * state-changed - context includes whether it is supposed to be silent
- * * room_load
- * * room_unload
- * * game_load
+ * * stateChanged - context includes whether it is supposed to be silent
+ * * roomLoad
+ * * roomUnload
+ * * gameLoad
  * * jump
  * * move
  * * step - context includes what i'm standing on
  * * climb
  * * leash - context includes leashing entity
  * * question - context includes what was asked and who asked
- * * became-player
+ * * becamePlayer
  */
 interface HookData extends JSONObject {
     /** hint to be displayed for direct control input hooks */
@@ -279,7 +279,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * my <state_slot> - retrieve state slot
  * * state <newstate?> <silent?> - get (no args) or set (with args)
  * * render <name/path> <new_value> - getattr, setattr on rendering props
- * * anim/w <name> <speed> <force-restart?> - entity model play animation
+ * * anim/w <name> <speed> <forceRestart?> - entity model play animation
  * * unanim <name> - remove anim from running list if it is an infinite anim
  * * playsound/w <name> <global?> - if global=false, the current player hears it
  * * say <scene?> <string> - says it in speech bubble, waits for player to continue, if scene is true then it uses the named dialogue scene vs the string verbatim
@@ -298,11 +298,11 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * throw <item>
  * * refuse - if this hook is a result of another entity's action, don't do that
  * * stop - early return from hook
- * * ask <entity> <question-name>
+ * * ask <entity> <questionName>
  * * answer <value> - respond to question from another entity
- * * set-player <entity> - switch controls and camera following to it
+ * * setPlayer <entity> - switch controls and camera following to it
  * * win - causes the bluescreen and hasWon to be set to true
- * * look-at <entity> - rotates to look at it
+ * * lookAt <entity> - rotates to look at it
  * * goto <location> - sets navigation goal
  * * +, -, *, /, ^, &, |, <, >, <=, >=, ==, !=, !, null?, # (len) - math stuff, work with vectors too if it would make sense (+, -, and / have 1-arity overloads: abs, neg, and inverse)
  * * join - concatenate strings or lists
@@ -311,7 +311,9 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * hook <hook_name> <context> - triggers hook on self
  * * particles <amount> <color>
  * * lights <lights array>
- * * set-collision-ignore <tags array>
+ * * setCollisionIgnore <tags array>
+ * * collideWith <tag>
+ * * dontCollideWith <tag>
  * * conf <name> - get global configuration value
  * * rand <min> <max> | rand <list>
  * * me
@@ -322,7 +324,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * TODO - figure out how to create/define inventory and config screens via this functionality.
  *
  * */
-type CrustyJSONCode = [string, ...JSONValue[]];
+export type CrustyJSONCode = [string, ...JSONValue[]];
 
 export interface Savefile extends JSONObject {
     /** true if the player has won the game */
