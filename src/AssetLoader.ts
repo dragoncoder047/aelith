@@ -2,6 +2,7 @@ import { K } from "./context";
 import { NestedStrings } from "./context/plugins/kaplay-dynamic-text";
 import { AssetData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
+import * as MusicManager from "./music/MusicManager";
 
 declare global {
     interface Uint8ArrayConstructor {
@@ -28,6 +29,16 @@ function zzParse(str: string) {
     });
 }
 
+function changeFavicon(url: string) {
+    var link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
+    }
+    link.href = url;
+}
+
 export function loadAsset(asset: AssetData): unknown {
     var kindOK = false;
     switch (asset.kind) {
@@ -51,6 +62,8 @@ export function loadAsset(asset: AssetData): unknown {
             }
             break;
         case "song": kindOK = true;
+            const m = asset.metadata as { title: string, author: string, tags: string[] };
+            MusicManager.addSong({ id: asset.id, title: m.title, author: m.author, tags: m.tags })
             switch (asset.loader) {
                 case "url":
                     return K.loadSound(asset.id, asset.src as string);
@@ -89,6 +102,12 @@ export function loadAsset(asset: AssetData): unknown {
                     return K.loadBitmapFontFromSprite(asset.id, asset.src as string);
             }
             break;
+        case "favicon": kindOK = true;
+            switch (asset.loader) {
+                case "url":
+                    return changeFavicon(asset.src as string);
+            }
+            break;
         case "translation": kindOK = true;
             switch (asset.loader) {
                 case "url":
@@ -100,5 +119,5 @@ export function loadAsset(asset: AssetData): unknown {
                     return K.strings[asset.id] = asset.src as NestedStrings;
             }
     }
-    throw new Error(kindOK ? `unknown loader ${JSON.stringify(asset.loader)} for kind ${asset.kind}` : `unknown asset kind ${JSON.stringify(asset.kind)}`);
+    throw new Error(`asset ${asset.id}: ${kindOK ? `unknown loader ${JSON.stringify(asset.loader)} for kind ${asset.kind}` : `unknown asset kind ${JSON.stringify(asset.kind)}`}`);
 }

@@ -5,10 +5,8 @@ import { K } from "./context";
 import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
-import { SCALE } from "./static/constants";
 import inputsPNG from "./static/system_assets/inputs.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
-import * as TextStyles from "./TextStyles";
 
 enum SceneName {
     MAIN_MENU = "mainMenu",

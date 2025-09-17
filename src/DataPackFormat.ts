@@ -1,13 +1,7 @@
 import { LineCap, LineJoin, TextAlign } from "kaplay";
+import { JSONObject, JSONValue } from "./JSON";
 
-type JSONPrimitive = number | string | boolean | null;
-type JSONArray = (JSONValue | undefined)[];
-interface JSONObject {
-    [key: string]: JSONValue | undefined;
-}
-type JSONValue = JSONPrimitive | JSONArray | JSONObject;
-
-type XY = [x: number, y: number];
+export type XY = [x: number, y: number];
 
 interface RenderData extends JSONObject {
     p: "rect" | "ellipse" | "polygon" | { s: string; f: number };
@@ -38,27 +32,26 @@ interface RenderData extends JSONObject {
 
 export interface AssetData extends JSONObject {
     id: string;
-    kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation";
+    kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation" | "favicon";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
     loader?: "url" | "bin" | "zzfx" | "zzfxm";
     /** url, base64, or inline JSON */
     src: JSONValue;
-    /** for spritemap, this is the slice data etc., for songs it is the author and song tags, for translations it is the language */
+    /** for spritemap, this is the slice data etc., for songs it is the title, author, and song tags */
     metadata?: JSONValue;
 }
 
-type IndexMapping = number | { i: number, f: number };
+type IndexMapping = number | { i: number, f: number } | { d: number };
 /** The static (unchangeable) data for a single room */
-interface RoomData extends JSONObject {
+export interface RoomData extends JSONObject {
     /** Text map rows */
     map: string[];
     /**
      * The noninteractable environment tiles that make up the bulk of the world.
      *
-     * number -> low min number of bits to store index into tileset array, upper bits are frame
      * negative number -> entity slot (first found is what is used if there are multiple of the same)
      *
-     * list of numbers -> spawn multiple tiles here
+     * list of things -> spawn multiple tiles here
      *
      * undefined or empty list -> nothing of course
      */
@@ -92,13 +85,13 @@ interface StaticTileDefinition extends JSONObject {
 interface TilesetData extends JSONObject {
     songTags: string[];
     tiles: StaticTileDefinition[];
+    gridSize: number;
 }
 
 interface DoorData extends JSONObject {
     /** shared name to connect the doors */
     link: string;
     /** in tiles */
-    pos: XY;
     /** in tiles */
     size: XY;
     /** how to render the door */
@@ -107,7 +100,7 @@ interface DoorData extends JSONObject {
     auto: boolean;
 }
 
-interface EntityPrototypeData extends JSONObject {
+export interface EntityPrototypeData extends JSONObject {
     /** name of entity prototype to extend (via recursive Object.assign) */
     extends?: string;
     /** tags for "get" function; names and stuff also are used as tags */
@@ -247,7 +240,7 @@ interface HookData extends JSONObject {
     impl: CrustyJSONCode;
 }
 
-interface EntityData extends JSONObject {
+export interface EntityData extends JSONObject {
     /** name of the entity */
     id: string;
     /** id of the entity prototype */
@@ -256,6 +249,8 @@ interface EntityData extends JSONObject {
     state: JSONObject;
     /** if in a room, the tile slot */
     tileSlot?: number;
+    /** absolute (if no tileSlot) or relative (if yes) position in world */
+    pos: XY;
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
     leashed?: [string, number];
     /** name of the link group to receive messages on */
@@ -278,7 +273,8 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * do ... - block; previous line's results are available in local vars "it" and "them"
  * * when, if, unless, switch ... - branching
  * * each <list> <itemvar> ... - foreach loop
- * * while/until <condition> ...- potentially infinite loop
+ * * while/until <condition> ... - potentially infinite loop
+ * * repeat <times> ... -
  * * ami <state_slot> <value?> - test state slot
  * * my <state_slot> - retrieve state slot
  * * state <newstate?> <silent?> - get (no args) or set (with args)
@@ -328,7 +324,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * */
 type CrustyJSONCode = [string, ...JSONValue[]];
 
-interface Savefile extends JSONObject {
+export interface Savefile extends JSONObject {
     /** true if the player has won the game */
     hasWon: boolean;
     /** mapping of room name -> room data */

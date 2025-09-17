@@ -6,3 +6,6 @@
   id: gameLogo
   loader: url
   src: !include logo.png
+- kind: favicon
+  loader: url
+  src: !include favicon.png
