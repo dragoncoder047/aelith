@@ -5,25 +5,24 @@ import { K } from "./context";
 import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
-import inputsPNG from "./static/system_assets/inputs.png";
-import inputsYAML from "./static/system_assets/inputs.yaml";
+import * as SceneManager from "./scenes/SceneManager";
 import * as ScriptHandler from "./script/ScriptHandler";
-
-enum SceneName {
-    MAIN_MENU = "mainMenu",
-    ROOM = "room",
-}
+import inputsPNG from "./static/system_assets/inputs.png";
+import kaplayPNG from "./static/system_assets/kaplay-logo.png";
+import inputsYAML from "./static/system_assets/inputs.yaml";
 
 
-export function loadSystemStuff() {
+export function setup() {
+    BlueScreen.install();
+    DownloadManager.installLoadingScreen();
     // where do I put this?
     ZZFX.sampleRate = 48000; // 48kHz seems to be more common now than 44.1kHz so let's use that
     K.loadSpriteAtlas(inputsPNG, inputsYAML);
+    K.loadSprite("kaplay", kaplayPNG);
+    K.loadHappy();
     InputManager.loadAssets();
-}
-export function setupScenes() {
-    // K.scene(SceneName.MAIN_MENU, frontMenu);
-    // K.scene(SceneName.ROOM, enterRoom);
+    InputManager.setupControls();
+    SceneManager.setupScenes();
 }
 export function downloadDatapack() {
     DownloadManager.loadJSON("build/aelith.json", (pack: DataPackData) => {
@@ -34,18 +33,11 @@ export function downloadDatapack() {
     });
 }
 export function main() {
-    BlueScreen.install();
-    DownloadManager.installLoadingScreen();
-    loadSystemStuff();
-    InputManager.setupControls();
-    setupScenes();
+    setup();
     downloadDatapack();
-    // K.onLoad(() => K.go(SceneName.MAIN_MENU));
     K.onLoad(() => {
         // XXX: TEST
-        K.add([
-            K.sprite("gameLogo"),
-        ]);
+        K.onKeyPress(() => K.go(SceneManager.Scene.SPLASH));
         ScriptHandler.spawnTask(10, ["say", "hello"], null as any, {});
         ScriptHandler.advanceAsFarAsPossible();
     });
