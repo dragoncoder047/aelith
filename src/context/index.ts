@@ -31,5 +31,7 @@ export const K = kaplay({
 });
 
 K.onLoadError((which, e) => {
-    throw `Error while loading ${which}: ${e.error}${e.error?.stack ? `\n\nBacktrace:\n${e.error.stack}` : ""}`;
+    const newError = new Error(`Error while loading ${which}: ${e.error?.message ?? e.error}`);
+    if (e.error?.stack) newError.stack = e.error.stack;
+    throw newError;
 });

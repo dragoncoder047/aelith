@@ -3,12 +3,12 @@ import { mainMenuScene } from "./mainMenu";
 import { splashScreenScene } from "./splash";
 
 export enum Scene {
-    SPLASH = "splash",
-    MAIN_MENU = "mainMenu",
+    SPLASH_SCREEN = "s",
+    MAIN_MENU = "m",
 }
 
 export function setupScenes() {
     K.loadHappy(); // for the splash screen font
-    K.scene(Scene.SPLASH, splashScreenScene);
+    K.scene(Scene.SPLASH_SCREEN, splashScreenScene);
     K.scene(Scene.MAIN_MENU, mainMenuScene);
 }

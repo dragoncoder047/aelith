@@ -29,6 +29,7 @@ export function downloadDatapack() {
         if (pack.background) K.setBackground(K.rgb(pack.background));
         for (var asset of pack.assets) {
             AssetLoader.loadAsset(asset);
+            if (asset.kind === "translation") this_should_not_be_defined();
         }
     });
 }
@@ -37,7 +38,7 @@ export function main() {
     downloadDatapack();
     K.onLoad(() => {
         // XXX: TEST
-        K.onKeyPress(() => K.go(SceneManager.Scene.SPLASH));
+        K.onKeyPress(() => K.go(SceneManager.Scene.SPLASH_SCREEN));
         ScriptHandler.spawnTask(10, ["say", "hello"], null as any, {});
         ScriptHandler.advanceAsFarAsPossible();
     });
