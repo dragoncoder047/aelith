@@ -1,5 +1,3 @@
-* the 3 "squishN.mp3" sounds are shamelessly yoinked from the [LemmBox](https://github.com/LemmBox/lemmbox.github.io) hotdog easter egg. I don't know where she got them.
-
 * the ZzFX sounds are just a sequence of numbers being fed to ZzFX (itself MIT licensed) so I'm not even sure these can be copyrighted.
 
 * the songs that are written by me (@dragoncoder047) are Creative Commons BY-NC-SA 4.0. do what you like with them.

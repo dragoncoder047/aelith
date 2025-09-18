@@ -134,15 +134,3 @@
   kind: sound
   loader: zzfx
   src: "[2.5,0,80,,,,1,4,-2,6,50,.15]"
-- id: squish1
-  kind: sound
-  loader: bin
-  src: !include squish1.mp3
-- id: squish2
-  kind: sound
-  loader: bin
-  src: !include squish2.mp3
-- id: squish3
-  kind: sound
-  loader: bin
-  src: !include squish3.mp3
