@@ -64,7 +64,15 @@ export function install() {
 const STACKTRACE_LIB_URL = "https://cdn.jsdelivr.net/npm/stacktrace-js@2.0.2/+esm";
 async function helpSourcemaps(error: Error) {
     const StackTrace = (await import(STACKTRACE_LIB_URL)).default as typeof import("stacktrace-js");
-    const newTraceback = error.toString() + "\n" + (await StackTrace.fromError(error)).map(frame => `    at ${new URL(frame.getFileName()).pathname.replace(/^\//, "")}:${frame.lineNumber}:${frame.columnNumber}`).join("\n");
+    const newTraceback = error.toString() + "\n" + (await StackTrace.fromError(error)).map(frame => {
+        var url = new URL(frame.fileName!).pathname.replace(/^\//, "");
+        if (url.includes("node_modules")) {
+            url = url.split("node_modules/").at(-1)!
+        } else {
+            url = "./" + url;
+        }
+        return `    at ${frame.functionName ?? "<unnamed>"} (${url}:${frame.lineNumber}:${frame.columnNumber})`;
+    }).join("\n");
     const newError = new Error(error.toString());
     newError.cause = error;
     (newError as any).sourcemapsResolved = true;
