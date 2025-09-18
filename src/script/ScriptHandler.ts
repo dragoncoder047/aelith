@@ -5,7 +5,7 @@ import { JSONObject, JSONValue } from "../JSON";
 type Env = JSONObject;
 
 type TaskGen = Generator<void, any, void>;
-class Task {
+export class Task {
     paused = false;
     tc = false;
     complete = new K.KEvent;
@@ -80,12 +80,4 @@ export function advanceAsFarAsPossible() {
 }
 
 const FUNCTIONS: Form[] = [
-    new Form("say", false, function* (args: any[], task) {
-        if (args[0].length < 20) {
-            task.tc = true;
-            return ["say", args[0] + args[0]]
-        }
-        console.log("say", args[0]);
-        console.log("happy");
-    }),
 ];

@@ -1,0 +1,10 @@
+sliceX: 4
+sliceY: 2
+anims:
+  walk:
+    from: 0
+    to: 3
+    speed: 8
+    loop: true
+  stand: 4
+  stunned: 5

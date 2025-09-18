@@ -6,12 +6,16 @@ import * as MusicManager from "./music/MusicManager";
 
 declare global {
     interface Uint8ArrayConstructor {
-        fromBase64(b64: string): Uint8Array;
+        fromBase64(b64: string): Uint8Array<ArrayBuffer>;
     }
 }
 
-function binSrc(asset: AssetData): ArrayBuffer {
-    return Uint8Array.fromBase64(asset.src as string).buffer as ArrayBuffer;
+async function binSrc(asset: { src: any }): Promise<ArrayBuffer> {
+    try {
+        return Uint8Array.fromBase64(asset.src as string).buffer;
+    } catch (e) {
+        return (await DownloadManager.loadBytes(asset.src)).buffer;
+    }
 }
 
 function zzParse(str: string) {
@@ -39,7 +43,7 @@ function changeFavicon(url: string) {
     link.href = url;
 }
 
-export function loadAsset(asset: AssetData): unknown {
+export async function loadAsset(asset: AssetData) {
     var kindOK = false;
     switch (asset.kind) {
         case "font": kindOK = true;
@@ -47,7 +51,7 @@ export function loadAsset(asset: AssetData): unknown {
                 case "url":
                     return K.loadFont(asset.id, asset.src as string);
                 case "bin":
-                    return K.loadFont(asset.id, binSrc(asset));
+                    return K.loadFont(asset.id, await binSrc(asset));
             }
             break;
         case "shader": kindOK = true;
@@ -68,7 +72,7 @@ export function loadAsset(asset: AssetData): unknown {
                 case "url":
                     return K.loadSound(asset.id, asset.src as string);
                 case "bin":
-                    return K.loadSound(asset.id, binSrc(asset));
+                    return K.loadSound(asset.id, await binSrc(asset));
                 case "zzfxm":
                     return K.loadZzFXM(asset.id, zzParse(asset.src as string));
             }
@@ -78,7 +82,7 @@ export function loadAsset(asset: AssetData): unknown {
                 case "url":
                     return K.loadSound(asset.id, asset.src as string);
                 case "bin":
-                    return K.loadSound(asset.id, binSrc(asset));
+                    return K.loadSound(asset.id, await binSrc(asset));
                 case "zzfx":
                     return K.loadZzFX(asset.id, zzParse(asset.src as string));
             }
@@ -86,7 +90,7 @@ export function loadAsset(asset: AssetData): unknown {
         case "sprite": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadSprite(asset.id, asset.src as string | string[]);
+                    return K.loadSprite(asset.id, asset.src as string | string[], asset.metadata as any);
             }
             break;
         case "spritemap": kindOK = true;
@@ -111,7 +115,7 @@ export function loadAsset(asset: AssetData): unknown {
         case "translation": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return DownloadManager.loadJSON(asset.src as string, lang => {
+                    return await DownloadManager.loadJSON(asset.src as string).then(lang => {
                         K.strings[asset.id] = lang;
                     });
                 case null:

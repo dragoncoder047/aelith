@@ -9,8 +9,8 @@ import yaml
 from minify_and_includes_glsl import minify_shader, process_includes
 
 here = pathlib.Path(__file__).parent
-output = pathlib.Path(here, "../build/aelith.json")
-input = pathlib.Path(here, "../data/index.yaml")
+output = here / "../build/aelith.json"
+input = here / "../data/index.yaml"
 
 main_parser = argparse.ArgumentParser()
 main_parser.add_argument("--minify", action="store_true")
@@ -35,8 +35,7 @@ def flatten(loader: Loader, node: yaml.Node) -> list[typing.Any]:
 
 
 def include(loader: Loader, node: yaml.Node) -> typing.Any:
-    file = pathlib.Path(
-        loader._root, loader.construct_scalar(node)).resolve()
+    file = (loader._root / loader.construct_scalar(node)).resolve()
     ext = file.suffix
 
     if ext in (".yaml", ".yml"):

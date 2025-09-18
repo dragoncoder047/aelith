@@ -1,7 +1,7 @@
 - kind: spritemap
   loader: url
-  src: !include spritemap.png
-  metadata: !include spritemap.yaml
+  src: !include player.png
+  metadata: !include player.yaml
 - kind: sprite
   id: gameLogo
   loader: url
@@ -9,3 +9,16 @@
 - kind: favicon
   loader: url
   src: !include favicon.png
+- kind: sprite
+  id: vurbilizer
+  loader: url
+  src: !include vurbilizer.png
+- kind: sprite
+  id: vurbleSpore
+  loader: url
+  src: !include vurble_spore.png
+- kind: sprite
+  id: zug
+  loader: url
+  src: !include zug.png
+  metadata: !include zug.yaml

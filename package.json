@@ -7,10 +7,12 @@
     "scripts": {
         "build:data": "python3 scripts/build_datapack.py",
         "build:js": "node scripts/build.mjs",
+        "build:clean": "rm -rf build/ && mkdir build",
+        "build": "pnpm build:clean && pnpm build:data && pnpm build:js",
         "dev:build:js": "node scripts/build.mjs -w",
         "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,txt,glsl -i build --exec \"pnpm build:data\"",
         "dev:serve": "python3 -m http.server",
-        "build:minified": "node scripts/build.mjs --minify && python3 scripts/build_datapack.py --minify",
+        "build:minified": "pnpm build:clean && node scripts/build.mjs --minify && python3 scripts/build_datapack.py --minify",
         "dev": "pnpm run \"/^dev:.*/\"",
         "lint": "tsc && python3 scripts/lint_strings.py",
         "linecount": "for f in `git ls-files -- '[^.]**.*'`; do enca $f -L none | grep -ie \"UTF-8\\|ASCII\" -q && echo $f || true; done | xargs wc -l",

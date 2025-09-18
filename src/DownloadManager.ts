@@ -67,8 +67,8 @@ function drawLoadingScreen() {
         pos: K.center().sub(0, barsize + baroutline + baroutline),
     });
 }
-export function loadJSON(path: string, complete: (value: any) => void) {
-    K.load((async () => {
+export function loadBytes(path: string) {
+    return K.load((async () => {
         const response = await fetch(path);
         const len = +(response.headers.get("Content-Length") ?? 0)
         bytesToDownload += len;
@@ -90,8 +90,11 @@ export function loadJSON(path: string, complete: (value: any) => void) {
             bytes.set(chunk, pos);
             pos += chunk.length;
         }
-        complete(JSON.parse(new TextDecoder("utf-8").decode(bytes)));
+        return bytes;
     })());
+}
+export async function loadJSON(path: string) {
+    return JSON.parse(new TextDecoder("utf-8").decode(await loadBytes(path)));
 }
 
 function niceBytes(count: number): string {
