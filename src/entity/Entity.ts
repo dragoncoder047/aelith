@@ -1,20 +1,22 @@
 import { Comp, GameObj, PosComp } from "kaplay";
+import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { EntityData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
-import { LightComp } from "kaplay-lighting";
+import { EntityAnimation } from "./Animation";
 
 interface EntityComp extends Comp {
     readonly entity: Entity;
 }
 
-type EntityComponents = EntityComp | PosComp | 0;
+type EntityComponents = EntityComp | PosComp;
 
 export class Entity implements Serializable {
     obj: GameObj<EntityComponents>;
     bones: Record<string, GameObj<EntityComponents>> = {};
     lights: GameObj<PosComp | LightComp>[] = [];
+    currentAnimations: EntityAnimation[] = [];
     constructor(
         public id: string,
         public kind: string,
@@ -24,7 +26,8 @@ export class Entity implements Serializable {
         this.obj = K.add([
             {
                 id: "entity",
-                get entity() { return self; }
+                get entity() { return self; },
+                update() { self.update(); }
             } as EntityComp,
             K.pos(),
         ]);
@@ -43,5 +46,8 @@ export class Entity implements Serializable {
             ]),
             pos: this.obj.pos.toArray() as XY,
         }
+    }
+    update() {
+        // TODO: update animations
     }
 }

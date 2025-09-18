@@ -16,3 +16,9 @@ export function startHookOnEntity(entity: Entity, name: string, context: JSONObj
     if (!hook) return null;
     return ScriptHandler.spawnTask(hook.priority, hook.impl, entity, context);
 }
+
+const allEntities: Entity[] = [];
+
+export function getEntityByName(entityName: string): Entity | undefined {
+    return allEntities.find(e => e.id === entityName);
+}

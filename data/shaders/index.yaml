@@ -1,0 +1,3 @@
+- kind: shader
+  id: fuzzy
+  src: !include fuzzy.glsl

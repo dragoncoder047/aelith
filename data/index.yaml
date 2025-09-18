@@ -4,3 +4,5 @@ assets: !flatten
   - !include fonts/index.yaml
   - !include textures/index.yaml
   - !include translations/index.yaml
+  - !include shaders/index.yaml
+  

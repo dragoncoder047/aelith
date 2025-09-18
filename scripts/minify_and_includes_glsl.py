@@ -30,10 +30,10 @@ def minify_shader(src: str) -> str:
             bits.append(line)
             bits.append("\n")
         else:
-            line = SYMBOL_RE.sub("$1", line)
+            line = SYMBOL_RE.sub(r"\1", line)
             if not sepBySymbol and line[0].isspace():
                 line = " " + line
-            line = GENERIC_RE.sub("$1 $2", line)
+            line = GENERIC_RE.sub(r"\1 \2", line)
             sepBySymbol = not line[-1].isspace()
             wrap = True
             bits.append(line)
@@ -45,11 +45,11 @@ def minify_shader(src: str) -> str:
 
 def process_includes(src: str, me_path: pathlib.Path,
                      cache: dict[str, str] = {}) -> str:
-    imports = dict[str, str] = {}
+    imports: dict[str, str] = {}
     for m in INCLUDE_RE.finditer(src):
         everything = m.group(0)
         filename = m.group(1)
-        abs_filename = pathlib.Path(me_path, filename)
+        abs_filename = pathlib.Path(me_path.parent, filename)
         real_path = abs_filename.resolve().as_uri()
         cached = cache.get(real_path)
         if cached is None:

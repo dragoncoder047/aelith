@@ -40,7 +40,7 @@ export function main() {
     K.onLoad(() => {
         K.go(SceneManager.Scene.SPLASH_SCREEN);
         // XXX: TEST
-        ScriptHandler.spawnTask(10, ["say", "hello"], null as any, {});
+        ScriptHandler.spawnTask(10, ["say", "hi"], null as any, {});
         ScriptHandler.advanceAsFarAsPossible();
     });
 }

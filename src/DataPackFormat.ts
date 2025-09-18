@@ -175,7 +175,7 @@ interface EntityModelBoneData extends JSONObject {
     /** child bones */
     children?: EntityModelBoneData[];
     /** name of the bone for targeting it in animations */
-    name: string;
+    name?: string;
     render: RenderData;
     /** The rotation center */
     pos: XY;
@@ -261,7 +261,7 @@ export interface EntityData extends JSONObject {
     lights: LightData[];
 }
 
-type LightData = [pos: XY, radius: number, intensity: number, color: string | number, only_lights?: (string | null)[]];
+type LightData = [pos: XY, radius: number, intensity: number, color: string | number, onlyLights?: (string | null)[]];
 
 /**
  * like LISP.
@@ -274,10 +274,9 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * when, if, unless, switch ... - branching
  * * each <list> <itemvar> ... - foreach loop
  * * while/until <condition> ... - potentially infinite loop
- * * repeat <times> ... -
+ * * repeat <var> <range> ... -
  * * ami <state_slot> <value?> - test state slot
  * * my <state_slot> - retrieve state slot
- * * state <newstate?> <silent?> - get (no args) or set (with args)
  * * render <name/path> <new_value> - getattr, setattr on rendering props
  * * anim/w <name> <speed> <forceRestart?> - entity model play animation
  * * unanim <name> - remove anim from running list if it is an infinite anim
