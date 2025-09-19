@@ -90,6 +90,9 @@ export function loadBytes(path: string) {
             bytes.set(chunk, pos);
             pos += chunk.length;
         }
+        // why are 2 necessary??
+        await new Promise(requestAnimationFrame);
+        await new Promise(requestAnimationFrame);
         return bytes;
     })());
 }

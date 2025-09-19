@@ -1,4 +1,4 @@
-import { EntityPrototypeData } from "../DataPackFormat";
+import { EntityData, EntityPrototypeData } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import * as ScriptHandler from "../script/ScriptHandler";
 import { Entity } from "./Entity";
@@ -21,4 +21,8 @@ const allEntities: Entity[] = [];
 
 export function getEntityByName(entityName: string): Entity | undefined {
     return allEntities.find(e => e.id === entityName);
+}
+
+export function spawnEntity(data: EntityData): Entity {
+    throw "TODO: spawn entity"
 }

@@ -5,12 +5,12 @@ import { K } from "./context";
 import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
-import * as SceneManager from "./scenes/SceneManager";
-import * as ScriptHandler from "./script/ScriptHandler";
 import * as EntityManager from "./entity/EntityManager";
+import * as SceneManager from "./scenes/SceneManager";
 import inputsPNG from "./static/system_assets/inputs.png";
-import kaplayPNG from "./static/system_assets/kaplay-logo.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
+import kaplayPNG from "./static/system_assets/kaplay-logo.png";
+import * as TilemapManager from "./tilemap/TilemapManager";
 
 
 export function setup() {
@@ -30,6 +30,8 @@ export async function datapack() {
     console.log(pack);
     if (pack.background) K.setBackground(K.rgb(pack.background));
     EntityManager.setEntityLibrary(pack.entityTypes);
+    TilemapManager.registerTilesets(pack.tilesets);
+    if (pack.renderLayers) K.setLayers(pack.renderLayers[0], pack.renderLayers[1]);
     for (var asset of pack.assets) {
         await AssetLoader.loadAsset(asset);
     }
@@ -39,8 +41,5 @@ export function main() {
     K.load(datapack());
     K.onLoad(() => {
         K.go(SceneManager.Scene.SPLASH_SCREEN);
-        // XXX: TEST
-        ScriptHandler.spawnTask(10, ["say", "hi"], null as any, {});
-        ScriptHandler.advanceAsFarAsPossible();
     });
 }

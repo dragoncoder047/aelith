@@ -31,6 +31,7 @@ export class Entity implements Serializable {
             } as EntityComp,
             K.pos(),
         ]);
+        buildSkeleton(this);
     }
     toJSON(): EntityData {
         return {

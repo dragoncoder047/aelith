@@ -28,12 +28,12 @@ type FormFunc = (args: any[], task: Task, actor: Entity, env: Env, context: Env,
 export class Form {
     constructor(public name: string, public special: boolean, private f: FormFunc) { }
     eval(args: any[], task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray) {
-        return this.f(args, task, actor, env, context, traceback.concat([this.name]));
+        return this.f(args, task, actor, env, context, traceback);
     }
 }
 
-function throwTracebackError(error: string, traceback: TracebackArray): never {
-    throw new Error(`${error}\ntraceback: ${traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ")}`);
+function tracebackError(error: string, traceback: TracebackArray) {
+    return new Error(`${error}\ntraceback: ${traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ")}`);
 }
 
 function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
@@ -41,9 +41,9 @@ function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, con
         task.tc = false;
         if (!Array.isArray(form)) return form;
         const name = form[0];
-        if (typeof name !== "string") throwTracebackError("illegal function name " + name, traceback);
+        if (typeof name !== "string") throw tracebackError("illegal function name " + name, traceback);
         const impl = FUNCTIONS.find(f => f.name === name);
-        if (!impl) throwTracebackError(`no such function ${JSON.stringify(name)}`, traceback);
+        if (!impl) throw tracebackError(`no such function ${JSON.stringify(name)}`, traceback);
         const args = form.slice(1);
         if (!impl.special) {
             for (var i = 1; i < form.length; i++) {
@@ -52,7 +52,16 @@ function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, con
             }
         }
         task.tc = false;
-        form = yield* impl.eval(args, task, actor, env, context, traceback);
+        try {
+            traceback.push(name);
+            form = yield* impl.eval(args, task, actor, env, context, traceback);
+        } catch (e: any) {
+            const newError = tracebackError(e?.message ?? String(e), traceback);
+            newError.cause = e;
+            throw newError;
+        } finally {
+            traceback.pop();
+        }
         if (task.tc) bumpTailCall(name, traceback);
     } while (task.tc);
     task.tc = false;
@@ -112,7 +121,7 @@ const FUNCTIONS: Form[] = [
     }),
     new Form("as", true, function* ([who, ...what], task, _, env, context, traceback) {
         const realActor = EntityManager.getEntityByName(who);
-        if (!realActor) throwTracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
+        if (!realActor) throw tracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
         return yield* evaluateForm(what, task, realActor, env, context, traceback);
     }),
     new Form("do", true, function* (forms, task, actor, env, context, traceback) {
@@ -177,6 +186,6 @@ const FUNCTIONS: Form[] = [
         return actor.state[slot];
     }),
     new Form("render", false, function* ([slot, newValue], task, actor, env, context, traceback) {
-        throwTracebackError("todo", traceback);
+        throw tracebackError("todo", traceback);
     }),
 ];

@@ -22,3 +22,8 @@
   loader: url
   src: !include zug.png
   metadata: !include zug.yaml
+- kind: sprite
+  id: walltile
+  loader: url
+  src: !include walltiles.png
+  metadata: !include walltiles.yaml

@@ -1,3 +1,12 @@
+enum HIDAssignedNumber {
+    VID_SONY = 0x054c,
+    VID_MICROSOFT = 0x045e,
+    VID_NINTENDO = 0x057e,
+    PID_DUALSHOCK_4 = 0x09cc,
+    PID_DUALSENSE = 0x0ce6,
+    PID_DUALSENSE_EDGE = 0x0df2,
+}
+
 
 export function detectGamepadTypeFromID(id: string) {
     id = id.toLowerCase();
@@ -6,20 +15,23 @@ export function detectGamepadTypeFromID(id: string) {
 
     if (id.includes("ps4")
         || id.includes("dualshock")
-        || (vendor === 0x054c && product === 0x09cc)) // Sony, DS4
+        || (vendor === HIDAssignedNumber.VID_SONY
+            && product === HIDAssignedNumber.PID_DUALSHOCK_4))
         return "ps4";
 
     if (id.includes("ps5")
         || id.includes("dualsense")
-        || (vendor === 0x054c && (product === 0x0ce6 || product === 0x0df2))) // Sony, DS5 / DS5 Edge
+        || (vendor === HIDAssignedNumber.VID_SONY
+            && (product === HIDAssignedNumber.PID_DUALSENSE
+                || product === HIDAssignedNumber.PID_DUALSENSE_EDGE)))
         return "ps5";
 
-    if (id.includes("xbox") || vendor === 0x045e) // Microsoft
+    if (id.includes("xbox") || vendor === HIDAssignedNumber.VID_MICROSOFT)
         return "xbox";
 
     if (id.includes("switch")
         || id.includes("joy-con")
-        || vendor === 0x057e) // Nintendo
+        || vendor === HIDAssignedNumber.VID_NINTENDO)
         return "switch";
 
     return undefined;
@@ -37,8 +49,8 @@ function extractVendorProductId(id: string): { vendor: number | null, product: n
     const vendorMatch = /vendor[^\da-f]*([\da-f]{4})/i.exec(id);
     const productMatch = /product[^\da-f]*([\da-f]{4})/i.exec(id);
 
-    const vendor = vendorMatch && parseInt("" + vendorMatch[1], 16);
-    const product = productMatch && parseInt("" + productMatch[1], 16);
+    const vendor = vendorMatch && parseInt(vendorMatch[1]!, 16);
+    const product = productMatch && parseInt(productMatch[1]!, 16);
 
     return { vendor, product };
 }

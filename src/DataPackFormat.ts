@@ -1,34 +1,10 @@
-import { LineCap, LineJoin, TextAlign } from "kaplay";
+import { TextAlign } from "kaplay";
 import { JSONObject, JSONValue } from "./JSON";
+import { Primitive } from "./draw/primitive";
 
 export type XY = [x: number, y: number];
 
-interface RenderData extends JSONObject {
-    p: "rect" | "ellipse" | "polygon" | { s: string; f: number };
-    d: [width: number, height: number] | [rx: number, ry: number, center: XY] | XY[];
-    pos?: XY;
-    scale?: XY;
-    angle?: number;
-    skew?: XY;
-    color?: string;
-    opacity?: number;
-    shader?: string;
-    /** & = intersect, - = subtract */
-    mask?: "&" | "-";
-    uniform?: Record<string, JSONValue>;
-    blend?: "normal" | "+" | "*" | "screen" | "over";
-    outline?: {
-        width?: number;
-        color?: string;
-        opacity?: number;
-        join?: LineJoin;
-        miterLimit?: number;
-        cap?: LineCap;
-        layer?: string;
-    };
-    layer?: string;
-    z?: number;
-}
+type RenderData = Primitive & { layer?: string };
 
 export interface AssetData extends JSONObject {
     id: string;
@@ -41,7 +17,7 @@ export interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
-type IndexMapping = number | { i: number, f: number } | { d: number };
+type IndexMapping = number | string;
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
     /** Text map rows */
@@ -49,7 +25,7 @@ export interface RoomData extends JSONObject {
     /**
      * The noninteractable environment tiles that make up the bulk of the world.
      *
-     * negative number -> entity slot (first found is what is used if there are multiple of the same)
+     * string -> entity slot or 
      *
      * list of things -> spawn multiple tiles here
      *
@@ -59,30 +35,41 @@ export interface RoomData extends JSONObject {
     /** ID of the tileset to use, such as office */
     tileset: string;
     /** List of the doors going in and out of this room */
-    doors: DoorData[];
+    doors: Record<string, DoorData>;
     /** Entities directly in here */
     entities: Record<string, EntityData>
 }
 
 interface StaticTileDefinition extends JSONObject {
     r: RenderData;
-    /** if present, overrides frame set by tilemap bits */
-    frame?: number;
-    /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
-    hitbox?: [...pos: XY, width: number, height: number];
-    /** whether the obj can be merged to make more efficient colliders */
-    merge?: [boolean, boolean];
+    tags: string[];
+    /** Only use this if it's a sprite. */
+    autotile?: {
+        with?: string[];
+        bits: 4 | 8,
+        /** mapping of frame index -> tile connections bits.
+         * if a bitset appears multiple times, an index will be chosen randomly.
+         * fallback: if not present, the frame in the render data will be used.
+         */
+        pats: number[]
+    };
     physics: {
+        /** if true then entities can jump up and climb down through this as a platform effector */
+        platform?: boolean;
+        /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
+        hitbox?: [...pos: XY, width: number, height: number];
+        /** whether the obj can be merged to make more efficient colliders. It will only merge with the same kind of tile. */
+        merge?: [horizontally: boolean, vertically: boolean];
         /** function or tags list to determine what to not collide with */
         ignore?: CrustyJSONCode | { tags: string[] };
         /** if not null, this is a ladder, these are the rung y-offsets */
         rungs?: number[];
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
-    depth?: number;
+    depth?: [numSlices: number, depth?: number];
 }
 
-interface TilesetData extends JSONObject {
+export interface TilesetData extends JSONObject {
     songTags: string[];
     tiles: StaticTileDefinition[];
     gridSize: number;
@@ -91,7 +78,6 @@ interface TilesetData extends JSONObject {
 interface DoorData extends JSONObject {
     /** shared name to connect the doors */
     link: string;
-    /** in tiles */
     /** in tiles */
     size: XY;
     /** how to render the door */
@@ -148,13 +134,13 @@ interface EntityMotionAnimDef extends JSONObject {
         angle?: number;
     };
     /** if the bone should be flipped to follow the motion */
-    flip?: [boolean, boolean];
+    flip?: [whenMovingLeft: boolean, whenMovingRight: boolean];
 }
 
 interface EntityAnimData extends JSONObject {
     /** animations listed here will NOT blend with this one; if 2 try to override each other the last one wins */
     override: string[];
-    mode: "once" | "loop" | "pingpong";
+    mode: "once" | "loop" | "pingpong" | "sticky";
     channels: EntityAnimChannelData[];
 };
 
@@ -188,8 +174,12 @@ interface EntityModelBoneData extends JSONObject {
         /** should only be set on the end */
         depth?: number;
     },
-    constraint: {
-        angle: [which: string, scale?: number, offset?: number];
+    constraint?: {
+        distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
+        offset?: [which: string, offset: XY];
+        angle?: [which: string, scale?: number, offset?: number];
+        scale?: [which: string],
+
     }
 }
 

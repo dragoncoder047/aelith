@@ -1,136 +1,136 @@
-- id: thud
-  kind: sound
+- kind: sound
+  id: thud
   loader: zzfx
   src: "[,.1,100,,,.05,,,,,-40,.01,.02,2,,,,,,,-2e3]"
-- id: thud_metal
-  kind: sound
+- kind: sound
+  id: thud_metal
   loader: zzfx
   src: "[.5,.1,100,,,.05,1,.5,,,-40,.01,.02,,,.2,,,,,1e3]"
-- id: jump
-  kind: sound
+- kind: sound
+  id: jump
   loader: zzfx
   src: "[.3,,300,.01,,.3,,0,2.1]"
-- id: grab
-  kind: sound
+- kind: sound
+  id: grab
   loader: zzfx
   src: "[,,100,,,,,2,,-1e5,-200,.005,.01]"
-- id: throw
-  kind: sound
+- kind: sound
+  id: throw
   loader: zzfx
   src: "[.4,,440,.05,,,,,,,,,,3]"
-- id: footsteps
-  kind: sound
+- kind: sound
+  id: footsteps
   loader: zzfx
   src: "[,.5,120,,,.01]"
-- id: footsteps_metal
-  kind: sound
+- kind: sound
+  id: footsteps_metal
   loader: zzfx
   src: "[,.5,120,,,.01,1,,,,,,,,,.2]"
-- id: climbing
-  kind: sound
+- kind: sound
+  id: climbing
   loader: zzfx
   src: "[,,1200,,,.01,,,,,,,,,,,,,,,-1e3]"
-- id: teleport
-  kind: sound
+- kind: sound
+  id: teleport
   loader: zzfx
   src: "[,0,440,,,.6,1,,,2e3,,,.05,,,,.005]"
-- id: checkpoint
-  kind: sound
+- kind: sound
+  id: checkpoint
   loader: zzfx
   src: "[,0,1e3,,,.4,1,,,,290,.07,.07,,,,,,.1,1]"
-- id: capture
-  kind: sound
+- kind: sound
+  id: capture
   loader: zzfx
   src: "[,,2e3,.05,.25,.25,2,,,,-100,.025,.025,,,,.1,,,.5]"
-- id: switch_on
-  kind: sound
+- kind: sound
+  id: switch_on
   loader: zzfx
   src: "[,,630,,,.01,2,,,,,,,,,.1]"
-- id: switch_off
-  kind: sound
+- kind: sound
+  id: switch_off
   loader: zzfx
   src: "[,,500,,,.01,2,,,,,,,,,.1]"
-- id: fan_running
-  kind: sound
+- kind: sound
+  id: fan_running
   loader: zzfx
   src: "[.2,0,,,1,0,,,,,,,,4,,,,,,,-1e3]"
-- id: fan_start
-  kind: sound
+- kind: sound
+  id: fan_start
   loader: zzfx
   src: "[.2,0,0,1,,0,,,.44,,,,,4,,,,,,,-1e3]"
-- id: fan_stop
-  kind: sound
+- kind: sound
+  id: fan_stop
   loader: zzfx
   src: "[.2,0,,,,1,,,-0.22,,,,,4,,,,,,,-1e3]"
-- id: conveyor_running
-  kind: sound
+- kind: sound
+  id: conveyor_running
   loader: zzfx
   src: "[,0,60,.01,1,.01,,,,,,,.1,.2,30]"
-- id: door_opening
-  kind: sound
+- kind: sound
+  id: door_opening
   loader: zzfx
   src: "[.5,,50,.5,,.5,3,,,,,,.1,50,,,,,,,-100]"
-- id: door_closing
-  kind: sound
+- kind: sound
+  id: door_closing
   loader: zzfx
   src: "[.5,,0,.25,,.25,,,,,40,.25,.05,50,-0.6,,,,,,-500]"
-- id: typing
-  kind: sound
+- kind: sound
+  id: typing
   loader: zzfx
   src: "[,,1e3,,,.01,2,,,,,,,1,,,,,,,1e3]"
-- id: command_success
-  kind: sound
+- kind: sound
+  id: command_success
   loader: zzfx
   src: "[,0,500,.04,.16,.04,,,,,250,.12,.16,,,,,,,.5]"
-- id: command_fail
-  kind: sound
+- kind: sound
+  id: command_fail
   loader: zzfx
   src: "[,0,300,,.2,.04,1,,,,-80,.12,.16,,,,,,,.5]"
-- id: hurt
-  kind: sound
+- kind: sound
+  id: hurt
   loader: zzfx
   src: "[,,1e3,,,.05,3,,-50,,,,,1,,.1]"
-- id: die
-  kind: sound
+- kind: sound
+  id: die
   loader: zzfx
   src: "[.4,,539,.01,.18,2,,.4,,,-20,,.12,,,,,.97,.28]"
-- id: bug_footsteps
-  kind: sound
+- kind: sound
+  id: bug_footsteps
   loader: zzfx
   src: "[,0.5,120,,,.01,,,,,,,,,,.05]"
-- id: bug_squeak
-  kind: sound
+- kind: sound
+  id: bug_squeak
   loader: zzfx
   src: "[1.3,,379,.02,,.3,3,3.1,35,-200]"
-- id: bug_splat
-  kind: sound
+- kind: sound
+  id: bug_splat
   loader: zzfx
   src: "[1.4,,150,.01,,,2,.5,-2,,,,,5]"
-- id: bug_screech
-  kind: sound
+- kind: sound
+  id: bug_screech
   loader: zzfx
   src: "[1.4,,500,.01,,,3,0,,,20,,.02]"
-- id: vacuum_activate
-  kind: sound
+- kind: sound
+  id: vacuum_activate
   loader: zzfx
   src: "[,,,.05,1,1,,2,,10,,,,,50,,.2,,,.21]"
-- id: portal_teleport
-  kind: sound
+- kind: sound
+  id: portal_teleport
   loader: zzfx
   src: "[,,,.02,.2,.25,1,,8,,,,,,,,.08]"
-- id: alert
-  kind: sound
+- kind: sound
+  id: alert
   loader: zzfx
   src: "[,0,300,.02,.01,.04,1,4,,,100,.04,,,,,,.73,.03]"
-- id: worb
-  kind: sound
+- kind: sound
+  id: worb
   loader: zzfx
   src: "[,,200,.1,,,,0,,,,,,,15,,,,,,-200]"
-- id: tink
-  kind: sound
+- kind: sound
+  id: tink
   loader: zzfx
   src: "[.5,,1e3,,,.05,3,2,,,,,,,,.05]"
-- id: knock
-  kind: sound
+- kind: sound
+  id: knock
   loader: zzfx
   src: "[2.5,0,80,,,,1,4,-2,6,50,.15]"

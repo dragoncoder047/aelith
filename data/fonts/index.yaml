@@ -1,12 +1,12 @@
-- id: Galactico
-  kind: font
+- kind: font
+  id: Galactico
   loader: bin
   src: !include Galactico-Basic.otf
-- id: Unscii
-  kind: font
+- kind: font
+  id: Unscii
   loader: bin
   src: !include unscii-16.woff
-- id: Unscii MCR
-  kind: font
+- kind: font
+  id: Unscii MCR
   loader: bin
   src: !include unscii-8-mcr.woff
