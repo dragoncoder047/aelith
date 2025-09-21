@@ -4,3 +4,6 @@
 - kind: shader
   id: colorReplace
   src: !include colorReplace.glsl
+- kind: shader
+  id: wiresPulse
+  src: !include  wiresPulse.glsl

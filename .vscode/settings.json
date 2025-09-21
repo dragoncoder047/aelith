@@ -15,6 +15,7 @@
         "Drawon",
         "easings",
         "enca",
+        "fract",
         "Galactico",
         "glsl",
         "grabbable",
@@ -59,7 +60,6 @@
     ],
     "yaml.customTags": [
         "!flatten sequence",
-        "!include scalar",
-        "!includelines scalar"
+        "!include scalar"
     ],
 }

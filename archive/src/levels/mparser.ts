@@ -1,4 +1,4 @@
-import { AreaComp, CompList, DrawonComp, GameObj, LevelComp, NamedComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
+import { AreaComp, CompList, GameObj, LevelComp, NamedComp, PosComp, RotateComp, SpriteComp, Tag, Vec2 } from "kaplay";
 import { InvisibleTriggerComp } from "../components/invisibleTrigger";
 import { LinkComp } from "../components/linked";
 import { MergeableComp } from "../components/mergeable";

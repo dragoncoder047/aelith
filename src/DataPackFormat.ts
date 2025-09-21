@@ -4,7 +4,7 @@ import { Primitive } from "./draw/primitive";
 
 export type XY = [x: number, y: number];
 
-type RenderData = Primitive & { layer?: string };
+export type RenderData = Primitive & { layer?: string };
 
 export interface AssetData extends JSONObject {
     id: string;
@@ -25,7 +25,7 @@ export interface RoomData extends JSONObject {
     /**
      * The noninteractable environment tiles that make up the bulk of the world.
      *
-     * string -> entity slot or 
+     * string -> entity slot or door slot (last found is used)
      *
      * list of things -> spawn multiple tiles here
      *
@@ -40,11 +40,12 @@ export interface RoomData extends JSONObject {
     entities: Record<string, EntityData>
 }
 
-interface StaticTileDefinition extends JSONObject {
+export interface StaticTileDefinition extends JSONObject {
     r: RenderData;
     tags: string[];
     /** Only use this if it's a sprite. */
     autotile?: {
+        /** names of the tile in this tileset to count as neighbors. if present, should include this to connect to each other, if not, assumed to only be these tags */
         with?: string[];
         bits: 4 | 8,
         /** mapping of frame index -> tile connections bits.
@@ -57,22 +58,23 @@ interface StaticTileDefinition extends JSONObject {
         /** if true then entities can jump up and climb down through this as a platform effector */
         platform?: boolean;
         /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
-        hitbox?: [...pos: XY, width: number, height: number];
+        hitbox: [...pos: XY, width: number, height: number];
         /** whether the obj can be merged to make more efficient colliders. It will only merge with the same kind of tile. */
         merge?: [horizontally: boolean, vertically: boolean];
         /** function or tags list to determine what to not collide with */
-        ignore?: CrustyJSONCode | { tags: string[] };
+        ignore?: string[];
         /** if not null, this is a ladder, these are the rung y-offsets */
         rungs?: number[];
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
-    depth?: [numSlices: number, depth?: number];
+    depth?: number;
 }
 
 export interface TilesetData extends JSONObject {
     songTags: string[];
     tiles: StaticTileDefinition[];
     gridSize: number;
+    background: string;
 }
 
 interface DoorData extends JSONObject {
@@ -363,5 +365,4 @@ export interface DataPackData extends JSONObject {
         title: string;
         sprite: string;
     };
-    background?: string;
 }

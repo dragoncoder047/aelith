@@ -5,4 +5,7 @@ assets: !flatten
   - !include textures/index.yaml
   - !include translations/index.yaml
   - !include shaders/index.yaml
-  
+tilesets: !include tilesets/index.yaml
+initial:
+  rooms: !include rooms/index.yaml
+  hasWon: no

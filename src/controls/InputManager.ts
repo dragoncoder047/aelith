@@ -75,7 +75,7 @@ function directionalButton(directional: NonNullable<ExtendedButtonBinding["direc
     if (K.getLastInputDeviceType() === "gamepad") {
         if (directional.gamepad) {
             const [s, d] = directional.gamepad;
-            str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > 1 ? "Xx" : "Yy")[+(s === "right")]!);
+            str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
         }
     } else if (directional.mouseMove) {
         if (checkPressed) delta = K.mouseDeltaPos();

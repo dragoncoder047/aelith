@@ -17,7 +17,7 @@ def get_json(path: str):
 LANG_ENTRIES = {}
 
 for lang in LANGS:
-    LANG_ENTRIES[lang] = get_json(f"./src/assets/translations/{lang}.yaml")
+    LANG_ENTRIES[lang] = get_json(f"./data/translations/{lang}.yaml")
 
 PATHS_ALL: set[str] = set()
 PATHS_BY_LANG = {}
@@ -52,15 +52,21 @@ for lang in LANGS:
             print(f"  Missing translation {path}")
             good = False
     if good:
-        print("  All good")
+        print("  (no missing translations)")
 
 found_status = {p: subprocess.Popen(
     ["grep", "-Rq",
      "--include", "*.txt",
      "--include", "*.yaml",
-     "--include", "*.ts", f"&msg.{p}"]).wait()
+     "--include", "*.ts",
+     "--exclude-dir", "archive", f"&msg.{p}"]).wait()
     for p in sorted(PATHS_ALL, reverse=True)}
 
+hdr = False
 for p, status in found_status.items():
     if status != 0:
-        print(f"&msg.{p} is not used anywhere")
+        if not hdr:
+            print("Unused translations (or at least ones that "
+                  "appear to be unused):")
+            hdr = True
+        print("  &msg." + p)

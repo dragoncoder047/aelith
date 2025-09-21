@@ -49,6 +49,10 @@ export class Entity implements Serializable {
         }
     }
     update() {
-        // TODO: update animations
+        // TODO: tick animations
     }
+}
+
+function buildSkeleton(e: Entity) {
+
 }

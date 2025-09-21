@@ -6,13 +6,13 @@ import * as MusicManager from "./music/MusicManager";
 
 declare global {
     interface Uint8ArrayConstructor {
-        fromBase64(b64: string): Uint8Array<ArrayBuffer>;
+        fromBase64(b64: string): Uint8Array;
     }
 }
 
 async function binSrc(asset: { src: any }): Promise<ArrayBuffer> {
     try {
-        return Uint8Array.fromBase64(asset.src as string).buffer;
+        return Uint8Array.fromBase64(asset.src as string).buffer as ArrayBuffer;
     } catch (e) {
         return (await DownloadManager.loadBytes(asset.src)).buffer;
     }

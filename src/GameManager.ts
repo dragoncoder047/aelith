@@ -11,6 +11,7 @@ import inputsPNG from "./static/system_assets/inputs.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
 import kaplayPNG from "./static/system_assets/kaplay-logo.png";
 import * as TilemapManager from "./tilemap/TilemapManager";
+import * as StateManager from "./state/StateManager";
 
 
 export function setup() {
@@ -28,13 +29,13 @@ export function setup() {
 export async function datapack() {
     const pack: DataPackData = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);
-    if (pack.background) K.setBackground(K.rgb(pack.background));
     EntityManager.setEntityLibrary(pack.entityTypes);
     TilemapManager.registerTilesets(pack.tilesets);
     if (pack.renderLayers) K.setLayers(pack.renderLayers[0], pack.renderLayers[1]);
     for (var asset of pack.assets) {
         await AssetLoader.loadAsset(asset);
     }
+    StateManager.setupInitialState(pack.initial);
 }
 export function main() {
     setup();

@@ -1,0 +1,21 @@
+songTags: # TODO
+gridSize: 32
+background: black
+tiles:
+  # 0: base wall
+  - &baseWall
+    tags: [wall]
+    r:
+      kind: sprite
+      sprite: walltile
+      layer: background
+    autotile:
+      bits: 8
+      pats: !include seamless8x8.yaml
+    physics:
+      hitbox: [0, 0, 32, 32]
+      merge: [true, true]
+    depth: 16
+  # 1: wall, but no hitbox
+  - <<: *baseWall
+    physics: null

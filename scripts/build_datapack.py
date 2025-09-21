@@ -1,6 +1,5 @@
 import argparse
 import base64
-import itertools
 import json
 import pathlib
 import typing
@@ -30,8 +29,8 @@ class Loader(yaml.FullLoader):
 
 
 def flatten(loader: Loader, node: yaml.Node) -> list[typing.Any]:
-    lists = loader.construct_sequence(node)
-    return list(itertools.chain.from_iterable(lists))
+    lists = loader.construct_sequence(node, True)
+    return [item for sublist in lists for item in sublist]
 
 
 def include(loader: Loader, node: yaml.Node) -> typing.Any:
@@ -56,17 +55,13 @@ def include(loader: Loader, node: yaml.Node) -> typing.Any:
         return file.read_text()
 
 
-def includelines(loader: Loader, node: yaml.Node) -> typing.Any:
-    return pathlib.Path(
-        loader._root, loader.construct_scalar(node)).read_text().splitlines()
-
-
 yaml.add_constructor("!include", include, Loader)
-yaml.add_constructor("!includelines", includelines, Loader)
 yaml.add_constructor("!flatten", flatten, Loader)
 
 # main stuff
 
+if output.exists():
+    output.unlink()
 datapack = yaml.load(input.open(), Loader)
 if minify:
     json.dump(datapack, output.open("w"), separators=(",", ":"))

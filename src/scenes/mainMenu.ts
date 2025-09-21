@@ -1,5 +1,6 @@
 import * as BlueScreen from "../BlueScreen";
 import { K } from "../context";
+import { Scene } from "./SceneManager";
 
 export function mainMenuScene() {
     BlueScreen.install();
@@ -11,4 +12,5 @@ export function mainMenuScene() {
         K.anchor("center"),
         K.text("stuff here lol", { size: 16 }),
     ]);
+    K.wait(1, () => K.go(Scene.ROOM, "test"));
 }
