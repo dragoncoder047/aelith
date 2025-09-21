@@ -43,7 +43,7 @@ function changeFavicon(url: string) {
     link.href = url;
 }
 
-export async function loadAsset(asset: AssetData) {
+export async function loadAsset(asset: AssetData): Promise<unknown> {
     var kindOK = false;
     switch (asset.kind) {
         case "font": kindOK = true;
@@ -67,14 +67,21 @@ export async function loadAsset(asset: AssetData) {
             break;
         case "song": kindOK = true;
             const m = asset.metadata as { title: string, author: string, tags: string[] };
-            MusicManager.addSong({ id: asset.id, title: m.title, author: m.author, tags: m.tags })
+            const theSong = { id: asset.id, title: m.title, author: m.author, tags: m.tags };
             switch (asset.loader) {
                 case "url":
+                    MusicManager.addSong(theSong)
                     return K.loadSound(asset.id, asset.src as string);
                 case "bin":
+                    MusicManager.addSong(theSong)
                     return K.loadSound(asset.id, await binSrc(asset));
                 case "zzfxm":
-                    return K.loadZzFXM(asset.id, zzParse(asset.src as string));
+                    K.onLoad(async () => {
+                        await K.loadZzFXM(asset.id, zzParse(asset.src as string));
+                        MusicManager.addSong(theSong);
+                        console.log("lazy loaded the song", theSong.id);
+                    });
+                    return;
             }
             break;
         case "sound": kindOK = true;
