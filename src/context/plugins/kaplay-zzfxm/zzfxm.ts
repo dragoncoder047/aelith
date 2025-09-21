@@ -52,6 +52,7 @@ export async function zzfxM(instruments: Instrument[], patterns: Track[][], sequ
 }
 
 function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: number[], BPM = 125, _metadata: any): [Float32Array, Float32Array] {
+    let u = (len: number) => new Float32Array(len);
     let instrumentParameters: Instrument;
     let noteIndex: number;
     let beatSampleCounter: number;
@@ -68,8 +69,8 @@ function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: nu
     let sampleOffset = 0;
     let nextSampleOffset: number;
     let sampleBuffer: number[] = [];
-    let leftChannelBuffer: Float32Array = new Float32Array;
-    let rightChannelBuffer: Float32Array = new Float32Array;
+    let leftChannelBuffer: Float32Array = u(0);
+    let rightChannelBuffer: Float32Array = u(0);
     let copyLeftBuffer: Float32Array;
     let copyRightBuffer: Float32Array;
     let resizeLen: number;
@@ -113,8 +114,8 @@ function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: nu
                 // using 8 * beatLength means ~1 second of audio at 48kHz and 120 BPM
                 resizeLen = masterSampleCopyIndex + beatLength << 3;
                 if (leftChannelBuffer.length < resizeLen) {
-                    copyLeftBuffer = new Float32Array(resizeLen);
-                    copyRightBuffer = new Float32Array(resizeLen);
+                    copyLeftBuffer = u(resizeLen);
+                    copyRightBuffer = u(resizeLen);
                     copyLeftBuffer.set(leftChannelBuffer);
                     copyRightBuffer.set(rightChannelBuffer);
                     leftChannelBuffer = copyLeftBuffer;
