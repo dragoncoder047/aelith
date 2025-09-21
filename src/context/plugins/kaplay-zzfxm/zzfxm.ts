@@ -53,9 +53,9 @@ export async function zzfxM(instruments: Instrument[], patterns: Track[][], sequ
 
 function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: number[], BPM = 125, _metadata: any): [Float32Array, Float32Array] {
     let instrumentParameters: Instrument;
-    let i: number;
-    let j: number;
-    let k: number;
+    let noteIndex: number;
+    let beatSampleCounter: number;
+    let masterSampleCopyIndex: number = 0;
     let note: number | undefined;
     let sample: number;
     let patternChannel: Track;
@@ -72,7 +72,7 @@ function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: nu
     let rightChannelBuffer: Float32Array = new Float32Array;
     let copyLeftBuffer: Float32Array;
     let copyRightBuffer: Float32Array;
-    let len: number;
+    let resizeLen: number;
     let channelIndex = 0;
     let panning = 0;
     let hasMore: number = 1;
@@ -99,38 +99,39 @@ function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: nu
             nextSampleOffset = outSampleOffset + (patterns[patternIndex]![0]!.length - 2 - <any>!notFirstBeat) * beatLength;
             // for each beat in pattern, plus one extra if end of sequence
             isSequenceEnd = <any>(sequenceIndex == sequence.length - 1);
-            for (i = 2, k = outSampleOffset; i < patternChannel.length + <any>isSequenceEnd; notFirstBeat = <any>++i) {
+            for (noteIndex = 2, masterSampleCopyIndex = outSampleOffset; noteIndex < patternChannel.length + <any>isSequenceEnd; notFirstBeat = <any>++noteIndex) {
 
                 // <channel-note>
-                note = patternChannel[i];
+                note = patternChannel[noteIndex];
 
                 // stop if end, different instrument or new note
-                stop = i == patternChannel.length + isSequenceEnd - 1 && isSequenceEnd ||
+                stop = noteIndex == patternChannel.length + isSequenceEnd - 1 && isSequenceEnd ||
                     // @ts-ignore
                     instrument != (patternChannel[0] || 0) | note | 0;
 
-                // resize buffers if needed
-                len = k + beatLength * (1 + isSequenceEnd);
-                if (leftChannelBuffer.length < len) {
-                    copyLeftBuffer = new Float32Array(len);
-                    copyRightBuffer = new Float32Array(len);
+                // resize buffers if needed; use large reallocate size to avoid tons of reallocation
+                // using 8 * beatLength means ~1 second of audio at 48kHz and 120 BPM
+                resizeLen = masterSampleCopyIndex + beatLength << 3;
+                if (leftChannelBuffer.length < resizeLen) {
+                    copyLeftBuffer = new Float32Array(resizeLen);
+                    copyRightBuffer = new Float32Array(resizeLen);
                     copyLeftBuffer.set(leftChannelBuffer);
                     copyRightBuffer.set(rightChannelBuffer);
                     leftChannelBuffer = copyLeftBuffer;
                     rightChannelBuffer = copyRightBuffer;
                 }
                 // fill buffer with samples for previous beat, most cpu intensive part
-                for (j = 0; j < beatLength && notFirstBeat;
+                for (beatSampleCounter = 0; beatSampleCounter < beatLength && notFirstBeat;
 
                     // fade off attenuation at end of beat if stopping note, prevents clicking
                     // @ts-ignore
-                    j++ > beatLength - 99 && stop ? attenuation += (attenuation < 1) / 99 : 0
+                    beatSampleCounter++ > beatLength - 99 && stop ? attenuation += (attenuation < 1) / 99 : 0
                 ) {
                     // copy sample to stereo buffers with panning
                     // @ts-ignore
                     sample = (1 - attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    leftChannelBuffer[k] = leftChannelBuffer[k]! - sample * panning + sample;
-                    rightChannelBuffer[k] = rightChannelBuffer[k++]! + sample * panning + sample;
+                    leftChannelBuffer[masterSampleCopyIndex] = leftChannelBuffer[masterSampleCopyIndex]! - sample * panning + sample;
+                    rightChannelBuffer[masterSampleCopyIndex] = rightChannelBuffer[masterSampleCopyIndex++]! + sample * panning + sample;
                 }
 
                 // set up for next note
@@ -163,6 +164,9 @@ function zzfxMInner(instruments: Instrument[], patterns: Track[][], sequence: nu
             outSampleOffset = nextSampleOffset;
         };
     }
+    // if real number of samples is less than the number of samples in buffer, truncate zeros
+    leftChannelBuffer = new Float32Array(leftChannelBuffer.buffer, 0, masterSampleCopyIndex);
+    rightChannelBuffer = new Float32Array(rightChannelBuffer.buffer, 0, masterSampleCopyIndex);
 
     return [leftChannelBuffer, rightChannelBuffer];
 }
