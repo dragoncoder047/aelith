@@ -4,6 +4,7 @@ import { Serializable } from "../Serializable";
 import { K } from "../context";
 import { hashPoint, javaHash } from "../utils";
 import * as TilemapManager from "./TilemapManager";
+import * as GameManager from "../GameManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
 import { addRenderComps } from "../draw/primitive";
@@ -24,8 +25,7 @@ export type ColliderEntry = {
 }
 
 const DEPTH = 0.1;
-const COLOR_FACTOR = 2;
-const OPACITY_FACTOR = 7;
+const COLOR_FACTOR = 4;
 
 export class Room implements Serializable {
     b: string | undefined;
@@ -75,7 +75,7 @@ export class Room implements Serializable {
         }
         if (this.f.t.some(t => t.ds)) {
             K.add([
-                K.layer("background"),
+                K.layer(GameManager.getDefaultValue("depthLayer")),
                 {
                     draw() {
                         self.d();
@@ -93,7 +93,7 @@ export class Room implements Serializable {
             if (tile.r.layer) t.use(K.layer(tile.r.layer));
             if (tile.ds) this.st.push([t, tile.ds as number]);
         }
-        K.setBackground(this.b ? K.rgb(this.b) : K.BLACK);
+        K.setBackground(K.rgb(this.b ?? GameManager.getDefaultValue("background") ?? "black"));
     }
     /** unload - called when the room is unloaded (it should forget its gameObj's) */
     u() {
@@ -121,7 +121,6 @@ export class Room implements Serializable {
         const sVec = K.vec2();
         while (t > 0) {
             var minStep = Number.MAX_VALUE;
-            const opacityFac = t * OPACITY_FACTOR;
             const colorFac = 1 - t * COLOR_FACTOR;
             const scale = 1 - t;
             for (i = 0; i < this.st.length; i++) {
@@ -145,7 +144,6 @@ export class Room implements Serializable {
                     obj.color.r *= colorFac;
                     obj.color.g *= colorFac;
                     obj.color.b *= colorFac;
-                    obj.opacity -= opacityFac;
 
                     // .draw() resets the transform so don't call it
                     obj._drawEvents.trigger();
@@ -153,7 +151,6 @@ export class Room implements Serializable {
                     obj.color.r /= colorFac;
                     obj.color.g /= colorFac;
                     obj.color.b /= colorFac;
-                    obj.opacity += opacityFac;
 
                     sVec.set(1 / scale, 1 / scale);
                     K.pushScale(sVec);

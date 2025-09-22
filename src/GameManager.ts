@@ -26,8 +26,9 @@ export function setup() {
     InputManager.setupControls();
     SceneManager.setupScenes();
 }
+var pack: DataPackData;
 export async function datapack() {
-    const pack: DataPackData = await DownloadManager.loadJSON("build/aelith.json") as any;
+    pack = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);
     EntityManager.setEntityLibrary(pack.entityTypes);
     TilemapManager.registerTilesets(pack.tilesets);
@@ -44,4 +45,8 @@ export function main() {
         K.go(SceneManager.Scene.ROOM, "test");
         // K.go(SceneManager.Scene.SPLASH_SCREEN);
     });
+}
+
+export function getDefaultValue<T extends keyof DataPackData["defaults"]>(valueName: T): DataPackData["defaults"][T] {
+    return pack!.defaults[valueName];
 }

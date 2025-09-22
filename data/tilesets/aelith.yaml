@@ -8,7 +8,7 @@ tiles:
     render:
       as: sprite
       sprite: walltile
-      layer: background
+      layer: tiles
     autotile:
       bits: 8
       pats: !include ../textures/seamless8x8.yaml

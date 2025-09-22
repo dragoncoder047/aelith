@@ -74,7 +74,7 @@ export interface TilesetData extends JSONObject {
     songTags: string[];
     tiles: StaticTileDefinition[];
     gridSize: number;
-    background: string;
+    background?: string;
 }
 
 interface DoorData extends JSONObject {
@@ -374,4 +374,8 @@ export interface DataPackData extends JSONObject {
         title: string;
         sprite: string;
     };
+    defaults: {
+        background?: string;
+        depthLayer: string;
+    }
 }

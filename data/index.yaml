@@ -14,14 +14,10 @@ renderLayers:
   - [
       "behindEverything",
       "background",
-      "world",
-      "text",
-      "continuations",
-      "playerTail",
-      "player",
-      "pipes",
-      "particles",
-      "manpage",
+      "entities",
+      "tiles",
       "ui",
     ]
-  - "world"
+  - "tiles"
+defaults:
+  depthLayer: background
