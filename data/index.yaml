@@ -6,6 +6,7 @@ assets: !flatten
   - !include translations/index.yaml
   - !include shaders/index.yaml
 tilesets: !include tilesets/index.yaml
+entityTypes: !include entities/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no

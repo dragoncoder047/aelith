@@ -10,7 +10,12 @@
         "noFallthroughCasesInSwitch": true,
         "strictNullChecks": true,
         "moduleResolution": "Bundler",
-        "module": "ESNext"
+        "module": "ESNext",
+        "lib": [
+            "esnext",
+            "webworker",
+            "dom"
+        ]
     },
     "include": [
         "./**/*.ts"

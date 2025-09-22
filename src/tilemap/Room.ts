@@ -14,13 +14,13 @@ export type TileEntry = {
     r: RenderData,
     depth: number | undefined;
     auto: StaticTileDefinition["autotile"];
-    tags: Tag[];
+    tag: Tag;
 };
 export type ColliderEntry = {
     i: number;
     pos: Vec2,
     def: StaticTileDefinition["physics"],
-    tags: Tag[];
+    tag: Tag;
 }
 
 export class Room implements Serializable {
@@ -55,7 +55,7 @@ export class Room implements Serializable {
                 }),
                 K.body({ isStatic: true }),
                 "tile",
-                ...coll.tags
+                coll.tag
             ]);
             if (coll.def.rungs) {
                 c.unuse("body");
@@ -65,6 +65,7 @@ export class Room implements Serializable {
             }
         }
         for (var tile of this.frozen.tiles) {
+            if (!tile.r) continue;
             const t = K.add([
                 K.pos(tile.pos),
                 multiprimitive(this.id + hashPoint(tile.pos), [tile.r]),
@@ -107,11 +108,11 @@ function buildFrozen(data: RoomData): Room["frozen"] {
                 if (typeof index === "string") entityOrDoorSlots[index] = pos;
                 else {
                     const desc = tileDefs[index];
-                    if (desc?.r !== undefined) {
-                        tEntry.push({ pos, r: desc.r, depth: desc.depth, auto: desc.autotile, tags: desc.tags });
+                    if (desc?.render !== undefined) {
+                        tEntry.push({ pos, r: desc.render, depth: desc.depth, auto: desc.autotile, tag: desc.tag });
                     }
                     if (desc?.physics !== undefined) {
-                        cEntry.push({ i: index, pos, def: desc.physics, tags: desc.tags });
+                        cEntry.push({ i: index, pos, def: desc.physics, tag: desc.tag });
                     }
                 }
             }

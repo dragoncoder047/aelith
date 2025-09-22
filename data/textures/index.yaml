@@ -1,7 +1,11 @@
 - kind: spritemap
   loader: url
-  src: !include player.png
-  metadata: !include player.yaml
+  src: !include explorer.png
+  metadata: !include explorer.yaml
+- kind: sprite
+  id: agent
+  loader: url
+  src: !include agent.png
 - kind: sprite
   id: gameLogo
   loader: url

@@ -31,7 +31,7 @@ type RectangularOpt = {
 }
 
 type SpritePrimitive = BaseRenderProps & RectangularOpt & {
-    kind: "sprite",
+    as: "sprite",
     sprite: string,
     frame?: number,
     tiled?: boolean,
@@ -43,23 +43,23 @@ type ShapeOpt = {
 }
 
 type RectPrimitive = BaseRenderProps & RectangularOpt & ShapeOpt & {
-    kind: "rect",
+    as: "rect",
 };
 
 type CirclePrimitive = BaseRenderProps & ShapeOpt & {
-    kind: "circle",
+    as: "circle",
     r: number,
     pie?: [start: number, end: number],
 };
 
 type EllipsePrimitive = BaseRenderProps & ShapeOpt & {
-    kind: "ellipse",
+    as: "ellipse",
     r: XY,
     pie?: [start: number, end: number],
 };
 
 type PolygonPrimitive = BaseRenderProps & ShapeOpt & {
-    kind: "polygon",
+    as: "polygon",
     pts: XY[],
 };
 
@@ -77,7 +77,7 @@ type TextTransform = {
 }
 
 type TextPrimitive = BaseRenderProps & {
-    kind: "text",
+    as: "text",
     text: string,
     size?: number,
     width?: number,
@@ -96,7 +96,7 @@ export type Primitive =
     | TextPrimitive;
 
 export function drawPrimitive(uid: number, primitive: Primitive) {
-    switch (primitive.kind) {
+    switch (primitive.as) {
         case "sprite":
             return K.drawSprite(addBaseProps(uid, primitive, {
                 sprite: primitive.sprite,

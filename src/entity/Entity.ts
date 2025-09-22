@@ -1,4 +1,4 @@
-import { Comp, GameObj, PosComp } from "kaplay";
+import { Comp, Constraint, GameObj, PosComp, RotateComp } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { EntityData, XY } from "../DataPackFormat";
@@ -11,10 +11,11 @@ interface EntityComp extends Comp {
 }
 
 type EntityComponents = EntityComp | PosComp;
+type BoneComponents = EntityComponents | RotateComp | Constraint;
 
 export class Entity implements Serializable {
     obj: GameObj<EntityComponents>;
-    bones: Record<string, GameObj<EntityComponents>> = {};
+    bones: Record<string, GameObj<BoneComponents>> = {};
     lights: GameObj<PosComp | LightComp>[] = [];
     currentAnimations: EntityAnimation[] = [];
     constructor(

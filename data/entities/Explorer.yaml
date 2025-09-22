@@ -1,0 +1,58 @@
+tags: [explorer]
+hitbox:
+  - [15.5, 0]
+  - [31, 16]
+  - [31, 48]
+  - [15.55, 63]
+  - [15.45, 63]
+  - [0, 48]
+  - [0, 16]
+navHeight: [2, 0]
+behavior:
+  canFly: no
+  moveSpeed: 128
+  jumpForce: 300
+  inventorySlots: 8
+  inventorySize: null
+model:
+  skeleton:
+    - name: gazeTarget
+    - name: body
+      render:
+        as: sprite
+        sprite: explorerBody
+        anchor: center
+      pos: [16, 32]
+      children:
+        - name: head
+          render:
+            as: sprite
+            sprite: explorerHead
+            anchor: center
+            angle: 90 # rotate so pointing "up"
+          pos: [-25, 0]
+          ik:
+            naturalDirection: [0, -1] # "up"
+            angleRange: [-135, 135]
+          children:
+            - name: gazeSource
+              pos: [0, -1]
+              ik:
+                target: [gaze, 1]
+  tentacles:
+    - name: horn
+      bone: head
+      pos: [13, -1]
+      n: 3
+      lps: 6
+      color: white
+      sizes: [2.7, 1, easeOutQuad]
+      masses: [.1, .1]
+    - name: tail
+      bone: body
+      pos: [0, 8]
+      n: 8
+      lps: 9
+      color: white
+      sizes: [4, 1, easeOutQuad]
+      masses: [.1, .1]

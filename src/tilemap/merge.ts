@@ -9,8 +9,11 @@ export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number)
             const tilesHere = row[x]!;
             for (var n = 0; n < tilesHere.length; n++) {
                 const thisTile = tilesHere[n]!;
-                if (thisTile.def.merge === undefined || thisTile.def.hitbox === undefined) {
-                    outColliders.push(thisTile);
+                if (!thisTile.def || !thisTile.def.merge || !thisTile.def.hitbox) {
+                    // DON'T push one with no colliders
+                    if (thisTile.def && thisTile.def.hitbox) {
+                        outColliders.push(thisTile);
+                    }
                     continue;
                 }
                 const check = (xx: number, yy: number) => (colliders[yy]?.[xx] ?? []).some(t => t.i === thisTile.i);

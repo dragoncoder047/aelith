@@ -64,6 +64,7 @@ if output.exists():
     output.unlink()
 datapack = yaml.load(input.open(), Loader)
 if minify:
-    json.dump(datapack, output.open("w"), separators=(",", ":"))
+    json.dump(datapack, output.open("w"),
+              separators=(",", ":"), allow_nan=False)
 else:
-    json.dump(datapack, output.open("w"), indent=4)
+    json.dump(datapack, output.open("w"), indent=4, allow_nan=False)

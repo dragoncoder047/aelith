@@ -41,12 +41,12 @@ export interface RoomData extends JSONObject {
 }
 
 export interface StaticTileDefinition extends JSONObject {
-    r: RenderData;
-    tags: string[];
+    render: RenderData;
+    tag: string;
     /** Only use this if it's a sprite. */
     autotile?: {
-        /** names of the tile in this tileset to count as neighbors. if present, should include this to connect to each other, if not, assumed to only be these tags */
-        with?: string[];
+        /** autotile with other tile tags; the number is the bits that it can connect with */
+        with?: Record<string, number>;
         bits: 4 | 8,
         /** mapping of frame index -> tile connections bits.
          * if a bitset appears multiple times, an index will be chosen randomly.
@@ -96,25 +96,30 @@ export interface EntityPrototypeData extends JSONObject {
     /** name of the sprite model to use for this */
     model: EntityModelData;
     /** polygonal hitbox */
-    hitbox: XY[];
+    hitbox?: XY[];
+    // TODO: automatic area effector and conveyor effector stuff
     /** restricted bounds on navigation height (in tiles) for pathfinding */
     navHeight: [low: number, high: number];
-    /** if true, won't fall and can fly upwards and downwards */
-    canFly: boolean;
-    /** maximum move speed; sprint is always 1.5X higher */
-    moveSpeed: number;
-    /** the number of internal inventory slots this entity has */
-    inventorySlots?: number;
-    /** the number of slots that this entity takes up when held in an inventory */
-    inventorySize?: number;
+    behavior: {
+        /** if true, won't fall and can fly upwards and downwards */
+        canFly: boolean;
+        /** maximum move speed; sprint is always 1.5X higher */
+        moveSpeed: number;
+        /** jump force */
+        jumpForce?: number;
+        /** the number of internal inventory slots this entity has, if null or 0 it cannot pick up anything */
+        inventorySlots?: number;
+        /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
+        inventorySize?: number;
+    }
     hooks: Record<string, HookData>;
 }
 
 interface EntityModelData extends JSONObject {
     /** the body parts of the sprite */
-    skeleton: EntityModelBoneData;
+    skeleton: EntityModelBoneData[];
     /** the decorational or functional tentacles (spring sim thingies) */
-    tentacles?: Record<string, EntityModelTentacleData>;
+    tentacles?: EntityModelTentacleData[];
     /** definition of animations or emotes */
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
@@ -165,23 +170,22 @@ interface EntityModelBoneData extends JSONObject {
     /** name of the bone for targeting it in animations */
     name?: string;
     render: RenderData;
-    /** The rotation center */
+    /** The offset from the parent */
     pos: XY;
     /** inverse kinematics definition */
     ik: {
         /** maximum bending angles */
         angleRange: [number, number];
-        /** angle ranges at which scale(-1, 1) or scale(1, -1) should be applied */
-        flipRanges: [[number, number] | null, [number, number] | undefined];
+        /** the "looking direction" meaning of 0 degrees; this will be flipped to stay right size up */
+        naturalDirection: XY;
         /** should only be set on the end */
-        depth?: number;
+        target?: [bone: string, depth: number];
     },
     constraint?: {
         distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
         offset?: [which: string, offset: XY];
         angle?: [which: string, scale?: number, offset?: number];
         scale?: [which: string],
-
     }
 }
 
@@ -192,12 +196,17 @@ interface EntityModelTentacleData extends JSONObject {
     n: number;
     /** the length of each segment */
     lps: number;
+    /** color to draw lines in.
+     * TODO: gradients and patterns (but do I really need this) */
+    color: string;
     /** parent bone it is attached to */
     bone: string;
     /** local position on the attached bone */
     offset: XY;
     /** size range, optional interpolation function */
     sizes: [start: number, end: number, easingFunc?: string];
+    /** mass range, optional interpolation function */
+    masses: [start: number, end: number, easingFunc?: string];
 }
 
 /**

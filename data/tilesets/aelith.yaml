@@ -4,18 +4,38 @@ background: black
 tiles:
   # 0: base wall
   - &baseWall
-    tags: [wall]
-    r:
-      kind: sprite
+    tag: wall
+    render:
+      as: sprite
       sprite: walltile
       layer: background
     autotile:
       bits: 8
       pats: !include seamless8x8.yaml
+      with:
+        noHitWall: 254
+        noHitWall2: 255
     physics:
       hitbox: [0, 0, 32, 32]
       merge: [true, true]
     depth: 16
   # 1: wall, but no hitbox
   - <<: *baseWall
+    tag: noHitWall
     physics: null
+    autotile:
+      bits: 8
+      pats: !include seamless8x8.yaml
+      with:
+        wall: 255
+        noHitWall2: 255
+  # 2: wall with no hitbox, but tiles with everything
+  - <<: *baseWall
+    tag: noHitWall2
+    physics: null
+    autotile:
+      bits: 8
+      pats: !include seamless8x8.yaml
+      with:
+        wall: 255
+        noHitWall: 255
