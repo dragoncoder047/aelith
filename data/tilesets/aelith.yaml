@@ -1,6 +1,6 @@
 songTags: # TODO
 gridSize: 32
-background: black
+background: "#000011"
 tiles:
   # 0: base wall
   - &baseWall
@@ -11,31 +11,33 @@ tiles:
       layer: background
     autotile:
       bits: 8
-      pats: !include seamless8x8.yaml
+      pats: !include ../textures/seamless8x8.yaml
       with:
         noHitWall: 254
         noHitWall2: 255
     physics:
-      hitbox: [0, 0, 32, 32]
+      hitbox: [4, 4, 24, 24]
       merge: [true, true]
-    depth: 16
+    depth: !include ../textures/walldepth.yaml
   # 1: wall, but no hitbox
   - <<: *baseWall
     tag: noHitWall
     physics: null
     autotile:
       bits: 8
-      pats: !include seamless8x8.yaml
+      pats: !include ../textures/seamless8x8.yaml
       with:
         wall: 255
         noHitWall2: 255
   # 2: wall with no hitbox, but tiles with everything
+  # depth set to 2 for 3 columns
   - <<: *baseWall
     tag: noHitWall2
     physics: null
     autotile:
       bits: 8
-      pats: !include seamless8x8.yaml
+      pats: !include ../textures/seamless8x8.yaml
       with:
         wall: 255
         noHitWall: 255
+    depth: 2

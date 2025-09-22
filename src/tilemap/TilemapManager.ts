@@ -19,5 +19,5 @@ export function registerRoom(name: string, data: RoomData) {
 }
 
 export function roomLoaded(roomName: string) {
-    allRooms[roomName]!.load();
+    allRooms[roomName]!.l();
 }

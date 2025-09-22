@@ -1,12 +1,12 @@
 tags: [explorer]
 hitbox:
-  - [15.5, 0]
-  - [31, 16]
-  - [31, 48]
-  - [15.55, 63]
-  - [15.45, 63]
-  - [0, 48]
-  - [0, 16]
+  - [0, -31.5]
+  - [16, -16]
+  - [16, 16]
+  - [.1, 31.5]
+  - [-0.1, 31.5]
+  - [-16, 16]
+  - [-16, -16]
 navHeight: [2, 0]
 behavior:
   canFly: no
@@ -22,7 +22,7 @@ model:
         as: sprite
         sprite: explorerBody
         anchor: center
-      pos: [16, 32]
+      pos: [0, 0]
       children:
         - name: head
           render:

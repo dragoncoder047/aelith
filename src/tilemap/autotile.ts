@@ -39,7 +39,11 @@ export function autotile(tiles: TileEntry[][][]): TileEntry[] {
                     continue;
                 }
                 const chosenFrame = candidateFrames[(candidateFrames.length * hashPoint(tile.pos)) | 0] ?? (tile.r as any).frame;
-                outTiles.push({ ...tile, r: { ...tile.r, frame: chosenFrame } as any });
+                var chosenDepth = tile.ds;
+                if (Array.isArray(chosenDepth)) {
+                    chosenDepth = chosenDepth[chosenFrame] ?? 0;
+                }
+                outTiles.push({ ...tile, ds: chosenDepth, r: { ...tile.r, frame: chosenFrame } as any });
             }
         }
     }

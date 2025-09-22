@@ -67,7 +67,7 @@ export interface StaticTileDefinition extends JSONObject {
         rungs?: number[];
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
-    depth?: number;
+    depth?: number | number[];
 }
 
 export interface TilesetData extends JSONObject {

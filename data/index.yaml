@@ -10,3 +10,18 @@ entityTypes: !include entities/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no
+renderLayers:
+  - [
+      "behindEverything",
+      "background",
+      "world",
+      "text",
+      "continuations",
+      "playerTail",
+      "player",
+      "pipes",
+      "particles",
+      "manpage",
+      "ui",
+    ]
+  - "world"
