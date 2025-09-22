@@ -1,13 +1,13 @@
-import { GameObj, Tag, Vec2 } from "kaplay";
+import { Color, ColorComp, GameObj, PosComp, Tag, Vec2 } from "kaplay";
 import { RenderData, RoomData, StaticTileDefinition } from "../DataPackFormat";
+import * as GameManager from "../GameManager";
 import { Serializable } from "../Serializable";
 import { K } from "../context";
+import { addRenderComps } from "../draw/primitive";
 import { hashPoint, javaHash } from "../utils";
 import * as TilemapManager from "./TilemapManager";
-import * as GameManager from "../GameManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
-import { addRenderComps } from "../draw/primitive";
 
 
 export type TileEntry = {
@@ -33,7 +33,7 @@ export class Room implements Serializable {
         c: ColliderEntry[],
         t: TileEntry[]
     } = { c: [], t: [] };
-    st: [GameObj, number][] = [];
+    st: [GameObj<ColorComp | PosComp>, number][] = [];
     dc: WeakMap<GameObj, number> = new WeakMap;
     constructor(
         public id: string,
@@ -88,6 +88,7 @@ export class Room implements Serializable {
             const t = K.add([
                 K.pos(tile.pos),
                 K.offscreen({ hide: true }),
+                K.color(K.WHITE),
             ]);
             addRenderComps(t, javaHash(this.id + hashPoint(tile.pos)), tile.r);
             if (tile.r.layer) t.use(K.layer(tile.r.layer));
@@ -108,8 +109,6 @@ export class Room implements Serializable {
         for (i = 0; i < this.st.length; i++) {
             const [obj, depthSteps] = this.st[i]!;
             t = 0;
-            obj.opacity ??= 1;
-            obj.color ??= K.WHITE.clone();
             while (t < DEPTH) t += DEPTH / depthSteps;
             this.dc.set(obj, t);
         }
@@ -119,9 +118,11 @@ export class Room implements Serializable {
         const worldPos = K.vec2();
         const tVec = K.vec2();
         const sVec = K.vec2();
+        var oldR: number, oldG: number, oldB: number, color: Color;
+        const bColor = K.getBackground()!;
         while (t > 0) {
             var minStep = Number.MAX_VALUE;
-            const colorFac = 1 - t * COLOR_FACTOR;
+            const colorLerpValue = t * COLOR_FACTOR;
             const scale = 1 - t;
             for (i = 0; i < this.st.length; i++) {
                 const [obj, ds] = this.st[i]!;
@@ -141,16 +142,22 @@ export class Room implements Serializable {
                     K.pushTranslate(tVec);
                     K.pushScale(sVec);
 
-                    obj.color.r *= colorFac;
-                    obj.color.g *= colorFac;
-                    obj.color.b *= colorFac;
+                    color = obj.color;
+
+                    oldR = color.r;
+                    oldG = color.g;
+                    oldB = color.b;
+
+                    color.r = K.lerp(oldR, bColor.r, colorLerpValue);
+                    color.g = K.lerp(oldG, bColor.g, colorLerpValue);
+                    color.b = K.lerp(oldB, bColor.b, colorLerpValue);
 
                     // .draw() resets the transform so don't call it
-                    obj._drawEvents.trigger();
+                    (obj as any)._drawEvents.trigger();
 
-                    obj.color.r /= colorFac;
-                    obj.color.g /= colorFac;
-                    obj.color.b /= colorFac;
+                    color.r = oldR;
+                    color.g = oldG;
+                    color.b = oldB;
 
                     sVec.set(1 / scale, 1 / scale);
                     K.pushScale(sVec);
