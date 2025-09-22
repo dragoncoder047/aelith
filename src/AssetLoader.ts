@@ -76,11 +76,12 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
                     MusicManager.addSong(theSong)
                     return K.loadSound(asset.id, await binSrc(asset));
                 case "zzfxm":
-                    K.onLoad(async () => {
-                        await K.loadZzFXM(asset.id, zzParse(asset.src as string));
-                        MusicManager.addSong(theSong);
-                        console.log("lazy loaded the song", theSong.id);
-                    });
+                    // XXX: commented out for now because the web workers hog so much CPU
+                    // K.onLoad(async () => {
+                    //     await K.loadZzFXM(asset.id, zzParse(asset.src as string));
+                    //     MusicManager.addSong(theSong);
+                    //     console.log("lazy loaded the song", theSong.id);
+                    // });
                     return;
             }
             break;

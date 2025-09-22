@@ -37,11 +37,11 @@ export async function zzfxM(instruments: Instrument[], patterns: Track[][], sequ
                 const args = e.data as ZzFXMSong;
                 const song = zzfxMInner(...args);
                 runner.postMessage(song, [song[0].buffer, song[1].buffer]);
+                runner.close(); // done!
             }
         }})()`;
         WORKER_BLOB = new Blob([WORKER_SRC], { type: "text/javascript" });
         WORKER_URL = URL.createObjectURL(WORKER_BLOB);
-        console.log(WORKER_SRC);
     }
     const myWorker = new Worker(WORKER_URL);
     return new Promise((resolve, reject) => {
