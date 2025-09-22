@@ -102,8 +102,6 @@ export class Room implements Serializable {
     }
     /** draw depth (pseudo 3d) */
     d() {
-        // XXX: TEST REMOVE ME
-        K.setCamPos(K.wave(K.vec2(150, 0), K.vec2(300), K.time()));
         var t: number, i = 0;
         // set up counters
         for (i = 0; i < this.st.length; i++) {
