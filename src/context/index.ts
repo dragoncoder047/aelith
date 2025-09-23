@@ -5,6 +5,7 @@ import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplaySprings } from "./plugins/kaplay-springs";
+import { kaplayXterm256 } from "./plugins/kaplay-xterm256";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
 
@@ -20,6 +21,7 @@ export const K = kaplay({
     buttons: {} as any,
     font: "Unscii",
     plugins: [
+        kaplayXterm256,
         kaplayZzFX,
         kaplayZzFXM,
         kaplaySprings,

@@ -1,28 +1,40 @@
-import { Comp, Constraint, GameObj, PosComp, RotateComp } from "kaplay";
+import { Comp, GameObj, PosComp, RotateComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
-import { EntityData, XY } from "../DataPackFormat";
+import { EntityData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
 import { EntityAnimation } from "./Animation";
+import { buildHitbox, buildSkeleton } from "./build";
+import * as EntityManager from "./EntityManager";
 
-interface EntityComp extends Comp {
+export interface EntityComp extends Comp {
     readonly entity: Entity;
 }
 
-type EntityComponents = EntityComp | PosComp;
-type BoneComponents = EntityComponents | RotateComp | Constraint;
+export type EntityComponents = EntityComp | PosComp;
+export type BoneComponents = EntityComponents | RotateComp;
+export type BonesMap = Record<string, GameObj<BoneComponents>>;
 
 export class Entity implements Serializable {
-    obj: GameObj<EntityComponents>;
-    bones: Record<string, GameObj<BoneComponents>> = {};
-    lights: GameObj<PosComp | LightComp>[] = [];
+    obj: GameObj<EntityComponents> | null = null;
+    bones: BonesMap = {};
+    lightObjs: GameObj<PosComp | LightComp>[] = [];
     currentAnimations: EntityAnimation[] = [];
     constructor(
         public id: string,
+        public currentRoom: string | null,
         public kind: string,
-        public state: JSONObject
-    ) {
+        public state: JSONObject,
+        public pos: Vec2,
+        public leashed: [string, number] | undefined,
+        public linkGroup: string | undefined,
+        public lights: LightData[]
+    ) { }
+    load() {
+        K.onSceneLeave(() => {
+            this.unloaded();
+        });
         const self = this;
         this.obj = K.add([
             {
@@ -30,30 +42,38 @@ export class Entity implements Serializable {
                 get entity() { return self; },
                 update() { self.update(); }
             } as EntityComp,
-            K.pos(),
+            this.id,
+            this.kind,
+            K.pos(this.pos),
         ]);
-        buildSkeleton(this);
+        buildHitbox(this, this.obj);
+        this.bones = buildSkeleton(this, this.obj);
+        EntityManager.startHookOnEntity(this, "load", {});
+    }
+    unloaded() {
+        this.obj = null;
+        this.bones = {};
+        this.lightObjs = [];
+        EntityManager.startHookOnEntity(this, "unload", {});
     }
     toJSON(): EntityData {
         return {
             id: this.id,
             kind: this.kind,
             state: this.state,
-            lights: this.lights.map(l => [
+            leashed: this.leashed,
+            lights: this.lightObjs.map(l => [
                 l.pos.toArray() as XY,
                 l.light!.radius,
                 l.light!.strength,
                 l.light!.color.toHex(),
                 [] // TODO: serialize light tags once it's implemented
             ]),
-            pos: this.obj.pos.toArray() as XY,
+            pos: this.pos.toArray() as XY,
         }
     }
     update() {
+        this.pos = this.obj!.pos.clone();
         // TODO: tick animations
     }
-}
-
-function buildSkeleton(e: Entity) {
-
 }

@@ -23,7 +23,10 @@ type BaseRenderProps = {
         join?: LineJoin;
         miterLimit?: number;
         cap?: LineCap;
-    }
+    },
+    layer?: string;
+    z?: number;
+    mask?: "&" | "-";
 }
 
 type RectangularOpt = {
@@ -168,4 +171,7 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
     if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.vec2(p.anchor[0], p.anchor[1])));
     if (p.outline) obj.use(K.outline(p.outline.width, K.rgb(p.outline.color!), p.outline.opacity, p.outline.join, p.outline.miterLimit, p.outline.cap));
-};
+    if (p.layer) obj.use(K.layer(p.layer));
+    if (p.z) obj.use(K.z(p.z));
+    if (p.mask) obj.use(K.mask({ "&": "intersect" as const, "-": "subtract" as const }[p.mask]));
+}

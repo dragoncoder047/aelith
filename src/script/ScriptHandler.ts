@@ -12,7 +12,7 @@ export class Task {
     tc = false;
     complete = new K.KEvent;
     gen: TaskGen = null as any;
-    constructor(public priority: number) { }
+    constructor(public priority: number, public controller: Entity) { }
     onFinish(cb: (value: any) => void) {
         return this.complete.add(cb);
     }
@@ -75,11 +75,20 @@ function sortTasks() {
 }
 
 export function spawnTask(priority: number, form: JSONValue, actor: Entity, context: Env): Task {
-    const t = new Task(priority);
+    const t = new Task(priority, actor);
     t.gen = evaluateForm(form, t, actor, {}, context, []);
     tasks.push(t);
     sortTasks();
     return t;
+}
+
+export function killAllTasksControlledBy(actor: Entity) {
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i]!.controller === actor) {
+            tasks.splice(i, 1);
+            i--;
+        }
+    }
 }
 
 function stepTasks() {

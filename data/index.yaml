@@ -21,3 +21,5 @@ renderLayers:
   - "tiles"
 defaults:
   depthLayer: background
+  entityLayer: entities
+  tileLayer: tiles

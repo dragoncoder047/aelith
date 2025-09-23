@@ -10,7 +10,7 @@ import * as SceneManager from "./scenes/SceneManager";
 import inputsPNG from "./static/system_assets/inputs.png";
 import inputsYAML from "./static/system_assets/inputs.yaml";
 import kaplayPNG from "./static/system_assets/kaplay-logo.png";
-import * as TilemapManager from "./tilemap/TilemapManager";
+import * as RoomManager from "./room/RoomManager";
 import * as StateManager from "./state/StateManager";
 
 
@@ -31,7 +31,7 @@ export async function datapack() {
     pack = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);
     EntityManager.setEntityLibrary(pack.entityTypes);
-    TilemapManager.registerTilesets(pack.tilesets);
+    RoomManager.registerTilesets(pack.tilesets);
     if (pack.renderLayers) K.setLayers(pack.renderLayers[0], pack.renderLayers[1]);
     for (var asset of pack.assets) {
         await AssetLoader.loadAsset(asset);
@@ -39,6 +39,7 @@ export async function datapack() {
     StateManager.setupInitialState(pack.initial);
 }
 export function main() {
+    K.debug.inspect = true;
     setup();
     K.load(datapack());
     K.onLoad(() => {

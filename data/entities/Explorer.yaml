@@ -17,6 +17,11 @@ behavior:
 model:
   skeleton:
     - name: gazeTarget
+      pos: [32, -25]
+    - name: leftFootTarget
+      pos: [-8, 32]
+    - name: rightFootTarget
+      pos: [8, 32]
     - name: body
       render:
         as: sprite
@@ -24,21 +29,72 @@ model:
         anchor: center
       pos: [0, 0]
       children:
-        - name: head
-          render:
-            as: sprite
-            sprite: explorerHead
-            anchor: center
-            angle: 90 # rotate so pointing "up"
-          pos: [-25, 0]
+        - name: neck
+          pos: [0, -25]
           ik:
-            naturalDirection: [0, -1] # "up"
             angleRange: [-135, 135]
           children:
-            - name: gazeSource
-              pos: [0, -1]
+            - name: head
+              render:
+                as: sprite
+                sprite: explorerHead
+                anchor: center
+                angle: 90
               ik:
-                target: [gaze, 1]
+                naturalDirection: [0, -1]
+            - name: gazeSource
+              pos: [0, -10]
+              ik:
+                target: [gazeTarget, 1]
+        - name: leftUpperLeg
+          pos: [-6, 12]
+          render: &leg
+            as: polygon
+            pts: [[0, 0], [0, 0], [12, 0]]
+            outline:
+              color: white
+              join: round
+              cap: round
+              width: 4
+          children:
+            - name: leftLowerLeg
+              render: *leg
+              pos: [12, 0]
+              ik:
+                angleRange: [-180, 0]
+              children:
+                - children:
+                    - name: leftFoot
+                      pos: [12, 0]
+                      render:
+                        as: sprite
+                        sprite: explorerFoot
+                        anchor: [-0.5, 0]
+                      constraint:
+                        angle: [body, 0, 0]
+                  ik:
+                    target: [leftFootTarget, 2]
+        - name: rightUpperLeg
+          pos: [6, 12]
+          render: *leg
+          children:
+            - name: rightLowerLeg
+              render: *leg
+              pos: [12, 0]
+              ik:
+                angleRange: [0, 180]
+              children:
+                - children:
+                    - name: rightFoot
+                      pos: [12, 0]
+                      render:
+                        as: sprite
+                        sprite: explorerFoot
+                        anchor: [-0.5, 0]
+                      constraint:
+                        angle: [body, 0, 0]
+                  ik:
+                    target: [rightFootTarget, 2]
   tentacles:
     - name: horn
       bone: head

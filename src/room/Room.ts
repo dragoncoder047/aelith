@@ -4,8 +4,9 @@ import * as GameManager from "../GameManager";
 import { Serializable } from "../Serializable";
 import { K } from "../context";
 import { addRenderComps } from "../draw/primitive";
+import * as EntityManager from "../entity/EntityManager";
 import { hashPoint, javaHash } from "../utils";
-import * as TilemapManager from "./TilemapManager";
+import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
 
@@ -28,33 +29,39 @@ const DEPTH = 0.1;
 const COLOR_FACTOR = 4;
 
 export class Room implements Serializable {
-    b: string | undefined;
-    f: {
-        c: ColliderEntry[],
-        t: TileEntry[]
-    } = { c: [], t: [] };
-    st: [GameObj<ColorComp | PosComp>, number][] = [];
-    dc: WeakMap<GameObj, number> = new WeakMap;
+    bg: string | undefined;
+    frozen: {
+        colliders: ColliderEntry[],
+        tiles: TileEntry[],
+        slots: Record<string, Vec2>;
+    };
+    depthTiles: [GameObj<ColorComp | PosComp>, number][] = [];
+    depthCache: WeakMap<GameObj, number> = new WeakMap;
+    entitiesInHere: string[] = [];
     constructor(
         public id: string,
         public data: RoomData,
     ) {
-        // TODO: create entities
         // TODO: create navigation map (also need rules in tile map)
-        this.f = buildFrozen(data);
-        this.b = TilemapManager.getTileset(data.tileset).background;
+        this.frozen = buildFrozen(data);
+        this.bg = RoomManager.getTileset(data.tileset).background;
+    }
+    spawnInitialEntities() {
+        for (var e of Object.keys(this.data.entities ?? {})) {
+            EntityManager.spawnEntityInRoom(this.frozen.slots[e]!, this.id, this.data.entities![e]!);
+        }
     }
     toJSON(): RoomData {
         throw "todo";
         return {} as any;
     }
-    /** load - called when the room is entered */
-    l() {
+    load() {
         const self = this;
         K.onSceneLeave(() => {
-            this.u();
+            this.unloaded();
         });
-        for (var coll of this.f.c) {
+        EntityManager.loadAllEntitiesInRoom(this.id);
+        for (var coll of this.frozen.colliders) {
             const [x, y, w, h] = coll.def.hitbox;
             const c = K.add([
                 K.pos(coll.pos),
@@ -73,17 +80,17 @@ export class Room implements Serializable {
                 c.use(K.platformEffector());
             }
         }
-        if (this.f.t.some(t => t.ds)) {
+        if (this.frozen.tiles.some(t => t.ds)) {
             K.add([
                 K.layer(GameManager.getDefaultValue("depthLayer")),
                 {
                     draw() {
-                        self.d();
+                        self.drawDepth();
                     }
                 }
             ]);
         }
-        for (var tile of this.f.t) {
+        for (var tile of this.frozen.tiles) {
             if (!tile.r) continue;
             const t = K.add([
                 K.pos(tile.pos),
@@ -91,24 +98,23 @@ export class Room implements Serializable {
                 K.color(K.WHITE),
             ]);
             addRenderComps(t, javaHash(this.id + hashPoint(tile.pos)), tile.r);
-            if (tile.r.layer) t.use(K.layer(tile.r.layer));
-            if (tile.ds) this.st.push([t, tile.ds as number]);
+            if (!t.has("layer")) t.use(K.layer(GameManager.getDefaultValue("tileLayer")));
+            if (tile.ds) this.depthTiles.push([t, tile.ds as number]);
         }
-        K.setBackground(K.rgb(this.b ?? GameManager.getDefaultValue("background") ?? "black"));
+        K.setBackground(K.rgb(this.bg ?? GameManager.getDefaultValue("background") ?? "black"));
+        K.setGravity(this.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
     }
-    /** unload - called when the room is unloaded (it should forget its gameObj's) */
-    u() {
-        this.st = [];
+    unloaded() {
+        this.depthTiles = [];
     }
-    /** draw depth (pseudo 3d) */
-    d() {
+    drawDepth() {
         var t: number, i = 0;
         // set up counters
-        for (i = 0; i < this.st.length; i++) {
-            const [obj, depthSteps] = this.st[i]!;
+        for (i = 0; i < this.depthTiles.length; i++) {
+            const [obj, depthSteps] = this.depthTiles[i]!;
             t = 0;
             while (t < DEPTH) t += DEPTH / depthSteps;
-            this.dc.set(obj, t);
+            this.depthCache.set(obj, t);
         }
         t = DEPTH;
         const vanishingPoint = K.getCamPos();
@@ -122,14 +128,14 @@ export class Room implements Serializable {
             var minStep = Number.MAX_VALUE;
             const colorLerpValue = t * COLOR_FACTOR;
             const scale = 1 - t;
-            for (i = 0; i < this.st.length; i++) {
-                const [obj, ds] = this.st[i]!;
+            for (i = 0; i < this.depthTiles.length; i++) {
+                const [obj, ds] = this.depthTiles[i]!;
                 const step = DEPTH / ds;
-                const nextT = this.dc.get(obj)!;
+                const nextT = this.depthCache.get(obj)!;
                 minStep = Math.min(minStep, step);
                 if (t <= nextT) {
                     const t2 = t - step;
-                    this.dc.set(obj, t2);
+                    this.depthCache.set(obj, t2);
 
                     // non-allocating version of worldPos()
                     obj.parent!.transform.transformPointV(obj.pos, worldPos);
@@ -168,12 +174,12 @@ export class Room implements Serializable {
     }
 }
 
-function buildFrozen(data: RoomData): Room["f"] {
+function buildFrozen(data: RoomData): Room["frozen"] {
     const colliders: ColliderEntry[][][] = [];
     const tiles: TileEntry[][][] = [];
     const entityOrDoorSlots: Record<string, Vec2> = {};
     const indexMap = data.indexMapping;
-    const { gridSize: sz, tiles: tileDefs } = TilemapManager.getTileset(data.tileset);
+    const { gridSize: sz, tiles: tileDefs } = RoomManager.getTileset(data.tileset);
     const grid = data.map;
     for (var r = 0; r < grid.length; r++) {
         const row = grid[r]!;
@@ -182,16 +188,18 @@ function buildFrozen(data: RoomData): Room["f"] {
         colliders.push(cRow);
         tiles.push(tRow);
         for (var c = 0; c < row.length; c++) {
-            var indexes = indexMap[row[c]!];
+            const indexes = indexMap[row[c]!];
             const pos = K.vec2(c * sz, r * sz);
             const cEntry: ColliderEntry[] = [];
             const tEntry: TileEntry[] = [];
             tRow.push(tEntry);
             cRow.push(cEntry);
             if (indexes === undefined) continue;
-            if (!(Array.isArray(indexes))) indexes = [indexes];
             for (var index of indexes) {
-                if (typeof index === "string") entityOrDoorSlots[index] = pos;
+                if (Array.isArray(index)) {
+                    const [slot, x, y] = index;
+                    entityOrDoorSlots[slot] = pos.add(K.vec2(x, y));
+                }
                 else {
                     const desc = tileDefs[index];
                     if (desc?.render !== undefined) {
@@ -204,5 +212,5 @@ function buildFrozen(data: RoomData): Room["f"] {
             }
         }
     }
-    return { c: mergeColliders(colliders, sz), t: autotile(tiles) };
+    return { colliders: mergeColliders(colliders, sz), tiles: autotile(tiles), slots: entityOrDoorSlots };
 }

@@ -1,7 +1,7 @@
-import * as TilemapManager from "../tilemap/TilemapManager";
+import * as RoomManager from "../room/RoomManager";
 import * as BlueScreen from "../BlueScreen";
 
 export function roomScene(whichRoom: string) {
     BlueScreen.install();
-    TilemapManager.roomLoaded(whichRoom);
+    RoomManager.enterRoom(whichRoom);
 }

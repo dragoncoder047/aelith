@@ -4,7 +4,7 @@ import { Primitive } from "./draw/primitive";
 
 export type XY = [x: number, y: number];
 
-export type RenderData = Primitive & { layer?: string };
+export type RenderData = Primitive;
 
 export interface AssetData extends JSONObject {
     id: string;
@@ -17,7 +17,7 @@ export interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
-type IndexMapping = number | string;
+export type IndexMapping = number | [slot: string, ...offset: XY];
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
     /** Text map rows */
@@ -31,13 +31,14 @@ export interface RoomData extends JSONObject {
      *
      * undefined or empty list -> nothing of course
      */
-    indexMapping: Record<string, IndexMapping | IndexMapping[]>;
+    indexMapping: Record<string, IndexMapping[]>;
     /** ID of the tileset to use, such as office */
     tileset: string;
     /** List of the doors going in and out of this room */
     doors: Record<string, DoorData>;
     /** Entities directly in here */
-    entities: Record<string, EntityData>
+    entities?: Record<string, EntityData>
+    gravity?: number;
 }
 
 export interface StaticTileDefinition extends JSONObject {
@@ -97,6 +98,8 @@ export interface EntityPrototypeData extends JSONObject {
     model: EntityModelData;
     /** polygonal hitbox */
     hitbox?: XY[];
+    gravityScale?: number;
+    mass?: number;
     // TODO: automatic area effector and conveyor effector stuff
     /** restricted bounds on navigation height (in tiles) for pathfinding */
     navHeight: [low: number, high: number];
@@ -164,14 +167,21 @@ interface EntityAnimChannelData extends JSONObject {
     sprAnim: string;
 }
 
-interface EntityModelBoneData extends JSONObject {
+interface EntityBoneConstraintOptData extends JSONObject {
+    distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
+    offset?: [which: string, offset: XY];
+    angle?: [which: string, scale?: number, offset?: number];
+    scale?: [which: string],
+}
+
+export interface EntityModelBoneData extends JSONObject {
     /** child bones */
     children?: EntityModelBoneData[];
     /** name of the bone for targeting it in animations */
     name?: string;
     render: RenderData;
     /** The offset from the parent */
-    pos: XY;
+    pos?: XY;
     /** inverse kinematics definition */
     ik: {
         /** maximum bending angles */
@@ -181,12 +191,7 @@ interface EntityModelBoneData extends JSONObject {
         /** should only be set on the end */
         target?: [bone: string, depth: number];
     },
-    constraint?: {
-        distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
-        offset?: [which: string, offset: XY];
-        angle?: [which: string, scale?: number, offset?: number];
-        scale?: [which: string],
-    }
+    constraint?: EntityBoneConstraintOptData;
 }
 
 interface EntityModelTentacleData extends JSONObject {
@@ -207,6 +212,9 @@ interface EntityModelTentacleData extends JSONObject {
     sizes: [start: number, end: number, easingFunc?: string];
     /** mass range, optional interpolation function */
     masses: [start: number, end: number, easingFunc?: string];
+    /** if true, the last bone will have forceSelf set to false, to allow it to be moved independently. */
+    cord?: boolean;
+    eachConstraints?: EntityBoneConstraintOptData;
 }
 
 /**
@@ -248,10 +256,8 @@ export interface EntityData extends JSONObject {
     kind: string;
     /** this entity's state */
     state: JSONObject;
-    /** if in a room, the tile slot */
-    tileSlot?: number;
-    /** absolute (if no tileSlot) or relative (if yes) position in world */
-    pos: XY;
+    /** absolute (if not in a tile slot) or relative (if yes) position in world */
+    pos?: XY;
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
     leashed?: [string, number];
     /** name of the link group to receive messages on */
@@ -262,7 +268,7 @@ export interface EntityData extends JSONObject {
     lights: LightData[];
 }
 
-type LightData = [pos: XY, radius: number, intensity: number, color: string | number, onlyLights?: (string | null)[]];
+export type LightData = [pos: XY, radius: number, intensity: number, color: string | number, onlyLights?: (string | null)[]];
 
 /**
  * like LISP.
@@ -287,7 +293,7 @@ type LightData = [pos: XY, radius: number, intensity: number, color: string | nu
  * * set <global?> <name> <value> - local variable
  * * get <global?> <name> - local variable
  * * here - get current entity's coordinates
- * * get <"all" | "first" | "random"> <type> <"near" radius in tiles> <"everywhere"> - get entities within radius
+ * * select <"all" | "first" | "random"> <type> <"near" radius in tiles> <"everywhere"> - get entities within radius
  * * send <message> - broadcasts message to all with the same link group (loaded or unloaded)
  * * spawn <entity_type> <location> -
  * * die - destroys self
@@ -377,5 +383,8 @@ export interface DataPackData extends JSONObject {
     defaults: {
         background?: string;
         depthLayer: string;
+        gravity?: number;
+        entityLayer: string;
+        tileLayer: string;
     }
 }
