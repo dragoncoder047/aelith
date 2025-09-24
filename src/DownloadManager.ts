@@ -70,25 +70,23 @@ function drawLoadingScreen() {
 export function loadBytes(path: string) {
     return K.load((async () => {
         const response = await fetch(path);
-        const len = +(response.headers.get("Content-Length") ?? 0)
+        const len = +(response.headers.get("Content-Length") ?? 0);
         bytesToDownload += len;
-        const chunks = [];
+        const bytes = new Uint8Array(len);
         const reader = response.body!.getReader();
         var now = performance.now();
+        var pos = 0;
         for (; ;) {
             const c = await reader.read();
             if (c.done) break;
-            chunks.push(c.value)
-            bytesDownloaded += c.value.length;
-            const next = performance.now();
-            etaEntry(c.value.length, next - now);
-            now = next;
-        }
-        const bytes = new Uint8Array(len);
-        var pos = 0;
-        for (var chunk of chunks) {
+            const chunk = c.value;
             bytes.set(chunk, pos);
-            pos += chunk.length;
+            const chunkLength = c.value.length ?? c.value.byteLength;
+            bytesDownloaded += chunkLength;
+            pos += chunkLength;
+            const next = performance.now();
+            etaEntry(chunkLength, next - now);
+            now = next;
         }
         // why are 2 necessary??
         await new Promise(requestAnimationFrame);
@@ -101,6 +99,7 @@ export async function loadJSON(path: string) {
 }
 
 function niceBytes(count: number): string {
+    if (!isFinite(count)) return "undefinedB";
     const prefixes = ["", "Ki", "Mi", "Gi", "Ti"]; // if we go off the end... wtf is the game doing.
     var i = 0;
     while (count > 1024) count /= 1024, i++;
