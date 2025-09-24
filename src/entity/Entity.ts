@@ -1,4 +1,4 @@
-import { Comp, GameObj, PosComp, RotateComp, Vec2 } from "kaplay";
+import { Comp, GameObj, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { EntityData, LightData, XY } from "../DataPackFormat";
@@ -13,7 +13,7 @@ export interface EntityComp extends Comp {
 }
 
 export type EntityComponents = EntityComp | PosComp;
-export type BoneComponents = EntityComponents | RotateComp;
+export type BoneComponents = EntityComponents | RotateComp | ScaleComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
 
 export class Entity implements Serializable {
@@ -49,6 +49,12 @@ export class Entity implements Serializable {
         buildHitbox(this, this.obj);
         this.bones = buildSkeleton(this, this.obj);
         EntityManager.startHookOnEntity(this, "load", {});
+        // this.obj.onPhysicsResolve(coll => {
+        //     if (coll.isRight()) { this.obj.jump(330); this.obj.applyImpulse(K.vec2(-150, 0)); }
+        // });
+        // this.obj.onUpdate(() => {
+        //     if (this.obj.isGrounded()) this.obj.move(100, 0);
+        // })
     }
     unloaded() {
         this.obj = null;

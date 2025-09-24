@@ -4,7 +4,7 @@ import { SCALE } from "../static/constants";
 import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
-import { kaplaySprings } from "./plugins/kaplay-springs";
+import { kaplayExtraDistance } from "./plugins/kaplay-extradistance";
 import { kaplayXterm256 } from "./plugins/kaplay-xterm256";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
@@ -24,7 +24,7 @@ export const K = kaplay({
         kaplayXterm256,
         kaplayZzFX,
         kaplayZzFXM,
-        kaplaySprings,
+        kaplayExtraDistance,
         kaplayDynamicStrings,
         kaplayRumble,
         kaplayAABB,

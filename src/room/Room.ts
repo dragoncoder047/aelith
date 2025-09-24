@@ -67,7 +67,9 @@ export class Room implements Serializable {
                 K.pos(coll.pos),
                 K.area({
                     shape: new K.Rect(K.vec2(x, y), w, h),
-                    collisionIgnore: coll.def.ignore
+                    collisionIgnore: coll.def.ignore,
+                    restitution: coll.def.restitution ?? GameManager.getDefaultValue("restitution"),
+                    friction: coll.def.friction ?? GameManager.getDefaultValue("friction")
                 }),
                 K.body({ isStatic: true }),
                 "tile",
@@ -203,10 +205,21 @@ function buildFrozen(data: RoomData): Room["frozen"] {
                 else {
                     const desc = tileDefs[index];
                     if (desc?.render !== undefined) {
-                        tEntry.push({ pos, r: desc.render, ds: desc.depth, auto: desc.autotile, tag: desc.tag });
+                        tEntry.push({
+                            pos,
+                            r: desc.render,
+                            ds: desc.depth,
+                            auto: desc.autotile,
+                            tag: desc.tag
+                        });
                     }
                     if (desc?.physics !== undefined) {
-                        cEntry.push({ i: index, pos, def: desc.physics, tag: desc.tag });
+                        cEntry.push({
+                            i: index,
+                            pos,
+                            def: desc.physics,
+                            tag: desc.tag
+                        });
                     }
                 }
             }

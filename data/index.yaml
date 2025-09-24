@@ -23,3 +23,5 @@ defaults:
   depthLayer: background
   entityLayer: entities
   tileLayer: tiles
+  restitution: 0 #.5
+  friction: 0.5

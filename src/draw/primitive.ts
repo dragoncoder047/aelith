@@ -65,7 +65,7 @@ type PolygonPrimitive = BaseRenderProps & ShapeOpt & {
     pts: XY[],
 };
 
-type PolylinePrimitive = BaseRenderProps & {
+export type PolylinePrimitive = BaseRenderProps & {
     as: "polyline",
     pts: XY[],
     opacity?: number;
@@ -155,7 +155,6 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
             obj.use(K.dynamicText(primitive.text)); break;
         default:
             primitive satisfies never;
-            throw new Error(`unknown primitive type ${JSON.stringify((primitive as any).kind)}`);
     }
 }
 

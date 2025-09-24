@@ -11,17 +11,17 @@ navHeight: [2, 0]
 behavior:
   canFly: no
   moveSpeed: 128
-  jumpForce: 300
+  jumpForce: 256
   inventorySlots: 8
   inventorySize: null
 model:
   skeleton:
     - name: gazeTarget
-      pos: [32, -25]
+      pos: [100, -25]
     - name: leftFootTarget
-      pos: [-8, 32]
+      pos: [-8, 29]
     - name: rightFootTarget
-      pos: [8, 32]
+      pos: [8, 29]
     - name: leftHandTarget
       pos: [-11, 7]
     - name: rightHandTarget
@@ -54,7 +54,7 @@ model:
           pos: [-5, 13]
           render:
             as: polyline
-            pts: [[0, 0], [0, 12]]
+            pts: [[0, 0], [0, 10]]
             angle: 12
             color: white
             join: round
@@ -66,17 +66,17 @@ model:
             - name: leftLowerLeg
               render:
                 as: polyline
-                pts: [[0, 0], [0, 12]]
+                pts: [[0, 0], [0, 10]]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: [0, 12]
+              pos: [0, 10]
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: [0, 12]
+                - pos: [0, 10]
                   children:
                     - name: leftFoot
                       render: &foot
@@ -91,7 +91,7 @@ model:
           pos: [5, 13]
           render:
             as: polyline
-            pts: [[0, 0], [0, 12]]
+            pts: [[0, 0], [0, 10]]
             angle: 12
             color: white
             join: round
@@ -103,17 +103,17 @@ model:
             - name: rightLowerLeg
               render:
                 as: polyline
-                pts: [[0, 0], [0, 12]]
+                pts: [[0, 0], [0, 10]]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: [0, 12]
+              pos: [0, 10]
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: [0, 12]
+                - pos: [0, 10]
                   children:
                     - name: rightFoot
                       render: *foot
@@ -197,16 +197,21 @@ model:
     - name: horn
       bone: head
       pos: [13, -1]
-      n: 3
-      lps: 6
-      color: white
+      n: 5
+      lps: 3
+      render: &tentacle
+        color: xt252
+        cap: round
+        z: -1
       sizes: [2.7, 1, easeOutQuad]
       masses: [.1, .1]
+      eachConstraints:
+        distance: [head, 13, -1]
     - name: tail
       bone: body
-      pos: [0, 8]
+      pos: [0, 12]
       n: 8
-      lps: 9
-      color: white
+      lps: 5
+      render: *tentacle
       sizes: [4, 1, easeOutQuad]
       masses: [.1, .1]

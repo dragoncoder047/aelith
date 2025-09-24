@@ -1,26 +1,86 @@
-import { GameObj } from "kaplay";
+import { EaseFuncs, GameEventMap, GameObj } from "kaplay";
 import { K } from "../context";
-import { EntityModelBoneData } from "../DataPackFormat";
+import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
 import { addRenderComps } from "../draw/primitive";
 import * as GameManager from "../GameManager";
 import { naturalDirection } from "./comps/naturaldirection";
 import { BonesMap, Entity, EntityComp, EntityComponents } from "./Entity";
 import { getEntityPrototypeStrict } from "./EntityManager";
+import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 
 export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
-    const { hitbox, mass, gravityScale } = getEntityPrototypeStrict(e.kind);
+    const { hitbox, mass, gravityScale, behavior, restitution, friction } = getEntityPrototypeStrict(e.kind);
     if (hitbox) {
         rootObj.use(K.area({
             shape: new K.Polygon(hitbox.map(([x, y]) => K.vec2(x, y))),
+            restitution: restitution ?? GameManager.getDefaultValue("restitution"),
+            friction: friction ?? GameManager.getDefaultValue("friction")
         }));
-        rootObj.use(K.body({ mass, gravityScale }));
+        rootObj.use(K.body({ mass, gravityScale, jumpForce: behavior.jumpForce }));
+    }
+}
+
+function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleData, constraintEntries: { c: EntityBoneConstraintOptData, t: string }[]) {
+    var prev = map[tentacle.bone]!;
+    var pos = tentacle.pos ? K.vec2(tentacle.pos[0]!, tentacle.pos[1]) : K.Vec2.ZERO;
+    for (var k = 0; k < tentacle.n; k++) {
+        const sz = K.lerp(tentacle.sizes[0], tentacle.sizes[1], (K.easings[tentacle.sizes[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
+        const mass = K.lerp(tentacle.masses[0], tentacle.masses[1], (K.easings[tentacle.masses[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
+        prev = K.add([
+            {
+                id: "entity",
+                get entity() { return e }
+            } as EntityComp,
+            K.pos(pos.add(e.obj!.pos)),
+            K.rotate(0),
+            K.scale(),
+            K.area({
+                collisionIgnore: [e.id],
+                restitution: (e.obj as any).restitution ?? GameManager.getDefaultValue("restitution"),
+                friction: (e.obj as any).friction ?? GameManager.getDefaultValue("friction"),
+                shape: new K.Circle(K.Vec2.ZERO, sz / 2),
+            }),
+            K.body({
+                mass,
+                damping: 1
+            }),
+            K.extradistance({
+                other: prev as any,
+                moveOther: k !== 0,
+                moveSelf: tentacle.cord ? k !== (tentacle.n - 1) : true,
+                length: tentacle.lps,
+                p1: K.Vec2.ZERO,
+                p2: k > 0 ? K.Vec2.ZERO : pos,
+                drawOpts: {
+                    width: sz,
+                }
+            }),
+        ]);
+        if (tentacle.render) {
+            addRenderComps(prev, prev.id, tentacle.render as any);
+            Object.assign((prev as any as GameObj<DistanceCompPlus>).drawOpts, {
+                join: tentacle.render?.join,
+                opacity: tentacle.render?.opacity,
+                cap: tentacle.render?.cap,
+                miterLimit: tentacle.render?.miterLimit,
+            });
+        }
+        if (!prev.has("layer")) prev.use(K.layer(GameManager.getDefaultValue("entityLayer")))
+        pos = pos.add(0, tentacle.lps);
+        map[tentacle.name + k] = prev;
+        if (tentacle.eachConstraints) {
+            constraintEntries.push({ c: tentacle.eachConstraints, t: tentacle.name + k });
+        }
+    }
+    if (tentacle.endConstraints) {
+        constraintEntries.push({ c: tentacle.endConstraints, t: tentacle.name + (tentacle.n - 1) });
     }
 }
 
 export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): BonesMap {
     const map: BonesMap = {};
     const model = getEntityPrototypeStrict(e.kind).model;
-    const constraintEntries: { c: NonNullable<EntityModelBoneData["constraint"]>, t: string }[] = [];
+    const constraintEntries: { c: EntityBoneConstraintOptData, t: string }[] = [];
     const ikEntries: { s: string, t: string, d: number }[] = [];
     // temp fix for kaplayjs/kaplay#899
     K.add([
@@ -35,6 +95,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 } as EntityComp,
                 K.pos(),
                 K.rotate(),
+                K.scale(),
                 // K.area({ shape: new K.Circle(K.vec2(), 5) }),
             ]);
             if (bone.pos) obj.moveTo(bone.pos[0], bone.pos[1]);
@@ -59,10 +120,20 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             if (bone.children) {
                 buildBone(obj, bone.children);
             }
+            // if (bone.name === "gazeTarget") {
+            //     obj.use({
+            //         update() {
+            //             (this as any).pos = K.vec2(100, 0).rotate(-70 * K.time()).sub(0, 25)
+            //         }
+            //     })
+            // }
         }
     };
     buildBone(rootObj, model.skeleton);
-    // TODO: tentacles
+    // build tentacles
+    if (model.tentacles) for (var tentacle of model.tentacles) {
+        buildTentacle(e, map, tentacle, constraintEntries);
+    }
     // -------
     // then install the kinematics constraints
     // (this is to allow nontree and circular references on bones. but who would really want that though)

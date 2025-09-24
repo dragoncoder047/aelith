@@ -1,6 +1,6 @@
 import { TextAlign } from "kaplay";
 import { JSONObject, JSONValue } from "./JSON";
-import { Primitive } from "./draw/primitive";
+import { PolylinePrimitive, Primitive } from "./draw/primitive";
 
 export type XY = [x: number, y: number];
 
@@ -56,6 +56,8 @@ export interface StaticTileDefinition extends JSONObject {
         pats: number[]
     };
     physics: {
+        restitution?: number;
+        friction?: number;
         /** if true then entities can jump up and climb down through this as a platform effector */
         platform?: boolean;
         /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
@@ -98,6 +100,8 @@ export interface EntityPrototypeData extends JSONObject {
     model: EntityModelData;
     /** polygonal hitbox */
     hitbox?: XY[];
+    friction?: number;
+    restitution?: number;
     gravityScale?: number;
     mass?: number;
     // TODO: automatic area effector and conveyor effector stuff
@@ -167,7 +171,7 @@ interface EntityAnimChannelData extends JSONObject {
     sprAnim: string;
 }
 
-interface EntityBoneConstraintOptData extends JSONObject {
+export interface EntityBoneConstraintOptData extends JSONObject {
     distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
     offset?: [which: string, offset: XY];
     angle?: [which: string, scale?: number, offset?: number];
@@ -194,26 +198,25 @@ export interface EntityModelBoneData extends JSONObject {
     constraint?: EntityBoneConstraintOptData;
 }
 
-interface EntityModelTentacleData extends JSONObject {
+export interface EntityModelTentacleData extends JSONObject {
     /** the id of the tentacle; segments will be named name0, name1, name2, ... */
     name: string;
     /** the length in number of segments */
     n: number;
     /** the length of each segment */
     lps: number;
-    /** color to draw lines in.
-     * TODO: gradients and patterns (but do I really need this) */
-    color: string;
+    render: Omit<PolylinePrimitive, "pts" | "as">,
     /** parent bone it is attached to */
     bone: string;
     /** local position on the attached bone */
-    offset: XY;
+    pos: XY;
     /** size range, optional interpolation function */
     sizes: [start: number, end: number, easingFunc?: string];
     /** mass range, optional interpolation function */
     masses: [start: number, end: number, easingFunc?: string];
     /** if true, the last bone will have forceSelf set to false, to allow it to be moved independently. */
     cord?: boolean;
+    endConstraints?: EntityBoneConstraintOptData;
     eachConstraints?: EntityBoneConstraintOptData;
 }
 
@@ -386,5 +389,7 @@ export interface DataPackData extends JSONObject {
         gravity?: number;
         entityLayer: string;
         tileLayer: string;
+        friction: number;
+        restitution: number;
     }
 }
