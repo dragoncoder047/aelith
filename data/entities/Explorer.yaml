@@ -23,9 +23,9 @@ model:
     - name: rightFootTarget
       pos: [8, 29]
     - name: leftHandTarget
-      pos: [-11, 7]
+      pos: [-11, 8]
     - name: rightHandTarget
-      pos: [11, 7]
+      pos: [11, 8]
     - name: body
       render:
         as: sprite
@@ -46,6 +46,35 @@ model:
                 angle: 90
               ik:
                 naturalDirection: [0, -1]
+              children:
+                - name: rightEyeSocket
+                  pos: [-3, -2.4]
+                  children:
+                    - name: rightEye
+                      pos: [1, 0]
+                      render:
+                        as: rect
+                        anchor: center
+                        size: [1, 3]
+                        color: white
+                      ik:
+                        target: [gazeTarget, 1]
+                      constraint:
+                        angle: [neck, 0, 0]
+                - name: leftEyeSocket
+                  pos: [1, -2.4]
+                  children:
+                    - name: leftEye
+                      pos: [1, 0]
+                      render:
+                        as: rect
+                        anchor: center
+                        size: [1, 3]
+                        color: white
+                      ik:
+                        target: [gazeTarget, 1]
+                      constraint:
+                        angle: [neck, 0, 0]
             - name: gazeSource
               pos: [0, -10]
               ik:
@@ -54,7 +83,7 @@ model:
           pos: [-5, 13]
           render:
             as: polyline
-            pts: [[0, 0], [0, 10]]
+            pts: [[0, 0], [0, 9]]
             angle: 12
             color: white
             join: round
@@ -66,17 +95,17 @@ model:
             - name: leftLowerLeg
               render:
                 as: polyline
-                pts: [[0, 0], [0, 10]]
+                pts: [[0, 0], [0, 9]]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: [0, 10]
+              pos: [0, 9]
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: [0, 10]
+                - pos: [0, 9]
                   children:
                     - name: leftFoot
                       render: &foot
@@ -91,7 +120,7 @@ model:
           pos: [5, 13]
           render:
             as: polyline
-            pts: [[0, 0], [0, 10]]
+            pts: [[0, 0], [0, 9]]
             angle: 12
             color: white
             join: round
@@ -103,17 +132,17 @@ model:
             - name: rightLowerLeg
               render:
                 as: polyline
-                pts: [[0, 0], [0, 10]]
+                pts: [[0, 0], [0, 9]]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: [0, 10]
+              pos: [0, 9]
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: [0, 10]
+                - pos: [0, 9]
                   children:
                     - name: rightFoot
                       render: *foot

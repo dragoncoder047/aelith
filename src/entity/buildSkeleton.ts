@@ -121,11 +121,8 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 buildBone(obj, bone.children);
             }
             // if (bone.name === "gazeTarget") {
-            //     obj.use({
-            //         update() {
-            //             (this as any).pos = K.vec2(100, 0).rotate(-70 * K.time()).sub(0, 25)
-            //         }
-            //     })
+            //     obj.use(K.fakeMouse())
+            //     obj.parent = K.getTreeRoot();
             // }
         }
     };
