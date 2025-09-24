@@ -5,7 +5,7 @@ import { EntityData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
 import { EntityAnimation } from "./Animation";
-import { buildHitbox, buildSkeleton } from "./build";
+import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import * as EntityManager from "./EntityManager";
 
 export interface EntityComp extends Comp {

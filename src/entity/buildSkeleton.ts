@@ -1,4 +1,4 @@
-import { GameObj, PosComp } from "kaplay";
+import { GameObj } from "kaplay";
 import { K } from "../context";
 import { EntityModelBoneData } from "../DataPackFormat";
 import { addRenderComps } from "../draw/primitive";
@@ -35,6 +35,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 } as EntityComp,
                 K.pos(),
                 K.rotate(),
+                // K.area({ shape: new K.Circle(K.vec2(), 5) }),
             ]);
             if (bone.pos) obj.moveTo(bone.pos[0], bone.pos[1]);
             if (!bone.name) bone.name = "_b" + obj.id.toString(16);

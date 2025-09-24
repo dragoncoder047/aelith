@@ -22,6 +22,10 @@ model:
       pos: [-8, 32]
     - name: rightFootTarget
       pos: [8, 32]
+    - name: leftHandTarget
+      pos: [-11, 7]
+    - name: rightHandTarget
+      pos: [11, 7]
     - name: body
       render:
         as: sprite
@@ -47,54 +51,148 @@ model:
               ik:
                 target: [gazeTarget, 1]
         - name: leftUpperLeg
-          pos: [-6, 12]
-          render: &leg
-            as: polygon
-            pts: [[0, 0], [0, 0], [12, 0]]
-            outline:
-              color: white
-              join: round
-              cap: round
-              width: 4
+          pos: [-5, 13]
+          render:
+            as: polyline
+            pts: [[0, 0], [0, 12]]
+            angle: 12
+            color: white
+            join: round
+            cap: round
+            width: 4
+          ik:
+            angleRange: [-135, 135]
           children:
             - name: leftLowerLeg
-              render: *leg
-              pos: [12, 0]
+              render:
+                as: polyline
+                pts: [[0, 0], [0, 12]]
+                angle: 12
+                color: white
+                join: round
+                cap: round
+                width: 4
+              pos: [0, 12]
               ik:
-                angleRange: [-180, 0]
+                angleRange: [-135, 135]
               children:
-                - children:
+                - pos: [0, 12]
+                  children:
                     - name: leftFoot
-                      pos: [12, 0]
-                      render:
+                      render: &foot
                         as: sprite
                         sprite: explorerFoot
-                        anchor: [-0.5, 0]
+                        anchor: [-0.5, -1]
                       constraint:
                         angle: [body, 0, 0]
                   ik:
                     target: [leftFootTarget, 2]
         - name: rightUpperLeg
-          pos: [6, 12]
-          render: *leg
+          pos: [5, 13]
+          render:
+            as: polyline
+            pts: [[0, 0], [0, 12]]
+            angle: 12
+            color: white
+            join: round
+            cap: round
+            width: 4
+          ik:
+            angleRange: [-135, 135]
           children:
             - name: rightLowerLeg
-              render: *leg
-              pos: [12, 0]
+              render:
+                as: polyline
+                pts: [[0, 0], [0, 12]]
+                angle: 12
+                color: white
+                join: round
+                cap: round
+                width: 4
+              pos: [0, 12]
               ik:
-                angleRange: [0, 180]
+                angleRange: [-135, 135]
               children:
-                - children:
+                - pos: [0, 12]
+                  children:
                     - name: rightFoot
-                      pos: [12, 0]
-                      render:
-                        as: sprite
-                        sprite: explorerFoot
-                        anchor: [-0.5, 0]
+                      render: *foot
                       constraint:
                         angle: [body, 0, 0]
                   ik:
                     target: [rightFootTarget, 2]
+        - name: leftUpperArm
+          pos: [-6, -12]
+          render:
+            as: polyline
+            pts: [[-12, 0], [0, 0]]
+            angle: -12
+            color: white
+            join: round
+            cap: round
+            width: 3
+          ik:
+            angleRange: [-90, 90]
+          children:
+            - name: leftLowerArm
+              pos: [-12, 0]
+              render:
+                as: polyline
+                pts: [[-10, 0], [0, 0]]
+                angle: -12
+                color: white
+                join: round
+                cap: round
+                width: 3
+              ik:
+                angleRange: [-90, 90]
+              children:
+                - pos: [-10, 0]
+                  children:
+                    - name: leftHand
+                      render: &hand
+                        as: sprite
+                        sprite: explorerHand
+                        anchor: top
+                        z: 2
+                      constraint:
+                        angle: [body, 0, 0]
+                  ik:
+                    target: [leftHandTarget, 2]
+        - name: rightUpperArm
+          pos: [6, -12]
+          render:
+            as: polyline
+            pts: [[0, 0], [12, 0]]
+            angle: 12
+            color: white
+            join: round
+            cap: round
+            width: 3
+          ik:
+            angleRange: [-90, 90]
+          children:
+            - name: rightLowerArm
+              pos: [12, 0]
+              render:
+                as: polyline
+                pts: [[0, 0], [10, 0]]
+                angle: 12
+                color: white
+                join: round
+                cap: round
+                width: 3
+              ik:
+                angleRange: [-90, 90]
+              children:
+                - pos: [10, 0]
+                  children:
+                    - name: rightHand
+                      render: *hand
+                      constraint:
+                        angle: [body, 0, 0]
+                  ik:
+                    target: [rightHandTarget, 2]
   tentacles:
     - name: horn
       bone: head

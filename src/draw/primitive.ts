@@ -2,6 +2,7 @@ import { Anchor, GameObj, LineCap, LineJoin, Outline, TextAlign, Uniform } from 
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
 import { STYLES } from "../TextStyles";
+import { polyline } from "./polyline";
 
 type JSONUniform = Record<string, number | XY | string | string[]>
 
@@ -64,6 +65,16 @@ type PolygonPrimitive = BaseRenderProps & ShapeOpt & {
     pts: XY[],
 };
 
+type PolylinePrimitive = BaseRenderProps & {
+    as: "polyline",
+    pts: XY[],
+    opacity?: number;
+    width?: number;
+    join?: LineJoin;
+    miterLimit?: number;
+    cap?: LineCap;
+}
+
 type TextTransform = {
     pos?: XY;
     scale?: XY | number;
@@ -94,6 +105,7 @@ export type Primitive =
     | CirclePrimitive
     | EllipsePrimitive
     | PolygonPrimitive
+    | PolylinePrimitive
     | TextPrimitive;
 
 export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) {
@@ -121,6 +133,14 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
         case "polygon":
             obj.use(K.polygon(primitive.pts.map(([x, y]) => K.vec2(x, y)), {
                 fill: primitive.fill
+            })); break;
+        case "polyline":
+            obj.use(polyline(primitive.pts.map(([x, y]) => K.vec2(x, y)), {
+                width: primitive.width,
+                join: primitive.join,
+                opacity: primitive.opacity,
+                cap: primitive.cap,
+                miterLimit: primitive.miterLimit,
             })); break;
         case "text":
             obj.use(K.text("", {
