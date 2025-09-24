@@ -16,8 +16,10 @@ export interface DistanceCompPlus extends Comp {
     p2: Vec2,
     length: number
     drawOpts: Omit<DrawLinesOpt, "pts">
-    readonly worldP2: Vec2
     readonly worldP1: Vec2
+    readonly worldP2: Vec2
+    readonly localP1: Vec2
+    readonly localP2: Vec2;
 }
 
 export interface KAPLAYSpringsPlugin {
@@ -49,6 +51,12 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                 },
                 get worldP1() {
                     return (this as any).transform.transformPointV(this.p1, K.vec2());
+                },
+                get localP1() {
+                    return (this as any).transform.inverse.transformPointV(this.worldP1, K.vec2());
+                },
+                get localP2() {
+                    return (this as any).transform.inverse.transformPointV(this.worldP2, K.vec2());
                 },
                 update(this: GameObj<PosComp | BodyComp | DistanceCompPlus>) {
 
@@ -132,7 +140,7 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                         ...this,
                         ...this.drawOpts,
                         pos: K.Vec2.ZERO,
-                        pts: [this.fromWorld(this.worldP1), this.fromWorld(this.worldP2)],
+                        pts: [this.localP1, this.localP2],
                     });
                 }
             }
