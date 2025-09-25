@@ -24,7 +24,6 @@
         "@types/js-yaml": "^4.0.9",
         "esbuild": "^0.25.0",
         "esbuild-plugin-glsl": "^1.4.0",
-        "esbuild-yaml": "^3.0.3",
         "nodemon": "^3.1.10",
         "stacktrace-js": "^2.0.2",
         "typescript": "^5.6.2"

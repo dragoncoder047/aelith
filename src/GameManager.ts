@@ -6,12 +6,12 @@ import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
 import * as EntityManager from "./entity/EntityManager";
-import * as SceneManager from "./scenes/SceneManager";
-import inputsPNG from "./static/system_assets/inputs.png";
-import inputsYAML from "./static/system_assets/inputs.yaml";
-import kaplayPNG from "./static/system_assets/kaplay-logo.png";
 import * as RoomManager from "./room/RoomManager";
+import * as SceneManager from "./scenes/SceneManager";
 import * as StateManager from "./state/StateManager";
+import inputsDEF from "./static/system_assets/inputButtons";
+import inputsPNG from "./static/system_assets/inputs.png";
+import kaplayPNG from "./static/system_assets/kaplay-logo.png";
 
 
 export function setup() {
@@ -19,7 +19,7 @@ export function setup() {
     DownloadManager.installLoadingScreen();
     // where do I put this?
     ZZFX.sampleRate = 48000; // 48kHz seems to be more common now than 44.1kHz so let's use that
-    K.loadSpriteAtlas(inputsPNG, inputsYAML);
+    K.loadSpriteAtlas(inputsPNG, inputsDEF);
     K.loadSprite("kaplay", kaplayPNG);
     K.loadHappy();
     InputManager.loadAssets();

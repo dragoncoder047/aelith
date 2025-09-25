@@ -1,0 +1,44 @@
+const all = {
+    width: 384,
+    height: 16,
+    sliceX: 24,
+    x: 0
+};
+
+export const map = {
+    font_xbox: { ...all, y: 0 },
+    font_switch: { ...all, y: 16 },
+    font_ps4: { ...all, y: 32 },
+    font_ps5: { ...all, y: 38 },
+    keyfont_1: {
+        x: 0,
+        y: 64,
+        width: 512,
+        height: 32,
+        sliceX: 32,
+        sliceY: 2,
+    },
+    keyfont_2: {
+        x: 128,
+        y: 80,
+        width: 160,
+        height: 16,
+        sliceX: 5,
+    },
+    keyfont_3: {
+        x: 288,
+        y: 80,
+        width: 48,
+        height: 16
+    },
+    mousefont: {
+        x: 0,
+        y: 96,
+        width: 64,
+        height: 16,
+        sliceX: 4
+    },
+};
+
+export default map;
+
