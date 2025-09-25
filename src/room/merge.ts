@@ -55,59 +55,53 @@ export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number)
 
 // Thanks ChatGPT.
 function addBridgingColliders(colliders: ColliderEntry[], tileSize: number) {
-    const toRect = (c: ColliderEntry): [number, number, number, number] => {
-        const h = c.def.hitbox;
-        const left = h[0] + c.pos.x;
-        const top = h[1] + c.pos.y;
-        const right = left + h[2];
-        const bottom = top + h[3];
-        return [left, top, right, bottom];
-    };
-
     const olen = colliders.length;
     for (let a = 0; a < olen; a++) {
         const A = colliders[a]!;
-        const [leftA, topA, rightA, bottomA] = toRect(A);
+        const [lA, tA, rA, bA] = toRect(A);
         for (let b = a + 1; b < olen; b++) {
             const B = colliders[b]!;
-            const [leftB, topB, rightB, bottomB] = toRect(B);
+            const [lB, tB, rB, bB] = toRect(B);
 
             // compute overlaps and gaps
-            const horizOverlap = Math.min(rightA, rightB) - Math.max(leftA, leftB);
-            const vertOverlap = Math.min(bottomA, bottomB) - Math.max(topA, topB);
-            const gapX = Math.max(leftB - rightA, leftA - rightB); // positive if separated horizontally
-            const gapY = Math.max(topB - bottomA, topA - bottomB); // positive if separated vertically
+            const hOverlap = min(rA, rB) - max(lA, lB);
+            const vOverlap = min(bA, bB) - max(tA, tB);
+            const gapX = max(lB - rA, lA - rB); // positive if separated horizontally
+            const gapY = max(tB - bA, tA - bB); // positive if separated vertically
 
-            // Horizontal neighbor (A left of B or vice versa), bridge if vertical overlap exists and horizontal gap <= gapMax
-            if (vertOverlap > 0 && gapX > 0 && gapX <= tileSize) {
-                // simpler: left = min(rightA, leftB) and right = max(rightA, leftB)
-                const connLeft = Math.min(rightA, leftB);
-                const connRight = Math.max(rightA, leftB);
-                // vertical span is the overlap
-                const connTop = Math.max(topA, topB);
-                const connBottom = Math.min(bottomA, bottomB);
-
-                // guard: ensure positive width/height
-                const width = connRight - connLeft;
-                const height = connBottom - connTop;
-                if (width > 0 && height > 0) {
-                    colliders.push({ ...A, def: { ...A.def, hitbox: [connLeft - A.pos.x, connTop - A.pos.y, width, height] } });
-                }
+            // Horizontal neighbor (A left of B or vice versa)
+            var connL = 0, connR = 0, connT = 0, connB = 0;
+            if (vOverlap > 0 && gapX > 0 && gapX <= tileSize) {
+                connL = min(rA, lB);
+                connR = max(rA, lB);
+                connT = max(tA, tB);
+                connB = min(bA, bB);
             }
 
-            // Vertical neighbor (A above B or vice versa), bridge if horizontal overlap exists and vertical gap <= gapMax
-            if (horizOverlap > 0 && gapY > 0 && gapY <= tileSize) {
-                const connTop = Math.min(bottomA, topB);
-                const connBottom = Math.max(bottomA, topB);
-                const connLeft = Math.max(leftA, leftB);
-                const connRight = Math.min(rightA, rightB);
-
-                const width = connRight - connLeft;
-                const height = connBottom - connTop;
-                if (width > 0 && height > 0) {
-                    colliders.push({ ...A, def: { ...A.def, hitbox: [connLeft - A.pos.x, connTop - A.pos.y, width, height] } });
-                }
+            // Vertical neighbor (A above B or vice versa)
+            else if (hOverlap > 0 && gapY > 0 && gapY <= tileSize) {
+                connL = max(lA, lB);
+                connR = min(rA, rB);
+                connT = min(bA, tB);
+                connB = max(bA, tB);
+            }
+            // guard: ensure positive width/height
+            const width = connR - connL;
+            const height = connB - connT;
+            if (width > 0 && height > 0) {
+                colliders.push({ ...A, def: { ...A.def, hitbox: [connL - A.pos.x, connT - A.pos.y, width, height] } });
             }
         }
     }
 }
+
+function toRect(c: ColliderEntry): [number, number, number, number] {
+    const h = c.def.hitbox;
+    const left = h[0] + c.pos.x;
+    const top = h[1] + c.pos.y;
+    const right = left + h[2];
+    const bottom = top + h[3];
+    return [left, top, right, bottom];
+}
+
+const min = Math.min, max = Math.max;
