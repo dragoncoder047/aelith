@@ -18,8 +18,8 @@ indexMapping:
   "$": [2, 0]
   "+": [0, 3]
   ":": [3]
-  E: [[explorer]]
-  a: [[agent]]
+  E: [explorer]
+  a: [agent]
 doors:
 entities:
   explorer:

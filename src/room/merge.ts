@@ -49,35 +49,38 @@ export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number)
             }
         }
     }
-    addBridgingColliders(outColliders, tileSize);
+    fillGaps(outColliders, tileSize);
+    mergeAdjacent(outColliders);
     return outColliders;
 }
 
 // Thanks ChatGPT.
-function addBridgingColliders(colliders: ColliderEntry[], tileSize: number) {
+function fillGaps(colliders: ColliderEntry[], tileSize: number) {
     const olen = colliders.length;
-    for (let a = 0; a < olen; a++) {
+    var a: number, b: number;
+    for (a = 0; a < olen; a++) {
         const A = colliders[a]!;
-        const [lA, tA, rA, bA] = toRect(A);
-        for (let b = a + 1; b < olen; b++) {
+        const [lA, tA, rA, bA] = toRect(A), hA = bA - tA, wA = rA - lA;
+        for (b = a + 1; b < olen; b++) {
             const B = colliders[b]!;
-            const [lB, tB, rB, bB] = toRect(B);
+            if (A.tag !== B.tag) continue;
+            const [lB, tB, rB, bB] = toRect(B), hB = bB - tB, wB = rB - lB;
 
-            // compute overlaps and gaps
+            // find overlaps and gaps
             const hOverlap = min(rA, rB) - max(lA, lB);
             const vOverlap = min(bA, bB) - max(tA, tB);
             const gapX = max(lB - rA, lA - rB); // positive if separated horizontally
             const gapY = max(tB - bA, tA - bB); // positive if separated vertically
 
             // Horizontal neighbor (A left of B or vice versa)
-            var connL = 0, connR = 0, connT = 0, connB = 0;
+            var connL = 0, connR = 0, connT = 0, connB = 0, vert = false;
             if (vOverlap > 0 && gapX > 0 && gapX <= tileSize) {
+                vert = true;
                 connL = min(rA, lB);
                 connR = max(rA, lB);
                 connT = max(tA, tB);
                 connB = min(bA, bB);
             }
-
             // Vertical neighbor (A above B or vice versa)
             else if (hOverlap > 0 && gapY > 0 && gapY <= tileSize) {
                 connL = max(lA, lB);
@@ -85,12 +88,88 @@ function addBridgingColliders(colliders: ColliderEntry[], tileSize: number) {
                 connT = min(bA, tB);
                 connB = max(bA, tB);
             }
-            // guard: ensure positive width/height
             const width = connR - connL;
             const height = connB - connT;
+            const slA = min(lA, connL);
+            const swA = max(rA, connR) - slA;
+            const stA = min(tA, connT);
+            const shA = max(bA, connB) - stA;
+            const slB = min(lB, connL);
+            const swB = max(rB, connR) - slB;
+            const stB = min(tB, connT);
+            const shB = max(bB, connB) - stB;
             if (width > 0 && height > 0) {
+                if (vert) {
+                    if (hA === height) {
+                        A.def = {
+                            ...A.def,
+                            hitbox: [slA - A.pos.x, stA - A.pos.y, swA, shA],
+                        };
+                        continue;
+                    } else if (hB === height) {
+                        B.def = {
+                            ...B.def,
+                            hitbox: [slB - B.pos.x, stB - B.pos.y, swB, shB],
+                        };
+                        continue;
+                    }
+                } else {
+                    if (wA === width) {
+                        A.def = {
+                            ...A.def,
+                            hitbox: [slA - A.pos.x, stA - A.pos.y, swA, shA],
+                        };
+                        continue;
+                    } else if (wB === width) {
+                        B.def = {
+                            ...B.def,
+                            hitbox: [slB - B.pos.x, stB - B.pos.y, swB, shB],
+                        };
+                        continue;
+                    }
+                }
                 colliders.push({ ...A, def: { ...A.def, hitbox: [connL - A.pos.x, connT - A.pos.y, width, height] } });
             }
+        }
+    }
+}
+
+function mergeAdjacent(colliders: ColliderEntry[]) {
+    var i, j;
+    for (i = 0; i < colliders.length; i++) {
+        var A = colliders[i]!;
+        for (j = i + 1; j < colliders.length; j++) {
+            const B = colliders[j]!;
+            if (A.tag !== B.tag) continue;
+            const [l1, t1, r1, b1] = toRect(A);
+            const [l2, t2, r2, b2] = toRect(B);
+            console.log(l1, t1, r1, b1, l2, t2, r2, b2);
+
+            var ml, mt, mw, mh;
+
+            // vertical neighbors (left/right)
+            if (t1 === t2 && b1 === b2 && (r1 === l2 || r2 === l1)) {
+                ml = min(l1, l2);
+                mw = max(r1, r2) - ml;
+                mt = t1;
+                mh = b1 - t1;
+            }
+
+            // horizontal neighbors (top/bottom)
+            else if (l1 === l2 && r1 === r2 && (t1 === b2 || t2 === b1)) {
+                ml = l1;
+                mw = r1 - l1;
+                mt = min(t1, t2);
+                mh = max(b1, b2) - mt;
+            }
+            else {
+                console.log("no merge");
+                continue;
+            }
+            console.log("merged to", ml, mt, mw, mh);
+
+            colliders[i] = A = { ...A, def: { ...A.def, hitbox: [ml - A.pos.x, mt - A.pos.y, mw, mh] } }
+            colliders.splice(j--, 1);
         }
     }
 }

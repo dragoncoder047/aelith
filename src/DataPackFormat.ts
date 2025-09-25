@@ -17,7 +17,7 @@ export interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
-export type IndexMapping = number | [slot: string];
+export type IndexMapping = number | string;
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
     /** Text map rows */
@@ -25,9 +25,9 @@ export interface RoomData extends JSONObject {
     /**
      * The noninteractable environment tiles that make up the bulk of the world.
      *
-     * string -> entity slot or door slot (last found is used)
+     * number -> tile index to spawn
      *
-     * list of things -> spawn multiple tiles here
+     * string -> entity slot or door slot (last found is used)
      *
      * undefined or empty list -> nothing of course
      */

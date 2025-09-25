@@ -198,29 +198,33 @@ function buildFrozen(data: RoomData): Room["frozen"] {
             cRow.push(cEntry);
             if (indexes === undefined) continue;
             for (var index of indexes) {
-                if (Array.isArray(index)) {
-                    const [slot] = index;
-                    entityOrDoorSlots[slot] = pos;
-                }
-                else {
-                    const desc = tileDefs[index];
-                    if (desc?.render !== undefined) {
-                        tEntry.push({
-                            pos,
-                            r: desc.render,
-                            ds: desc.depth,
-                            auto: desc.autotile,
-                            tag: desc.tag
-                        });
-                    }
-                    if (desc?.physics !== undefined) {
-                        cEntry.push({
-                            i: index,
-                            pos,
-                            def: desc.physics,
-                            tag: desc.tag
-                        });
-                    }
+                switch (typeof index) {
+                    case "string":
+                        entityOrDoorSlots[index] = pos;
+                        break;
+                    case "number":
+                        const desc = tileDefs[index];
+                        if (desc?.render !== undefined) {
+                            tEntry.push({
+                                pos,
+                                r: desc.render,
+                                ds: desc.depth,
+                                auto: desc.autotile,
+                                tag: desc.tag
+                            });
+                        }
+                        if (desc?.physics !== undefined) {
+                            cEntry.push({
+                                i: index,
+                                pos,
+                                def: desc.physics,
+                                tag: desc.tag
+                            });
+                        }
+                        break;
+                    default:
+                        index satisfies never;
+                        throw new Error("unknown index object " + index);
                 }
             }
         }
