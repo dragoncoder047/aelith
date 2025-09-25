@@ -49,5 +49,5 @@ export function main() {
 }
 
 export function getDefaultValue<T extends keyof DataPackData["defaults"]>(valueName: T): DataPackData["defaults"][T] {
-    return pack!.defaults[valueName];
+    return pack.defaults[valueName];
 }
