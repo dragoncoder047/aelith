@@ -7,8 +7,11 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     for(int i = 0; i < MAX_REPL; i++) {
         if(i >= float(u_ncolors))
             break;
-        if(distance(o_color.rgb, u_colors_from[i].rgb / 255.) < .01)
+        if(distance(o_color.rgb, u_colors_from[i].rgb / 255.) < .01) {
+            if(distance(u_colors_from[i].rgb, vec3(0.)) < .01)
+                discard;
             return vec4(u_colors_to[i].rgb / 255., o_color.a);
+        }
     }
     return o_color;
 }
