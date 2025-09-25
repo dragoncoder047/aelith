@@ -2,12 +2,12 @@ import { ColliderEntry } from "./Room";
 
 export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number): ColliderEntry[] {
     const outColliders: ColliderEntry[] = [];
-    var x: number, y: number;
-    for (var y = 0; y < colliders.length; y++) {
+    var x: number, y: number, n: number, x2, y2, addWidth = 0, addHeight = 0, tx, i; // in tiles
+    for (y = 0; y < colliders.length; y++) {
         const row = colliders[y]!;
-        for (var x = 0; x < row.length; x++) {
+        for (x = 0; x < row.length; x++) {
             const tilesHere = row[x]!;
-            for (var n = 0; n < tilesHere.length; n++) {
+            for (n = 0; n < tilesHere.length; n++) {
                 const thisTile = tilesHere[n]!;
                 if (!thisTile.def || !thisTile.def.merge || !thisTile.def.hitbox) {
                     // DON'T push one with no colliders
@@ -25,12 +25,12 @@ export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number)
                         }
                     }
                 };
-                var addWidth = 0, addHeight = 0, tx, i; // in tiles
-                for (var x2 = x + 1; thisTile.def.merge[0] && x2 < row.length; x2++, addWidth++) {
+                addWidth = addHeight = 0;
+                for (x2 = x + 1; thisTile.def.merge[0] && x2 < row.length; x2++, addWidth++) {
                     if (!check(x2, y)) break;
                     destroy(x2, y);
                 }
-                downstretchloop: for (var y2 = y + 1; thisTile.def.merge[1] && y2 < colliders.length; y2++, addHeight++) {
+                downstretchloop: for (y2 = y + 1; thisTile.def.merge[1] && y2 < colliders.length; y2++, addHeight++) {
                     for (tx = x, i = 0; i <= addWidth; tx++, i++) {
                         if (!check(tx, y2)) break downstretchloop;
                     }
