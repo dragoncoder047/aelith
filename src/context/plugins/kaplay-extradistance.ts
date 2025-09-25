@@ -33,7 +33,7 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
         extradistance(opts = {}) {
             if (!opts.other?.has("body")) opts.moveOther = false;
             return {
-                id: "spring",
+                id: "extradistance",
                 require: ["pos"],
                 other: opts.other ?? K.getTreeRoot(),
                 p1: opts.p1 ?? K.vec2(0, 0),
