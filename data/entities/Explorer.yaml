@@ -36,7 +36,7 @@ model:
         - name: neck
           pos: [0, -25]
           ik:
-            angleRange: [-135, 135]
+            angleRange: [-100, 100]
           children:
             - name: head
               render:
@@ -233,7 +233,7 @@ model:
         cap: round
         z: -1
       sizes: [2.7, 1, easeOutQuad]
-      masses: [.1, .1]
+      masses: [1, 1]
       eachConstraints:
         distance: [head, 13, -1]
     - name: tail
@@ -243,4 +243,4 @@ model:
       lps: 5
       render: *tentacle
       sizes: [4, 1, easeOutQuad]
-      masses: [.1, .1]
+      masses: [1, 1]
