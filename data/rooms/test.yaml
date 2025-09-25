@@ -4,10 +4,10 @@ map:
     "       ###########",
     "       #        ##",
     "       #        ##",
-    "       #        ##",
+    "       #   a    ##",
     "       #        ##",
     "       # ###    ##",
-    "     ###E|a|    ##",
+    "     ###E| |    ##",
     "    ## | | |    ##",
     "#######$#$#$#   ##",
     "##################",
@@ -23,4 +23,7 @@ entities:
   explorer:
     id: explorer
     kind: explorer
+  agent:
+    id: agent
+    kind: agent
 gravity: 300

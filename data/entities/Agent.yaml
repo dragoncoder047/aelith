@@ -1,0 +1,70 @@
+tags: [agent]
+hitbox:
+  - [-10, -10]
+  - [10, -10]
+  - [10, 10]
+  - [-10, 10]
+navHeight: [0, 0]
+behavior:
+  canFly: yes
+  moveSpeed: 256
+  inventorySlots: 2
+  inventorySize: null
+model:
+  skeleton:
+    - name: gazeTarget
+      pos: [100, -25]
+    - name: bodyPivot
+      children:
+        - name: body
+          render:
+            as: sprite
+            sprite: agent
+            anchor: center
+            angle: 90
+          ik:
+            naturalDirection: [0, -1]
+          children:
+            - name: rightEyeSocket
+              pos: [0, -4]
+              children:
+                - name: rightEye
+                  pos: [-1, 0]
+                  render: &eye
+                    as: rect
+                    size: [1, 3]
+                    anchor: left
+                    color: lime
+                  ik:
+                    target: [gazeTarget, 1]
+            - name: leftEyeSocket
+              pos: [-4, -4]
+              children:
+                - name: leftEye
+                  pos: [-1, 0]
+                  render: *eye
+                  ik:
+                    target: [gazeTarget, 1]
+        - name: gazeSource
+          pos: [0, -5]
+          ik:
+            target: [gazeTarget, 1]
+  tentacles:
+    - &ht
+      name: ht1
+      bone: body
+      render:
+        color: xt248
+        cap: square
+        z: -1
+      pos: [4, -6]
+      n: 3
+      lps: 3
+      sizes: [3, 1]
+      masses: [1, 1]
+      gravityIsLocal: yes
+      eachConstraints:
+        angle: [body, 1, -90]
+    - <<: *ht
+      name: ht2
+      pos: [5, 2]

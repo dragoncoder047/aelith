@@ -11,7 +11,9 @@ export function polyline(pts: Vec2[], opt: Omit<DrawLinesOpt, "pts">): PolylineC
         id: "polyline",
         draw() {
             K.drawLines({
+                ...this,
                 ...opt,
+                pos: K.Vec2.ZERO,
                 pts,
             });
         },

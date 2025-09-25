@@ -7,7 +7,7 @@ hitbox:
   - [-0.1, 31.5]
   - [-16, 16]
   - [-16, -16]
-navHeight: [2, 0]
+navHeight: [1, 0]
 behavior:
   canFly: no
   moveSpeed: 128
@@ -51,10 +51,10 @@ model:
                   pos: [-3, -2.4]
                   children:
                     - name: rightEye
-                      pos: [1, 0]
-                      render:
+                      pos: [-1, 0]
+                      render: &eye
                         as: rect
-                        anchor: center
+                        anchor: left
                         size: [1, 3]
                         color: white
                       ik:
@@ -65,12 +65,8 @@ model:
                   pos: [1, -2.4]
                   children:
                     - name: leftEye
-                      pos: [1, 0]
-                      render:
-                        as: rect
-                        anchor: center
-                        size: [1, 3]
-                        color: white
+                      pos: [-1, 0]
+                      render: *eye
                       ik:
                         target: [gazeTarget, 1]
                       constraint:

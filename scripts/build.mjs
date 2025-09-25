@@ -2,7 +2,6 @@ import * as esbuild from "esbuild";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import packageJSON from "../package.json" with { type: "json" };
-import yamlPlugin from "esbuild-yaml";
 
 /**
  * @param {string} path
@@ -14,20 +13,6 @@ function exists(path) {
 
 // ---------------------------------------------------------------------------
 // MARK: config and CLI
-
-// why do I need this??? YAML supports merge keys
-// but I cannot get esbuild-yaml to enable it!!
-function transform(val) {
-    if (typeof val !== "object") return val;
-    if (Array.isArray(val)) return val.map(transform);
-    const out = {};
-    const names = Object.keys(val);
-    for (var name of names) {
-        if (name === "<<") Object.assign(out, transform(val[name]));
-        else out[name] = transform(val[name]);
-    }
-    return out;
-}
 
 /** @type {esbuild.BuildOptions} */
 const config = {
@@ -49,7 +34,6 @@ const config = {
     treeShaking: true,
     outfile: "build/aelith.js",
     plugins: [
-        yamlPlugin({ transform }),
         {
             name: "nonexistent_go_bye_bye",
             setup(build) {

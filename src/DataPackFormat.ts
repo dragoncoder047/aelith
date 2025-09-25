@@ -102,7 +102,6 @@ export interface EntityPrototypeData extends JSONObject {
     hitbox?: XY[];
     friction?: number;
     restitution?: number;
-    gravityScale?: number;
     mass?: number;
     // TODO: automatic area effector and conveyor effector stuff
     /** restricted bounds on navigation height (in tiles) for pathfinding */
@@ -206,6 +205,8 @@ export interface EntityModelTentacleData extends JSONObject {
     /** the length of each segment */
     lps: number;
     render: Omit<PolylinePrimitive, "pts" | "as">,
+    extendDir?: XY
+    gravityIsLocal?: boolean
     /** parent bone it is attached to */
     bone: string;
     /** local position on the attached bone */
