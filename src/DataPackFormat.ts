@@ -17,7 +17,7 @@ export interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
-export type IndexMapping = number | [slot: string, ...offset: XY];
+export type IndexMapping = number | [slot: string];
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
     /** Text map rows */

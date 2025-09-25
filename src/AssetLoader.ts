@@ -62,7 +62,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
                 case undefined:
                 case null:
                     // @ts-expect-error
-                    return K.loadShader(asset.id, asset.src.vert, asset.src.frag);
+                    return K.loadShader(asset.id, asset.src.vert && ("\n" + asset.src.vert), asset.src.frag && ("\n" + asset.src.frag));
             }
             break;
         case "song": kindOK = true;

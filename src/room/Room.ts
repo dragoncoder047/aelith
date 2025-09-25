@@ -199,8 +199,8 @@ function buildFrozen(data: RoomData): Room["frozen"] {
             if (indexes === undefined) continue;
             for (var index of indexes) {
                 if (Array.isArray(index)) {
-                    const [slot, x, y] = index;
-                    entityOrDoorSlots[slot] = pos.add(K.vec2(x, y));
+                    const [slot] = index;
+                    entityOrDoorSlots[slot] = pos;
                 }
                 else {
                     const desc = tileDefs[index];

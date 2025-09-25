@@ -41,3 +41,16 @@ tiles:
         wall: 255
         noHitWall: 255
     depth: 2
+  # 3: wires (purely for decoration, no hitbox)
+  - tag: wire
+    render:
+      as: sprite
+      sprite: wires
+      shader: wiresPulse
+      uniform:
+        u_time: time
+      z: 1
+    autotile:
+      bits: 4
+      pats: !include ../textures/seamless4x4.yaml
+

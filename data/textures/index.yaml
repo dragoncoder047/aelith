@@ -31,3 +31,8 @@
   loader: url
   src: !include walltiles.png
   metadata: !include walltiles.yaml
+- kind: sprite
+  id: wires
+  loader: url
+  src: !include wires.png
+  metadata: !include wires.yaml

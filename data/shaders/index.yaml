@@ -1,9 +1,12 @@
 - kind: shader
   id: fuzzy
-  src: !include fuzzy.glsl
+  src:
+    frag: !include fuzzy.glsl
 - kind: shader
   id: colorReplace
-  src: !include colorReplace.glsl
+  src:
+    frag: !include colorReplace.glsl
 - kind: shader
   id: wiresPulse
-  src: !include  wiresPulse.glsl
+  src:
+    frag: !include  wiresPulse.glsl

@@ -1,4 +1,4 @@
-import { Anchor, GameObj, LineCap, LineJoin, Outline, TextAlign, Uniform } from "kaplay";
+import { Anchor, GameObj, LineCap, LineJoin, TextAlign, Uniform } from "kaplay";
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
 import { STYLES } from "../TextStyles";
@@ -176,15 +176,15 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                         default: uv[u] = K.rgb(v);
                     } break;
                     case "number": uv[v] = v; break;
-                    default: switch (typeof v[0]) {
+                    default: switch (Array.isArray(v) && typeof v[0]) {
                         case "string": uv[u] = v.map(c => K.rgb(c as string)); break;
-                        case "number": uv[u] = K.vec2(v[0], v[1] as number); break;
+                        case "number": uv[u] = K.vec2(v[0] as number, v[1] as number); break;
                         default:
                             throw new Error("unknown uniform type " + JSON.stringify(v));
                     }
                 }
             }
-            return uv
+            return uv;
         }));
     }
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
