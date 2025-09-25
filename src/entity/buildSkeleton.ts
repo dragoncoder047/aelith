@@ -141,17 +141,22 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     // -------
     // then install the kinematics constraints
     // (this is to allow nontree and circular references on bones. but who would really want that though)
+    const assertGet = (bone: string) => {
+        const b = map[bone];
+        if (!b) throw new Error(`no such bone ${bone} in skeleton of ${e.kind}`);
+        return b;
+    }
     for (var c of constraintEntries) {
         const target = map[c.t]!;
         if (c.c.angle) {
             console.log("attaching angle constraint", c.c);
             const [src, scale, offset] = c.c.angle;
-            target.use(K.constraint.rotation(map[src]!, { scale, offset }));
+            target.use(K.constraint.rotation(assertGet(src), { scale, offset }));
         }
         if (c.c.distance) {
             console.log("attaching distance constraint", c.c);
             const [src, distance, bounds] = c.c.distance;
-            target.use(K.constraint.distance(map[src]!, {
+            target.use(K.constraint.distance(assertGet(src), {
                 distance,
                 mode: (["minimum", "equal", "maximum"] as const)[bounds + 1]!
             }));
@@ -159,17 +164,17 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         if (c.c.offset) {
             console.log("attaching offset constraint", c.c);
             const [src, [x, y]] = c.c.offset;
-            target.use(K.constraint.translation(map[src]!, { offset: K.vec2(x, y) }));
+            target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
         }
         if (c.c.scale) {
             console.log("attaching scale constraint", c.c);
             const [src] = c.c.scale;
-            target.use(K.constraint.scale(map[src]!, {}));
+            target.use(K.constraint.scale(assertGet(src), {}));
         }
     }
     for (var i of ikEntries) {
         console.log("attaching IK constraint", i);
-        map[i.s]!.use(K.constraint.ik(map[i.t]!, { algorithm: "CCD", depth: i.d }));
+        map[i.s]!.use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     return map;
 }
