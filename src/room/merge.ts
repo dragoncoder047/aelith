@@ -143,7 +143,6 @@ function mergeAdjacent(colliders: ColliderEntry[]) {
             if (A.tag !== B.tag) continue;
             const [l1, t1, r1, b1] = toRect(A);
             const [l2, t2, r2, b2] = toRect(B);
-            console.log(l1, t1, r1, b1, l2, t2, r2, b2);
 
             var ml, mt, mw, mh;
 

@@ -20,8 +20,10 @@ export function getEntityPrototypeStrict(name: string): EntityPrototypeData {
 
 export function startHookOnEntity(entity: Entity, name: string, context: JSONObject): ScriptHandler.Task | null {
     const proto = getEntityPrototypeStrict(entity.kind);
-    const hook = proto.hooks?.[name];
+    var hook = proto.hooks?.[name] as any;
     if (!hook) return null;
+    if (Array.isArray(hook)) hook = { impl: hook, priority: 0 };
+    console.log(name, hook);
     return ScriptHandler.spawnTask(hook.priority, hook.impl, entity, context);
 }
 
@@ -46,4 +48,13 @@ export function destroyEntity(entity: Entity) {
     if (allEntities.includes(entity))
         allEntities.splice(allEntities.indexOf(entity), 1);
     ScriptHandler.killAllTasksControlledBy(entity);
+}
+
+var activePlayer: Entity | null = null;
+export function setPlayer(e: Entity | null) {
+    activePlayer = e;
+}
+
+export function getPlayer(): Entity | null {
+    return activePlayer;
 }

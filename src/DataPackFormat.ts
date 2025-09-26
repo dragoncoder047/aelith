@@ -107,6 +107,7 @@ export interface EntityPrototypeData extends JSONObject {
     /** restricted bounds on navigation height (in tiles) for pathfinding */
     navHeight: [low: number, high: number];
     behavior: {
+        canBePlayer?: boolean;
         /** if true, won't fall and can fly upwards and downwards */
         canFly: boolean;
         /** maximum move speed; sprint is always 1.5X higher */
@@ -118,7 +119,7 @@ export interface EntityPrototypeData extends JSONObject {
         /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
         inventorySize?: number;
     }
-    hooks: Record<string, HookData>;
+    hooks: Record<string, HookData | CrustyJSONCode>;
 }
 
 interface EntityModelData extends JSONObject {
@@ -136,6 +137,8 @@ interface EntityModelData extends JSONObject {
         /** anim to be played while sprinting */
         sprint: EntityAnimData;
     }
+    // name of the bone that is the speech bubble origin
+    speechBubbleOrigin?: string;
 }
 
 interface EntityMotionAnimDef extends JSONObject {
@@ -151,8 +154,10 @@ interface EntityMotionAnimDef extends JSONObject {
 }
 
 interface EntityAnimData extends JSONObject {
-    /** animations listed here will NOT blend with this one; if 2 try to override each other the last one wins */
-    override: string[];
+    /** will pause these animations when started */
+    override?: string[];
+    /** will forcibly stop these animations when started, */
+    replace?: string[];
     mode: "once" | "loop" | "sticky";
     pingpong?: boolean;
     channels: EntityAnimChannelData[];

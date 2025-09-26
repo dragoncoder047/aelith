@@ -1,19 +1,25 @@
 tags: [agent]
 hitbox:
-  - {x: -10, y: -10}
-  - {x: 10, y: -10}
-  - {x: 10, y: 10}
-  - {x: -10, y: 10}
-navHeight: {x: 0, y: 0}
+  - { x: -10, y: -10 }
+  - { x: 10, y: -10 }
+  - { x: 10, y: 10 }
+  - { x: -10, y: 10 }
+navHeight: { x: 0, y: 0 }
 behavior:
+  canBePlayer: yes
   canFly: yes
   moveSpeed: 256
   inventorySlots: 2
   inventorySize: null
 model:
+  speechBubbleOrigin: speechBubbleOrigin
   skeleton:
+    - name: speechBubbleOrigin
+      pos: { x: 0, y: -16 }
+      render:
+        layer: speechBubble
     - name: gazeTarget
-      pos: {x: 100, y: -25}
+      pos: { x: 100, y: 0 }
     - name: bodyPivot
       children:
         - name: body
@@ -23,13 +29,13 @@ model:
             anchor: center
             angle: 90
           ik:
-            naturalDirection: {x: 0, y: -1}
+            naturalDirection: { x: 0, y: -1 }
           children:
             - name: rightEyeSocket
-              pos: {x: 0, y: -4}
+              pos: { x: 0, y: -4 }
               children:
                 - name: rightEye
-                  pos: {x: -1, y: 0}
+                  pos: { x: -1, y: 0 }
                   render: &eye
                     as: rect
                     size: [1, 3]
@@ -38,15 +44,15 @@ model:
                   ik:
                     target: [gazeTarget, 1]
             - name: leftEyeSocket
-              pos: {x: -4, y: -4}
+              pos: { x: -4, y: -4 }
               children:
                 - name: leftEye
-                  pos: {x: -1, y: 0}
+                  pos: { x: -1, y: 0 }
                   render: *eye
                   ik:
                     target: [gazeTarget, 1]
         - name: gazeSource
-          pos: {x: 0, y: -5}
+          pos: { x: 0, y: -5 }
           ik:
             target: [gazeTarget, 1]
   tentacles:
@@ -57,7 +63,7 @@ model:
         color: xt248
         cap: square
         z: -1
-      pos: {x: 4, y: -6}
+      pos: { x: 4, y: -6 }
       n: 3
       lps: 3
       sizes: [3, 1]
@@ -67,4 +73,4 @@ model:
         angle: [body, 1, -90]
     - <<: *ht
       name: ht2
-      pos: {x: 5, y: 2}
+      pos: { x: 5, y: 2 }

@@ -4,7 +4,7 @@ import { XY } from "../DataPackFormat";
 import { STYLES } from "../TextStyles";
 import { polyline } from "./polyline";
 
-type JSONUniform = Record<string, number | XY | string | string[] | number[]>
+type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
 
 type BaseRenderProps = {
     pos?: XY;
@@ -165,28 +165,27 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
     if (p.color) obj.use(K.color(K.rgb(p.color)));
     if (p.opacity) obj.use(K.opacity(p.opacity));
     if (p.shader) {
-        obj.use(K.shader(p.shader, () => {
-            const uv = {} as Uniform;
-            for (var u in p.uniform) {
-                const v = p.uniform[u]!;
-                switch (typeof v) {
-                    case "string": switch (v) {
-                        case "time": uv[u] = K.time(); break;
-                        case "staticrand": uv[u] = uid; break;
-                        default: uv[u] = K.rgb(v);
-                    } break;
-                    case "number": uv[u] = v; break;
-                    default: switch (Array.isArray(v) && typeof v[0]) {
-                        case false: uv[u] = K.vec2((v as XY).x, (v as XY).y); break;
-                        case "string": uv[u] = (v as string[]).map(c => K.rgb(c as string)); break;
-                        case "number": uv[u] = v as number[]; break;
-                        default:
-                            throw new Error("unknown uniform type " + JSON.stringify(v));
-                    }
+        const uv = {} as Uniform;
+        for (var u in p.uniform) {
+            const v = p.uniform[u]!;
+            switch (typeof v) {
+                case "string": switch (v) {
+                    case "time": uv[u] = K.time(); obj.onUpdate(() => uv[u] = K.time()); break;
+                    case "staticrand": uv[u] = uid; break;
+                    default: uv[u] = K.rgb(v);
+                } break;
+                case "number": uv[u] = v; break;
+                default: switch (Array.isArray(v) && typeof v[0]) {
+                    case "string": uv[u] = (v as string[]).map(c => K.rgb(c as string)); break;
+                    case "number": uv[u] = v as number[]; break;
+                    case "object": uv[u] = (v as XY[]).map(({x, y}) => K.vec2(x, y)); break;
+                    case false: uv[u] = K.vec2((v as XY).x, (v as XY).y); break;
+                    default:
+                        throw new Error("unknown uniform type " + JSON.stringify(v));
                 }
             }
-            return uv;
-        }));
+        }
+        obj.use(K.shader(p.shader, uv));
     }
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
     if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.vec2(p.anchor.x, p.anchor.y)));

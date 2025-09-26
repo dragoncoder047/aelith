@@ -16,6 +16,7 @@ renderLayers:
       "background",
       "entities",
       "tiles",
+      "speechBubble",
       "ui",
     ]
   - "tiles"

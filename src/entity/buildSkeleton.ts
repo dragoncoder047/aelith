@@ -1,4 +1,4 @@
-import { BodyComp, EaseFuncs, GameObj, PosComp, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameEventMap, GameObj, PosComp, RotateComp } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
@@ -12,7 +12,7 @@ export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
     const { hitbox, mass, behavior, restitution, friction } = getEntityPrototypeStrict(e.kind);
     if (hitbox) {
         rootObj.use(K.area({
-            shape: new K.Polygon(hitbox.map(({x, y}) => K.vec2(x, y))),
+            shape: new K.Polygon(hitbox.map(({ x, y }) => K.vec2(x, y))),
             restitution: restitution ?? GameManager.getDefaultValue("restitution"),
             friction: friction ?? GameManager.getDefaultValue("friction")
         }));
@@ -126,9 +126,9 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             if (bone.children) {
                 buildBone(obj, bone.children);
             }
-            // if (bone.name === "gazeTarget") {
-            //     obj.use({ update(this: GameObj<PosComp>) { this.worldPos(K.toWorld(K.mousePos())) } })
-            // }
+            if (bone.name === "gazeTarget") {
+                obj.use({ update(this: GameObj<PosComp>) { this.worldPos(K.toWorld(K.mousePos())) } })
+            }
         }
     };
     buildBone(rootObj, model.skeleton);
@@ -158,7 +158,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             }));
         }
         if (c.c.offset) {
-            const [src, {x, y}] = c.c.offset;
+            const [src, { x, y }] = c.c.offset;
             target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
         }
         if (c.c.scale) {
@@ -169,5 +169,6 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     for (var i of ikEntries) {
         map[i.s]!.use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
+    e.speechBubble = <any>(model.speechBubbleOrigin ? assertGet(model.speechBubbleOrigin) : e.obj);
     return map;
 }

@@ -15,37 +15,43 @@ export interface DynamicTextComp extends Comp {
 
 export interface KAPLAYDynamicTextPlugin {
     strings: NestedStrings,
-    langs: NavigatorLanguage["languages"]
+    langs: string[],
+    preferredLanguage: string | null
     sub(s: string, vars?: NestedStrings): string
     addStrings(s: NestedStrings): Asset<NestedStrings>
-    setLanguages(langs: KAPLAYDynamicTextPlugin["langs"]): void
+    setAvailableLanguages(langs: KAPLAYDynamicTextPlugin["langs"]): void
+    useLanguage(lang: string | null): void;
+    currentLanguage(): string;
     dynamicText(t?: string): DynamicTextComp
 }
 
-export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
+export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYDynamicTextPlugin {
     return {
         strings: {},
         langs: ["en"],
+        preferredLanguage: null,
         sub(s, vars) {
             return subStrings(s, {
-                // @ts-expect-error
                 ...K.strings,
                 inputType: K.getLastInputDeviceType() === "gamepad"
                     ? "gamepad"
                     : "keyboard",
-                // @ts-expect-error
-                lang: findPreferredLanguage(K.langs),
+                lang: K.currentLanguage(),
                 ...vars
             });
         },
         addStrings(strings) {
-            // @ts-expect-error
             Object.assign(K.strings, strings);
             return new K.Asset(Promise.resolve(strings));
         },
-        setLanguages(langs) {
-            // @ts-expect-error
+        setAvailableLanguages(langs) {
             K.langs = langs;
+        },
+        useLanguage(lang) {
+            K.preferredLanguage = lang;
+        },
+        currentLanguage() {
+            return K.preferredLanguage ?? findPreferredLanguage(K.langs);
         },
         dynamicText(t = ""): DynamicTextComp {
             return {
@@ -54,7 +60,6 @@ export function kaplayDynamicStrings(K: KAPLAYCtx): KAPLAYDynamicTextPlugin {
                 t,
                 data: {},
                 update(this: GameObj<TextComp | DynamicTextComp>) {
-                    // @ts-expect-error
                     this.text = K.sub(this.t, this.data);
                 },
                 inspect() {

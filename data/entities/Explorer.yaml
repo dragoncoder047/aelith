@@ -1,40 +1,46 @@
 tags: [explorer]
 hitbox:
-  - {x: 0, y: -31.5}
-  - {x: 16, y: -16}
-  - {x: 16, y: 16}
-  - {x: .1, y: 31.5}
-  - {x: -0.1, y: 31.5}
-  - {x: -16, y: 16}
-  - {x: -16, y: -16}
-navHeight: {x: 1, y: 0}
+  - { x: 0, y: -31.5 }
+  - { x: 16, y: -16 }
+  - { x: 16, y: 16 }
+  - { x: .1, y: 31.5 }
+  - { x: -0.1, y: 31.5 }
+  - { x: -16, y: 16 }
+  - { x: -16, y: -16 }
+navHeight: { x: 1, y: 0 }
 behavior:
+  canBePlayer: yes
   canFly: no
   moveSpeed: 128
   jumpForce: 256
   inventorySlots: 8
   inventorySize: null
 model:
+  speechBubbleOrigin: speechBubbleOrigin
   skeleton:
+    - name: speechBubbleOrigin
+      pos: { x: 0, y: -36 }
+      render:
+        layer: speechBubble
     - name: gazeTarget
-      pos: {x: 100, y: -25}
+      pos: { x: 100, y: -25 }
     - name: leftFootTarget
-      pos: {x: -8, y: 29}
+      pos: { x: -8, y: 29 }
     - name: rightFootTarget
-      pos: {x: 8, y: 29}
+      pos: { x: 8, y: 29 }
     - name: leftHandTarget
-      pos: {x: -11, y: 8}
+      pos: { x: -11, y: 8 }
     - name: rightHandTarget
-      pos: {x: 11, y: 8}
+      pos: { x: 11, y: 8 }
     - name: body
       render:
         as: sprite
         sprite: explorerBody
         anchor: center
-      pos: {x: 0, y: 0}
+      pos: { x: 0, y: 0 }
       children:
         - name: neck
-          pos: {x: 0, y: -25}
+          pos: { x: 0, y: -25 }
           ik:
             angleRange: [-100, 100]
           children:
@@ -45,13 +51,13 @@ model:
                 anchor: center
                 angle: 90
               ik:
-                naturalDirection: {x: 0, y: -1}
+                naturalDirection: { x: 0, y: -1 }
               children:
                 - name: rightEyeSocket
-                  pos: {x: -3, y: -2.4}
+                  pos: { x: -3, y: -2.4 }
                   children:
                     - name: rightEye
-                      pos: {x: -1, y: 0}
+                      pos: { x: -1, y: 0 }
                       render: &eye
                         as: rect
                         anchor: left
@@ -62,24 +68,24 @@ model:
                       constraint:
                         angle: [neck, 0, 0]
                 - name: leftEyeSocket
-                  pos: {x: 1, y: -2.4}
+                  pos: { x: 1, y: -2.4 }
                   children:
                     - name: leftEye
-                      pos: {x: -1, y: 0}
+                      pos: { x: -1, y: 0 }
                       render: *eye
                       ik:
                         target: [gazeTarget, 1]
                       constraint:
                         angle: [neck, 0, 0]
             - name: gazeSource
-              pos: {x: 0, y: -10}
+              pos: { x: 0, y: -10 }
               ik:
                 target: [gazeTarget, 1]
         - name: leftUpperLeg
-          pos: {x: -5, y: 13}
+          pos: { x: -5, y: 13 }
           render:
             as: polyline
-            pts: [{x: 0, y: 0}, {x: 0, y: 9}]
+            pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
             angle: 12
             color: white
             join: round
@@ -91,32 +97,32 @@ model:
             - name: leftLowerLeg
               render:
                 as: polyline
-                pts: [{x: 0, y: 0}, {x: 0, y: 9}]
+                pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: {x: 0, y: 9}
+              pos: { x: 0, y: 9 }
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: {x: 0, y: 9}
+                - pos: { x: 0, y: 9 }
                   children:
                     - name: leftFoot
                       render: &foot
                         as: sprite
                         sprite: explorerFoot
-                        anchor: {x: -0.5, y: -1}
+                        anchor: { x: -0.5, y: -1 }
                       constraint:
                         angle: [body, 0, 0]
                   ik:
                     target: [leftFootTarget, 2]
         - name: rightUpperLeg
-          pos: {x: 5, y: 13}
+          pos: { x: 5, y: 13 }
           render:
             as: polyline
-            pts: [{x: 0, y: 0}, {x: 0, y: 9}]
+            pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
             angle: 12
             color: white
             join: round
@@ -128,17 +134,17 @@ model:
             - name: rightLowerLeg
               render:
                 as: polyline
-                pts: [{x: 0, y: 0}, {x: 0, y: 9}]
+                pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
                 angle: 12
                 color: white
                 join: round
                 cap: round
                 width: 4
-              pos: {x: 0, y: 9}
+              pos: { x: 0, y: 9 }
               ik:
                 angleRange: [-135, 135]
               children:
-                - pos: {x: 0, y: 9}
+                - pos: { x: 0, y: 9 }
                   children:
                     - name: rightFoot
                       render: *foot
@@ -147,10 +153,10 @@ model:
                   ik:
                     target: [rightFootTarget, 2]
         - name: leftUpperArm
-          pos: {x: -6, y: -12}
+          pos: { x: -6, y: -12 }
           render:
             as: polyline
-            pts: [{x: -12, y: 0}, {x: 0, y: 0}]
+            pts: [{ x: -12, y: 0 }, { x: 0, y: 0 }]
             angle: -12
             color: white
             join: round
@@ -160,10 +166,10 @@ model:
             angleRange: [-90, 90]
           children:
             - name: leftLowerArm
-              pos: {x: -12, y: 0}
+              pos: { x: -12, y: 0 }
               render:
                 as: polyline
-                pts: [{x: -10, y: 0}, {x: 0, y: 0}]
+                pts: [{ x: -10, y: 0 }, { x: 0, y: 0 }]
                 angle: -12
                 color: white
                 join: round
@@ -172,7 +178,7 @@ model:
               ik:
                 angleRange: [-90, 90]
               children:
-                - pos: {x: -10, y: 0}
+                - pos: { x: -10, y: 0 }
                   children:
                     - name: leftHand
                       render: &hand
@@ -185,10 +191,10 @@ model:
                   ik:
                     target: [leftHandTarget, 2]
         - name: rightUpperArm
-          pos: {x: 6, y: -12}
+          pos: { x: 6, y: -12 }
           render:
             as: polyline
-            pts: [{x: 0, y: 0}, {x: 12, y: 0}]
+            pts: [{ x: 0, y: 0 }, { x: 12, y: 0 }]
             angle: 12
             color: white
             join: round
@@ -198,10 +204,10 @@ model:
             angleRange: [-90, 90]
           children:
             - name: rightLowerArm
-              pos: {x: 12, y: 0}
+              pos: { x: 12, y: 0 }
               render:
                 as: polyline
-                pts: [{x: 0, y: 0}, {x: 10, y: 0}]
+                pts: [{ x: 0, y: 0 }, { x: 10, y: 0 }]
                 angle: 12
                 color: white
                 join: round
@@ -210,7 +216,7 @@ model:
               ik:
                 angleRange: [-90, 90]
               children:
-                - pos: {x: 10, y: 0}
+                - pos: { x: 10, y: 0 }
                   children:
                     - name: rightHand
                       render: *hand
@@ -221,7 +227,7 @@ model:
   tentacles:
     - name: horn
       bone: head
-      pos: {x: 13, y: -1}
+      pos: { x: 13, y: -1 }
       n: 5
       lps: 3
       render: &tentacle
@@ -234,9 +240,11 @@ model:
         distance: [head, 13, -1]
     - name: tail
       bone: body
-      pos: {x: 0, y: 12}
+      pos: { x: 0, y: 12 }
       n: 8
       lps: 5
       render: *tentacle
       sizes: [4, 1, easeOutQuad]
       masses: [1, 1]
+# hooks:
+#   load: [do, [anim, idle]]
