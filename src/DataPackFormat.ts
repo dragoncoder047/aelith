@@ -2,7 +2,7 @@ import { TextAlign } from "kaplay";
 import { JSONObject, JSONValue } from "./JSON";
 import { PolylinePrimitive, Primitive } from "./draw/primitive";
 
-export type XY = [x: number, y: number];
+export type XY = { x: number, y: number };
 
 export type RenderData = Primitive;
 
@@ -61,7 +61,7 @@ export interface StaticTileDefinition extends JSONObject {
         /** if true then entities can jump up and climb down through this as a platform effector */
         platform?: boolean;
         /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
-        hitbox: [...pos: XY, width: number, height: number];
+        hitbox: [pos: XY, width: number, height: number];
         /** whether the obj can be merged to make more efficient colliders. It will only merge with the same kind of tile. */
         merge?: [horizontally: boolean, vertically: boolean];
         /** function or tags list to determine what to not collide with */
@@ -153,7 +153,8 @@ interface EntityMotionAnimDef extends JSONObject {
 interface EntityAnimData extends JSONObject {
     /** animations listed here will NOT blend with this one; if 2 try to override each other the last one wins */
     override: string[];
-    mode: "once" | "loop" | "pingpong" | "sticky";
+    mode: "once" | "loop" | "sticky";
+    pingpong?: boolean;
     channels: EntityAnimChannelData[];
 };
 

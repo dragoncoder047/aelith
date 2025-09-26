@@ -16,7 +16,7 @@ tiles:
         noHitWall: 254
         noHitWall2: 255
     physics:
-      hitbox: [4, 4, 24, 24]
+      hitbox: [{x: 4, y: 4}, 24, 24]
       merge: [true, true]
     depth: !include ../textures/walldepth.yaml
   # 1: wall, but no hitbox

@@ -12,7 +12,7 @@ export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
     const { hitbox, mass, behavior, restitution, friction } = getEntityPrototypeStrict(e.kind);
     if (hitbox) {
         rootObj.use(K.area({
-            shape: new K.Polygon(hitbox.map(([x, y]) => K.vec2(x, y))),
+            shape: new K.Polygon(hitbox.map(({x, y}) => K.vec2(x, y))),
             restitution: restitution ?? GameManager.getDefaultValue("restitution"),
             friction: friction ?? GameManager.getDefaultValue("friction")
         }));
@@ -22,7 +22,7 @@ export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
 
 function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleData, constraintEntries: { c: EntityBoneConstraintOptData, t: string }[]) {
     var prev: GameObj<BoneComponents | BodyComp> = map[tentacle.bone] as any;
-    var pos = tentacle.pos ? K.vec2(tentacle.pos[0]!, tentacle.pos[1]) : K.Vec2.ZERO;
+    var pos = tentacle.pos ? K.vec2(tentacle.pos.x, tentacle.pos.y) : K.Vec2.ZERO;
     for (var k = 0; k < tentacle.n; k++) {
         const sz = K.lerp(tentacle.sizes[0], tentacle.sizes[1], (K.easings[tentacle.sizes[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
         const mass = K.lerp(tentacle.masses[0], tentacle.masses[1], (K.easings[tentacle.masses[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
@@ -74,7 +74,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             });
         }
         if (!prev.has("layer")) prev.use(K.layer(GameManager.getDefaultValue("entityLayer")))
-        pos = pos.add((tentacle.extendDir ? K.vec2(tentacle.extendDir[0], tentacle.extendDir[1]).unit() : K.DOWN).scale(tentacle.lps));
+        pos = pos.add((tentacle.extendDir ? K.vec2(tentacle.extendDir.x, tentacle.extendDir.y).unit() : K.DOWN).scale(tentacle.lps));
         map[tentacle.name + k] = prev;
         if (tentacle.eachConstraints) {
             constraintEntries.push({ c: tentacle.eachConstraints, t: tentacle.name + k });
@@ -104,8 +104,8 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 K.scale(),
                 // K.area({ shape: new K.Circle(K.vec2(), 5) }),
             ]);
-            if (bone.pos) obj.moveTo(bone.pos[0], bone.pos[1]);
-            if (!bone.name) bone.name = "_b" + obj.id.toString(16);
+            if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);
+            if (!bone.name) bone.name = "_b" + obj.id;
             map[bone.name] = obj;
             if (bone.constraint) {
                 constraintEntries.push({ c: bone.constraint, t: bone.name });
@@ -147,12 +147,10 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     for (var c of constraintEntries) {
         const target = map[c.t]!;
         if (c.c.angle) {
-            console.log("attaching angle constraint", c.c);
             const [src, scale, offset] = c.c.angle;
             target.use(K.constraint.rotation(assertGet(src), { scale, offset }));
         }
         if (c.c.distance) {
-            console.log("attaching distance constraint", c.c);
             const [src, distance, bounds] = c.c.distance;
             target.use(K.constraint.distance(assertGet(src), {
                 distance,
@@ -160,18 +158,15 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             }));
         }
         if (c.c.offset) {
-            console.log("attaching offset constraint", c.c);
-            const [src, [x, y]] = c.c.offset;
+            const [src, {x, y}] = c.c.offset;
             target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
         }
         if (c.c.scale) {
-            console.log("attaching scale constraint", c.c);
             const [src] = c.c.scale;
             target.use(K.constraint.scale(assertGet(src), {}));
         }
     }
     for (var i of ikEntries) {
-        console.log("attaching IK constraint", i);
         map[i.s]!.use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     return map;

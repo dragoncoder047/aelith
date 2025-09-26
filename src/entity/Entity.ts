@@ -69,13 +69,13 @@ export class Entity implements Serializable {
             state: this.state,
             leashed: this.leashed,
             lights: this.lightObjs.map(l => [
-                l.pos.toArray() as XY,
+                l.pos as XY,
                 l.light!.radius,
                 l.light!.strength,
                 l.light!.color.toHex(),
                 [] // TODO: serialize light tags once it's implemented
             ]),
-            pos: this.pos.toArray() as XY,
+            pos: this.pos as XY,
         }
     }
     update() {

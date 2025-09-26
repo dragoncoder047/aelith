@@ -62,7 +62,7 @@ export class Room implements Serializable {
         });
         EntityManager.loadAllEntitiesInRoom(this.id);
         for (var coll of this.frozen.colliders) {
-            const [x, y, w, h] = coll.def.hitbox;
+            const [{ x, y }, w, h] = coll.def.hitbox;
             const c = K.add([
                 K.pos(coll.pos),
                 K.area({

@@ -4,7 +4,7 @@ import { XY } from "../DataPackFormat";
 import { STYLES } from "../TextStyles";
 import { polyline } from "./polyline";
 
-type JSONUniform = Record<string, number | XY | string | string[]>
+type JSONUniform = Record<string, number | XY | string | string[] | number[]>
 
 type BaseRenderProps = {
     pos?: XY;
@@ -129,13 +129,13 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
                 fill: primitive.fill,
             })); break;
         case "ellipse":
-            obj.use(K.ellipse(primitive.r?.[0], primitive.r?.[1])); break;
+            obj.use(K.ellipse(primitive.r?.x, primitive.r?.y)); break;
         case "polygon":
-            obj.use(K.polygon(primitive.pts.map(([x, y]) => K.vec2(x, y)), {
+            obj.use(K.polygon(primitive.pts.map(({ x, y }) => K.vec2(x, y)), {
                 fill: primitive.fill
             })); break;
         case "polyline":
-            obj.use(polyline(primitive.pts.map(([x, y]) => K.vec2(x, y)), {
+            obj.use(polyline(primitive.pts.map(({ x, y }) => K.vec2(x, y)), {
                 width: primitive.width,
                 join: primitive.join,
                 opacity: primitive.opacity,
@@ -159,9 +159,9 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
 }
 
 function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
-    if (p.scale) obj.use(K.scale(p.scale[0], p.scale[1]));
+    if (p.scale) obj.use(K.scale(p.scale.x, p.scale.y));
     if (p.angle) obj.use(K.rotate(p.angle));
-    if (p.skew) obj.use(K.skew(p.skew[0], p.skew[1]));
+    if (p.skew) obj.use(K.skew(p.skew.x, p.skew.y));
     if (p.color) obj.use(K.color(K.rgb(p.color)));
     if (p.opacity) obj.use(K.opacity(p.opacity));
     if (p.shader) {
@@ -175,10 +175,11 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                         case "staticrand": uv[u] = uid; break;
                         default: uv[u] = K.rgb(v);
                     } break;
-                    case "number": uv[v] = v; break;
+                    case "number": uv[u] = v; break;
                     default: switch (Array.isArray(v) && typeof v[0]) {
-                        case "string": uv[u] = v.map(c => K.rgb(c as string)); break;
-                        case "number": uv[u] = K.vec2(v[0] as number, v[1] as number); break;
+                        case false: uv[u] = K.vec2((v as XY).x, (v as XY).y); break;
+                        case "string": uv[u] = (v as string[]).map(c => K.rgb(c as string)); break;
+                        case "number": uv[u] = v as number[]; break;
                         default:
                             throw new Error("unknown uniform type " + JSON.stringify(v));
                     }
@@ -188,7 +189,7 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
         }));
     }
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
-    if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.vec2(p.anchor[0], p.anchor[1])));
+    if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.vec2(p.anchor.x, p.anchor.y)));
     if (p.outline) obj.use(K.outline(p.outline.width, K.rgb(p.outline.color!), p.outline.opacity, p.outline.join, p.outline.miterLimit, p.outline.cap));
     if (p.layer) obj.use(K.layer(p.layer));
     if (p.z) obj.use(K.z(p.z));

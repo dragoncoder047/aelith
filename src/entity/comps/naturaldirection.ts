@@ -3,7 +3,7 @@ import { K } from "../../context";
 import { XY } from "../../DataPackFormat";
 
 export function naturalDirection(dir: XY): Comp {
-    const a = K.vec2(...dir).angle();
+    const a = K.vec2(dir.x, dir.y).angle();
     var oFlipX: number, oFlipY: number, fFlipX: number, fFlipY: number;
     var d: number;
     return {
