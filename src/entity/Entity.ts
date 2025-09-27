@@ -91,16 +91,21 @@ export class Entity implements Serializable {
         this.pos = this.obj!.pos.clone();
         // TODO: tick animations
     }
-    private _speechCanceler: AbortController | undefined;
+    private _spitItOut = false;
+    private _goOn: (() => void) | undefined;
+    private _shutUp: (() => void) | undefined;
     async say(text: string | undefined) {
-        if (!text) this.speechBubble && (this.speechBubble.text = "");
+        if (!text) this.speechBubble && (this.speechBubble.text = "", this._spitItOut = false);
         else {
-            await this.speechBubble?.speakText(text, undefined /* TODO */, (this._speechCanceler = new AbortController()).signal);
-            this._speechCanceler = undefined;
+            this._shutUp?.();
+            await this.speechBubble?.speakText(text,
+                () => new Promise((a, b) => (this._goOn = a, this._shutUp = () => (this._spitItOut = true, b(true)))),
+                undefined /* TODO: play this.speakSound on self's location */,
+                () => (this._spitItOut ? (this._spitItOut = false, true) : false));
         }
     }
 
-    doAction(action: EntityInputAction, context: Entity) {
+    doAction(action: EntityInputAction, context: Entity | null) {
         switch (action) {
             case EntityInputAction.ACTION1:
             case EntityInputAction.ACTION2:
@@ -109,10 +114,11 @@ export class Entity implements Serializable {
             case EntityInputAction.TARGET1:
             case EntityInputAction.TARGET2:
             case EntityInputAction.INSPECT:
-                EntityManager.startHookOnEntity(this, action, { what: context.id });
+                EntityManager.startHookOnEntity(this, action, { what: context?.id });
                 break;
             case EntityInputAction.CONTINUE:
-                this._speechCanceler?.abort();
+                if (this._goOn) (this._goOn(), this._goOn = undefined);
+                else this._spitItOut = true;
                 break;
             default:
                 action satisfies never;

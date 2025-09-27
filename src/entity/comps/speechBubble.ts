@@ -10,7 +10,8 @@ export interface SpeechBubbleComp extends Comp {
     width: number | undefined;
     text: string;
     tokenDelay: number;
-    speakText(msg: string, sentenceWaitCb?: () => Promise<void>, perTokenCb?: () => void, finish?: AbortSignal): Promise<void>;
+    isSpeaking(): boolean;
+    speakText(msg: string, sentenceWaitCb?: () => Promise<void>, perTokenCb?: () => void, finishSentenceNow?: () => boolean): Promise<void>;
 }
 
 const PAD = 3;
@@ -18,6 +19,7 @@ const PTR_W = 4;
 const PTR_H = 5;
 
 export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
+    var isSpeaking = false;
     return {
         id: "speechBubble",
         text: "",
@@ -54,21 +56,36 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
             });
             K.drawFormattedText(t);
         },
-        async speakText(msg, sentenceWaitCb, perTokenCb, cancel) {
+        isSpeaking() {
+            return isSpeaking;
+        },
+        async speakText(msg, sentenceWaitCb, perTokenCb, finishSentenceNow) {
+            isSpeaking = true;
             const s = K.sub(msg);
-            const wordSplitter = new Intl.Segmenter(K.currentLanguage(), { granularity: "word" });
-            const sentenceSplitter = new Intl.Segmenter(K.currentLanguage(), { granularity: "sentence" });
             this.text = "";
-            for (var sentence of sentenceSplitter.segment(s)) {
-                for (var word of wordSplitter.segment(sentence.segment)) {
-                    if (cancel?.aborted) break;
-                    await K.wait(this.tokenDelay);
-                    this.text += word.segment;
-                    perTokenCb?.();
+            if (s) {
+                const sentences = [... new Intl.Segmenter(K.currentLanguage(), { granularity: "sentence" }).segment(s)];
+                for (var sentence of sentences) {
+                    this.text = "";
+                    const sen = sentence.segment.trim();
+                    if (!sen) continue;
+                    const words = [...new Intl.Segmenter(K.currentLanguage(), { granularity: "word" }).segment(sen)];
+                    for (var word of words) {
+                        if (finishSentenceNow?.()) break;
+                        await K.wait(this.tokenDelay);
+                        this.text += word.segment;
+                        perTokenCb?.();
+                    }
+                    this.text = sentence.segment;
+                    try {
+                        await sentenceWaitCb?.();
+                    } catch (e: unknown) {
+                        if (e === true) break;
+                        throw e;
+                    }
                 }
-                await sentenceWaitCb?.();
             }
-            this.text = s;
+            isSpeaking = false;
         }
     }
 }

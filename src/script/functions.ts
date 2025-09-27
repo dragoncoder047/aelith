@@ -3,7 +3,7 @@ import { Form } from "./Form";
 import { tracebackError, evaluateForm } from "./ScriptHandler";
 
 export const FUNCTIONS: Form[] = [
-    new Form("comment", true, function* () {}),
+    new Form("comment", true, function* () { }),
     new Form("uncomment", true, function* (args, task) {
         task.tc = true;
         return ["do", ...args];
@@ -20,6 +20,7 @@ export const FUNCTIONS: Form[] = [
             if (subTask) {
                 task.paused = true;
                 subTask.onFinish(() => task.paused = false);
+                yield;
             }
         }
         return value;
@@ -107,5 +108,10 @@ export const FUNCTIONS: Form[] = [
     }),
     new Form("playsound/w", false, function* ([soundName, global], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
+    }),
+    new Form("say", false, function* ([text], task, actor) {
+        task.paused = true;
+        actor.say(text).then(() => task.paused = false);
+        yield;
     }),
 ];

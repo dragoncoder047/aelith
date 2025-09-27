@@ -48,7 +48,7 @@ export class Room implements Serializable {
     }
     spawnInitialEntities() {
         for (var e of Object.keys(this.data.entities ?? {})) {
-            EntityManager.spawnEntityInRoom(this.frozen.slots[e]!, this.id, this.data.entities![e]!);
+            EntityManager.startHookOnEntity(EntityManager.spawnEntityInRoom(this.frozen.slots[e]!, this.id, this.data.entities![e]!), "setup", {});
         }
     }
     toJSON(): RoomData {

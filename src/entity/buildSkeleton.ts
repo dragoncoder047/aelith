@@ -5,6 +5,7 @@ import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleDa
 import { addRenderComps } from "../draw/primitive";
 import * as GameManager from "../GameManager";
 import { naturalDirection } from "./comps/naturaldirection";
+import { speechBubble } from "./comps/speechBubble";
 import { BoneComponents, BonesMap, Entity, EntityComp, EntityComponents } from "./Entity";
 import { getEntityPrototypeStrict } from "./EntityManager";
 
@@ -172,11 +173,12 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     if (model.speechBubble) {
         const { origin, tokenDelay, width, voiceSound } = model.speechBubble;
         e.speechBubble = assertGet(origin) as any;
+        e.speechBubble!.use(speechBubble({ tokenDelay }));
         e.speechBubble!.width = width ?? GameManager.getDefaultValue("speechBubbleWidth");
-        e.speechBubble!.tokenDelay = tokenDelay;
         e.speakSound = voiceSound;
     } else {
         e.speechBubble = <any>e.obj;
+        e.speechBubble!.use(speechBubble());
         e.speechBubble!.width = GameManager.getDefaultValue("speechBubbleWidth");
     }
     return map;

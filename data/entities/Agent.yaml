@@ -12,7 +12,8 @@ behavior:
   inventorySlots: 2
   inventorySize: null
 model:
-  speechBubbleOrigin: speechBubbleOrigin
+  speechBubble:
+    origin: speechBubbleOrigin
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -16 }
@@ -74,3 +75,5 @@ model:
     - <<: *ht
       name: ht2
       pos: { x: 5, y: 2 }
+hooks:
+  load: [do, [say, hi], [say, bye]]
