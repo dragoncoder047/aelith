@@ -1,4 +1,4 @@
-import { BodyComp, EaseFuncs, GameEventMap, GameObj, PosComp, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameObj, PosComp, RotateComp } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
@@ -169,6 +169,15 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     for (var i of ikEntries) {
         map[i.s]!.use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
-    e.speechBubble = <any>(model.speechBubbleOrigin ? assertGet(model.speechBubbleOrigin) : e.obj);
+    if (model.speechBubble) {
+        const { origin, tokenDelay, width, voiceSound } = model.speechBubble;
+        e.speechBubble = assertGet(origin) as any;
+        e.speechBubble!.width = width ?? GameManager.getDefaultValue("speechBubbleWidth");
+        e.speechBubble!.tokenDelay = tokenDelay;
+        e.speakSound = voiceSound;
+    } else {
+        e.speechBubble = <any>e.obj;
+        e.speechBubble!.width = GameManager.getDefaultValue("speechBubbleWidth");
+    }
     return map;
 }

@@ -110,8 +110,8 @@ export interface EntityPrototypeData extends JSONObject {
         canBePlayer?: boolean;
         /** if true, won't fall and can fly upwards and downwards */
         canFly: boolean;
-        /** maximum move speed; sprint is always 1.5X higher */
         moveSpeed: number;
+        sprintSpeed?: number;
         /** jump force */
         jumpForce?: number;
         /** the number of internal inventory slots this entity has, if null or 0 it cannot pick up anything */
@@ -130,15 +130,19 @@ interface EntityModelData extends JSONObject {
     /** definition of animations or emotes */
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
-    move: {
+    kinematics: {
         walk: EntityMotionAnimDef[];
         climb: EntityMotionAnimDef[];
         look: EntityMotionAnimDef[];
         /** anim to be played while sprinting */
-        sprint: EntityAnimData;
+        sprint?: string;
     }
-    // name of the bone that is the speech bubble origin
-    speechBubbleOrigin?: string;
+    speechBubble: {
+        origin: string;
+        width?: number;
+        tokenDelay: number;
+        voiceSound: string;
+    }
 }
 
 interface EntityMotionAnimDef extends JSONObject {
@@ -233,7 +237,7 @@ export interface EntityModelTentacleData extends JSONObject {
  * hook code to run for key events:
  *
  * * setup
- * * action1, action2, action3, action4, target1, target2 - context includes actor and opposing
+ * * action1, action2, action3, action4, target1, target2, inspect, continue - context includes actor and opposing
  * * randomTick
  * * hitEntity - context includes entity and collision direction
  * * hitTile - both collision events are run in the onBeforePhysicsResolve phase so they can be canceled
@@ -398,5 +402,6 @@ export interface DataPackData extends JSONObject {
         tileLayer: string;
         friction: number;
         restitution: number;
+        speechBubbleWidth?: number;
     }
 }

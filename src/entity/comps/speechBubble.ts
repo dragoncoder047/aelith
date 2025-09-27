@@ -2,20 +2,27 @@ import { Comp, DrawTextOpt } from "kaplay";
 import { K } from "../../context";
 import { STYLES } from "../../TextStyles";
 
+export interface SpeechBubbleOpt {
+    tokenDelay?: number;
+}
+
 export interface SpeechBubbleComp extends Comp {
     width: number | undefined;
     text: string;
+    tokenDelay: number;
+    speakText(msg: string, sentenceWaitCb?: () => Promise<void>, perTokenCb?: () => void, finish?: AbortSignal): Promise<void>;
 }
 
 const PAD = 3;
 const PTR_W = 4;
 const PTR_H = 5;
 
-export function speechBubble(): SpeechBubbleComp {
+export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
     return {
         id: "speechBubble",
         text: "",
         width: undefined,
+        tokenDelay: opt.tokenDelay ?? 0.1,
         draw() {
             if (this.text === "") return;
             const textOpt: DrawTextOpt = {
@@ -46,6 +53,22 @@ export function speechBubble(): SpeechBubbleComp {
                 pos: K.vec2(0, -PTR_H),
             });
             K.drawFormattedText(t);
+        },
+        async speakText(msg, sentenceWaitCb, perTokenCb, cancel) {
+            const s = K.sub(msg);
+            const wordSplitter = new Intl.Segmenter(K.currentLanguage(), { granularity: "word" });
+            const sentenceSplitter = new Intl.Segmenter(K.currentLanguage(), { granularity: "sentence" });
+            this.text = "";
+            for (var sentence of sentenceSplitter.segment(s)) {
+                for (var word of wordSplitter.segment(sentence.segment)) {
+                    if (cancel?.aborted) break;
+                    await K.wait(this.tokenDelay);
+                    this.text += word.segment;
+                    perTokenCb?.();
+                }
+                await sentenceWaitCb?.();
+            }
+            this.text = s;
         }
     }
 }

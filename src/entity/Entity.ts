@@ -1,4 +1,4 @@
-import { Comp, GameEventMap, GameObj, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
+import { Comp, GameObj, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { EntityData, LightData, XY } from "../DataPackFormat";
@@ -6,11 +6,22 @@ import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
 import { EntityAnimation } from "./Animation";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
+import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
-import { speechBubble, SpeechBubbleComp } from "./comps/speechBubble";
 
 export interface EntityComp extends Comp {
     readonly entity: Entity;
+}
+
+export enum EntityInputAction {
+    ACTION1 = "action1",
+    ACTION2 = "action2",
+    ACTION3 = "action3",
+    ACTION4 = "action4",
+    TARGET1 = "target1",
+    TARGET2 = "target2",
+    INSPECT = "inspect",
+    CONTINUE = "continue",
 }
 
 export type EntityComponents = EntityComp | PosComp;
@@ -21,6 +32,7 @@ export class Entity implements Serializable {
     obj: GameObj<EntityComponents> | null = null;
     bones: BonesMap = {};
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
+    speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
     currentAnimations: EntityAnimation[] = [];
     constructor(
@@ -50,15 +62,7 @@ export class Entity implements Serializable {
         ]);
         buildHitbox(this, this.obj);
         this.bones = buildSkeleton(this, this.obj);
-        this.speechBubble!.use(speechBubble());
         EntityManager.startHookOnEntity(this, "load", {});
-        // this.obj.onPhysicsResolve(coll => {
-        //     if (coll.isRight()) { this.obj.jump(330); this.obj.applyImpulse(K.vec2(-150, 0)); }
-        // });
-        // this.obj.onUpdate(() => {
-        //     if (this.obj.isGrounded()) this.obj.move(100, 0);
-        // })
-        if (this.id === "agent") this.speechBubble!.text = "You will be surprised to know that this speech bubble can fill up and word-wrap because I am saying quite a lot of text here!", this.speechBubble!.width = 100;
     }
     unloaded() {
         this.obj = null;
@@ -86,5 +90,32 @@ export class Entity implements Serializable {
     update() {
         this.pos = this.obj!.pos.clone();
         // TODO: tick animations
+    }
+    private _speechCanceler: AbortController | undefined;
+    async say(text: string | undefined) {
+        if (!text) this.speechBubble && (this.speechBubble.text = "");
+        else {
+            await this.speechBubble?.speakText(text, undefined /* TODO */, (this._speechCanceler = new AbortController()).signal);
+            this._speechCanceler = undefined;
+        }
+    }
+
+    doAction(action: EntityInputAction, context: Entity) {
+        switch (action) {
+            case EntityInputAction.ACTION1:
+            case EntityInputAction.ACTION2:
+            case EntityInputAction.ACTION3:
+            case EntityInputAction.ACTION4:
+            case EntityInputAction.TARGET1:
+            case EntityInputAction.TARGET2:
+            case EntityInputAction.INSPECT:
+                EntityManager.startHookOnEntity(this, action, { what: context.id });
+                break;
+            case EntityInputAction.CONTINUE:
+                this._speechCanceler?.abort();
+                break;
+            default:
+                action satisfies never;
+        }
     }
 }
