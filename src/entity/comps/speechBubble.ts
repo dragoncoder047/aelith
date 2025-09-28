@@ -1,4 +1,4 @@
-import { Comp, DrawTextOpt } from "kaplay";
+import { Comp, DrawTextOpt, GameObj } from "kaplay";
 import { K } from "../../context";
 import { STYLES } from "../../TextStyles";
 
@@ -25,8 +25,10 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
         text: "",
         width: undefined,
         tokenDelay: opt.tokenDelay ?? 0.1,
-        draw() {
+        draw(this: GameObj<SpeechBubbleComp>) {
             if (this.text === "") return;
+            K.pushTranslate();
+            K.pushMatrix(K.Mat23.fromTranslation(this.transform.getTranslation()));
             const textOpt: DrawTextOpt = {
                 text: this.text,
                 styles: STYLES,
@@ -55,6 +57,7 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                 pos: K.vec2(0, -PTR_H),
             });
             K.drawFormattedText(t);
+            K.popTransform();
         },
         isSpeaking() {
             return isSpeaking;
