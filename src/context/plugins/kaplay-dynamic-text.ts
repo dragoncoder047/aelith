@@ -98,10 +98,12 @@ function findPreferredLanguage(availableLangs: NavigatorLanguage["languages"]): 
 function subStrings(text: string, vars: NestedStrings): string {
     const { flatStrings, functions } = flatten(vars);
     var changed = 0;
-    const anyfun = Object.getOwnPropertyNames(functions).join("|");
-    const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun}))[\\s\\S])*?)\\)`, "gm") : undefined;
+    const anyfun = Object.keys(functions).join("|");
+    const strNames = Object.keys(flatStrings);
+    const anykey = strNames.map(s => s.replaceAll(/\./g, "\\.")).join("|")
+    const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun}))(?!&(?:${anykey}))[\\s\\S])*?)\\)`, "gm") : undefined;
     do {
-        for (var key of Object.getOwnPropertyNames(flatStrings)) {
+        for (var key of strNames) {
             const rep = `&${key}`;
             if (text.indexOf(rep) !== -1) {
                 text = text.replaceAll(rep, flatStrings[key]!);
