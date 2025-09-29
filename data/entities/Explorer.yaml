@@ -62,7 +62,8 @@ model:
                       render: &eye
                         as: rect
                         anchor: left
-                        size: [1, 3]
+                        size: [1, 1]
+                        scale: { x: 1, y: 3 }
                         color: white
                       ik:
                         target: [gazeTarget, 1]

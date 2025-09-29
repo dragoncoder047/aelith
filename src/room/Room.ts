@@ -48,7 +48,7 @@ export class Room implements Serializable {
     }
     spawnInitialEntities() {
         for (var e of Object.keys(this.data.entities ?? {})) {
-            EntityManager.startHookOnEntity(EntityManager.spawnEntityInRoom(this.frozen.slots[e]!, this.id, this.data.entities![e]!), "setup", {});
+            EntityManager.spawnEntityInRoom(this.frozen.slots[e]!, this.id, this.data.entities![e]!);
         }
     }
     toJSON(): RoomData {
@@ -132,6 +132,7 @@ export class Room implements Serializable {
             const scale = 1 - t;
             for (i = 0; i < this.depthTiles.length; i++) {
                 const [obj, ds] = this.depthTiles[i]!;
+                if (obj.hidden) continue;
                 const step = DEPTH / ds;
                 const nextT = this.depthCache.get(obj)!;
                 minStep = Math.min(minStep, step);

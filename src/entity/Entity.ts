@@ -1,4 +1,4 @@
-import { Comp, GameObj, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
+import { BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { EntityData, LightData, XY } from "../DataPackFormat";
@@ -8,6 +8,7 @@ import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
+import { Inventory } from "./Inventory";
 
 export interface EntityComp extends Comp {
     readonly entity: Entity;
@@ -34,7 +35,8 @@ export class Entity implements Serializable {
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
     speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
-    animator: Animator = null as any;
+    animator: Animator;
+    inventory: Inventory;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -45,20 +47,25 @@ export class Entity implements Serializable {
         public linkGroup: string | undefined,
         public lights: LightData[]
     ) {
+        this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
         EntityManager.startHookOnEntity(this, "setup", {});
     }
+    private _ubsc: KEventController | undefined;
     load() {
+        if (this.obj) return;
         // needed for the entity getter on entity comp so I used it everywhere for extra minification ;)
         const self = this;
-        K.onSceneLeave(() => {
+        self._ubsc?.cancel();
+        self._ubsc = K.onSceneLeave(() => {
             self.unloaded();
         });
         self.obj = K.add([
             {
                 id: "entity",
                 get entity() { return self; },
-                update() { self.update(); }
+                // run in draw() so after the constraints code and anims can override the constraint
+                draw() { self.update(); }
             } as EntityComp,
             self.id,
             self.kind,
@@ -68,11 +75,25 @@ export class Entity implements Serializable {
         self.bones = buildSkeleton(self, self.obj);
         EntityManager.startHookOnEntity(self, "load", {});
     }
+    setPosition(pos: Vec2) {
+        if (this.obj) this.obj.pos = pos;
+        else this.pos = pos;
+    }
+    destroy() {
+        this.obj?.destroy();
+        for (var k of Object.keys(this.bones)) {
+            this.bones[k]?.destroy();
+        }
+        this._ubsc?.cancel();
+        this.unloaded();
+    }
     unloaded() {
-        this.bones = {};
-        this.obj = this.speechBubble = null;
-        this.lightObjs = [];
-        EntityManager.startHookOnEntity(this, "unload", {});
+        if (this.obj) {
+            this.bones = {};
+            this.obj = this.speechBubble = null;
+            this.lightObjs = [];
+            EntityManager.startHookOnEntity(this, "unload", {});
+        }
     }
     toJSON(): EntityData {
         return {
@@ -103,6 +124,7 @@ export class Entity implements Serializable {
     update() {
         this.pos = this.obj!.pos.clone();
         this.animator.update(K.dt());
+        this.inventory.update();
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;

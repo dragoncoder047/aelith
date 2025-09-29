@@ -101,6 +101,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 K.pos(),
                 K.rotate(),
                 K.scale(),
+                K.offscreen({ hide: true }),
                 // K.area({ shape: new K.Circle(K.vec2(), 5) }),
             ]);
             if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);

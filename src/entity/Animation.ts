@@ -45,7 +45,7 @@ class AnimChannel<T extends LerpValue> {
     }
     update(dt: number): T {
         this.relT += dt;
-        const [f1, f2, alpha] = this.updateIAndT();
+        const [f1, f2, alpha] = this._it();
         if (!this.inProgress) return this.keyframes.at(-1)!._cx!;
         return this.interpolation(f1!, f2!, alpha);
     }
@@ -61,7 +61,7 @@ class AnimChannel<T extends LerpValue> {
         }
         if (obj) obj[this.target[i]!] = x;
     }
-    private updateIAndT() {
+    private _it() {
         var f: Keyframe<T>, f2: Keyframe<T>, numFrames = this.keyframes.length;
         var i2 = (this.i + 1) % numFrames;
         while (this.relT >= (f2 = this.keyframes[i2]!, f = this.keyframes[this.i]!).len) {
@@ -130,6 +130,7 @@ export function createAnimation(name: string, json: EntityAnimData) {
         const { target, keyframes, alpha, slerp } = channel;
         var isVec2 = false;
         for (var [len, value, easing] of keyframes) {
+            if (len < 0) throw new Error(`invalid length (must be >=0): ${len} (on anim name ${name})`)
             frames.push({ x: Array.isArray(value) ? (typeof value[0] === "number" ? (([a, b]) => () => K.rand(a, b))(value as number[]) : typeof value[0] === "string" ? (([a, b]) => { const ca = K.rgb(a), cb = K.rgb(b); return () => K.rand(ca, cb); })(value as [string, string]) : (([{ x: x1, y: y1 }, { x: x2, y: y2 }, spherical]) => spherical ? () => (K.RIGHT.rotate(K.rand(360)).scale(K.rand()).scale(x2 - x1, y2 - y1).add(x1, y1)) : (() => K.vec2(K.rand(x1, x2), K.rand(y1, y2))))(value as [XY, XY, boolean])) : (typeof value === "number" ? value : typeof value === "string" ? K.rgb(value) : K.vec2(value.x, value.y)), len, ease: (easing as any) === "none" ? () => 1 : K.easings[easing ?? "linear"] }); // ridiculously long line
         }
         c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp));

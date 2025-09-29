@@ -6,12 +6,14 @@ import { FUNCTIONS } from "./functions";
 export type Env = JSONObject;
 export type TracebackArray = (string | { f: string, n: number })[]
 
-export type TaskGen = Generator<void, any, void>;
+export type TaskGen = AsyncGenerator<void, any, void>;
 export class Task {
     paused = false;
     tc = false;
     complete = new K.KEvent;
     gen: TaskGen = null as any;
+    result: any;
+    failed: boolean = false;
     constructor(public priority: number, public controller: Entity) { }
     onFinish(cb: (value: any) => void) {
         return this.complete.add(cb);
@@ -27,14 +29,14 @@ function bumpTailCall(name: string, traceback: TracebackArray) {
 export function tracebackError(error: Error | string, traceback: TracebackArray) {
     var m: string, e: Error;
     const tb = traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ");
-    switch(typeof error) {
+    switch (typeof error) {
         case "string": m = `${error}\ntraceback: ${tb}`, e = new Error(m); break;
         default: m = `${error.message}\ntraceback: ${tb}`, (error as any)._tb ? e = error : (e = new Error(m), e.cause = error);
     }
     return (e as any)._tb = true, e;
 }
 
-export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
+export async function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
     do {
         task.tc = false;
         if (!Array.isArray(form)) return form;
@@ -54,9 +56,7 @@ export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: E
             traceback.push(name);
             form = yield* impl.eval(args, task, actor, env, context, traceback);
         } catch (e: any) {
-            const newError = tracebackError(e, traceback);
-            newError.cause = e;
-            throw newError;
+            throw tracebackError(e, traceback);
         } finally {
             traceback.pop();
         }
@@ -89,7 +89,7 @@ export function killAllTasksControlledBy(actor: Entity) {
     }
 }
 
-function stepTasks() {
+async function stepTasks() {
     var madeProgress = false;
     var runnedP = undefined;
     for (var i = 0; i < tasks.length; i++) {
@@ -98,9 +98,18 @@ function stepTasks() {
         if (runnedP !== undefined && runnedP > t.priority) break;
         runnedP = t.priority;
         madeProgress = true;
-        const res = t.gen!.next();
-        if (res.done) {
-            t.complete.trigger(res.value);
+        var res;
+        try {
+            res = await t.gen!.next();
+        } catch (e) {
+            if (t.complete.numListeners() > 0) {
+                t.failed = true;
+                t.result = e;
+                res = { done: true };
+            } else throw e;
+        }
+        if (res.done || t.result) {
+            t.complete.trigger(t.result ?? res.value);
             tasks.splice(i, 1);
             i--;
         }
@@ -108,6 +117,6 @@ function stepTasks() {
     return madeProgress;
 }
 
-export function advanceAsFarAsPossible() {
-    while (stepTasks());
+export async function advanceAsFarAsPossible() {
+    while (await stepTasks());
 }

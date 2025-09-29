@@ -118,6 +118,8 @@ export interface EntityPrototypeData extends JSONObject {
         inventorySlots?: number;
         /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
         inventorySize?: number;
+        /** name of the bone that the holded object will be pulled to */
+        inventoryHolder?: string;
     }
     hooks: Record<string, HookData | CrustyJSONCode>;
 }
@@ -313,7 +315,7 @@ export type LightData = [pos: XY, radius: number, intensity: number, color: stri
  * * spawn <entity_type> <location> -
  * * die - destroys self
  * * tp <entity> <room> <pos> - teleports
- * * take <item> - insert item into current entity's inventory, returns true or false if the other entity accepted or refused
+ * * take <item> - insert item into current entity's inventory, returns "taken", "noRoom", or "refused"
  * * hold <item> - puts the item in the currently holding slot; returns false if not in inventory
  * * drop <item>
  * * throw <item>

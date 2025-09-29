@@ -6,7 +6,9 @@ import { K } from "../context";
 export function roomScene(whichRoom: string) {
     BlueScreen.install();
     RoomManager.enterRoom(whichRoom);
-    K.onUpdate(() => {
-        ScriptHandler.advanceAsFarAsPossible();
+    const u = K.onUpdate(async () => {
+        u.paused = true;
+        await ScriptHandler.advanceAsFarAsPossible();
+        u.paused = false;
     });
 }
