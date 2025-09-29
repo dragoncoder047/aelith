@@ -1,4 +1,4 @@
-import { hashPoint } from "../utils";
+import { hashPoint } from "../hash";
 import { TileEntry } from "./Room";
 
 

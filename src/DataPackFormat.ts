@@ -1,4 +1,4 @@
-import { TextAlign } from "kaplay";
+import { EaseFuncs, TextAlign } from "kaplay";
 import { JSONObject, JSONValue } from "./JSON";
 import { PolylinePrimitive, Primitive } from "./draw/primitive";
 
@@ -157,27 +157,28 @@ interface EntityMotionAnimDef extends JSONObject {
     flip?: [whenMovingLeft: boolean, whenMovingRight: boolean];
 }
 
-interface EntityAnimData extends JSONObject {
+export interface EntityAnimData extends JSONObject {
     /** will pause these animations when started */
     override?: string[];
     /** will forcibly stop these animations when started, */
     replace?: string[];
-    mode: "once" | "loop" | "sticky";
-    pingpong?: boolean;
+    loop?: boolean;
+    /* if false, will reset back to the original value when the animation is turned off (default true) */
+    sticky?: boolean;
     channels: EntityAnimChannelData[];
 };
 
 interface EntityAnimChannelData extends JSONObject {
     /** path to target bone and property. example: ["head", "uniform", "u_color"], etc. */
     target: [bone: string, property: string, ...subProperties: string[]];
-    offset: number;
     keyframes: [
         duration: number,
-        value: string | number | XY,
-        lerp?: string, // none = linear
+        value: string | number | XY | [number, number] | [XY, XY, circular?: boolean] | [string, string],
+        lerp?: EaseFuncs, // none = linear
     ][];
-    /** if a sprite animation should be played concurrently */
-    sprAnim: string;
+    slerp?: boolean;
+    /** 1/(time in seconds to move halfway on a step change) */
+    alpha?: number;
 }
 
 export interface EntityBoneConstraintOptData extends JSONObject {

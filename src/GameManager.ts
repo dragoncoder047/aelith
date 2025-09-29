@@ -39,7 +39,6 @@ export async function datapack() {
     StateManager.setupInitialState(pack.initial);
 }
 export function main() {
-    K.debug.inspect = true;
     setup();
     K.load(datapack());
     K.onLoad(() => {

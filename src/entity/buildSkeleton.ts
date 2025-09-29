@@ -127,9 +127,6 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             if (bone.children) {
                 buildBone(obj, bone.children);
             }
-            if (bone.name === "gazeTarget") {
-                obj.use({ update(this: GameObj<PosComp>) { this.worldPos(K.toWorld(K.mousePos())) } })
-            }
         }
     };
     buildBone(rootObj, model.skeleton);

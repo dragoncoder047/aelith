@@ -1,3 +1,4 @@
+import { K } from "../context";
 import * as EntityManager from "../entity/EntityManager";
 import { Form } from "./Form";
 import { tracebackError, evaluateForm } from "./ScriptHandler";
@@ -7,6 +8,14 @@ export const FUNCTIONS: Form[] = [
     new Form("uncomment", true, function* (args, task) {
         task.tc = true;
         return ["do", ...args];
+    }),
+    new Form("debug", false, function* (args, task, actor, env, context, traceback) {
+        console.log(JSON.stringify({ args, task, actor, env, context, traceback }, null, 4));
+    }),
+    new Form("wait", false, function* ([t], task) {
+        task.paused = true;
+        K.wait(t, () => task.paused = false);
+        yield;
     }),
     new Form("list", false, function* (args) {
         return args;
@@ -94,14 +103,16 @@ export const FUNCTIONS: Form[] = [
     new Form("render", false, function* ([slot, newValue], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
-    new Form("anim", false, function* ([animName], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
+    new Form("anim", false, function* ([animName], task, actor) {
+        actor.playAnim(animName);
     }),
     new Form("anim/w", false, function* ([animName], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
+        task.paused = true;
+        actor.playAnim(animName).then(() => task.paused = false);
+        yield;
     }),
-    new Form("unanim", false, function* ([animName], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
+    new Form("unanim", false, function* ([animName], task, actor) {
+        actor.stopAnim(animName);
     }),
     new Form("playsound", false, function* ([soundName, global], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);

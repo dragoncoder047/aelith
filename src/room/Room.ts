@@ -5,7 +5,7 @@ import { Serializable } from "../Serializable";
 import { K } from "../context";
 import { addRenderComps } from "../draw/primitive";
 import * as EntityManager from "../entity/EntityManager";
-import { hashPoint, javaHash } from "../utils";
+import { hashPoint, javaHash } from "../hash";
 import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";

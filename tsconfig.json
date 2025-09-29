@@ -13,7 +13,6 @@
         "module": "ESNext",
         "lib": [
             "esnext",
-            "webworker",
             "dom"
         ]
     },

@@ -28,11 +28,13 @@ export type ZzFXMSong = Parameters<typeof zzfxM>;
 // ZzFXM (v2.0.3) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 // modified for Typescript, "ZZFX" import, and web workers
 
+/// <reference lib="webworker" />
+
 var WORKER_SRC: string, WORKER_BLOB: Blob, WORKER_URL: string;
 export async function zzfxM(instruments: Instrument[], patterns: Track[][], sequence: number[], BPM = 125, _metadata?: Metadata): Promise<[Float32Array, Float32Array]> {
     if (!WORKER_SRC) {
         WORKER_SRC = `let z={g:${ZZFX.buildSamples},sampleRate:${ZZFX.sampleRate},volume:${ZZFX.volume}},zzfxG=(...a)=>z.g(...a),zzfxR=z.sampleRate;${zzfxMInner};(${() => {
-            const runner = (self as DedicatedWorkerGlobalScope);
+            const runner = (self as any);
             runner.onmessage = (e: MessageEvent) => {
                 const args = e.data as ZzFXMSong;
                 const song = zzfxMInner(...args);

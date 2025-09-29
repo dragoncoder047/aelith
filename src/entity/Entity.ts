@@ -4,7 +4,7 @@ import { K } from "../context";
 import { EntityData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
-import { EntityAnimation } from "./Animation";
+import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
@@ -34,7 +34,7 @@ export class Entity implements Serializable {
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
     speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
-    currentAnimations: EntityAnimation[] = [];
+    animator: Animator = null as any;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -44,30 +44,33 @@ export class Entity implements Serializable {
         public leashed: [string, number] | undefined,
         public linkGroup: string | undefined,
         public lights: LightData[]
-    ) { }
+    ) {
+        buildAnimations(kind, this.animator = new Animator(this));
+        EntityManager.startHookOnEntity(this, "setup", {});
+    }
     load() {
-        K.onSceneLeave(() => {
-            this.unloaded();
-        });
+        // needed for the entity getter on entity comp so I used it everywhere for extra minification ;)
         const self = this;
-        this.obj = K.add([
+        K.onSceneLeave(() => {
+            self.unloaded();
+        });
+        self.obj = K.add([
             {
                 id: "entity",
                 get entity() { return self; },
                 update() { self.update(); }
             } as EntityComp,
-            this.id,
-            this.kind,
-            K.pos(this.pos),
+            self.id,
+            self.kind,
+            K.pos(self.pos),
         ]);
-        buildHitbox(this, this.obj);
-        this.bones = buildSkeleton(this, this.obj);
-        EntityManager.startHookOnEntity(this, "load", {});
+        buildHitbox(self, self.obj);
+        self.bones = buildSkeleton(self, self.obj);
+        EntityManager.startHookOnEntity(self, "load", {});
     }
     unloaded() {
-        this.obj = null;
         this.bones = {};
-        this.speechBubble = null;
+        this.obj = this.speechBubble = null;
         this.lightObjs = [];
         EntityManager.startHookOnEntity(this, "unload", {});
     }
@@ -87,9 +90,19 @@ export class Entity implements Serializable {
             pos: this.pos as XY,
         }
     }
+    playAnim(a: string) {
+        return new Promise<void>((x, y) => {
+            try {
+                this.animator.play(a, x)
+            } catch (e) { y(e); }
+        });
+    }
+    stopAnim(a: string) {
+        this.animator.stop(a);
+    }
     update() {
         this.pos = this.obj!.pos.clone();
-        // TODO: tick animations
+        this.animator.update(K.dt());
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;
@@ -122,6 +135,7 @@ export class Entity implements Serializable {
                 break;
             default:
                 action satisfies never;
+                throw new Error(`wtf what is entity supposed to do with ${action} and ${context?.id}`);
         }
     }
 }

@@ -24,8 +24,14 @@ function bumpTailCall(name: string, traceback: TracebackArray) {
     else last.n++;
 }
 
-export function tracebackError(error: string, traceback: TracebackArray) {
-    return new Error(`${error}\ntraceback: ${traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ")}`);
+export function tracebackError(error: Error | string, traceback: TracebackArray) {
+    var m: string, e: Error;
+    const tb = traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ");
+    switch(typeof error) {
+        case "string": m = `${error}\ntraceback: ${tb}`, e = new Error(m); break;
+        default: m = `${error.message}\ntraceback: ${tb}`, (error as any)._tb ? e = error : (e = new Error(m), e.cause = error);
+    }
+    return (e as any)._tb = true, e;
 }
 
 export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
@@ -48,7 +54,7 @@ export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: E
             traceback.push(name);
             form = yield* impl.eval(args, task, actor, env, context, traceback);
         } catch (e: any) {
-            const newError = tracebackError(e?.message ?? String(e), traceback);
+            const newError = tracebackError(e, traceback);
             newError.cause = e;
             throw newError;
         } finally {
