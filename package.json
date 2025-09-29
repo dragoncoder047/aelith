@@ -21,7 +21,6 @@
     },
     "license": "GPL-3.0-only",
     "devDependencies": {
-        "@types/js-yaml": "^4.0.9",
         "esbuild": "^0.25.0",
         "esbuild-plugin-glsl": "^1.4.0",
         "nodemon": "^3.1.10",
