@@ -91,8 +91,6 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     const model = getEntityPrototypeStrict(e.kind).model;
     const constraintEntries: { c: EntityBoneConstraintOptData, t: string }[] = [];
     const ikEntries: { s: string, t: string, d: number }[] = [];
-    // temp fix for kaplayjs/kaplay#899
-    K.constraint.scale({} as any, {});
     const buildBone = (parent: GameObj, bonesList: EntityModelBoneData[]) => {
         for (var bone of bonesList) {
             const obj = parent.add([
