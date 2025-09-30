@@ -94,6 +94,8 @@ export class Entity implements Serializable {
             this.lightObjs = [];
             EntityManager.startHookOnEntity(this, "unload", {});
         }
+        this._goOn = this._shutUp = this._ubsc = undefined;
+        this._spitItOut = false;
     }
     toJSON(): EntityData {
         return {
