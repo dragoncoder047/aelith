@@ -6,6 +6,7 @@ import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
 import * as EntityManager from "./entity/EntityManager";
+import * as PlatformGuesser from "./PlatformGuesser";
 import * as RoomManager from "./room/RoomManager";
 import * as SceneManager from "./scenes/SceneManager";
 import * as StateManager from "./state/StateManager";
@@ -25,6 +26,19 @@ export function setup() {
     InputManager.loadAssets();
     InputManager.setupControls();
     SceneManager.setupScenes();
+    // where do I put THIS?
+    K.strings.os = PlatformGuesser.guessOS();
+    K.strings.switch = (switchData) => {
+        const [key, ...caseStrings] = switchData.split("~");
+        console.log(JSON.stringify(K.strings));
+        const procCases = {} as Record<string, string>;
+        for (var caseStr of caseStrings) {
+            const [caseKey, caseValue] = caseStr.split(":");
+            procCases[caseKey!] = caseValue!;
+        }
+        console.log(procCases, key);
+        return String(procCases[key!]);
+    }
 }
 var pack: DataPackData;
 export async function datapack() {

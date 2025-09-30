@@ -64,11 +64,12 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
         },
         async speakText(msg, sentenceWaitCb, perTokenCb, finishSentenceNow) {
             isSpeaking = true;
-            const s = K.sub(msg);
+            const s = K.sub(msg).trim();
             this.text = "";
             if (s) {
                 const sentences = [... new Intl.Segmenter(K.currentLanguage(), { granularity: "sentence" }).segment(s)];
-                for (var sentence of sentences) {
+                for (var i = 0; i < sentences.length; i++) {
+                    const sentence = sentences[i]!;
                     this.text = "";
                     const sen = sentence.segment.trim();
                     if (!sen) continue;
@@ -79,7 +80,7 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                         this.text += word.segment;
                         perTokenCb?.();
                     }
-                    this.text = sentence.segment;
+                    this.text = sen;
                     try {
                         await sentenceWaitCb?.();
                     } catch (e: unknown) {

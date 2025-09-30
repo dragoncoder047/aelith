@@ -13,6 +13,7 @@ export const K = kaplay({
     debug: true,
     crisp: true,
     global: false,
+    pixelDensity: window.devicePixelRatio,
     scale: SCALE,
     background: "#000000",
     touchToMouse: false,

@@ -152,7 +152,8 @@ export class Entity implements Serializable {
                 EntityManager.startHookOnEntity(this, action, { what: context?.id });
                 break;
             case EntityInputAction.CONTINUE:
-                if (this._goOn) (this._goOn(), this._goOn = undefined);
+                if (!this.speechBubble?.isSpeaking()) (this.speechBubble && (this.speechBubble.text = ""));
+                else if (this._goOn) (this._goOn(), this._goOn = undefined);
                 else this._spitItOut = true;
                 break;
             default:
