@@ -10,7 +10,7 @@ dialog:
 
 
     If you really want to use a game controller, please use another browser like
-    Chrome$fn.switch(&os~mac:, Opera, or Safari~windows:, Opera, or Microsoft
+    Chrome$switch(&os~mac:, Opera, or Safari~windows:, Opera, or Microsoft
     Edge~linux: or Opera).
   singleJoyConDontHaveEnoughButtons: >-
     You appear to have connected a single Joy-Con controller, which does not

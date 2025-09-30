@@ -12,7 +12,7 @@ dialog:
 
 
     Si realmente quieres usar un mando, por favor usa un navegador distinto,
-    como Chrome$fn.switch(&os~mac:, Opera, o Safari~windows:, Opera, o Microsoft
+    como Chrome$switch(&os~mac:, Opera, o Safari~windows:, Opera, o Microsoft
     Edge~linux: o Opera).
   singleJoyConDontHaveEnoughButtons: >-
     Parece que has conectado un solo mando Joy-Con, el cual no tiene suficientes
