@@ -112,7 +112,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             }
             if (bone.render) {
                 addRenderComps(obj, obj.id, bone.render);
-                if (!obj.has("layer")) obj.use(K.layer(GameManager.getDefaultValue("entityLayer")))
+                if (!obj.has("layer")) obj.use(K.layer(GameManager.getDefaultValue("entityLayer")));
             }
             if (bone.ik?.angleRange) {
                 obj.use(K.constraint.bone(bone.ik.angleRange[0], bone.ik.angleRange[1]));

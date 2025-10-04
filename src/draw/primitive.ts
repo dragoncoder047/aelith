@@ -138,7 +138,6 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
             obj.use(polyline(primitive.pts.map(({ x, y }) => K.vec2(x, y)), {
                 width: primitive.width,
                 join: primitive.join,
-                opacity: primitive.opacity,
                 cap: primitive.cap,
                 miterLimit: primitive.miterLimit,
             })); break;
