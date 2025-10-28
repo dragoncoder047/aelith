@@ -36,13 +36,16 @@ export class MouseWheelInput extends DirectionalInput {
 }
 
 export class MouseMoveInput extends DirectionalInput {
+    private _sticky = true;
     constructor() {
         super(K.Vec2.ONE);
     }
     raw(entity: Entity | null) {
-        if (K.getLastInputDeviceType() === "gamepad") return K.Vec2.ZERO;
+        if (K.isMouseMoved()) this._sticky = true;
+        if (K.isButtonPressed()) this._sticky = false;
+        if (K.getLastInputDeviceType() === "gamepad" || !this._sticky) return K.Vec2.ZERO;
         if (!entity) return K.mouseDeltaPos();
         const head = entity.getHead()!;
-        return K.mousePos().sub(head.worldPos()!);
+        return K.toWorld(K.mousePos()).sub(head.worldPos()!);
     }
 }

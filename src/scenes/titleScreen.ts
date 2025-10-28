@@ -57,7 +57,7 @@ export function titleScreenScene() {
         K.go(SceneManager.Scene.ROOM);
     }));
     const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "main_menu_options", () => {
-        K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.main, SYSTEM_MENUS, SYSTEM_SETTINGS);
+        K.pushScene(SceneManager.Scene.MENU);
     }));
     enterBtn.use(layoutAnchor(K.center));
     optionsBtn.use(below(enterBtn, 10));

@@ -8,6 +8,7 @@ navHeight: { x: 0, y: 0 }
 behavior:
   canBePlayer: yes
   canFly: yes
+  camScale: 2
   moveSpeed: 256
   inventorySlots: 2
   inventorySize: null
@@ -15,6 +16,10 @@ behavior:
 model:
   speechBubble:
     origin: speechBubbleOrigin
+  kinematics:
+    look:
+      origin: body
+      target: gazeTarget
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -16 }
@@ -100,4 +105,5 @@ model:
             - [0, { x: 1, y: 3 }]
         - <<: *squishEye
           target: [leftEye, scale]
-hooks: {}
+hooks:
+  action1: [as, explorer, setPlayer]

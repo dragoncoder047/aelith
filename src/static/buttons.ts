@@ -30,10 +30,6 @@ export const BUTTONS: Controls = {
         keyboard: "shift",
         gamepad: "lstick",
     },
-    slide: {
-        keyboard: "shift+space",
-        gamepad: "lstick+south",
-    },
     look: {
         directional: {
             gamepad: ["right", K.Vec2.ONE],

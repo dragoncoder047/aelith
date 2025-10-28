@@ -1,15 +1,16 @@
 import { K } from "../context";
+import { Room } from "../room/Room";
 import { Menu, MenuItemType } from "../scenes/menus/types";
 import { Settings } from "../settings";
 
 export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 
-// TODO: use these settings
+// TODO: save to localstorage
 SYSTEM_SETTINGS.addBoolean("renderLights", true);
-SYSTEM_SETTINGS.addBoolean("renderDepth", true);
+SYSTEM_SETTINGS.addBoolean("renderDepth", true).onChange(v => Room._depthEnabled = v);
 SYSTEM_SETTINGS.addBoolean("speedrunTimer", true);
 SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps5"]);
-SYSTEM_SETTINGS.addBoolean("controllerRumble", true);
+SYSTEM_SETTINGS.addBoolean("controllerRumble", true).onChange(v => K.rumble.enabled = v);
 SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v => K.useLanguage(v === "auto" ? null : v));
 SYSTEM_SETTINGS.addRange("musicVolume", 1, 1, 0);
 SYSTEM_SETTINGS.addRange("sfxVolume", 1, 1, 0);

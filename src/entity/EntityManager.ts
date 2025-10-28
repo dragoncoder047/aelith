@@ -1,10 +1,13 @@
 import { Vec2 } from "kaplay";
 import { K } from "../context";
+import { getMotionInput } from "../controls/InputManager";
 import { EntityData, EntityPrototypeData } from "../DataPackFormat";
+import * as GameManager from "../GameManager";
 import { JSONObject, JSONValue } from "../JSON";
 import * as RoomManager from "../room/RoomManager";
+import * as SceneManager from "../scenes/SceneManager";
 import * as ScriptHandler from "../script/ScriptHandler";
-import { Entity } from "./Entity";
+import { Entity, EntityInputAction } from "./Entity";
 
 
 var entityPrototypes: Record<string, EntityPrototypeData> = {};
@@ -19,7 +22,7 @@ export function getEntityPrototypeStrict(name: string): EntityPrototypeData {
     return proto;
 }
 
-export function startHookOnEntity(entity: Entity, name: string, context: JSONObject): ScriptHandler.Task | null {
+export function startHookOnEntity(entity: Entity, name: string, context: JSONObject = {}): ScriptHandler.Task | null {
     const proto = getEntityPrototypeStrict(entity.kind);
     var hook = proto.hooks?.[name] as any;
     if (!hook) return null;
@@ -91,4 +94,36 @@ export function setPlayer(e: Entity | null) {
 
 export function getPlayer(): Entity | null {
     return activePlayer;
+}
+
+export function installControlsHandler() {
+    K.onUpdate(() => {
+        const p = getPlayer();
+        if (p) {
+            if (RoomManager.getCurrentRoom()?.id !== p.currentRoom) {
+                K.go(SceneManager.Scene.ROOM, p.currentRoom);
+                return;
+            }
+            const m = "isButtonPressed";
+            // Move and/or climb
+            p.doMove(getMotionInput("move", p));
+            // Look
+            p.lookInDirection(getMotionInput("look", p));
+            // Jump
+            if (K[m]("jump")) p.tryJump();
+            if (K[m]("action1")) p.doAction(EntityInputAction.ACTION1);
+            if (K[m]("action2")) p.doAction(EntityInputAction.ACTION2);
+            if (K[m]("action3")) p.doAction(EntityInputAction.ACTION3);
+            if (K[m]("action4")) p.doAction(EntityInputAction.ACTION4);
+            if (K[m]("target1")) p.doAction(EntityInputAction.TARGET1);
+            if (K[m]("target2")) p.doAction(EntityInputAction.TARGET2);
+            if (K[m]("inspect")) p.doAction(EntityInputAction.INSPECT);
+            if (K[m]("continue")) p.doAction(EntityInputAction.CONTINUE);
+            // Camera follow
+            const alpha = K.dt() * Math.LN2;
+            K.setCamPos(K.lerp(K.getCamPos(), p.pos, alpha / GameManager.getDefaultValue("cameraPanAlpha")));
+            // Zoom in
+            K.setCamScale(K.lerp(K.getCamScale(), K.vec2(p.getPrototype().behavior.camScale ?? 1), alpha / GameManager.getDefaultValue("cameraScaleAlpha")));
+        }
+    });
 }

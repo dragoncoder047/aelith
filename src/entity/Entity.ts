@@ -39,6 +39,7 @@ export class Entity implements Serializable {
     animator: Animator;
     inventory: Inventory;
     targeted: Entity | null = null;
+    private _climbing = false;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -53,13 +54,13 @@ export class Entity implements Serializable {
         buildAnimations(kind, this.animator = new Animator(this));
         EntityManager.startHookOnEntity(this, "setup", {});
     }
-    private _ubsc: KEventController | undefined;
+    private _unloadedBySceneChange: KEventController | undefined;
     load() {
         if (this.obj) return;
         // needed for the entity getter on entity comp so I used it everywhere for extra minification ;)
         const self = this;
-        self._ubsc?.cancel();
-        self._ubsc = K.onSceneLeave(() => {
+        self._unloadedBySceneChange?.cancel();
+        self._unloadedBySceneChange = K.onSceneLeave(() => {
             self.unloaded();
         });
         self.obj = K.add([
@@ -89,7 +90,7 @@ export class Entity implements Serializable {
         for (var k of Object.keys(this.bones)) {
             this.bones[k]?.destroy();
         }
-        this._ubsc?.cancel();
+        this._unloadedBySceneChange?.cancel();
         this.unloaded();
     }
     unloaded() {
@@ -99,7 +100,7 @@ export class Entity implements Serializable {
             this.lightObjs = [];
             EntityManager.startHookOnEntity(this, "unload", {});
         }
-        this._goOn = this._shutUp = this._ubsc = undefined;
+        this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
         this._spitItOut = false;
     }
     toJSON(): EntityData {
@@ -175,8 +176,10 @@ export class Entity implements Serializable {
     }
     tryJump() {
         if (this.obj) {
-            if (this.obj.isGrounded())
+            if (this.obj.isGrounded()) {
                 this.obj.jump();
+                EntityManager.startHookOnEntity(this, "jump");
+            }
         }
     }
     getHead(): GameObj<PosComp> | undefined {
@@ -184,7 +187,7 @@ export class Entity implements Serializable {
     }
     target(other: Entity | null) {
         if (other?.obj) {
-            this.lookAtPoint(other.obj.worldPos()!);
+            this._lookAtPoint(other.obj.worldPos()!);
         }
         this.targeted = other;
         if (other) {
@@ -201,25 +204,43 @@ export class Entity implements Serializable {
             })
         }
     }
-    lookAtPoint(pt: Vec2) {
+    private _lookAtPoint(pt: Vec2) {
         if (this.obj) {
             const d = this.getPrototype().model.kinematics.look;
             this.bones[d.target]!.worldPos(pt);
         }
     }
     lookInDirection(direction: Vec2) {
+        const lookRelToHead = (pt: Vec2) => {
+            this._lookAtPoint(this.getHead()!.worldPos()!.add(pt));
+        }
         if (this.obj && !direction.isZero()) {
             const d = this.getPrototype().model.kinematics.look;
             const origin = this.bones[d.origin]!.worldPos()!;
             const res = K.raycast(origin, direction.scale((this.getPrototype().behavior.interactDistance ?? 4) * 32), [this.id]);
             if (res) {
-                if (!(res.object?.entity) && res.point) this.lookAtPoint(res.point);
+                if (!(res.object?.entity) && res.point) this._lookAtPoint(res.point);
             } else {
-                this.lookAtPoint(this.getHead()!.worldPos()!.add((direction.slen() < 1 ? direction.unit() : direction).scale(10)));
+                lookRelToHead((direction.slen() < 1 ? direction.unit() : direction).scale(128));
             }
             this.target(res?.object?.entity as Entity);
             return res;
+        } else {
+            // reset gaze to normal
+            lookRelToHead(K.RIGHT.scale(128));
         }
         return null;
+    }
+    doMove(direction: Vec2, sprint?: boolean) {
+        EntityManager.startHookOnEntity(this, "move", { dir: { x: direction.x, y: direction.y }, sprint });
+        const pb = this.getPrototype().behavior;
+        const speed = (sprint ? pb.sprintSpeed : null) ?? pb.moveSpeed;
+        if (this.obj) {
+            this.obj.move(direction.unit().scale(speed));
+            this._motionAnimation(direction, sprint);
+        }
+    }
+    private _motionAnimation(direction: Vec2, sprint?: boolean) {
+
     }
 }

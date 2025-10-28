@@ -1,10 +1,7 @@
 import { ChordedKey, ChordedKGamepadButton, ChordedMouseButton, Key, KGamepadButton, MouseButton, Vec2 } from "kaplay";
 import { K } from "../context";
-import { Entity, EntityInputAction } from "../entity/Entity";
-import * as EntityManager from "../entity/EntityManager";
+import { Entity } from "../entity/Entity";
 import * as PlatformGuesser from "../PlatformGuesser";
-import * as RoomManager from "../room/RoomManager";
-import * as SceneManager from "../scenes/SceneManager";
 import { BUTTONS, ExtendedButtonBinding } from "../static/buttons";
 import { STICK_DEADZONE } from "../static/constants";
 import { ButtonsDpadInput, DirectionalInput, GamepadInput, MouseMoveInput, MouseWheelInput } from "./DirectionalAbstraction";
@@ -39,33 +36,6 @@ export function setupControls() {
     PlatformGuesser.setupDetection();
 }
 
-export function installControlsHandler() {
-    K.onUpdate(() => {
-        // TODO: stop here if dialog is shown or in a menu scene
-        const p = EntityManager.getPlayer();
-        if (p) {
-            if (RoomManager.getCurrentRoom()?.id !== p.currentRoom) {
-                K.go(SceneManager.Scene.ROOM, p.currentRoom);
-                return;
-            }
-            const m = "isButtonPressed";
-            // Move and/or climb
-            // TODO
-            // Look
-            p.lookInDirection(getMotionInput("look", p));
-            // Jump
-            if (K[m]("jump")) p.tryJump();
-            if (K[m]("action1")) p.doAction(EntityInputAction.ACTION1);
-            if (K[m]("action2")) p.doAction(EntityInputAction.ACTION2);
-            if (K[m]("action3")) p.doAction(EntityInputAction.ACTION3);
-            if (K[m]("action4")) p.doAction(EntityInputAction.ACTION4);
-            if (K[m]("target1")) p.doAction(EntityInputAction.TARGET1);
-            if (K[m]("target2")) p.doAction(EntityInputAction.TARGET2);
-            if (K[m]("inspect")) p.doAction(EntityInputAction.INSPECT);
-            if (K[m]("continue")) p.doAction(EntityInputAction.CONTINUE);
-        }
-    });
-}
 export function loadAssets() {
     const m = "loadBitmapFontFromSprite" as const;
     const GP_FONT_CHARS = "d1234vNEWSlrLRetJKXxYyjk"; // cSpell: ignore yyjk

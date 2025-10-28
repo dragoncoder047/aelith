@@ -252,5 +252,5 @@ model:
       render: *tentacle
       sizes: [4, 1, easeOutQuad]
       masses: [1, 1]
-# hooks:
-#   load: [do, [anim, idle]]
+hooks:
+  action1: [as, agent, setPlayer]

@@ -8,9 +8,9 @@
         "build:data": "python3 scripts/build_datapack.py",
         "build:js": "node scripts/build.mjs",
         "build:clean": "rm -rf build/ && mkdir build",
-        "build": "pnpm build:clean && pnpm build:data && pnpm build:js",
+        "build": "./scripts/build_oneshot.sh",
         "dev:build:js": "node scripts/build.mjs -w",
-        "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,txt,glsl -i build --exec \"pnpm build:data\"",
+        "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,txt,glsl,wav,ogg,mp3 -i build --exec \"pnpm build:data\"",
         "dev:serve": "python3 -m http.server",
         "build:minified": "pnpm build:clean && node scripts/build.mjs --minify && python3 scripts/build_datapack.py --minify",
         "dev": "pnpm run \"/^dev:.*/\"",
@@ -27,7 +27,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#82c7deb0d236c9f2a10b17a8d8c8b6f615ecec53",
+        "kaplay": "github:dragoncoder047/kaplay#65d1778589f0f0c6d7d4c6071d241986bd141b48",
         "kaplay-lighting": "github:tristanperrow/kaplay-lighting#2aeb008e9e214c08f2f12509209521b51ad97548",
         "zzfx": "^1.3.0"
     },

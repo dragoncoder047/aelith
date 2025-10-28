@@ -157,4 +157,7 @@ export const FUNCTIONS: Form[] = [
     new Form("drop", false, async function* ([itemid], task, actor) {
         return actor.inventory.drop(EntityManager.getEntityByName(itemid)!);
     }),
+    new Form("setPlayer", false, async function* (args, task, actor) {
+        EntityManager.setPlayer(actor);
+    }),
 ];

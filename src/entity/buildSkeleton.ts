@@ -1,4 +1,4 @@
-import { BodyComp, EaseFuncs, GameObj, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameObj, PosComp, RotateComp } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
@@ -112,10 +112,10 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 K.rotate(),
                 K.scale(),
                 K.offscreen({ hide: true }),
-                // K.area({ shape: new K.Circle(K.vec2(), 5) }),
             ]);
             if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);
             if (!bone.name) bone.name = "_b" + obj.id;
+            obj.use(K.named(bone.name));
             map[bone.name] = obj;
             if (bone.constraint) {
                 constraintEntries.push({ c: bone.constraint, t: bone.name });
@@ -174,7 +174,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         }
     }
     for (var i of ikEntries) {
-        map[i.s]!.use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
+        assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     if (model.speechBubble) {
         const { origin, tokenDelay, width, voiceSound } = model.speechBubble;

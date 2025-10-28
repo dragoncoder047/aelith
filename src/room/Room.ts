@@ -109,7 +109,9 @@ export class Room implements Serializable {
     unloaded() {
         this.depthTiles = [];
     }
+    static _depthEnabled = true;
     drawDepth() {
+        if (!Room._depthEnabled) return;
         var t: number, i = 0;
         // set up counters
         for (i = 0; i < this.depthTiles.length; i++) {

@@ -113,6 +113,8 @@ export interface EntityPrototypeData extends JSONObject {
         canFly: boolean;
         moveSpeed: number;
         sprintSpeed?: number;
+        /** if the camera should zoom in when me is the player */
+        camScale?: number;
         /** jump force */
         jumpForce?: number;
         /** the number of internal inventory slots this entity has, if null or 0 it cannot pick up anything */
@@ -160,6 +162,8 @@ interface EntityLookAnimDef extends JSONObject {
 interface EntityMotionAnimDef extends JSONObject {
     /** which bone target gets moved */
     bone: string;
+    /** if this bone should be moved to the target, versus just following */
+    target?: boolean;
     /** randomize jitter */
     jitter?: {
         pos?: XY;
@@ -416,5 +420,7 @@ export interface DataPackData extends JSONObject {
         friction: number;
         restitution: number;
         speechBubbleWidth?: number;
+        cameraPanAlpha: number;
+        cameraScaleAlpha: number;
     }
 }

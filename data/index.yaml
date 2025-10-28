@@ -28,3 +28,5 @@ defaults:
   restitution: 0.5
   friction: 0.5
   speechBubbleWidth: 100
+  cameraPanAlpha: 0.2
+  cameraScaleAlpha: 0.08

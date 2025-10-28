@@ -78,8 +78,8 @@ function averageAll<T extends LerpValue>(values: T[]): T {
         if (typeof values[0] === "number") return (values as number[]).reduce((a, b) => a + b, 0) * oneOverLength as T;
         if (values[0] instanceof K.Vec2) return (values as Vec2[]).reduce((a, b) => K.Vec2.add(a, b, a), K.vec2()).scale(oneOverLength) as T;
         if (values[0] instanceof K.Color) return (values as Color[]).reduce((acc, { r, g, b }) => (acc.r += r, acc.g += g, acc.b += b, acc), new K.Color(0, 0, 0)).mult(new K.Color(oneOverLength, oneOverLength, oneOverLength)) as T;
-    } else throw new Error("aaa no values");
-    throw new Error("wtf value is this: " + values[0]);
+    } else throw new Error("wtf value is this: " + values[0]);
+    throw new Error("aaa no values");
 }
 
 function splitV(obj: any, path: string[]): [any, string] {
