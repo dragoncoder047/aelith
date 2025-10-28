@@ -13,6 +13,7 @@ SYSTEM_SETTINGS.addBoolean("controllerRumble", true);
 SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v => K.useLanguage(v === "auto" ? null : v));
 SYSTEM_SETTINGS.addRange("musicVolume", 1, 1, 0);
 SYSTEM_SETTINGS.addRange("sfxVolume", 1, 1, 0);
+SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 
 const mms = (s: string) => `&msg.menu.settings.${s}`;
 
@@ -39,6 +40,11 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 type: MenuItemType.SUBMENU,
                 next: "languageSettings",
                 text: mms("language.title")
+            },
+            {
+                type: MenuItemType.SUBMENU,
+                next: "debugSettings",
+                text: mms("debug.title")
             },
         ]
     },
@@ -120,6 +126,18 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 text: mms("audio.sfxVolume"),
                 setting: "sfxVolume",
                 help: mms("audio.infoSfxVolume"),
+            }
+        ]
+    },
+    debugSettings: {
+        title: mms("debug.title"),
+        options: [
+            {
+                type: MenuItemType.SETTING,
+                text: mms("debug.inspectView"),
+                setting: "debugInspect",
+                help: mms("debug.infoInspectView"),
+                altDisplay: true
             }
         ]
     }

@@ -2,6 +2,7 @@ import * as BlueScreen from "../BlueScreen";
 import { K } from "../context";
 import { Settings } from "../settings";
 import { buildMenu } from "./menus/buildMenu";
+import { installTabNavigation } from "./menus/tabNav";
 import { Menu } from "./menus/types";
 
 
@@ -13,6 +14,6 @@ export function menuScene(menu: Menu, set: Record<string, Menu>, settings: Setti
     } else {
         console.log(K._k.game.sceneStack);
     }
-    console.log(menu, set, settings);
     buildMenu(menu, set, settings);
+    installTabNavigation();
 }

@@ -1,9 +1,10 @@
 import { EmitterOpt } from "kaplay";
 import * as BlueScreen from "../BlueScreen";
 import { K } from "../context";
-import { below, layoutAnchor, uiButton } from "../ui";
-import * as SceneManager from "./SceneManager";
 import { SYSTEM_MENUS, SYSTEM_SETTINGS } from "../static/systemMenus";
+import { below, layoutAnchor, uiButton } from "../ui";
+import { installTabNavigation } from "./menus/tabNav";
+import * as SceneManager from "./SceneManager";
 
 
 export function titleScreenScene() {
@@ -52,12 +53,13 @@ export function titleScreenScene() {
         emitterOpt.rate = K.lerp(20, 1500, Math.pow(K.getGamepadAnalogButton("rtrigger"), 2));
     });
     const w = K.width() / 3;
-    const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "nav_select", () => {
+    const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "jump", () => {
         K.go(SceneManager.Scene.ROOM);
     }));
-    const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "pause_unpause", () => {
+    const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "main_menu_options", () => {
         K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.main, SYSTEM_MENUS, SYSTEM_SETTINGS);
     }));
     enterBtn.use(layoutAnchor(K.center));
     optionsBtn.use(below(enterBtn, 10));
+    installTabNavigation();
 }

@@ -1,15 +1,18 @@
-import { AnchorComp, AreaComp, ColorComp, Comp, FixedComp, Game, GameObj, OpacityComp, PosComp, RectComp, TextComp, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, ColorComp, Comp, FixedComp, GameObj, OpacityComp, PosComp, RectComp, TextComp, Vec2 } from "kaplay";
 import { K } from "../context";
 import { DEF_STYLES, DEF_TEXT_SIZE, STYLES } from "../TextStyles";
 
 export interface UiObjComp extends Comp {
-    action: () => void;
+    action(): void;
+    rawText(): string;
     child?: GameObj;
     child2?: GameObj;
 }
 
 export interface UiSliderComp extends UiObjComp {
     changeBy(value: number): void;
+    lo: number,
+    hi: number
 }
 
 export const PAD = 10;
@@ -27,7 +30,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
             },
             draw(this: GameObj<TextComp | UiObjComp>) {
                 const fText = K.formatText({
-                    text: K.sub(btn ? `$mbutton(${btn})${text}` : text),
+                    text: K.sub(this.rawText()),
                     anchor: "center",
                     align: "center",
                     width: this.width - 2 * PAD * s,
@@ -39,8 +42,14 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 K.drawFormattedText(fText);
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp>) {
-                this.color = this.isHovering() ? K.YELLOW : this.is("focused") ? K.WHITE : K.CYAN;
-            }
+                this.color = this.isHovering() || this.is("focused") ? K.YELLOW : K.CYAN;
+            },
+            rawText() {
+                return btn ? `$mbutton(${btn})${text}` : text;
+            },
+            inspect() {
+                return `t: ${this.rawText()}`;
+            },
         },
         K.anchor("center"),
         K.area(),
@@ -55,7 +64,6 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
         K.opacity(0),
         K.color(K.YELLOW),
         <UiObjComp>{
-            // this is not used lol
             id: "uiObj",
             action,
             add(this: GameObj<AreaComp | RectComp | UiObjComp>) {
@@ -69,7 +77,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
             },
             draw(this: GameObj<RectComp | UiObjComp>) {
                 const fText = K.formatText({
-                    text: K.sub(text),
+                    text: K.sub(this.rawText()),
                     anchor: "left",
                     align: "left",
                     width: this.width - 2 * PAD * s,
@@ -84,7 +92,13 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
                 this.child!.frame = getValue() ? 1 : 0;
-            }
+            },
+            rawText() {
+                return text;
+            },
+            inspect() {
+                return `t: ${this.rawText()}`;
+            },
         },
         K.anchor("center"),
         K.area(),
@@ -98,9 +112,18 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
         K.sprite("button", { width: tw, height: tw / 5 }),
         K.opacity(0),
         K.color(K.YELLOW),
-        <UiObjComp>{
-            // this is not used lol
-            id: "uiObj",
+        <UiSliderComp>{
+            id: "uiSlider",
+            lo: start, hi: stop,
+            action() {
+
+            },
+            changeBy(by) {
+                var value = getValue() + by;
+                if (step !== undefined) value = start + step * (value > 0 ? Math.ceil : Math.floor)((value - start) / step);
+                value = K.clamp(value, start, stop);
+                setValue(value);
+            },
             add(this: GameObj<AreaComp | RectComp | UiObjComp | PosComp | FixedComp>) {
                 this.child = this.add([
                     K.pos(this.width / 2 - PAD, 0),
@@ -130,7 +153,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             },
             draw(this: GameObj<RectComp | UiObjComp>) {
                 const fText = K.formatText({
-                    text: K.sub(text),
+                    text: K.sub(this.rawText()),
                     anchor: "left",
                     align: "left",
                     width: this.width / 2 - 2 * PAD * s,
@@ -145,7 +168,13 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
                 this.child2!.pos.x = K.mapc(getValue(), start, stop, this.child!.width - this.child2!.width / 2, this.child2!.width / 2)
-            }
+            },
+            rawText() {
+                return text;
+            },
+            inspect() {
+                return `t: ${this.rawText()}`;
+            },
         },
         K.anchor("center"),
         K.area(),
@@ -187,8 +216,8 @@ export function tooltip(tip: string) {
                 K.layer(K._k.game.layers!.at(-1)!),
                 {
                     draw() {
-                        if (!self.isHovering()) return;
-                        const text = K.sub(`[i]${tip}[/i]`);
+                        if (!self.isHovering() && !self.is("focused")) return;
+                        const text = K.sub(this.rawText());
                         if (!text.trim()) return;
                         const myAnchor = (K.anchorToVec2(self.anchor ?? K.Vec2.ZERO).y + 1) * (self.height ?? 0) / 2;
                         const anchorPt = K.vec2(0, myAnchor);
@@ -212,7 +241,13 @@ export function tooltip(tip: string) {
                             color: K.CYAN,
                         });
                         K.drawFormattedText(fText);
-                    }
+                    },
+                    rawText() {
+                        return `[i]${tip}[/i]`;
+                    },
+                    inspect() {
+                        return `t: ${this.rawText()}`;
+                    },
                 }
             ])
         }

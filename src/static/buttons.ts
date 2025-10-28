@@ -103,8 +103,12 @@ export const BUTTONS: Controls = {
         gamepad: "rshoulder"
     },
     // pause menu controls
+    main_menu_options: {
+        keyboard: ",",
+        gamepad: "select"
+    },
     pause_unpause: {
-        keyboard: "tab",
+        keyboard: "escape",
         gamepad: "start",
     },
     nav_left: {
@@ -112,7 +116,7 @@ export const BUTTONS: Controls = {
         gamepad: "dpad-left"
     },
     nav_up: {
-        keyboard: ["w", "up"],
+        keyboard: ["w", "up", "shift+tab"],
         gamepad: "dpad-up"
     },
     nav_right: {
@@ -120,7 +124,7 @@ export const BUTTONS: Controls = {
         gamepad: "dpad-right"
     },
     nav_down: {
-        keyboard: ["s", "down"],
+        keyboard: ["s", "down", "tab"],
         gamepad: "dpad-down"
     },
     nav_select: {
