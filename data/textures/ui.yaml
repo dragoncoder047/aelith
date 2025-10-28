@@ -1,0 +1,34 @@
+button:
+  x: 0
+  y: 0
+  width: 27
+  height: 27
+  slice9:
+    left: 10
+    right: 10
+    top: 10
+    bottom: 10
+switch: &x
+  x: 0
+  y: 32
+  width: 48
+  height: 12
+  sliceX: 2
+check:
+  <<: *x
+  width: 32
+  y: 48
+radio:
+  <<: *x
+  width: 32
+  y: 64
+slider_track:
+  x: 8
+  y: 80
+  width: 8
+  height: 2
+slider_thumb:
+  x: 0
+  y: 80
+  height: 8
+  width: 6

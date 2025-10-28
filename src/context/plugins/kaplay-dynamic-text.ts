@@ -62,8 +62,9 @@ export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KA
                 update(this: GameObj<TextComp | DynamicTextComp>) {
                     this.text = K.sub(this.t, this.data);
                 },
-                inspect() {
-                    return "sub: " + this.t;
+                inspect(this: GameObj<TextComp | DynamicTextComp>) {
+                    const esc = (s: string) => s.replaceAll(/(?<!\\)([[\\])/g, "\\$1")
+                    return "sub: " + esc(this.t) + "\nres: " + esc(this.text);
                 }
             }
         }

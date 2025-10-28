@@ -9,7 +9,7 @@ export const map = {
     font_xbox: { ...all, y: 0 },
     font_switch: { ...all, y: 16 },
     font_ps4: { ...all, y: 32 },
-    font_ps5: { ...all, y: 38 },
+    font_ps5: { ...all, y: 48 },
     keyfont_1: {
         x: 0,
         y: 64,

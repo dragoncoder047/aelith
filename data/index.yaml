@@ -10,6 +10,7 @@ entityTypes: !include entities/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no
+  currentPlayer: explorer
 renderLayers:
   - [
       "behindEverything",

@@ -1,15 +1,21 @@
 import { KGamepadStick, Vec2 } from "kaplay";
 import { K } from "../context";
+import { Entity } from "../entity/Entity";
+import { STICK_DEADZONE } from "../static/constants";
 
 export abstract class DirectionalInput {
     constructor(public axes: Vec2) { };
-    protected abstract raw(): Vec2;
-    poll() { return this.raw().scale(this.axes); }
+    protected abstract raw(entity: Entity | null): Vec2;
+    poll(entity: Entity | null) { return this.raw(entity).scale(this.axes); }
 }
 
 export class GamepadInput extends DirectionalInput {
     constructor(public stick: KGamepadStick, axes: Vec2 = K.Vec2.ONE) { super(axes); }
-    raw() { return K.getGamepadStick(this.stick); }
+    raw() {
+        const s = K.getGamepadStick(this.stick);
+        if (s.slen() > STICK_DEADZONE * STICK_DEADZONE) return s;
+        return K.Vec2.ZERO;
+    }
 }
 
 const NOT_A_BUTTON = "NOT_A_BUTTON" as any;
@@ -27,4 +33,16 @@ export class MouseWheelInput extends DirectionalInput {
         K.onDraw(() => this.delta = K.Vec2.ZERO);
     }
     raw() { return this.delta; }
+}
+
+export class MouseMoveInput extends DirectionalInput {
+    constructor() {
+        super(K.Vec2.ONE);
+    }
+    raw(entity: Entity | null) {
+        if (K.getLastInputDeviceType() === "gamepad") return K.Vec2.ZERO;
+        if (!entity) return K.mouseDeltaPos();
+        const head = entity.getHead()!;
+        return K.mousePos().sub(head.worldPos()!);
+    }
 }

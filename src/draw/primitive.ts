@@ -1,7 +1,7 @@
 import { Anchor, GameObj, LineCap, LineJoin, TextAlign, Uniform } from "kaplay";
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
-import { STYLES } from "../TextStyles";
+import { DEF_STYLES, STYLES } from "../TextStyles";
 import { polyline } from "./polyline";
 
 type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
@@ -144,7 +144,7 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
         case "text":
             obj.use(K.text("", {
                 styles: Object.assign({}, STYLES, primitive.styles),
-                transform: Object.assign({}, STYLES.default, primitive.transform),
+                transform: Object.assign({} as any, DEF_STYLES, primitive.transform),
                 size: primitive.size,
                 width: primitive.width,
                 align: primitive.align,

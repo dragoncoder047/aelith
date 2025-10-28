@@ -1,6 +1,7 @@
 import { BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
+import { PAreaComp } from "../context/plugins/kaplay-aabb";
 import { EntityData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
@@ -30,13 +31,14 @@ export type BoneComponents = EntityComponents | RotateComp | ScaleComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
 
 export class Entity implements Serializable {
-    obj: GameObj<EntityComponents> | null = null;
+    obj: GameObj<EntityComponents | BodyComp> | null = null;
     bones: BonesMap = {};
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
     speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
     animator: Animator;
     inventory: Inventory;
+    targeted: Entity | null = null;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -70,10 +72,13 @@ export class Entity implements Serializable {
             self.id,
             self.kind,
             K.pos(self.pos),
-        ]);
-        buildHitbox(self, self.obj);
-        self.bones = buildSkeleton(self, self.obj);
+        ]) as any;
+        buildHitbox(self, self.obj!);
+        self.bones = buildSkeleton(self, self.obj!);
         EntityManager.startHookOnEntity(self, "load", {});
+    }
+    getPrototype() {
+        return EntityManager.getEntityPrototypeStrict(this.kind);
     }
     setPosition(pos: Vec2) {
         if (this.obj) this.obj.pos = pos;
@@ -142,7 +147,7 @@ export class Entity implements Serializable {
         }
     }
 
-    doAction(action: EntityInputAction, context: Entity | null) {
+    doAction(action: EntityInputAction) {
         switch (action) {
             case EntityInputAction.ACTION1:
             case EntityInputAction.ACTION2:
@@ -151,16 +156,70 @@ export class Entity implements Serializable {
             case EntityInputAction.TARGET1:
             case EntityInputAction.TARGET2:
             case EntityInputAction.INSPECT:
-                EntityManager.startHookOnEntity(this, action, { what: context?.id });
+                EntityManager.startHookOnEntity(this, action, { what: this.targeted?.id });
                 break;
             case EntityInputAction.CONTINUE:
-                if (!this.speechBubble?.isSpeaking()) (this.speechBubble && (this.speechBubble.text = ""));
-                else if (this._goOn) (this._goOn(), this._goOn = undefined);
+                if (!this.speechBubble?.isSpeaking()) {
+                    if (this.speechBubble) this.speechBubble.text = "";
+                }
+                else if (this._goOn) {
+                    this._goOn();
+                    this._goOn = undefined;
+                }
                 else this._spitItOut = true;
                 break;
             default:
                 action satisfies never;
-                throw new Error(`wtf what is entity supposed to do with ${action} and ${context?.id}`);
+                throw new Error(`wtf what is entity supposed to do with ${action}`);
         }
+    }
+    tryJump() {
+        if (this.obj) {
+            if (this.obj.isGrounded())
+                this.obj.jump();
+        }
+    }
+    getHead(): GameObj<PosComp> | undefined {
+        return this.bones[this.getPrototype().model.kinematics.look.origin];
+    }
+    target(other: Entity | null) {
+        if (other?.obj) {
+            this.lookAtPoint(other.obj.worldPos()!);
+        }
+        this.targeted = other;
+        if (other) {
+            const bbox = (other.obj as any).aabb();
+            K.drawRect({
+                width: bbox.width,
+                height: bbox.height,
+                pos: bbox.pos,
+                fill: false,
+                outline: {
+                    width: 2,
+                    color: K.RED
+                }
+            })
+        }
+    }
+    lookAtPoint(pt: Vec2) {
+        if (this.obj) {
+            const d = this.getPrototype().model.kinematics.look;
+            this.bones[d.target]!.worldPos(pt);
+        }
+    }
+    lookInDirection(direction: Vec2) {
+        if (this.obj && !direction.isZero()) {
+            const d = this.getPrototype().model.kinematics.look;
+            const origin = this.bones[d.origin]!.worldPos()!;
+            const res = K.raycast(origin, direction.scale((this.getPrototype().behavior.interactDistance ?? 4) * 32), [this.id]);
+            if (res) {
+                if (!(res.object?.entity) && res.point) this.lookAtPoint(res.point);
+            } else {
+                this.lookAtPoint(this.getHead()!.worldPos()!.add((direction.slen() < 1 ? direction.unit() : direction).scale(10)));
+            }
+            this.target(res?.object?.entity as Entity);
+            return res;
+        }
+        return null;
     }
 }

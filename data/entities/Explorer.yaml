@@ -18,6 +18,10 @@ behavior:
 model:
   speechBubble:
     origin: speechBubbleOrigin
+  kinematics:
+    look:
+      origin: head
+      target: gazeTarget
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -36 }

@@ -1,14 +1,18 @@
-import { Key, KGamepadButton, MouseButton, Vec2 } from "kaplay";
+import { ChordedKey, ChordedKGamepadButton, ChordedMouseButton, Key, KGamepadButton, MouseButton, Vec2 } from "kaplay";
 import { K } from "../context";
+import { Entity, EntityInputAction } from "../entity/Entity";
+import * as EntityManager from "../entity/EntityManager";
 import * as PlatformGuesser from "../PlatformGuesser";
+import * as RoomManager from "../room/RoomManager";
+import * as SceneManager from "../scenes/SceneManager";
 import { BUTTONS, ExtendedButtonBinding } from "../static/buttons";
-import { ButtonsDpadInput, DirectionalInput, GamepadInput, MouseWheelInput } from "./DirectionalAbstraction";
 import { STICK_DEADZONE } from "../static/constants";
+import { ButtonsDpadInput, DirectionalInput, GamepadInput, MouseMoveInput, MouseWheelInput } from "./DirectionalAbstraction";
 
 const motionControls: Record<string, DirectionalInput[]> = {};
-export function getMotionInput(name: string) {
+export function getMotionInput(name: string, origin: Entity | null) {
     if (!(name in motionControls)) return K.Vec2.ZERO;
-    const v = motionControls[name]!.reduce((a, inp) => a.add(inp.poll()), K.Vec2.ZERO);
+    const v = motionControls[name]!.reduce((a, inp) => a.add(inp.poll(origin)), K.Vec2.ZERO);
     return v.slen() > 1 ? v.unit() : v;
 }
 export function setupControls() {
@@ -28,8 +32,39 @@ export function setupControls() {
                 e.push(new GamepadInput(d.gamepad[0], d.gamepad[1]));
             if (d.mouseWheel)
                 e.push(new MouseWheelInput(d.mouseWheel));
+            if (d.mouseMove)
+                e.push(new MouseMoveInput());
         }
     }
+    PlatformGuesser.setupDetection();
+}
+
+export function installControlsHandler() {
+    K.onUpdate(() => {
+        // TODO: stop here if dialog is shown or in a menu scene
+        const p = EntityManager.getPlayer();
+        if (p) {
+            if (RoomManager.getCurrentRoom()?.id !== p.currentRoom) {
+                K.go(SceneManager.Scene.ROOM, p.currentRoom);
+                return;
+            }
+            const m = "isButtonPressed";
+            // Move and/or climb
+            // TODO
+            // Look
+            p.lookInDirection(getMotionInput("look", p));
+            // Jump
+            if (K[m]("jump")) p.tryJump();
+            if (K[m]("action1")) p.doAction(EntityInputAction.ACTION1);
+            if (K[m]("action2")) p.doAction(EntityInputAction.ACTION2);
+            if (K[m]("action3")) p.doAction(EntityInputAction.ACTION3);
+            if (K[m]("action4")) p.doAction(EntityInputAction.ACTION4);
+            if (K[m]("target1")) p.doAction(EntityInputAction.TARGET1);
+            if (K[m]("target2")) p.doAction(EntityInputAction.TARGET2);
+            if (K[m]("inspect")) p.doAction(EntityInputAction.INSPECT);
+            if (K[m]("continue")) p.doAction(EntityInputAction.CONTINUE);
+        }
+    });
 }
 export function loadAssets() {
     const m = "loadBitmapFontFromSprite" as const;
@@ -44,27 +79,40 @@ export function loadAssets() {
     K[m]("mousefont", "mlrs"); // cSpell: ignore mlrs
     K.strings.msg = "&&lang";
     K.strings.button = (s: string) => getDisplayForInput(s, false);
+    K.strings.mbutton = (s: string) => {
+        const tmp = K.getLastInputDeviceType();
+        return (tmp && tmp !== "mouse") ? getDisplayForInput(s, false) + " " : "";
+    }
     K.strings.pr_btn = (s: string) => getDisplayForInput(s, true);
 }
 
+function singleOrMany<T extends string>(num: T | T[] | undefined, fun: (x: T[], checkPressed: boolean) => string[], checkPressed: boolean) {
+    if (num === undefined) return "";
+    return fun(Array.isArray(num) ? num : [num], checkPressed).join("/");
+}
+
 function getDisplayForInput(input: string, checkPressed: boolean) {
-    const btn = K.getButton(input) as ExtendedButtonBinding;
-    if (K.getLastInputDeviceType() === "gamepad") {
-        if (btn.gamepad) return gamepadButtons(btn.gamepad, checkPressed).join("/");
-    } else {
-        if (btn.mouse) return mouseButton(btn.mouse, checkPressed);
-        if (btn.keyboard) return keyboardButtons(btn.keyboard, checkPressed).join("/");
+    const btn = K.getButton(input) as ExtendedButtonBinding | undefined;
+    if (btn) {
+        if (K.getLastInputDeviceType() === "gamepad") {
+            if (btn.gamepad) return singleOrMany(btn.gamepad, gamepadButtons, checkPressed);
+        } else {
+            if (btn.mouse) return singleOrMany(btn.mouse, mouseButton, checkPressed);
+            if (btn.keyboard) return singleOrMany(btn.keyboard, keyboardButtons, checkPressed);
+        }
+        if (btn.directional) return directionalButton(btn.directional, input, checkPressed);
     }
-    if (btn.directional) return directionalButton(btn.directional, input, checkPressed);
     return "[?a-unk?]";
 }
 
 function multiDisplayInput(input: string, checkPressed: boolean) {
-    const btn = K.getButton(input) as ExtendedButtonBinding;
-    if (K.getLastInputDeviceType() === "gamepad") {
-        if (btn.gamepad) return gamepadButtons(btn.gamepad, checkPressed)
-    } else {
-        return [...(btn.keyboard ? keyboardButtons(btn.keyboard, checkPressed) : []), ...(btn.mouse ? [mouseButton(btn.mouse, checkPressed)] : [])];
+    const btn = K.getButton(input) as ExtendedButtonBinding | undefined;
+    if (btn) {
+        if (K.getLastInputDeviceType() === "gamepad") {
+            if (btn.gamepad) return [singleOrMany(btn.gamepad, gamepadButtons, checkPressed)];
+        } else {
+            return [singleOrMany(btn.keyboard, keyboardButtons, checkPressed), singleOrMany(btn.mouse, mouseButton, checkPressed)];
+        }
     }
     return [];
 }
@@ -100,7 +148,7 @@ function directionalButton(directional: NonNullable<ExtendedButtonBinding["direc
         }
     }
     if (checkPressed) {
-        if (!delta) delta = getMotionInput(input);
+        if (!delta) delta = getMotionInput(input, null);
         if (delta.slen() > STICK_DEADZONE * STICK_DEADZONE) str = `[pressed]${str}[/pressed]`;
     }
     return str;
@@ -115,8 +163,25 @@ function gamepadFontStr(ch: string): string {
     return ` [font_${PlatformGuesser.currentGamepadType()}]${ch}[/font_${PlatformGuesser.currentGamepadType()}] `;
 }
 
-function gamepadButtons(btn: KGamepadButton | KGamepadButton[], checkPressed: boolean): string[] {
-    if (!Array.isArray(btn)) btn = [btn];
+function splitButtons<T extends string>(b: T): T[] {
+    const out = b.split("+") as T[];
+    for (var i = 0; i < out.length; i++) {
+        if (out[i] === "" && out[i + 1] === "") {
+            out.splice(i, 2, "+" as T);
+            i--;
+        }
+    }
+    return out;
+}
+
+function gamepadButtons(btn: ChordedKGamepadButton[], checkPressed: boolean): string[] {
+    const out = [];
+    if (btn.length === 1) {
+        const splitted = splitButtons(btn[0]!);
+        if (splitted.length !== 1) {
+            return [splitted.map(b => gamepadButtons([b], checkPressed)).join("")]
+        }
+    }
     var ch: string | undefined;
     for (var [candBtn, candCh] of GAMEPAD_BUTTONS) {
         if (candBtn.sort().join() === btn.sort().join()) {
@@ -127,26 +192,34 @@ function gamepadButtons(btn: KGamepadButton | KGamepadButton[], checkPressed: bo
     if (ch !== undefined) {
         const s = gamepadFontStr(ch);
         if (checkPressed && K.isGamepadButtonDown(btn as any as KGamepadButton))
+            out.push(`[pressed]${s}[/pressed]`);
+        else out.push(s);
+    }
+    else if (btn.length > 1) out.push(...btn.flatMap(b => gamepadButtons([b], checkPressed)));
+    return out;
+}
+
+function mouseButton(btn: ChordedMouseButton[], checkPressed: boolean): string[] {
+    const splitted = splitButtons(btn[0]!);
+    if (splitted.length !== 1) {
+        return [splitted.map(b => mouseButton([b], checkPressed)).join("")]
+    }
+    const ch = MOUSE_BUTTONS[btn[0]! as MouseButton];
+    if (ch) {
+        const s = ` [mousefont]${ch}[/mousefont] `;
+        if (checkPressed && K.isMouseDown(btn as MouseButton[]))
             return [`[pressed]${s}[/pressed]`];
         return [s];
     }
-    if (btn.length > 1) return btn.flatMap(b => gamepadButtons(b, checkPressed));
-    return [];
+    return ["[?m-unk?]"];
 }
 
-function mouseButton(btn: MouseButton, checkPressed: boolean) {
-    const ch = MOUSE_BUTTONS[btn];
-    if (ch) {
-        const s = ` [mousefont]${ch}[/mousefont] `;
-        if (checkPressed && K.isMouseDown(btn))
-            return `[pressed]${s}[/pressed]`;
-        return s;
-    }
-    return "[?m-unk?]";
-}
-
-function keyboardButtons(btn: Key[], checkPressed: boolean) {
+function keyboardButtons(btn: ChordedKey[], checkPressed: boolean): string[] {
     return btn.flatMap(k => {
+        const splitted = splitButtons(k);
+        if (splitted.length !== 1) {
+            return [splitted.map(b => keyboardButtons([b], checkPressed)).join("")]
+        }
         const e = KEYS[k];
         if (!e) return [];
         const s = keyEntry(e);

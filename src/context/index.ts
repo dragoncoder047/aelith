@@ -20,7 +20,6 @@ export const K = kaplay({
     touchToMouse: false,
     inspectOnlyActive: true,
     tagComponentIds: false,
-    buttons: {} as any,
     font: "Unscii",
     plugins: [
         kaplayXterm256,

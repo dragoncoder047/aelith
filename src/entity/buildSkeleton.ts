@@ -1,4 +1,4 @@
-import { BodyComp, EaseFuncs, GameObj, PosComp, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameObj, RotateComp } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
@@ -7,17 +7,21 @@ import * as GameManager from "../GameManager";
 import { naturalDirection } from "./comps/naturaldirection";
 import { speechBubble } from "./comps/speechBubble";
 import { BoneComponents, BonesMap, Entity, EntityComp, EntityComponents } from "./Entity";
-import { getEntityPrototypeStrict } from "./EntityManager";
 
 export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
-    const { hitbox, mass, behavior, restitution, friction } = getEntityPrototypeStrict(e.kind);
+    const { hitbox, mass, behavior, restitution, friction, static: static_ } = e.getPrototype();
     if (hitbox) {
         rootObj.use(K.area({
             shape: new K.Polygon(hitbox.map(({ x, y }) => K.vec2(x, y))),
             restitution: restitution ?? GameManager.getDefaultValue("restitution"),
             friction: friction ?? GameManager.getDefaultValue("friction")
         }));
-        rootObj.use(K.body({ mass, gravityScale: behavior.canFly ? 0 : 1, jumpForce: behavior.jumpForce }));
+        rootObj.use(K.body({
+            mass,
+            gravityScale: behavior.canFly ? 0 : 1,
+            jumpForce: behavior.jumpForce,
+            isStatic: static_
+        }));
     }
 }
 
@@ -28,6 +32,9 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
         const sz = K.lerp(tentacle.sizes[0], tentacle.sizes[1], (K.easings[tentacle.sizes[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
         const mass = K.lerp(tentacle.masses[0], tentacle.masses[1], (K.easings[tentacle.masses[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
         prev = K.add([
+            e.id,
+            e.kind,
+            "tentacle",
             {
                 id: "entity",
                 get entity() { return e }
@@ -88,12 +95,15 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
 
 export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): BonesMap {
     const map: BonesMap = {};
-    const model = getEntityPrototypeStrict(e.kind).model;
+    const model = e.getPrototype().model;
     const constraintEntries: { c: EntityBoneConstraintOptData, t: string }[] = [];
     const ikEntries: { s: string, t: string, d: number }[] = [];
     const buildBone = (parent: GameObj, bonesList: EntityModelBoneData[]) => {
         for (var bone of bonesList) {
             const obj = parent.add([
+                e.id,
+                e.kind,
+                "bone",
                 {
                     id: "entity",
                     get entity() { return e }

@@ -1,9 +1,7 @@
-import { ButtonBinding, Key, KGamepadButton, KGamepadStick, MouseButton, Vec2 } from "kaplay";
+import { ButtonBinding, KGamepadStick, Vec2 } from "kaplay";
 import { K } from "../context";
 
 export interface ExtendedButtonBinding extends ButtonBinding {
-    mouse?: MouseButton,
-    keyboard?: Key[],
     directional?: {
         gamepad?: [KGamepadStick, Vec2];
         buttons?: [[string, string] | undefined, [string, string] | undefined];
@@ -24,6 +22,18 @@ export const BUTTONS: Controls = {
             buttons: [["move_left", "move_right"], ["move_down", "move_up"]],
         }
     },
+    jump: {
+        keyboard: "space",
+        gamepad: "south",
+    },
+    sprint: {
+        keyboard: "shift",
+        gamepad: "lstick",
+    },
+    slide: {
+        keyboard: "shift+space",
+        gamepad: "lstick+south",
+    },
     look: {
         directional: {
             gamepad: ["right", K.Vec2.ONE],
@@ -42,45 +52,41 @@ export const BUTTONS: Controls = {
     move_down: {
         keyboard: ["s", "down"],
     },
-    jump: {
-        keyboard: ["space"],
-        gamepad: ["south"],
-    },
     throw: {
         mouse: "right",
-        gamepad: ["rtrigger"],
+        gamepad: "rtrigger",
     },
     target1: {
         mouse: "left",
-        gamepad: ["rstick"],
+        gamepad: "rstick",
     },
     target2: {
-        keyboard: ["x"],
-        gamepad: ["ltrigger"],
+        keyboard: "x",
+        gamepad: "ltrigger",
     },
     inspect: {
-        keyboard: ["f"],
-        gamepad: ["west"],
+        keyboard: "f",
+        gamepad: "west",
     },
     action1: {
         keyboard: ["e", "enter"],
-        gamepad: ["dpad-down"],
+        gamepad: "dpad-down",
     },
     action2: {
-        keyboard: ["r"],
-        gamepad: ["dpad-right"],
+        keyboard: "r",
+        gamepad: "dpad-right",
     },
     action3: {
-        keyboard: ["q"],
-        gamepad: ["dpad-left"],
+        keyboard: "q",
+        gamepad: "dpad-left",
     },
     action4: {
-        keyboard: ["v"],
-        gamepad: ["dpad-up"],
+        keyboard: "v",
+        gamepad: "dpad-up",
     },
     inspect_next: {
-        keyboard: ["g"],
-        gamepad: ["east"],
+        keyboard: "g",
+        gamepad: "east",
     },
     // inventory controls
     scroll_inventory: {
@@ -89,45 +95,46 @@ export const BUTTONS: Controls = {
         }
     },
     inv_previous: {
-        keyboard: ["z"],
-        gamepad: ["lshoulder"]
+        keyboard: "z",
+        gamepad: "lshoulder"
     },
     inv_next: {
-        keyboard: ["c"],
-        gamepad: ["rshoulder"]
-    },
-    // motion controls
-    sprint: {
-        keyboard: ["shift"],
-        gamepad: ["lstick"],
+        keyboard: "c",
+        gamepad: "rshoulder"
     },
     // pause menu controls
     pause_unpause: {
-        keyboard: ["tab"],
-        gamepad: ["start"],
+        keyboard: "tab",
+        gamepad: "start",
     },
     nav_left: {
         keyboard: ["a", "left"],
-        gamepad: ["dpad-left"]
+        gamepad: "dpad-left"
     },
     nav_up: {
         keyboard: ["w", "up"],
-        gamepad: ["dpad-up"]
+        gamepad: "dpad-up"
     },
     nav_right: {
         keyboard: ["d", "right"],
-        gamepad: ["dpad-right"]
+        gamepad: "dpad-right"
     },
     nav_down: {
         keyboard: ["s", "down"],
-        gamepad: ["dpad-down"]
+        gamepad: "dpad-down"
     },
     nav_select: {
-        keyboard: ["enter"],
-        gamepad: ["south"],
+        keyboard: "enter",
+        gamepad: "south",
     },
     nav_back: {
-        keyboard: ["backspace"],
-        gamepad: ["east"],
+        keyboard: "backspace",
+        gamepad: "east",
+    },
+    nav_scroll: {
+        directional: {
+            mouseWheel: K.vec2(0, 1),
+            gamepad: ["right", K.vec2(0, 1)]
+        }
     }
 };

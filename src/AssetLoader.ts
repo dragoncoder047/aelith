@@ -71,7 +71,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
             switch (asset.loader) {
                 case "url":
                     MusicManager.addSong(theSong)
-                    return K.loadSound(asset.id, asset.src as string);
+                    return K.loadMusic(asset.id, asset.src as string);
                 case "bin":
                     MusicManager.addSong(theSong)
                     return K.loadSound(asset.id, await binSrc(asset));

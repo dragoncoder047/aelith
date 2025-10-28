@@ -19,6 +19,41 @@ dialog:
   touchNotSupportedYet: >-
     This game does not support touchscreen controls. Try connecting a game
     controller or a mouse and keyboard.
+menu:
+  back: Back
+  main:
+    startGameBtn: Play!
+    optionsMenuBtn: Options
+  settings:
+    title: Settings
+    graphics:
+      title: Graphics
+      potato: "You may have to turn some of these off if your computer is a potato:"
+      renderLights: Lighting
+      infoRenderLights: (GPU intensive) Render glow around objects that emit light
+      renderDepth: Pseudo-3D
+      infoRenderDepth: (CPU intensive) Render stacked tiles to create a 3D depth effect
+      speedrunTimer: Speedrun timer
+      infoSpeedrunTimer: Show a timer counting how long you've been playing
+    language:
+      title: Language
+      autodetect: Autodetect from browser settings
+      info: Sets the language for all onscreen text
+    controller:
+      title: Game Controller
+      type: Controller type
+      infoType: Overrides controller type autodetection, if my code got it wrong
+      rumble: Haptic feedback
+      infoRumble: >-
+        Enable vibration/rumble in response to game events with supported
+        browsers and controllers
+    audio:
+      title: Audio
+      musicVolume: Music Volume
+      infoMusicVolume: Volume of background music
+      sfxVolume: Sound Effects Volume
+      infoSfxVolume: Volume of sounds created by game items
+
 # lore:
 #   memory:
 #     - title: /home/bill/windows/NT/core/ntgdi/test/teff/poo.txt

@@ -16,8 +16,7 @@ export function getTileset(name: string): TilesetData {
 
 var allRooms: Record<string, Room> = {};
 export function createRoom(name: string, data: RoomData) {
-    allRooms[name] = new Room(name, data);
-    allRooms[name].spawnInitialEntities();
+    (allRooms[name] = new Room(name, data)).spawnInitialEntities();
 }
 
 var currentRoomName: string | null = null;

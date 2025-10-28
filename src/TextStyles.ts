@@ -1,6 +1,11 @@
 import { TextComp } from "kaplay";
 import { K } from "./context";
 
+export const DEF_TEXT_SIZE = 8;
+export const DEF_STYLES = {
+    color: K.WHITE.darken(50),
+};
+
 export const STYLES: TextComp["textStyles"] = {
     cursor(_, __) {
         return {
@@ -31,10 +36,12 @@ export const STYLES: TextComp["textStyles"] = {
         color: K.WHITE,
         override: true
     },
-    // TODO: uncomment when kaplayjs/kaplay#895 is merged
-    // i: {
-    //     skew: 20,
-    // },
+    i: {
+        skew: 20,
+    },
+    sm: {
+        scale: 0.6
+    },
     keyfont_1: {
         font: "keyfont_1",
         scale: 4,

@@ -100,6 +100,7 @@ export interface EntityPrototypeData extends JSONObject {
     model: EntityModelData;
     /** polygonal hitbox */
     hitbox?: XY[];
+    static?: boolean;
     friction?: number;
     restitution?: number;
     mass?: number;
@@ -118,8 +119,10 @@ export interface EntityPrototypeData extends JSONObject {
         inventorySlots?: number;
         /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
         inventorySize?: number;
-        /** name of the bone that the holded object will be pulled to */
+        /** name of the bone that the held object will be pulled to */
         inventoryHolder?: string;
+        /** distance in tiles */
+        interactDistance?: number;
     }
     hooks: Record<string, HookData | CrustyJSONCode>;
 }
@@ -135,7 +138,7 @@ interface EntityModelData extends JSONObject {
     kinematics: {
         walk: EntityMotionAnimDef[];
         climb: EntityMotionAnimDef[];
-        look: EntityMotionAnimDef[];
+        look: EntityLookAnimDef;
         /** anim to be played while sprinting */
         sprint?: string;
     }
@@ -145,6 +148,13 @@ interface EntityModelData extends JSONObject {
         tokenDelay: number;
         voiceSound: string;
     }
+}
+
+interface EntityLookAnimDef extends JSONObject {
+    /** bone to use as origin when in mouse mode */
+    origin: string;
+    /** bone to move to the targeted entity */
+    target: string;
 }
 
 interface EntityMotionAnimDef extends JSONObject {

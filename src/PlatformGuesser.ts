@@ -6,6 +6,10 @@ export function currentGamepadType() {
     return gamepadType;
 }
 
+export function changeGamepadType(type: string) {
+    gamepadType = type;
+}
+
 function getUserAgentString() {
     // @ts-ignore
     return navigator.userAgent || navigator.vendor || window.opera;
@@ -17,12 +21,12 @@ export function isFirefox() {
 }
 
 export function guessOS() {
-    const a = getUserAgentString().toLowerCase();
-    return a.includes("mac") ? "mac" : a.includes("win") ? "windows" : "linux";
+    const a = getUserAgentString();
+    return /mac|apple/i.test(a) ? "mac" : /win/i.test(a) ? "windows" : "linux";
 }
 
 export function setupDetection() {
-    K.onGamepadConnect(g => {
+    K.app.onGamepadConnect(g => {
         const id = navigator.getGamepads()[g.index]!.id;
         gamepadType = GamepadDetect.detectGamepadTypeFromID(id);
     });

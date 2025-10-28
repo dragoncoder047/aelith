@@ -46,10 +46,11 @@ def include(loader: Loader, node: yaml.Node) -> typing.Any:
         if minify:
             text = minify_shader(text)
         return text
-    elif ext in (".png",):
-        return f"data:{({".png": "image/png"}[ext])};base64,{
+    elif ext in (".png", ".mp3"):
+        return f"data:{({".png": "image/png",
+                         ".mp3": "audio/mp3"}[ext])};base64,{
             base64.b64encode(file.read_bytes()).decode()}"
-    elif ext in (".mp3", ".wav", ".ogg", ".woff", ".otf"):
+    elif ext in (".wav", ".ogg", ".woff", ".otf"):
         return base64.b64encode(file.read_bytes()).decode()
     else:
         return file.read_text()

@@ -66,8 +66,8 @@ export function destroyEntity(e: Entity) {
 }
 
 export function teleportEntityTo(e: Entity, room: string | null, pos: Vec2) {
-    const cr = RoomManager.getCurrentRoom();
     if (e.currentRoom !== room) {
+        const cr = RoomManager.getCurrentRoom();
         if (e.currentRoom === cr) e.destroy();
         else if (room === cr) e.load();
     }

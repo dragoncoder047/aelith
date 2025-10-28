@@ -36,3 +36,7 @@
   loader: url
   src: !include wires.png
   metadata: !include wires.yaml
+- kind: spritemap
+  loader: url
+  src: !include ui.png
+  metadata: !include ui.yaml
