@@ -13,6 +13,8 @@ export interface UiSliderComp extends UiObjComp {
     changeBy(value: number): void;
     lo: number,
     hi: number
+    posToValue(x: number): number;
+    valueToPos(value: number): number;
 }
 
 export const PAD = 10;
@@ -42,7 +44,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 K.drawFormattedText(fText);
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp>) {
-                this.color = this.isHovering() || this.is("focused") ? K.YELLOW : K.CYAN;
+                this.color = this.is("focused") ? K.GREEN : this.isHovering() ? K.YELLOW : K.CYAN;
             },
             rawText() {
                 return btn ? `$mbutton(${btn})${text}` : text;
@@ -91,6 +93,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
+                this.color = this.is("focused") ? K.GREEN : K.YELLOW;
                 this.child!.frame = getValue() ? 1 : 0;
             },
             rawText() {
@@ -106,7 +109,12 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
     ]
 }
 
-export function uiSlider(tw: number, s: number, text: string, start: number, stop: number, step: number | undefined, getValue: () => number, setValue: (x: number) => void) {
+export function uiSlider(tw: number, s: number, text: string, start: number, stop: number, step: number | undefined, getValue: () => number, setValue: (x: number) => void, formatValue: (x: number) => string) {
+    const process = (value: number, round: (x: number) => number) => {
+        if (step !== undefined) value = start + step * round((value - start) / step);
+        value = K.clamp(value, start, stop);
+        return value;
+    }
     return [
         K.pos(),
         K.sprite("button", { width: tw, height: tw / 5 }),
@@ -116,15 +124,25 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             id: "uiSlider",
             lo: start, hi: stop,
             action() {
-
             },
             changeBy(by) {
-                var value = getValue() + by;
-                if (step !== undefined) value = start + step * (value > 0 ? Math.ceil : Math.floor)((value - start) / step);
-                value = K.clamp(value, start, stop);
-                setValue(value);
+                setValue(process(getValue() + by, by > 0 ? Math.ceil : Math.floor));
             },
-            add(this: GameObj<AreaComp | RectComp | UiObjComp | PosComp | FixedComp>) {
+            posToValue(x) {
+                const c1 = this.child!, c2 = this.child2!;
+                const side = c2.width / 2;
+                const minX = c1.pos.x - c1.width + side;
+                const maxX = c1.pos.x - side;
+                return process(K.mapc(x, minX, maxX, start, stop), Math.round);
+            },
+            valueToPos(value) {
+                const c1 = this.child!, c2 = this.child2!;
+                const side = c2.width / 2;
+                const minX = c1.pos.x - c1.width + side;
+                const maxX = c1.pos.x - side;
+                return K.mapc(value, start, stop, minX, maxX);
+            },
+            add(this: GameObj<AreaComp | RectComp | UiSliderComp | PosComp | FixedComp>) {
                 this.child = this.add([
                     K.pos(this.width / 2 - PAD, 0),
                     K.sprite("slider_track", { width: this.width / 2 - PAD, height: 2 }),
@@ -145,10 +163,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                 this.onHover(() => draggin && (moving = true));
                 this.onMouseMove(pos => {
                     if (!draggin || !moving) return;
-                    const localPos = this.fromScreen(pos).x;
-                    var value = K.mapc(localPos, this.child!.width - c.width / 2, c.width / 2, start, stop);
-                    if (step !== undefined) value = start + step * Math.round((value - start) / step);
-                    setValue(value);
+                    setValue(this.posToValue(this.fromScreen(pos).x));
                 })
             },
             draw(this: GameObj<RectComp | UiObjComp>) {
@@ -162,12 +177,23 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                     transform: DEF_STYLES,
                     pos: K.vec2(PAD - this.width / 2, 0)
                 });
+                const fText2 = K.formatText({
+                    text: formatValue(getValue()),
+                    anchor: "center",
+                    styles: STYLES,
+                    size: DEF_TEXT_SIZE * s,
+                    transform: DEF_STYLES,
+                    pos: K.Vec2.ZERO
+                });
+                this.child!.width = this.width / 2 - PAD - fText2.width;
                 this.height = Math.max(fText.height, this.child!.height) + 2 * PAD * s;
                 K.drawFormattedText(fText);
+                K.drawFormattedText(fText2);
             },
-            update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
+            update(this: GameObj<RectComp | AreaComp | ColorComp | UiSliderComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
-                this.child2!.pos.x = K.mapc(getValue(), start, stop, this.child!.width - this.child2!.width / 2, this.child2!.width / 2)
+                this.color = this.is("focused") ? K.GREEN : K.YELLOW;
+                this.child2!.pos.x = this.valueToPos(getValue());
             },
             rawText() {
                 return text;
@@ -207,6 +233,7 @@ export function below(obj: GameObj<PosComp>, pad: number): Comp {
 }
 
 export function tooltip(tip: string) {
+    if (!tip) return {};
     return {
         id: "tooltip",
         require: ["pos", "area"],
@@ -218,7 +245,6 @@ export function tooltip(tip: string) {
                     draw() {
                         if (!self.isHovering() && !self.is("focused")) return;
                         const text = K.sub(this.rawText());
-                        if (!text.trim()) return;
                         const myAnchor = (K.anchorToVec2(self.anchor ?? K.Vec2.ZERO).y + 1) * (self.height ?? 0) / 2;
                         const anchorPt = K.vec2(0, myAnchor);
                         const fText = K.formatText({

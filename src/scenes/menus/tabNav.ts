@@ -18,11 +18,11 @@ export function installTabNavigation() {
     });
     K.scene.onButtonPress("nav_left", () => {
         const obj = K.get("focused")[0];
-        if (obj && obj.changeBy) obj.changeBy((obj.hi - obj.lo) * 0.1);
+        if (obj && obj.changeBy) obj.changeBy((obj.lo - obj.hi) * 0.1);
     });
     K.scene.onButtonPress("nav_right", () => {
         const obj = K.get("focused")[0];
-        if (obj && obj.changeBy) obj.changeBy((obj.lo - obj.hi) * 0.1);
+        if (obj && obj.changeBy) obj.changeBy((obj.hi - obj.lo) * 0.1);
     });
     K.scene.onMouseMove(() => {
         objects.forEach(o => o.untag("focused"));

@@ -43,7 +43,7 @@ export function loadAssets() {
     K[m]("font_switch", GP_FONT_CHARS);
     K[m]("font_ps4", GP_FONT_CHARS);
     K[m]("font_ps5", GP_FONT_CHARS);
-    K[m]("keyfont_1", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789wasd");
+    K[m]("keyfont_1", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789wasd,");
     K[m]("keyfont_2", "tn^eb");
     K[m]("keyfont_3", "s");
     K[m]("mousefont", "mlrs"); // cSpell: ignore mlrs
@@ -231,7 +231,7 @@ const MOUSE_BUTTONS: Partial<Record<MouseButton, string>> = {
 };
 
 const KEYS: Partial<Record<Key, IFontEntry>> = {
-    ...Object.fromEntries([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"].map(ch => [ch.toLowerCase(), { ch, w: 1 }])),
+    ...Object.fromEntries([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,"].map(ch => [ch.toLowerCase(), { ch, w: 1 }])),
     "left": { w: 1, ch: "a" },
     "up": { w: 1, ch: "w" },
     "right": { w: 1, ch: "d" },

@@ -19,14 +19,14 @@ export const map = {
         sliceY: 2,
     },
     keyfont_2: {
-        x: 128,
+        x: 304,
         y: 80,
         width: 160,
         height: 16,
         sliceX: 5,
     },
     keyfont_3: {
-        x: 288,
+        x: 464,
         y: 80,
         width: 48,
         height: 16

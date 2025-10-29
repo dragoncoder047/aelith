@@ -24,8 +24,12 @@ menu:
   main:
     startGameBtn: Play!
     optionsMenuBtn: Options
-  settings:
-    title: Settings
+  pause:
+    title: Game Paused
+    quitToTitle: Quit to Title
+    resume: Resume
+  options:
+    title: Options
     graphics:
       title: Graphics
       potato: "You may have to turn some of these off if your computer is a potato:"

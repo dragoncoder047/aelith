@@ -50,4 +50,5 @@ export interface SettingMenuItem extends MenuItemCommon {
     help: string;
     altDisplay?: boolean;
     optionTextMap?: Record<string, string>;
+    formatValue?(x: number): string;
 }

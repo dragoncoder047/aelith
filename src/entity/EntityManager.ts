@@ -106,11 +106,12 @@ export function installControlsHandler() {
             }
             const m = "isButtonPressed";
             // Move and/or climb
-            p.doMove(getMotionInput("move", p));
+            p.doMove(getMotionInput("move", p), K.isButtonDown("sprint"));
             // Look
             p.lookInDirection(getMotionInput("look", p));
             // Jump
             if (K[m]("jump")) p.tryJump();
+            // Actions
             if (K[m]("action1")) p.doAction(EntityInputAction.ACTION1);
             if (K[m]("action2")) p.doAction(EntityInputAction.ACTION2);
             if (K[m]("action3")) p.doAction(EntityInputAction.ACTION3);

@@ -236,11 +236,15 @@ export class Entity implements Serializable {
         const pb = this.getPrototype().behavior;
         const speed = (sprint ? pb.sprintSpeed : null) ?? pb.moveSpeed;
         if (this.obj) {
-            this.obj.move(direction.unit().scale(speed));
+            this.obj.move(clampUnit(direction).scale(speed));
             this._motionAnimation(direction, sprint);
         }
     }
     private _motionAnimation(direction: Vec2, sprint?: boolean) {
 
     }
+}
+
+function clampUnit(v: Vec2): Vec2 {
+    return v.slen() > 1 ? v.unit() : v;
 }

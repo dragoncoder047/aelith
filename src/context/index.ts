@@ -1,14 +1,14 @@
-import kaplay, { AnchorComp, AreaComp, FixedComp, GameObj, KAPLAYCtx } from "kaplay";
+import kaplay from "kaplay";
 import kaplayLighting from "kaplay-lighting";
 import { SCALE } from "../static/constants";
 import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
-import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplayExtraDistance } from "./plugins/kaplay-extradistance";
+import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
+import { kaplayHoverArea } from "./plugins/kaplay-hover-area";
 import { kaplayXterm256 } from "./plugins/kaplay-xterm256";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
 import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
-import { kaplayHoverArea } from "./plugins/kaplay-hover-area";
 
 export const K = kaplay({
     debug: true,

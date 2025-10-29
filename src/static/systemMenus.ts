@@ -2,110 +2,113 @@ import { K } from "../context";
 import { Room } from "../room/Room";
 import { Menu, MenuItemType } from "../scenes/menus/types";
 import { Settings } from "../settings";
+import * as PlatformGuesser from "../PlatformGuesser";
+import { Scene } from "../scenes/SceneManager";
 
 export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 
-// TODO: save to localstorage
+// TODO: implement the rest of these
 SYSTEM_SETTINGS.addBoolean("renderLights", true);
 SYSTEM_SETTINGS.addBoolean("renderDepth", true).onChange(v => Room._depthEnabled = v);
 SYSTEM_SETTINGS.addBoolean("speedrunTimer", true);
-SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps5"]);
+SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps5"]).onChange(v => PlatformGuesser.changeGamepadType(v));
 SYSTEM_SETTINGS.addBoolean("controllerRumble", true).onChange(v => K.rumble.enabled = v);
 SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v => K.useLanguage(v === "auto" ? null : v));
-SYSTEM_SETTINGS.addRange("musicVolume", 1, 1, 0);
-SYSTEM_SETTINGS.addRange("sfxVolume", 1, 1, 0);
+SYSTEM_SETTINGS.addRange("musicVolume", 1, 0, 1);
+SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 
-const mms = (s: string) => `&msg.menu.settings.${s}`;
+const mmo = (s: string) => `&msg.menu.options.${s}`;
+const mmp = (s: string) => `&msg.menu.pause.${s}`;
 
 export const SYSTEM_MENUS: Record<string, Menu> = {
-    main: {
-        title: mms("title"),
+    settings: {
+        title: mmo("title"),
         options: [
             {
                 type: MenuItemType.SUBMENU,
                 next: "graphicsSettings",
-                text: mms("graphics.title")
+                text: mmo("graphics.title")
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "audioSettings",
-                text: mms("audio.title")
+                text: mmo("audio.title")
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "controllerSettings",
-                text: mms("controller.title")
+                text: mmo("controller.title")
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "languageSettings",
-                text: mms("language.title")
+                text: mmo("language.title")
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "debugSettings",
-                text: mms("debug.title")
+                text: mmo("debug.title")
             },
         ]
     },
     graphicsSettings: {
-        title: mms("graphics.title"),
+        title: mmo("graphics.title"),
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mms("graphics.speedrunTimer"),
+                text: mmo("graphics.speedrunTimer"),
                 setting: "speedrunTimer",
-                help: mms("graphics.infoSpeedrunTimer")
+                help: mmo("graphics.infoSpeedrunTimer")
             },
             {
                 type: MenuItemType.TEXT,
-                text: mms("graphics.potato")
+                text: mmo("graphics.potato")
             },
             {
                 type: MenuItemType.SETTING,
-                text: mms("graphics.renderLights"),
+                text: mmo("graphics.renderLights"),
                 setting: "renderLights",
-                help: mms("graphics.infoRenderLights"),
+                help: mmo("graphics.infoRenderLights"),
             },
             {
                 type: MenuItemType.SETTING,
-                text: mms("graphics.renderDepth"),
+                text: mmo("graphics.renderDepth"),
                 setting: "renderDepth",
-                help: mms("graphics.infoRenderDepth"),
+                help: mmo("graphics.infoRenderDepth"),
             }
         ]
     },
     languageSettings: {
-        title: mms("language.title"),
+        title: mmo("language.title"),
         options: [
             {
                 type: MenuItemType.SETTING,
                 text: "",
                 setting: "language",
-                help: mms("language.info"),
+                help: mmo("language.info"),
                 optionTextMap: {
                     en: "English",
                     es: "Español", // cSpell: ignore Español
-                    auto: mms("language.autodetect")
+                    auto: mmo("language.autodetect")
                 }
             }
         ]
     },
     controllerSettings: {
-        title: mms("controller.title"),
+        title: mmo("controller.title"),
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mms("controller.rumble"),
+                text: mmo("controller.rumble"),
                 setting: "controllerRumble",
-                help: mms("controller.infoRumble")
+                help: mmo("controller.infoRumble")
             },
             {
                 type: MenuItemType.SETTING,
-                text: mms("controller.type"),
+                text: mmo("controller.type"),
                 setting: "controllerType",
-                help: mms("controller.infoType"),
+                help: mmo("controller.infoType"),
                 optionTextMap: Object.fromEntries(["Xbox", "Switch", "PS4", "PS5"].map(name => {
                     const value = name.toLowerCase();
                     return [value, `${name.padEnd(7, " ")}(${[..."WNES, e/t"].map(c => /[a-z]/i.test(c) ? ` [font_${value}]${c}[/font_${value}] ` : c).join("")})`]
@@ -114,31 +117,52 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
         ]
     },
     audioSettings: {
-        title: mms("audio.title"),
+        title: mmo("audio.title"),
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mms("audio.musicVolume"),
+                text: mmo("audio.musicVolume"),
                 setting: "musicVolume",
-                help: mms("audio.infoMusicVolume"),
+                help: mmo("audio.infoMusicVolume"),
+                formatValue: toPercent,
             },
             {
                 type: MenuItemType.SETTING,
-                text: mms("audio.sfxVolume"),
+                text: mmo("audio.sfxVolume"),
                 setting: "sfxVolume",
-                help: mms("audio.infoSfxVolume"),
+                help: mmo("audio.infoSfxVolume"),
+                formatValue: toPercent,
             }
         ]
     },
     debugSettings: {
-        title: mms("debug.title"),
+        title: mmo("debug.title"),
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mms("debug.inspectView"),
+                text: mmo("debug.inspectView"),
                 setting: "debugInspect",
-                help: mms("debug.infoInspectView"),
+                help: mmo("debug.infoInspectView"),
                 altDisplay: true
+            }
+        ]
+    },
+    // Pause menu
+    paused: {
+        title: mmp("title"),
+        options: [
+            {
+                type: MenuItemType.SUBMENU,
+                text: mmo("title"),
+                next: "settings"
+            },
+            {
+                type: MenuItemType.BUTTON,
+                text: mmp("quitToTitle"),
+                help: "",
+                async action() {
+                    K.go(Scene.MAIN_MENU);
+                },
             }
         ]
     }
@@ -147,7 +171,11 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
 // install back buttons in everything
 for (var key of Object.keys(SYSTEM_MENUS)) {
     SYSTEM_MENUS[key]!.options.push({
-        text: "&msg.menu.back",
+        text: key === "paused" ? "&msg.menu.pause.resume" : "&msg.menu.back",
         type: MenuItemType.BACK,
     });
+}
+
+function toPercent(x: number): string {
+    return `${(x * 100).toFixed(0)}%`;
 }

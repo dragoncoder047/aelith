@@ -101,7 +101,7 @@ export const BUTTONS: Controls = {
     // pause menu controls
     main_menu_options: {
         keyboard: ",",
-        gamepad: "select"
+        gamepad: "start"
     },
     pause_unpause: {
         keyboard: "escape",

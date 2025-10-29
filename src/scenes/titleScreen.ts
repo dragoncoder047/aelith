@@ -9,6 +9,7 @@ import * as SceneManager from "./SceneManager";
 
 export function titleScreenScene() {
     BlueScreen.install();
+    K.setBackground(K.BLACK);
     // Game logo
     const logo = K.add([
         K.sprite("gameLogo"),
