@@ -176,9 +176,11 @@ interface EntityMotionAnimDef extends JSONObject {
 
 export interface EntityAnimData extends JSONObject {
     /** will pause these animations when started */
-    override?: string[];
+    interrupt?: string[];
     /** will forcibly stop these animations when started, */
-    replace?: string[];
+    cancel?: string[];
+    /** animations that will play in background but do nothing while this one's playing */
+    shadow?: string[];
     loop?: boolean;
     /* if false, will reset back to the original value when the animation is turned off (default true) */
     sticky?: boolean;

@@ -1,12 +1,52 @@
-import { Color, LerpValue, Vec2 } from "kaplay";
+import { Color, GameObj, LerpValue, Vec2 } from "kaplay";
+import { K } from "../context";
 import { Animation, createAnimation } from "./Animation";
 import { Entity } from "./Entity";
 import * as EntityManager from "./EntityManager";
-import { K } from "../context";
+
+/*
+
+how animations work (new version, not implemented yet):
+
+each animation has behavior attributes:
+- the "strength" of the animation (skinning/blend parameter)
+- which animations it "shadows"
+- which animations it "interrupts"
+- which animations it "cancels"
+
+and each channel has state attributes:
+- the progress value
+- whether the animations is "active" or not
+- whether the channel loops infinitely
+- whether the channel "sticks" at the end
+
+when an animation is started:
+- all of the channels are set to active and progress rewound to 0
+- all of the animations this "cancels" are stopped
+- all of the animation channels controlling the same paths that have "stickied" to the end are stopped.
+
+on each frame:
+- each animation checks if it is at the end of its timeline.
+    - if it is supposed to loop it resets to t=0.
+    - if it is sticky, it keeps active=true, but stops advancing time
+    - if not sticky, stops
+- the relative dt for each animation is calculated
+    - normally K.dt(), but if any other animation "interrupts" this, it is 0.
+- each animation has the progress value updated by its dt.
+- then the final value for each path is the weighted average of the values for each animation channel's output (weighted by the anim skinning parameter) with the weights set to 0 if there is any animation that "shadows" this
+- if no animation is controlling that path presently, the initial value is used.
+
+when an animation channel is stopped:
+- it is set as active=false
+
+*/
 
 export class Animator {
     animations: Animation[] = [];
     constructor(public entity: Entity) {
+    }
+    init(obj: GameObj) {
+        
     }
     update(dt: number) {
         const targets: Record<string, [string[], LerpValue[], number, number[]]> = {};
@@ -18,7 +58,7 @@ export class Animator {
                 for (var i = 0; i < values.length; i++) {
                     const [path, value, alpha, passive] = values[i]!;
                     const ps = path.join(",");
-                    if (targets[ps] && passive) anim.channels[i]!.inProgress = false; 
+                    if (targets[ps] && passive) anim.channels[i]!.active = false; 
                     else targets[ps] =  [path, [], 0, []]
                     const e = targets[ps];
                     e[1].push(value);

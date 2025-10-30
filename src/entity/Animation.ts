@@ -17,9 +17,8 @@ class AnimChannel<T extends LerpValue> {
     i: number = 0;
     /** relative time into the current keyframe */
     relT: number = 0;
-    inProgress: boolean = false;
+    active: boolean = false;
     _initial: T | undefined;
-    passive = false;
     constructor(
         public target: string[],
         public loop: boolean = false,
@@ -33,8 +32,7 @@ class AnimChannel<T extends LerpValue> {
     }
     start(obj: any) {
         this.rewind();
-        this.inProgress = true;
-        this.passive = false;
+        this.active = true;
         this.maybeSaveInitial(obj);
     }
     maybeSaveInitial(obj: any) {
@@ -47,18 +45,20 @@ class AnimChannel<T extends LerpValue> {
     update(dt: number): T {
         this.relT += dt;
         const [f1, f2, alpha] = this._it();
-        if (!this.inProgress) return this.sticky ? this.keyframes.at(-1)!._cx! : this._initial!;
+        if (!this.active) return this.sticky ? this.keyframes.at(-1)!._cx! : this._initial!;
         return this.interpolation(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
     }
     rewind() {
         this.i = this.relT = 0;
     }
     stop() {
-        this.inProgress = false;
+        this.active = false;
+    }
+    private _reachedEnd() {
+
     }
     private _it() {
         if (this.keyframes.length === 1) {
-            this.passive = !this.sticky;
             return [this.keyframes[0]!._cx, this.keyframes[0]!._cx, 0] as const;
         }
         var f: Keyframe<T>, f2: Keyframe<T>, numFrames = this.keyframes.length;
@@ -71,8 +71,7 @@ class AnimChannel<T extends LerpValue> {
             if (this.i >= numFrames) {
                 if (this.loop) this.i = 0;
                 else {
-                    this.inProgress = this.sticky;
-                    this.passive = true;
+                    this.active = this.sticky;
                     return [f._cx, f2._cx, 1] as const;
                 }
             }
@@ -98,10 +97,10 @@ export class Animation {
         this.running = true;
     }
     update(dt: number) {
-        return this.channels.map(c => [c.target, c.update(dt), c.alpha, c.passive] as [string[], any, number, boolean]);
+        return this.channels.map(c => [c.target, c.update(dt), c.alpha] as [string[], any, number]);
     }
     finished() {
-        return this.channels.every(c => !c.inProgress);
+        return this.channels.every(c => !c.active);
     }
     stop() {
         this.channels.forEach(c => c.stop());
@@ -127,7 +126,7 @@ function slerpV(v1: Vec2, v2: Vec2, t: number) {
 }
 
 export function createAnimation(name: string, json: EntityAnimData) {
-    const { override, replace, loop, sticky, channels } = json;
+    const { interrupt, cancel, loop, sticky, channels } = json;
     const c = [];
     for (var channel of channels) {
         const frames: Keyframe<any>[] = [];
@@ -139,5 +138,5 @@ export function createAnimation(name: string, json: EntityAnimData) {
         }
         c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp));
     }
-    return new Animation(name, c, override, replace);
+    return new Animation(name, c, interrupt, cancel);
 }

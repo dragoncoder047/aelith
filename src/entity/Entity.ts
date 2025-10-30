@@ -274,7 +274,6 @@ export class Entity implements Serializable {
             direction = clampUnit(direction).scale(speed);
             this.obj.move(direction);
             this._motionAnimation(direction);
-
         }
     }
     private _motionAnimation(direction: Vec2) {

@@ -1,7 +1,6 @@
 import { EmitterOpt } from "kaplay";
 import * as BlueScreen from "../BlueScreen";
 import { K } from "../context";
-import { SYSTEM_MENUS, SYSTEM_SETTINGS } from "../static/systemMenus";
 import { below, layoutAnchor, uiButton } from "../ui";
 import { installTabNavigation } from "./menus/tabNav";
 import * as SceneManager from "./SceneManager";
