@@ -1,6 +1,8 @@
 import argparse
 import base64
+import hashlib
 import json
+import os
 import pathlib
 import typing
 
@@ -8,7 +10,9 @@ import yaml
 from minify_and_includes_glsl import minify_shader, process_includes
 
 here = pathlib.Path(__file__).parent
-output = here / "../build/aelith.json"
+outdir = here / "../build/"
+serveroot = outdir.parent
+output = outdir / "aelith.json"
 input = here / "../data/index.yaml"
 
 main_parser = argparse.ArgumentParser()
@@ -40,7 +44,7 @@ def include(loader: Loader, node: yaml.Node) -> typing.Any:
     if ext in (".yaml", ".yml"):
         return yaml.load(file.open(), Loader)
     elif ext in (".json", ):
-        return json.load(file.open)
+        return json.load(file.open())
     elif ext in (".glsl", ".frag", ".vert"):
         text = process_includes(file.read_text(), file)
         if minify:
@@ -56,8 +60,19 @@ def include(loader: Loader, node: yaml.Node) -> typing.Any:
         return file.read_text()
 
 
+def file(loader: Loader, node: yaml.Node) -> typing.Any:
+    file = (loader._root / loader.construct_scalar(node)).resolve()
+    contents = file.read_bytes()
+    hash = hashlib.md5(contents, usedforsecurity=False).hexdigest()
+    outfile = outdir / "res" / (hash + file.suffix)
+    os.makedirs(outfile.parent, exist_ok=True)
+    outfile.write_bytes(contents)
+    return str(outfile.relative_to(serveroot))
+
+
 yaml.add_constructor("!include", include, Loader)
 yaml.add_constructor("!flatten", flatten, Loader)
+yaml.add_constructor("!file", file, Loader)
 
 # main stuff
 
