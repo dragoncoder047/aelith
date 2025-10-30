@@ -1,4 +1,4 @@
-import { hashPoint } from "../hash";
+import { chooseWeights, hashPoint } from "../hash";
 import { TileEntry } from "./Room";
 
 
@@ -15,7 +15,7 @@ export function autotile(tiles: TileEntry[][][]): TileEntry[] {
                     outTiles.push(tile);
                     continue;
                 }
-                const { with: tilesWith, bits, pats } = tile.auto;
+                const { with: tilesWith, bits, pats, weights } = tile.auto;
                 const check = (dx: number, dy: number, bit: number) => (tiles[y + dy]?.[x + dx] ?? []).some(c => c.tag === tile.tag || (bit & ((tilesWith ?? {})[c.tag] ?? 0)));
                 const up = check(0, -1, 1);
                 const right = check(1, 0, 4);
@@ -33,12 +33,14 @@ export function autotile(tiles: TileEntry[][][]): TileEntry[] {
                 } else {
                     throw new Error(`expected 4 or 8 bits, but got ${bits}`);
                 }
-                const candidateFrames = pats.flatMap((pat, frame) => pat === pattern ? [frame] : []);
+                const matching = pats.map(p => p === pattern);
+                const candidateFrames = matching.flatMap((v, i) => v ? [i] : []);
+                const candidateWeights = matching.flatMap((v, i) => v ? [weights?.[i] ?? 1] : []);
                 if (candidateFrames.length === 0) {
                     outTiles.push(tile);
                     continue;
                 }
-                const chosenFrame = candidateFrames[(candidateFrames.length * hashPoint(tile.pos)) | 0] ?? (tile.r as any).frame;
+                const chosenFrame = chooseWeights(candidateFrames, candidateWeights, hashPoint(tile.pos)) ?? (tile.r as any).frame;
                 var chosenDepth = tile.ds;
                 if (Array.isArray(chosenDepth)) {
                     chosenDepth = chosenDepth[chosenFrame] ?? 0;

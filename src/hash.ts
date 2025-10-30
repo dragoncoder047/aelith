@@ -25,3 +25,12 @@ function cantor(x: number, y: number) {
 export function hashPoint(p: Vec2) {
     return hash(cantor(p.x, p.y));
 }
+
+export function chooseWeights<T>(vals: T[], weights: number[], rand: number): T {
+    rand *= weights.reduce((a, b) => a + b);
+    for (var i = 0; i < vals.length; i++) {
+        rand -= weights[i]!;
+        if (rand < 0) return vals[i]!;
+    }
+    return vals.at(-1)!;
+}

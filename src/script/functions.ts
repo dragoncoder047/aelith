@@ -103,8 +103,11 @@ export const FUNCTIONS: Form[] = [
     new Form("render", false, async function* ([slot, newValue], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
-    new Form("anim", false, async function* ([animName], task, actor) {
-        actor.playAnim(animName);
+    new Form("anim", false, async function* ([animName, restart], task, actor) {
+        actor.playAnim(animName, restart);
+    }),
+    new Form("skinAnim", false, async function* ([animName, value], task, actor) {
+        actor.animator.skinAnim(animName, value);
     }),
     new Form("anim/w", false, async function* ([animName], task, actor, env, context, traceback) {
         task.paused = true;
@@ -159,5 +162,8 @@ export const FUNCTIONS: Form[] = [
     }),
     new Form("setPlayer", false, async function* (args, task, actor) {
         EntityManager.setPlayer(actor);
+    }),
+    new Form("#", false, async function* ([v]) {
+        return K.vec2(v).len()
     }),
 ];

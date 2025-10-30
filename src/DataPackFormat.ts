@@ -53,7 +53,8 @@ export interface StaticTileDefinition extends JSONObject {
          * if a bitset appears multiple times, an index will be chosen randomly.
          * fallback: if not present, the frame in the render data will be used.
          */
-        pats: number[]
+        pats: number[];
+        weights?: number[];
     };
     physics: {
         restitution?: number;
@@ -66,8 +67,8 @@ export interface StaticTileDefinition extends JSONObject {
         merge?: [horizontally: boolean, vertically: boolean];
         /** function or tags list to determine what to not collide with */
         ignore?: string[];
-        /** if not null, this is a ladder, these are the rung y-offsets */
-        rungs?: number[];
+        /** if not null, this is a ladder, the rungs will be evenly spaced around the center */
+        numRungs?: number;
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
     depth?: number | number[];
@@ -210,6 +211,7 @@ export interface EntityModelBoneData extends JSONObject {
     /** name of the bone for targeting it in animations */
     name?: string;
     render: RenderData;
+    sensor?: boolean;
     /** The offset from the parent */
     pos?: XY;
     /** inverse kinematics definition */
@@ -266,6 +268,7 @@ export interface EntityModelTentacleData extends JSONObject {
  * * gameLoad
  * * jump
  * * move
+ * * sensor
  * * step - context includes what i'm standing on
  * * climb
  * * leash - context includes leashing entity
@@ -324,6 +327,7 @@ export type LightData = [pos: XY, radius: number, intensity: number, color: stri
  * * set <global?> <name> <value> - local variable
  * * get <global?> <name> - local variable
  * * here - get current entity's coordinates
+ * * test <bone> <tag?> - test sensor for collision with object with tag, if bone is null use main hitbox
  * * select <"all" | "first" | "random"> <type> <"near" radius in tiles> <"everywhere"> - get entities within radius
  * * send <message> - broadcasts message to all with the same link group (loaded or unloaded)
  * * spawn <entity_type> <location> -

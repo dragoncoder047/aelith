@@ -12,6 +12,7 @@ behavior:
   canBePlayer: yes
   canFly: no
   moveSpeed: 128
+  sprintSpeed: 196
   jumpForce: 256
   inventorySlots: 8
   inventorySize: null
@@ -252,5 +253,24 @@ model:
       render: *tentacle
       sizes: [4, 1, easeOutQuad]
       masses: [1, 1]
+  anims:
+    sprinting:
+      loop: true
+      channels:
+        - target: [body, angle]
+          keyframes:
+            - [0, 10]
+          alpha: 30
+    standing:
+      loop: true
+      channels:
+        - target: [leftFoot, scale]
+          keyframes:
+            - [0, { x: -1, y: 1 }]
+          alpha: 100
 hooks:
+  setup: [do, [anim, sprinting], [skinAnim, sprinting, 0]]
   action1: [as, agent, setPlayer]
+  move: [skinAnim, sprinting, ["#", [the, dir]]]
+  startMove: [unanim, standing]
+  stopMove: [anim, standing]

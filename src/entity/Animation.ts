@@ -19,6 +19,7 @@ class AnimChannel<T extends LerpValue> {
     relT: number = 0;
     inProgress: boolean = false;
     _initial: T | undefined;
+    passive = false;
     constructor(
         public target: string[],
         public loop: boolean = false,
@@ -26,7 +27,6 @@ class AnimChannel<T extends LerpValue> {
         public alpha: number = 10,
         public keyframes: Keyframe<T>[],
         public interpolation: (a: T, b: T, progress: number) => T) {
-        if (this.keyframes.length < 2) throw new Error("anim needs at least 2 keyframes!");
         for (var kf of this.keyframes) {
             kf._cx = (typeof kf.x === "function") ? kf._cx = kf.x() : kf.x;
         }
@@ -34,6 +34,7 @@ class AnimChannel<T extends LerpValue> {
     start(obj: any) {
         this.rewind();
         this.inProgress = true;
+        this.passive = false;
         this.maybeSaveInitial(obj);
     }
     maybeSaveInitial(obj: any) {
@@ -46,22 +47,20 @@ class AnimChannel<T extends LerpValue> {
     update(dt: number): T {
         this.relT += dt;
         const [f1, f2, alpha] = this._it();
-        if (!this.inProgress) return this.keyframes.at(-1)!._cx!;
-        return this.interpolation(f1!, f2!, alpha);
+        if (!this.inProgress) return this.sticky ? this.keyframes.at(-1)!._cx! : this._initial!;
+        return this.interpolation(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
     }
     rewind() {
         this.i = this.relT = 0;
-        this.inProgress = true;
     }
-    stop(obj: any) {
+    stop() {
         this.inProgress = false;
-        var x = this.sticky ? this.keyframes.at(-1)!._cx : this._initial;
-        for (var i = 0; i < this.target.length - 1 && obj; i++) {
-            obj = obj[this.target[i]!];
-        }
-        if (obj) obj[this.target[i]!] = x;
     }
     private _it() {
+        if (this.keyframes.length === 1) {
+            this.passive = !this.sticky;
+            return [this.keyframes[0]!._cx, this.keyframes[0]!._cx, 0] as const;
+        }
         var f: Keyframe<T>, f2: Keyframe<T>, numFrames = this.keyframes.length;
         var i2 = (this.i + 1) % numFrames;
         while (this.relT >= (f2 = this.keyframes[i2]!, f = this.keyframes[this.i]!).len) {
@@ -71,7 +70,11 @@ class AnimChannel<T extends LerpValue> {
             f3._cx = typeof f3.x === "function" ? f3.x() : f3.x;
             if (this.i >= numFrames) {
                 if (this.loop) this.i = 0;
-                else { this.inProgress = false; return [, , 0] as const; }
+                else {
+                    this.inProgress = this.sticky;
+                    this.passive = true;
+                    return [f._cx, f2._cx, 1] as const;
+                }
             }
         }
         return [f._cx, f2._cx, this.relT / f.len] as const;
@@ -80,8 +83,9 @@ class AnimChannel<T extends LerpValue> {
 
 export class Animation {
     _pausedBy: Set<Animation> = new Set;
-    running = true;
+    running = false;
     onEnd: KEvent = new K.KEvent;
+    skinAmount = 1;
     constructor(
         public name: string,
         public channels: AnimChannel<any>[],
@@ -94,13 +98,13 @@ export class Animation {
         this.running = true;
     }
     update(dt: number) {
-        return this.channels.map(c => [c.target, c.update(dt), c.alpha] as [string[], any, number]);
+        return this.channels.map(c => [c.target, c.update(dt), c.alpha, c.passive] as [string[], any, number, boolean]);
     }
     finished() {
         return this.channels.every(c => !c.inProgress);
     }
-    stop(obj: any) {
-        this.channels.forEach(c => c.stop(obj));
+    stop() {
+        this.channels.forEach(c => c.stop());
         this.onEnd.trigger();
         this.onEnd.clear();
         this._pausedBy = new Set;

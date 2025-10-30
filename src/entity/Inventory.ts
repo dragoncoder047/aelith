@@ -15,7 +15,7 @@ export class Inventory {
     displayed: Entity | null = null;
     private _handsBone: string | undefined
     constructor(public me: Entity) {
-        const { inventorySize, inventorySlots, inventoryHolder } = EntityManager.getEntityPrototypeStrict(me.kind).behavior;
+        const { inventorySize, inventorySlots, inventoryHolder } = me.getPrototype().behavior;
         this.size = inventorySize;
         this.maxSlots = inventorySlots;
         this._handsBone = inventoryHolder;

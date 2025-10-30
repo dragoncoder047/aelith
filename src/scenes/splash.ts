@@ -23,5 +23,5 @@ export function splashScreenScene() {
     thing.animate("scale", [K.vec2(.9, .9), K.vec2(1.1, 1.1)], { duration: 2, loops: 1 });
     img.animate("opacity", [0, 1, 0], { duration: 2, loops: 1 });
     text.animate("opacity", [0, 1, 0], { duration: 2, loops: 1 });
-    K.wait(2.5, () => K.go(Scene.MAIN_MENU));
+    K.wait(2.5, () => K.go(Scene.TITLE_SCREEN));
 }

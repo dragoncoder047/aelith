@@ -161,7 +161,7 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 text: mmp("quitToTitle"),
                 help: "",
                 async action() {
-                    K.go(Scene.MAIN_MENU);
+                    K.go(Scene.TITLE_SCREEN);
                 },
             }
         ]

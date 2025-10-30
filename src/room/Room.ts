@@ -75,11 +75,12 @@ export class Room implements Serializable {
                 "tile",
                 coll.tag,
             ]);
-            if (coll.def.rungs) {
+            if (coll.def.numRungs) {
                 c.unuse("body");
-                // TODO: ladder component
+                c.tag("ladder")
+                c.use({ numRungs: coll.def.numRungs } as any);
             } else if (coll.def.platform) {
-                c.use(K.platformEffector());
+                c.use(K.platformEffector({ ignoreSides: [K.LEFT, K.RIGHT, K.UP] }));
             }
         }
         if (this.frozen.tiles.some(t => t.ds)) {

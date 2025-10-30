@@ -18,7 +18,7 @@ export function menuScene(menu: Menu | undefined, set: Record<string, Menu> = SY
         console.log(K._k.game.sceneStack);
     }
     if (menu === undefined) {
-        menu = K._k.game.sceneStack.at(-1)!.sceneID === Scene.MAIN_MENU ? SYSTEM_MENUS.settings! : SYSTEM_MENUS.paused!;
+        menu = K._k.game.sceneStack.at(-1)!.sceneID === Scene.TITLE_SCREEN ? SYSTEM_MENUS.settings! : SYSTEM_MENUS.paused!;
     }
     buildMenu(menu, set, settings);
     installTabNavigation();

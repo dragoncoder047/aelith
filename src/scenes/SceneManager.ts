@@ -5,8 +5,8 @@ import { roomScene } from "./room";
 import { splashScreenScene } from "./splash";
 
 export enum Scene {
-    SPLASH_SCREEN = "scene",
-    MAIN_MENU = "mainMenu",
+    SPLASH_SCREEN = "splash",
+    TITLE_SCREEN = "title",
     ROOM = "room",
     MENU = "menu",
 }
@@ -14,7 +14,7 @@ export enum Scene {
 export function setupScenes() {
     K.loadHappy(); // for the splash screen font
     K.scene(Scene.SPLASH_SCREEN, splashScreenScene);
-    K.scene(Scene.MAIN_MENU, titleScreenScene);
+    K.scene(Scene.TITLE_SCREEN, titleScreenScene);
     K.scene(Scene.ROOM, roomScene);
     K.scene(Scene.MENU, menuScene);
 }

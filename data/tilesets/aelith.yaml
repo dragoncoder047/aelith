@@ -9,11 +9,12 @@ tiles:
       as: sprite
       sprite: walltile
       layer: tiles
-    autotile:
+    autotile: &wa
       bits: 8
       pats: !include ../textures/seamless8x8.yaml
+      weights: !include ../textures/wallweights.yaml
       with:
-        noHitWall: 254
+        noHitWall: 255
         noHitWall2: 255
     physics:
       hitbox: [{ x: 4, y: 4 }, 24, 24]
@@ -24,24 +25,11 @@ tiles:
     tag: noHitWall
     physics: null
     autotile:
-      bits: 8
-      pats: !include ../textures/seamless8x8.yaml
+      <<: *wa
       with:
         wall: 255
         noHitWall2: 255
-  # 2: wall with no hitbox, but tiles with everything
-  # depth set to 2 for 3 columns
-  - <<: *baseWall
-    tag: noHitWall2
-    physics: null
-    autotile:
-      bits: 8
-      pats: !include ../textures/seamless8x8.yaml
-      with:
-        wall: 255
-        noHitWall: 255
-    depth: 2
-  # 3: wires (purely for decoration, no hitbox)
+  # 2: wires (purely for decoration, no hitbox)
   - tag: wire
     render:
       as: sprite

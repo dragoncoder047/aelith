@@ -1,4 +1,4 @@
-import { BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
+import { AreaComp, BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
@@ -31,7 +31,7 @@ export type BoneComponents = EntityComponents | RotateComp | ScaleComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
 
 export class Entity implements Serializable {
-    obj: GameObj<EntityComponents | BodyComp> | null = null;
+    obj: GameObj<EntityComponents | BodyComp | AreaComp> | null = null;
     bones: BonesMap = {};
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
     speakSound: string | undefined;
@@ -39,7 +39,6 @@ export class Entity implements Serializable {
     animator: Animator;
     inventory: Inventory;
     targeted: Entity | null = null;
-    private _climbing = false;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -119,20 +118,24 @@ export class Entity implements Serializable {
             pos: this.pos as XY,
         }
     }
-    playAnim(a: string) {
+    playAnim(a: string, forceRestart: boolean = true) {
         return new Promise<void>((x, y) => {
             try {
-                this.animator.play(a, x)
+                this.animator.play(a, x, forceRestart)
             } catch (e) { y(e); }
         });
     }
     stopAnim(a: string) {
         this.animator.stop(a);
     }
+    private _collidingLadder() {
+        return this.obj!.getCollisions().some(c => c.target.is("ladder"));
+    }
     update() {
         this.pos = this.obj!.pos.clone();
         this.animator.update(K.dt());
         this.inventory.update();
+        if (!this._collidingLadder()) this._setClimbing(false);
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;
@@ -150,15 +153,7 @@ export class Entity implements Serializable {
 
     doAction(action: EntityInputAction) {
         switch (action) {
-            case EntityInputAction.ACTION1:
-            case EntityInputAction.ACTION2:
-            case EntityInputAction.ACTION3:
-            case EntityInputAction.ACTION4:
-            case EntityInputAction.TARGET1:
-            case EntityInputAction.TARGET2:
-            case EntityInputAction.INSPECT:
-                EntityManager.startHookOnEntity(this, action, { what: this.targeted?.id });
-                break;
+            // @ts-expect-error
             case EntityInputAction.CONTINUE:
                 if (!this.speechBubble?.isSpeaking()) {
                     if (this.speechBubble) this.speechBubble.text = "";
@@ -168,6 +163,14 @@ export class Entity implements Serializable {
                     this._goOn = undefined;
                 }
                 else this._spitItOut = true;
+            case EntityInputAction.ACTION1:
+            case EntityInputAction.ACTION2:
+            case EntityInputAction.ACTION3:
+            case EntityInputAction.ACTION4:
+            case EntityInputAction.TARGET1:
+            case EntityInputAction.TARGET2:
+            case EntityInputAction.INSPECT:
+                EntityManager.startHookOnEntity(this, action, { what: this.targeted?.id });
                 break;
             default:
                 action satisfies never;
@@ -178,6 +181,7 @@ export class Entity implements Serializable {
         if (this.obj) {
             if (this.obj.isGrounded()) {
                 this.obj.jump();
+                this._setClimbing(false);
                 EntityManager.startHookOnEntity(this, "jump");
             }
         }
@@ -231,17 +235,51 @@ export class Entity implements Serializable {
         }
         return null;
     }
-    doMove(direction: Vec2, sprint?: boolean) {
-        EntityManager.startHookOnEntity(this, "move", { dir: { x: direction.x, y: direction.y }, sprint });
-        const pb = this.getPrototype().behavior;
-        const speed = (sprint ? pb.sprintSpeed : null) ?? pb.moveSpeed;
-        if (this.obj) {
-            this.obj.move(clampUnit(direction).scale(speed));
-            this._motionAnimation(direction, sprint);
+    private _sprinting = false;
+    private _walking = false;
+    private _climbing = false;
+    private _setClimbing(isClimbing: boolean) {
+        this._climbing = isClimbing;
+        if (!this.obj) return;
+        if (isClimbing) {
+            this.obj.gravityScale = 0;
+        } else if (!this.getPrototype().behavior.canFly) {
+            this.obj.gravityScale = 1;
         }
     }
-    private _motionAnimation(direction: Vec2, sprint?: boolean) {
+    doMove(direction: Vec2, sprint: boolean) {
+        if (direction.isZero()) sprint = false;
+        if (this._sprinting && !sprint) {
+            EntityManager.startHookOnEntity(this, "stopSprint");
+        }
+        else if (!this._sprinting && sprint) {
+            EntityManager.startHookOnEntity(this, "startSprint");
+        }
+        this._sprinting = sprint;
+        if (direction.isZero()) {
+            if (this._walking) EntityManager.startHookOnEntity(this, "stopMove");
+            this._walking = false;
+            return;
+        }
+        if (!this._walking) {
+            EntityManager.startHookOnEntity(this, "startMove", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
+        }
+        this._walking = true;
+        EntityManager.startHookOnEntity(this, "move", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
+        const pb = this.getPrototype().behavior;
+        const speed = (this._sprinting ? pb.sprintSpeed : null) ?? pb.moveSpeed;
+        if (this.obj) {
+            if (this._collidingLadder()) this._setClimbing(true);
+            if (!this._climbing && !pb.canFly) direction = direction.reject(K.getGravityDirection());
+            direction = clampUnit(direction).scale(speed);
+            this.obj.move(direction);
+            this._motionAnimation(direction);
 
+        }
+    }
+    private _motionAnimation(direction: Vec2) {
+        const m = this.getPrototype().model.kinematics;
+        const a = this._climbing ? m.climb : m.walk;
     }
 }
 
