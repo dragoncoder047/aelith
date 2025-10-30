@@ -1,4 +1,4 @@
-import { K } from "./context"
+import { K } from "./context";
 
 const spinner = ["-", "\\\\", "|", "/"]; // need 2 \'s because formatted text
 const spinSpeed = 100; // ms per frame
@@ -99,7 +99,7 @@ export async function loadJSON(path: string) {
 }
 
 function niceBytes(count: number): string {
-    if (!isFinite(count)) return "undefinedB";
+    if (!isFinite(count)) return "very fast";
     const prefixes = ["", "Ki", "Mi", "Gi", "Ti"]; // if we go off the end... wtf is the game doing.
     var i = 0;
     while (count > 1024) count /= 1024, i++;

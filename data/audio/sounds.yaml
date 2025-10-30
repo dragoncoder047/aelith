@@ -116,21 +116,21 @@
   src: "[2.5,0,80,,,,1,4,-2,6,50,.15]"
 # - kind: sound
 #   id: nav_select
-#   loader: url
+#   loader: bin
 #   src:
 # - kind: sound
 #   id: nav_switch
-#   loader: url
+#   loader: bin
 #   src:
 # - kind: sound
 #   id: nav_back
-#   loader: url
+#   loader: bin
 #   src:
 # - kind: sound
 #   id: nav_open
-#   loader: url
+#   loader: bin
 #   src:
 # - kind: sound
 #   id: nav_confirm
-#   loader: url
+#   loader: bin
 #   src:
