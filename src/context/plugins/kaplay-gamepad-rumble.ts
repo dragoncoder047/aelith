@@ -84,7 +84,6 @@ export function kaplayRumble(K: KAPLAYCtx & KAPLAYRumblePlugin): KAPLAYRumblePlu
                     }),
                     ...rumbleMotors.map(motor => {
                         if (!tLeft && !tRight) return;
-                        console.log(tLeft, tRight);
                         try {
                             motor.playEffect("trigger-rumble", {
                                 leftTrigger: tLeft,

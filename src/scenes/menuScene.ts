@@ -14,8 +14,6 @@ export function menuScene(menu: Menu | undefined, set: Record<string, Menu> = SY
     K.setBackground(K.BLACK);
     if (K._k.game.sceneStack.length === 0) {
         throw new Error("cannot menu with nowhere to return to");
-    } else {
-        console.log(K._k.game.sceneStack);
     }
     if (menu === undefined) {
         menu = K._k.game.sceneStack.at(-1)!.sceneID === Scene.TITLE_SCREEN ? SYSTEM_MENUS.settings! : SYSTEM_MENUS.paused!;

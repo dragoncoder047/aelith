@@ -17,36 +17,30 @@ class AnimChannel<T extends LerpValue> {
     i: number = 0;
     /** relative time into the current keyframe */
     relT: number = 0;
-    active: boolean = false;
-    _initial: T | undefined;
+    active = false;
+    ended = false;
+    private _totalLength: number;
     constructor(
         public target: string[],
         public loop: boolean = false,
         public sticky: boolean = true,
         public alpha: number = 10,
         public keyframes: Keyframe<T>[],
-        public interpolation: (a: T, b: T, progress: number) => T) {
+        public interpolate: (a: T, b: T, progress: number) => T) {
+        if (keyframes.length === 0) throw new Error("Not valid to have 0 keyframes");
         for (var kf of this.keyframes) {
-            kf._cx = (typeof kf.x === "function") ? kf._cx = kf.x() : kf.x;
+            kf._cx = (typeof kf.x === "function") ? kf.x() : kf.x;
         }
+        this._totalLength = keyframes.reduce((a, { len }) => a + len, 0);
     }
-    start(obj: any) {
+    start() {
         this.rewind();
         this.active = true;
-        this.maybeSaveInitial(obj);
-    }
-    maybeSaveInitial(obj: any) {
-        if (this.sticky) return;
-        for (var i = 0; i < this.target.length && obj; i++) {
-            obj = obj[this.target[i]!];
-        }
-        this._initial = obj;
+        this.ended = false;
     }
     update(dt: number): T {
-        this.relT += dt;
-        const [f1, f2, alpha] = this._it();
-        if (!this.active) return this.sticky ? this.keyframes.at(-1)!._cx! : this._initial!;
-        return this.interpolation(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
+        const [f1, f2, alpha] = this._advance(dt);
+        return this.interpolate(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
     }
     rewind() {
         this.i = this.relT = 0;
@@ -54,70 +48,73 @@ class AnimChannel<T extends LerpValue> {
     stop() {
         this.active = false;
     }
-    private _reachedEnd() {
-
-    }
-    private _it() {
-        if (this.keyframes.length === 1) {
-            return [this.keyframes[0]!._cx, this.keyframes[0]!._cx, 0] as const;
+    private _advance(dt: number) {
+        var i = this.i, d: number, frames = this.keyframes, len = frames.length;
+        if (this._totalLength === 0) {
+            this.ended = this.sticky || !this.loop;
+            return [frames[0]!._cx, frames[0]!._cx, 1] as const;
         }
-        var f: Keyframe<T>, f2: Keyframe<T>, numFrames = this.keyframes.length;
-        var i2 = (this.i + 1) % numFrames;
-        while (this.relT >= (f2 = this.keyframes[i2]!, f = this.keyframes[this.i]!).len) {
-            this.relT -= f.len, this.i++, i2++;
-            i2 %= numFrames;
-            var f3 = this.keyframes[i2]!;
-            f3._cx = typeof f3.x === "function" ? f3.x() : f3.x;
-            if (this.i >= numFrames) {
-                if (this.loop) this.i = 0;
+        if (!this.ended) this.relT += dt;
+        // advance to next keyframes
+        while ((d = frames[i]!.len) < this.relT) {
+            this.relT -= d;
+            i++;
+            if (i === len) {
+                if (this.loop) i = 0;
                 else {
+                    this.ended = true;
                     this.active = this.sticky;
-                    return [f._cx, f2._cx, 1] as const;
                 }
             }
+            // re-do the randomization on the next frame
+            const kf = frames[i]!;
+            if (typeof kf.x === "function") {
+                kf._cx = kf.x();
+            }
         }
-        return [f._cx, f2._cx, this.relT / f.len] as const;
+        this.i = i;
+        return [frames[i]!._cx, frames[(i + 1) % len]!._cx, this.relT / frames[i]!.len] as const;
     }
 }
 
+export type AnimUpdateResults = [
+    path: string[],
+    values: any[],
+    maxAlpha: number,
+    weights: number[]
+];
+
 export class Animation {
-    _pausedBy: Set<Animation> = new Set;
-    running = false;
     onEnd: KEvent = new K.KEvent;
-    skinAmount = 1;
+    weight = 1;
+    running = false;
     constructor(
         public name: string,
         public channels: AnimChannel<any>[],
-        public override: string[] = [],
-        public replace: string[] = []) { }
-    start(obj: any) {
+        public interrupt: string[] = [],
+        public cancel: string[] = [],
+        public shadow: string[] = []) { }
+    start() {
         for (var ch of this.channels) {
-            ch.start(obj);
+            ch.start();
         }
         this.running = true;
     }
-    update(dt: number) {
-        return this.channels.map(c => [c.target, c.update(dt), c.alpha] as [string[], any, number]);
+    unstick(path: string[]) {
+        for (var ch of this.channels) {
+            if (ch.target.every((x, i) => x === path[i])) {
+                ch.stop();
+            }
+        }
     }
-    finished() {
+    allDone() {
         return this.channels.every(c => !c.active);
     }
     stop() {
         this.channels.forEach(c => c.stop());
         this.onEnd.trigger();
         this.onEnd.clear();
-        this._pausedBy = new Set;
         this.running = false;
-    }
-    pauseFor(anim: Animation) {
-        this.running = false;
-        this._pausedBy.add(anim);
-    }
-    maybeUnpauseFor(anim: Animation) {
-        if (this._pausedBy.has(anim)) {
-            this._pausedBy.delete(anim);
-            this.running = this._pausedBy.size === 0;
-        }
     }
 }
 
@@ -126,7 +123,7 @@ function slerpV(v1: Vec2, v2: Vec2, t: number) {
 }
 
 export function createAnimation(name: string, json: EntityAnimData) {
-    const { interrupt, cancel, loop, sticky, channels } = json;
+    const { interrupt, cancel, loop, sticky, channels, shadow } = json;
     const c = [];
     for (var channel of channels) {
         const frames: Keyframe<any>[] = [];
@@ -138,5 +135,5 @@ export function createAnimation(name: string, json: EntityAnimData) {
         }
         c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp));
     }
-    return new Animation(name, c, interrupt, cancel);
+    return new Animation(name, c, interrupt, cancel, shadow);
 }

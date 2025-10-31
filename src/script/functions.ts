@@ -163,7 +163,10 @@ export const FUNCTIONS: Form[] = [
     new Form("setPlayer", false, async function* (args, task, actor) {
         EntityManager.setPlayer(actor);
     }),
-    new Form("#", false, async function* ([v]) {
-        return K.vec2(v).len()
+    new Form("#", false, async function* ([{ x, y }]) {
+        return Math.hypot(x, y);
+    }),
+    new Form("*", false, async function* (values) {
+        return values.reduce((a, b) => a * b);
     }),
 ];

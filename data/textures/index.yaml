@@ -1,42 +1,42 @@
 - kind: spritemap
   loader: url
-  src: !include explorer.png
+  src: !file explorer.png
   metadata: !include explorer.yaml
 - kind: sprite
   id: agent
   loader: url
-  src: !include agent.png
+  src: !file agent.png
 - kind: sprite
   id: gameLogo
   loader: url
-  src: !include logo.png
+  src: !file logo.png
 - kind: favicon
   loader: url
-  src: !include favicon.png
+  src: !file favicon.png
 - kind: sprite
   id: vurbilizer
   loader: url
-  src: !include vurbilizer.png
+  src: !file vurbilizer.png
 - kind: sprite
   id: vurbleSpore
   loader: url
-  src: !include vurble_spore.png
+  src: !file vurble_spore.png
 - kind: sprite
   id: zug
   loader: url
-  src: !include zug.png
+  src: !file zug.png
   metadata: !include zug.yaml
 - kind: sprite
   id: walltile
   loader: url
-  src: !include walltiles.png
+  src: !file walltiles.png
   metadata: !include walltiles.yaml
 - kind: sprite
   id: wires
   loader: url
-  src: !include wires.png
+  src: !file wires.png
   metadata: !include wires.yaml
 - kind: spritemap
   loader: url
-  src: !include ui.png
+  src: !file ui.png
   metadata: !include ui.yaml

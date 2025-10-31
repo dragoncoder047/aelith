@@ -30,13 +30,11 @@ export function setup() {
     K.strings.os = PlatformGuesser.guessOS();
     K.strings.switch = (switchData) => {
         const [key, ...caseStrings] = switchData.split("~");
-        console.log(JSON.stringify(K.strings));
         const procCases = {} as Record<string, string>;
         for (var caseStr of caseStrings) {
             const [caseKey, caseValue] = caseStr.split(":");
             procCases[caseKey!] = caseValue!;
         }
-        console.log(procCases, key);
         return String(procCases[key!]);
     }
 }

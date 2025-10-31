@@ -55,9 +55,9 @@ export class Entity implements Serializable {
     }
     private _unloadedBySceneChange: KEventController | undefined;
     load() {
-        if (this.obj) return;
         // needed for the entity getter on entity comp so I used it everywhere for extra minification ;)
         const self = this;
+        if (self.obj) return;
         self._unloadedBySceneChange?.cancel();
         self._unloadedBySceneChange = K.onSceneLeave(() => {
             self.unloaded();
@@ -75,14 +75,15 @@ export class Entity implements Serializable {
         ]) as any;
         buildHitbox(self, self.obj!);
         self.bones = buildSkeleton(self, self.obj!);
+        self.animator.init();
         EntityManager.startHookOnEntity(self, "load", {});
     }
     getPrototype() {
         return EntityManager.getEntityPrototypeStrict(this.kind);
     }
     setPosition(pos: Vec2) {
+        this.pos = pos;
         if (this.obj) this.obj.pos = pos;
-        else this.pos = pos;
     }
     destroy() {
         this.obj?.destroy();

@@ -262,15 +262,20 @@ model:
             - [0, 10]
           alpha: 30
     standing:
-      loop: true
+      sticky: true
       channels:
         - target: [leftFoot, scale]
           keyframes:
             - [0, { x: -1, y: 1 }]
-          alpha: 100
+          alpha: 1000
 hooks:
-  setup: [do, [anim, sprinting], [skinAnim, sprinting, 0]]
+  setup: [do, [anim, standing], [anim, sprinting], [skinAnim, sprinting, 0]]
   action1: [as, agent, setPlayer]
-  move: [skinAnim, sprinting, ["#", [the, dir]]]
+  move:
+    [
+      skinAnim,
+      sprinting,
+      [if, [the, sprinting], ["#", [the, dir]], 0],
+    ]
   startMove: [unanim, standing]
-  stopMove: [anim, standing]
+  stopMove: [do, [anim, standing], [skinAnim, sprinting, 0]]
