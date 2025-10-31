@@ -29,18 +29,21 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
     switch (item.type) {
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
+                K.play("nav_open");
                 K.pushScene(Scene.MENU, set[item.next], set, settings);
             }));
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BACK:
             obj = K.add(uiButton(bw, 1.5, item.text, "nav_back", () => {
+                K.play("nav_back");
                 K.popScene();
             }));
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BUTTON:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
+                K.play("nav_do_it");
                 item.action();
             }));
             obj.use(below(prev, PAD));
@@ -84,18 +87,28 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
     }
     switch (s.kind) {
         case SettingKind.BOOLEAN:
-            obj = K.add(uiPog(tw, 1.5, item.text, alt ? "check" : "switch", () => s.value, () => s.value = !s.value))
+            obj = K.add(uiPog(tw, 1.5, item.text, alt ? "check" : "switch", () => s.value, () => {
+                s.value = !s.value;
+                K.play("nav_select")
+            }))
             addStuff(PAD / 5);
             break;
         case SettingKind.RANGE:
-            obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => s.value = v, item.formatValue ?? (x => x.toFixed(2))));
+            var lastPlayTime = 0;
+            obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => {
+                s.value = v;
+                if (K.time() - lastPlayTime > 0.1) { K.play("nav_switch"); lastPlayTime = K.time(); }
+            }, item.formatValue ?? (x => x.toFixed(2))));
             addStuff(PAD / 5);
             break;
         case SettingKind.SELECT:
             options = item.optionTextMap!;
             addGroup();
             for (const option of (s as SelectSetting<any>).options) {
-                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value === option, () => s.value = option));
+                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value === option, () => {
+                    s.value = option;
+                    K.play("nav_select")
+                }));
                 addStuff(PAD / 5);
                 prev = obj;
             }
@@ -104,7 +117,13 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             options = item.optionTextMap!;
             addGroup();
             for (const option of (s as SelectMultipleSetting<any>).options) {
-                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value.includes(option), () => s.value.includes(option) ? s.value.splice(s.value.indexOf(option), 1) : s.value.push(option)));
+                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value.includes(option), () => {
+                    if (s.value.includes(option))
+                        s.value.splice(s.value.indexOf(option), 1);
+                    else
+                        s.value.push(option);
+                    K.play("nav_select")
+                }));
                 addStuff(PAD / 5);
                 prev = obj;
             }

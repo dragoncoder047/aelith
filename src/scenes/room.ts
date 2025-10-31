@@ -21,6 +21,7 @@ export function roomScene(whichRoom: string | undefined) {
         u.paused = false;
     });
     K.scene.onButtonPress("pause_unpause", () => {
+        K.play("nav_do_it");
         K.pushScene(SceneManager.Scene.MENU);
     });
 }

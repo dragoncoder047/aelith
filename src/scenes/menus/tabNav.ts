@@ -6,6 +6,7 @@ export function installTabNavigation() {
         const newFocusIndex = (d + objects.length + objects.findIndex(o => o.is("focused"))) % objects.length;
         objects.forEach(o => o.untag("focused"));
         objects[newFocusIndex]!.tag("focused");
+        K.play("nav_switch");
     }
     K.scene.onButtonPress("nav_down", () => {
         navigate(1);

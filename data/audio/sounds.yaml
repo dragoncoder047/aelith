@@ -114,23 +114,32 @@
   id: knock
   loader: zzfx
   src: "[2.5,0,80,,,,1,4,-2,6,50,.15]"
-# - kind: sound
-#   id: nav_select
-#   loader: bin
-#   src:
-# - kind: sound
-#   id: nav_switch
-#   loader: bin
-#   src:
-# - kind: sound
-#   id: nav_back
-#   loader: bin
-#   src:
-# - kind: sound
-#   id: nav_open
-#   loader: bin
-#   src:
-# - kind: sound
-#   id: nav_confirm
-#   loader: bin
-#   src:
+- kind: sound
+  id: nav_select
+  loader: url
+  src:  !file sfx/Confirm_02_select_open.ogg
+- kind: sound
+  id: nav_switch
+  loader: url
+  src: !file sfx/Click_03_focus_switch.ogg
+- kind: sound
+  id: nav_change_slider
+  loader: url
+  # TODO: this is the same as nav_switch
+  src: !file sfx/Click_03_focus_switch.ogg
+- kind: sound
+  id: nav_back
+  loader: url
+  src: !file sfx/Bleep_07_focus_switch.ogg
+- kind: sound
+  id: nav_open
+  loader: url
+  src: !file sfx/Confirm_02_select_open.ogg
+- kind: sound
+  id: nav_confirm
+  loader: url
+  src: !file sfx/Bleep_01_selected_confirmed.ogg
+- kind: sound
+  id: nav_do_it
+  loader: url
+  src: !file sfx/Execute_01_select.ogg

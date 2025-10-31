@@ -54,9 +54,11 @@ export function titleScreenScene() {
     });
     const w = K.width() / 3;
     const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "jump", () => {
+        K.play("nav_confirm");
         K.go(SceneManager.Scene.ROOM);
     }));
     const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "main_menu_options", () => {
+        K.play("nav_open");
         K.pushScene(SceneManager.Scene.MENU);
     }));
     enterBtn.use(layoutAnchor(K.center));
