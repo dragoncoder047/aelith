@@ -1,6 +1,8 @@
 - kind: translation
   id: en
-  src: !include en.yaml
+  loader: url
+  src: !file en.yaml
 - kind: translation
   id: es
-  src: !include es.yaml
+  loader: url
+  src: !file es.yaml

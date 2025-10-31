@@ -32,12 +32,12 @@ class Loader(yaml.FullLoader):
         super().__init__(stream)
 
 
-def flatten(loader: Loader, node: yaml.Node) -> list[typing.Any]:
+def flatten(loader: Loader, node: typing.Any) -> list[typing.Any]:
     lists = loader.construct_sequence(node, True)
     return [item for sublist in lists for item in sublist]
 
 
-def include(loader: Loader, node: yaml.Node) -> typing.Any:
+def include(loader: Loader, node: typing.Any) -> typing.Any:
     file = (loader._root / loader.construct_scalar(node)).resolve()
     ext = file.suffix
 
@@ -60,11 +60,25 @@ def include(loader: Loader, node: yaml.Node) -> typing.Any:
         return file.read_text()
 
 
-def file(loader: Loader, node: yaml.Node) -> typing.Any:
+def file(loader: Loader, node: typing.Any) -> typing.Any:
     file = (loader._root / loader.construct_scalar(node)).resolve()
     contents = file.read_bytes()
     hash = hashlib.md5(contents, usedforsecurity=False).hexdigest()
-    outfile = outdir / "res" / (hash + file.suffix)
+    if file.suffix != ".yaml":
+        outfile = outdir / "res" / (hash + file.suffix)
+    else:
+        outfile = outdir / "res" / (hash + ".json")
+        if minify:
+            contents = json.dumps(
+                yaml.load(contents.decode(), Loader),
+                separators=(",", ":"),
+                allow_nan=False)
+        else:
+            contents = json.dumps(
+                yaml.load(contents.decode(), Loader),
+                indent=4,
+                allow_nan=False)
+        contents = contents.encode()
     os.makedirs(outfile.parent, exist_ok=True)
     outfile.write_bytes(contents)
     return str(outfile.relative_to(serveroot))
@@ -80,7 +94,14 @@ if output.exists():
     output.unlink()
 datapack = yaml.load(input.open(), Loader)
 if minify:
-    json.dump(datapack, output.open("w"),
-              separators=(",", ":"), allow_nan=False)
+    json.dump(
+        datapack,
+        output.open("w"),
+        separators=(",", ":"),
+        allow_nan=False)
 else:
-    json.dump(datapack, output.open("w"), indent=4, allow_nan=False)
+    json.dump(
+        datapack,
+        output.open("w"),
+        indent=4,
+        allow_nan=False)

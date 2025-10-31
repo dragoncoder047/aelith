@@ -123,9 +123,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "translation": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return await DownloadManager.loadJSON(asset.src as string).then(lang => {
-                        K.strings[asset.id] = lang;
-                    });
+                    return K.addLanguageURL(asset.id, asset.src as string);
                 case null:
                 case undefined:
                     return K.strings[asset.id] = asset.src as NestedStrings;

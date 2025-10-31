@@ -19,6 +19,7 @@ export interface KAPLAYDynamicTextPlugin {
     preferredLanguage: string | null
     sub(s: string, vars?: NestedStrings): string
     addStrings(s: NestedStrings): Asset<NestedStrings>
+    addLanguageURL(lang: string, url: string): void;
     setAvailableLanguages(langs: KAPLAYDynamicTextPlugin["langs"]): void
     useLanguage(lang: string | null): void;
     currentLanguage(): string;
@@ -26,6 +27,13 @@ export interface KAPLAYDynamicTextPlugin {
 }
 
 export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYDynamicTextPlugin {
+    const _langUrls: Record<string, string> = {};
+    const _loaded: Record<string, boolean> = {};
+    const _lazyLoad = (lang: string) => {
+        const url = _langUrls[lang]!;
+        _loaded[lang] = true;
+        fetch(url).then(resp => resp.json()).then(json => K.strings[lang] = json);
+    }
     return {
         strings: {},
         langs: ["en"],
@@ -44,6 +52,10 @@ export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KA
             Object.assign(K.strings, strings);
             return new K.Asset(Promise.resolve(strings));
         },
+        addLanguageURL(lang, url) {
+            _langUrls[lang] = url;
+            _loaded[lang] = false;
+        },
         setAvailableLanguages(langs) {
             K.langs = langs;
         },
@@ -51,7 +63,9 @@ export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KA
             K.preferredLanguage = lang;
         },
         currentLanguage() {
-            return K.preferredLanguage ?? findPreferredLanguage(K.langs);
+            const lang = K.preferredLanguage ?? findPreferredLanguage(K.langs);
+            if (!_loaded[lang]) _lazyLoad(lang);
+            return lang;
         },
         dynamicText(t = ""): DynamicTextComp {
             return {
