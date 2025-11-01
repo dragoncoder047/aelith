@@ -213,6 +213,7 @@ export interface EntityModelBoneData extends JSONObject {
     /** name of the bone for targeting it in animations */
     name?: string;
     render: RenderData;
+    /** if true, this will have a 1x1 pixel collider set on it */
     sensor?: boolean;
     /** The offset from the parent */
     pos?: XY;

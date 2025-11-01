@@ -166,7 +166,7 @@ function mergeAdjacent(colliders: ColliderEntry[]) {
             }
 
             colliders[i] = A = { ...A, def: { ...A.def, hitbox: [K.vec2(ml, mt).sub(A.pos), mw, mh] } }
-            colliders.splice(j--, 1);
+            colliders[j--] = colliders.pop()!;
         }
     }
 }

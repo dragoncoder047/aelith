@@ -1,4 +1,4 @@
-import { BodyComp, EaseFuncs, GameObj, PosComp, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameObj, RotateComp } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
@@ -115,8 +115,12 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             ]);
             if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);
             if (!bone.name) bone.name = "_b" + obj.id;
+            if (bone.sensor) {
+                obj.use(K.area({ shape: new K.Rect(K.vec2(-0.5), 1, 1) }));
+                e.sensors.add(bone.name);
+            }
             obj.use(K.named(bone.name));
-            map[bone.name] = obj;
+            map[bone.name] = obj as any;
             if (bone.constraint) {
                 constraintEntries.push({ c: bone.constraint, t: bone.name });
             }

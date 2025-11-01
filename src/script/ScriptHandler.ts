@@ -83,8 +83,7 @@ export function spawnTask(priority: number, form: JSONValue, actor: Entity, cont
 export function killAllTasksControlledBy(actor: Entity) {
     for (var i = 0; i < tasks.length; i++) {
         if (tasks[i]!.controller === actor) {
-            tasks.splice(i, 1);
-            i--;
+            tasks.splice(i--, 1);
         }
     }
 }
@@ -110,8 +109,7 @@ async function stepTasks() {
         }
         if (res.done || t.result) {
             t.complete.trigger(t.result ?? res.value);
-            tasks.splice(i, 1);
-            i--;
+            tasks.splice(i--, 1);
         }
     }
     return madeProgress;

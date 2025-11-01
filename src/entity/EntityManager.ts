@@ -62,7 +62,7 @@ export function loadAllEntitiesInRoom(id: string) {
 export function destroyEntity(e: Entity) {
     const i = allEntities.indexOf(e);
     if (i >= 0) {
-        allEntities.splice(i, 1);
+        allEntities[i] = allEntities.pop()!;
         e.destroy();
         ScriptHandler.killAllTasksControlledBy(e);
     }

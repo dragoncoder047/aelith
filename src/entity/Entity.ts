@@ -1,4 +1,4 @@
-import { AreaComp, BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
+import { AreaComp, AudioPlay, BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
@@ -27,18 +27,20 @@ export enum EntityInputAction {
 }
 
 export type EntityComponents = EntityComp | PosComp;
-export type BoneComponents = EntityComponents | RotateComp | ScaleComp;
+export type BoneComponents = EntityComponents | RotateComp | ScaleComp | AreaComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
 
 export class Entity implements Serializable {
     obj: GameObj<EntityComponents | BodyComp | AreaComp> | null = null;
     bones: BonesMap = {};
+    sensors = new Set<string>();
     speechBubble: GameObj<SpeechBubbleComp> | null = null;
     speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
     animator: Animator;
     inventory: Inventory;
     targeted: Entity | null = null;
+    private _updateEv = new K.KEvent;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -52,6 +54,10 @@ export class Entity implements Serializable {
         this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
         EntityManager.startHookOnEntity(this, "setup", {});
+    }
+
+    onUpdate(cb: () => void): KEventController {
+        return this._updateEv.add(cb);
     }
     private _unloadedBySceneChange: KEventController | undefined;
     load() {
@@ -74,9 +80,20 @@ export class Entity implements Serializable {
             K.pos(self.pos),
         ]) as any;
         buildHitbox(self, self.obj!);
+        self.obj!.onGround(() => {
+            EntityManager.startHookOnEntity(self, "landed", { force: self.obj!.vel.len() });
+        });
         self.bones = buildSkeleton(self, self.obj!);
         self.animator.init();
         EntityManager.startHookOnEntity(self, "load", {});
+        for (const sensor of this.sensors) {
+            self.bones[sensor]!.onCollide(obj => EntityManager.startHookOnEntity(self, "sensed", {
+                bone: sensor,
+                entity: obj.entity ? obj.entity.id : null,
+                height: (obj as GameObj<PAreaComp>).aabb().height,
+                width: (obj as GameObj<PAreaComp>).aabb().width,
+            }));
+        }
     }
     getPrototype() {
         return EntityManager.getEntityPrototypeStrict(this.kind);
@@ -102,6 +119,7 @@ export class Entity implements Serializable {
         }
         this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
         this._spitItOut = false;
+        this._updateEv.trigger();
     }
     toJSON(): EntityData {
         return {
@@ -118,6 +136,23 @@ export class Entity implements Serializable {
             ]),
             pos: this.pos as XY,
         }
+    }
+    private _ongoingSounds: [AudioPlay, number][] = [];
+    private _getPanVol(masterVolume: number) {
+        const player = EntityManager.getPlayer()!;
+        const playerPos = player.pos;
+        const worldPos = this.pos;
+        const width = K.width() / K.getCamScale().x
+        const halfwidth = width / 2;
+        const distance = worldPos.sub(playerPos).len();
+        const volume = this.currentRoom === player.currentRoom ? K.mapc(distance - halfwidth * Math.sign(distance), 0, halfwidth, masterVolume, 0) : 0;
+        const xDiff = worldPos.x - playerPos.x;
+        const pan = K.mapc(xDiff, -halfwidth, halfwidth, -1, 1);
+        return { pan, volume };
+    }
+    emitSound(sound: string, volume: number) {
+        const a = K.play(sound, this._getPanVol(volume));
+        this._ongoingSounds.push([a, volume]);
     }
     playAnim(a: string, forceRestart: boolean = true) {
         return new Promise<void>((x, y) => {
@@ -136,7 +171,20 @@ export class Entity implements Serializable {
         this.pos = this.obj!.pos.clone();
         this.animator.update(K.dt());
         this.inventory.update();
+        this._updateEv.trigger();
         if (!this._collidingLadder()) this._setClimbing(false);
+
+        // update sounds
+        for (var i = 0; i < this._ongoingSounds.length; i++) {
+            const [sound, volume] = this._ongoingSounds[i]!;
+            if (sound.time() >= sound.duration()) {
+                sound.stop();
+                // No need to splice, order doesn't matter
+                this._ongoingSounds[i--] = this._ongoingSounds.pop()!;
+            } else {
+                Object.assign(sound, this._getPanVol(volume));
+            }
+        }
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;
