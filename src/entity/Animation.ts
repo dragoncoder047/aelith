@@ -102,7 +102,7 @@ export class Animation {
     }
     unstick(path: string[]) {
         for (var ch of this.channels) {
-            if (ch.target.every((x, i) => x === path[i])) {
+            if (ch.target.every((x, i) => x === path[i]) && ch.ended) {
                 ch.stop();
             }
         }
