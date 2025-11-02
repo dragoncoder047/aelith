@@ -94,11 +94,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             addStuff(PAD / 5);
             break;
         case SettingKind.RANGE:
-            var lastPlayTime = 0;
-            obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => {
-                s.value = v;
-                if (K.time() - lastPlayTime > 0.1) { K.play("nav_switch"); lastPlayTime = K.time(); }
-            }, item.formatValue ?? (x => x.toFixed(2))));
+            obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => s.value = v, item.formatValue ?? (x => x.toFixed(2))));
             addStuff(PAD / 5);
             break;
         case SettingKind.SELECT:

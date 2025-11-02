@@ -150,6 +150,18 @@ export class Entity implements Serializable {
         const pan = K.mapc(xDiff, -halfwidth, halfwidth, -1, 1);
         return { pan, volume };
     }
+    private _updateSounds() {
+        for (var i = 0; i < this._ongoingSounds.length; i++) {
+            const [sound, volume] = this._ongoingSounds[i]!;
+            if (sound.time() >= sound.duration()) {
+                sound.stop();
+                // No need to splice, order doesn't matter
+                this._ongoingSounds[i--] = this._ongoingSounds.pop()!;
+            } else {
+                Object.assign(sound, this._getPanVol(volume));
+            }
+        }
+    }
     emitSound(sound: string, volume: number) {
         const a = K.play(sound, this._getPanVol(volume));
         this._ongoingSounds.push([a, volume]);
@@ -174,17 +186,7 @@ export class Entity implements Serializable {
         this._updateEv.trigger();
         if (!this._collidingLadder()) this._setClimbing(false);
 
-        // update sounds
-        for (var i = 0; i < this._ongoingSounds.length; i++) {
-            const [sound, volume] = this._ongoingSounds[i]!;
-            if (sound.time() >= sound.duration()) {
-                sound.stop();
-                // No need to splice, order doesn't matter
-                this._ongoingSounds[i--] = this._ongoingSounds.pop()!;
-            } else {
-                Object.assign(sound, this._getPanVol(volume));
-            }
-        }
+        this._updateSounds();
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;
