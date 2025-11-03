@@ -32,6 +32,11 @@
   src: !file walltiles.png
   metadata: !include walltiles.yaml
 - kind: sprite
+  id: rocktile
+  loader: url
+  src: !file rocktiles.png
+  metadata: !include rocktiles.yaml
+- kind: sprite
   id: wires
   loader: url
   src: !file wires.png

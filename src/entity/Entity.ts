@@ -330,6 +330,7 @@ export class Entity implements Serializable {
     private _motionAnimation(direction: Vec2) {
         const m = this.getPrototype().model.kinematics;
         const a = this._climbing ? m.climb : m.walk;
+        // TODO
     }
 }
 

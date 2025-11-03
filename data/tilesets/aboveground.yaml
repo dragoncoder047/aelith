@@ -1,24 +1,24 @@
 songTags: # TODO
 gridSize: 32
-background: "#000011"
+background: "black"
 tiles:
   # 0: base wall
   - &baseWall
     tag: wall
     render:
       as: sprite
-      sprite: walltile
+      sprite: rocktile
       layer: tiles
     autotile: &wa
       bits: 8
       pats: !include ../textures/seamless8x8.yaml
-      weights: !include ../textures/wallweights.yaml
+      weights: !include ../textures/rockweights.yaml
       with:
         noHitWall: 255
     physics:
       hitbox: [{ x: 4, y: 4 }, 24, 24]
       merge: [true, true]
-    depth: !include ../textures/walldepth.yaml
+    depth: !include ../textures/rockdepth.yaml
   # 1: wall, but no hitbox
   - <<: *baseWall
     tag: noHitWall
@@ -27,15 +27,3 @@ tiles:
       <<: *wa
       with:
         wall: 255
-  # 2: wires (purely for decoration, no hitbox)
-  - tag: wire
-    render:
-      as: sprite
-      sprite: wires
-      shader: wiresPulse
-      uniform:
-        u_time: time
-      z: 1
-    autotile:
-      bits: 4
-      pats: !include ../textures/seamless4x4.yaml

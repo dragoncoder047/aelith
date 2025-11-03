@@ -1,6 +1,6 @@
 import { Vec2 } from "kaplay";
 import { K } from "../context";
-import { getMotionInput } from "../controls/InputManager";
+import * as InputManager from "../controls/InputManager";
 import { EntityData, EntityPrototypeData } from "../DataPackFormat";
 import * as GameManager from "../GameManager";
 import { JSONObject, JSONValue } from "../JSON";
@@ -106,9 +106,9 @@ export function installControlsHandler() {
             }
             const m = "isButtonPressed";
             // Move and/or climb
-            p.doMove(getMotionInput("move", p), K.isButtonDown("sprint"));
+            p.doMove(InputManager.getMotionInput("move", p), K.isButtonDown("sprint"));
             // Look
-            p.lookInDirection(getMotionInput("look", p));
+            p.lookInDirection(InputManager.getMotionInput("look", p));
             // Jump
             if (K[m]("jump")) p.tryJump();
             // Actions

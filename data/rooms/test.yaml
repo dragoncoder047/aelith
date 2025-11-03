@@ -1,4 +1,4 @@
-tileset: aelith
+tileset: aboveground
 map:
   [
     "       ###########",
@@ -29,4 +29,4 @@ entities:
   agent:
     id: agent
     kind: agent
-gravity: 300
+gravity: 500
