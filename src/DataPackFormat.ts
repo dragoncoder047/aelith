@@ -130,7 +130,7 @@ export interface EntityPrototypeData extends JSONObject {
     hooks: Record<string, HookData | CrustyJSONCode>;
 }
 
-interface EntityModelData extends JSONObject {
+export interface EntityModelData extends JSONObject {
     /** the body parts of the sprite */
     skeleton: EntityModelBoneData[];
     /** the decorational or functional tentacles (spring sim thingies) */
@@ -139,10 +139,10 @@ interface EntityModelData extends JSONObject {
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
     kinematics: {
-        walk: EntityMotionAnimDef[];
-        climb: EntityMotionAnimDef[];
+        walk?: EntityMotionAnimDef[];
+        climb?: EntityMotionAnimDef[];
         look: EntityLookAnimDef;
-        /** anim to be played while sprinting */
+        /** anim to be played while sprinting, will be skinned based on amount of sprint */
         sprint?: string;
     }
     speechBubble: {
@@ -185,6 +185,7 @@ export interface EntityAnimData extends JSONObject {
     /* if false, will reset back to the original value when the animation is turned off (default true) */
     sticky?: boolean;
     channels: EntityAnimChannelData[];
+    autoplay?: boolean;
 };
 
 interface EntityAnimChannelData extends JSONObject {
@@ -198,6 +199,7 @@ interface EntityAnimChannelData extends JSONObject {
     slerp?: boolean;
     /** 1/(time in seconds to move halfway on a step change) */
     alpha?: number;
+    relative?: boolean;
 }
 
 export interface EntityBoneConstraintOptData extends JSONObject {

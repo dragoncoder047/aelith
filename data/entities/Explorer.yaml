@@ -19,10 +19,6 @@ behavior:
 model:
   speechBubble:
     origin: speechBubbleOrigin
-  kinematics:
-    look:
-      origin: head
-      target: gazeTarget
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -36 }
@@ -261,21 +257,37 @@ model:
           keyframes:
             - [0, 10]
           alpha: 30
-    standing:
-      sticky: true
-      channels:
-        - target: [leftFoot, scale]
+        - target: [leftHandTarget, pos]
           keyframes:
-            - [0, { x: -1, y: 1 }]
-          alpha: 1000
+            - [0, { x: 0, y: -1 }]
+          alpha: 30
+          relative: true
+        - target: [rightHandTarget, pos]
+          keyframes:
+            - [0, { x: 0, y: 1 }]
+          alpha: 30
+          relative: true
+    idle:
+      loop: true
+      autoplay: true
+      channels:
+        - target: [body, pos]
+          keyframes:
+            - [1, { x: 0, y: -1 }, easeInOutSine]
+            - [1, { x: 0, y: 0 }, easeInOutSine]
+  kinematics:
+    look:
+      origin: head
+      target: gazeTarget
+    walk:
+      - bone: leftFoot
+        flip: [false, true]
+      # - bone: body
+      #   flip: [false, true]
+      - bone: rightFoot
+        flip: [false, true]
+    sprint: sprinting
 hooks:
-  setup: [do, [anim, standing], [anim, sprinting], [skinAnim, sprinting, 0]]
   action1: [as, agent, setPlayer]
-  move:
-    [
-      skinAnim,
-      sprinting,
-      [if, [the, sprinting], ["#", [the, dir]], 0],
-    ]
-  startMove: [unanim, standing]
-  stopMove: [do, [anim, standing], [skinAnim, sprinting, 0]]
+  startMove: [unanim, idle]
+  stopMove: [anim, idle]

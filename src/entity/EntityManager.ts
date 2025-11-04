@@ -89,7 +89,10 @@ export function broadcastMessage(linkGroup: string, message: string, context: JS
 
 var activePlayer: Entity | null = null;
 export function setPlayer(e: Entity | null) {
-    activePlayer = e;
+    if (activePlayer !== e) {
+        if ((activePlayer = e) !== null)
+            startHookOnEntity(activePlayer, "becamePlayer", {});
+    }
 }
 
 export function getPlayer(): Entity | null {

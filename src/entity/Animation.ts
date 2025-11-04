@@ -26,8 +26,12 @@ class AnimChannel<T extends LerpValue> {
         public sticky: boolean = true,
         public alpha: number = 10,
         public keyframes: Keyframe<T>[],
-        public interpolate: (a: T, b: T, progress: number) => T) {
+        public interpolate: (a: T, b: T, progress: number) => T,
+        public relative: boolean = false) {
         if (keyframes.length === 0) throw new Error("Not valid to have 0 keyframes");
+        if (keyframes.length === 1) {
+            keyframes.push(Object.assign({}, keyframes[0]!));
+        }
         for (var kf of this.keyframes) {
             kf._cx = (typeof kf.x === "function") ? kf.x() : kf.x;
         }
@@ -123,17 +127,17 @@ function slerpV(v1: Vec2, v2: Vec2, t: number) {
 }
 
 export function createAnimation(name: string, json: EntityAnimData) {
-    const { interrupt, cancel, loop, sticky, channels, shadow } = json;
+    const { interrupt, cancel, loop, sticky, channels, shadow, autoplay } = json;
     const c = [];
     for (var channel of channels) {
         const frames: Keyframe<any>[] = [];
-        const { target, keyframes, alpha, slerp } = channel;
+        const { target, keyframes, alpha, slerp, relative } = channel;
         var isVec2 = false;
         for (var [len, value, easing] of keyframes) {
             if (len < 0) throw new Error(`invalid length (must be >=0): ${len} (on anim name ${name})`)
             frames.push({ x: Array.isArray(value) ? (typeof value[0] === "number" ? (([a, b]) => () => K.rand(a, b))(value as number[]) : typeof value[0] === "string" ? (([a, b]) => { const ca = K.rgb(a), cb = K.rgb(b); return () => K.rand(ca, cb); })(value as [string, string]) : (([{ x: x1, y: y1 }, { x: x2, y: y2 }, spherical]) => spherical ? () => (K.RIGHT.rotate(K.rand(360)).scale(K.rand()).scale(x2 - x1, y2 - y1).add(x1, y1)) : (() => K.vec2(K.rand(x1, x2), K.rand(y1, y2))))(value as [XY, XY, boolean])) : (typeof value === "number" ? value : typeof value === "string" ? K.rgb(value) : K.vec2(value.x, value.y)), len, ease: (easing as any) === "none" ? () => 1 : K.easings[easing ?? "linear"] }); // ridiculously long line
         }
-        c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp));
+        c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp, relative));
     }
-    return new Animation(name, c, interrupt, cancel, shadow);
+    return [new Animation(name, c, interrupt, cancel, shadow), autoplay] as const;
 }

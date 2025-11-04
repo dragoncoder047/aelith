@@ -79,10 +79,18 @@ export class Animator {
             }
             return [shadowed, interrupted] as const;
         });
-        const addValue = (target: string[], val: any, alpha: number | undefined, weight: number) => {
+        const addValue = (target: string[], val: any, alpha: number | undefined, weight: number, relative: boolean) => {
             const key = target.join(",");
             var res: AnimUpdateResults;
             usedPaths.add(key);
+            if (relative) {
+                const [_, base] = this.baseValues.get(key)!;
+                if ((base instanceof K.Vec2) || (base instanceof K.Color)) {
+                    val = val.add(base)
+                } else {
+                    val = val + base;
+                }
+            }
             if (!targetsMap.has(key)) {
                 res = [target, [val], alpha!, [weight]];
                 targetsMap.set(key, res);
@@ -102,7 +110,7 @@ export class Animator {
                 if (channel.active) {
                     const val = channel.update(interrupted ? 0 : dt);
                     if (!shadowed) {
-                        addValue(channel.target, val, channel.alpha, anim.weight);
+                        addValue(channel.target, val, channel.alpha, anim.weight, channel.relative);
                     }
                 }
             }
@@ -111,12 +119,11 @@ export class Animator {
             }
         }
         for (var [k, [path, value]] of this.baseValues.entries()) {
-            addValue(path, value, usedPaths.has(k) ? undefined : (this.lastAlphas.get(k) ?? 10), 1e-6);
+            addValue(path, value, usedPaths.has(k) ? undefined : (this.lastAlphas.get(k) ?? 10), 1e-6, false);
         }
         this._copyValues(dt, targetsList);
     }
     private _copyValues(dt: number, targets: AnimUpdateResults[]) {
-        if (this.entity.kind === "explorer") console.log(JSON.stringify(targets));
         for (var p = 0; p < targets.length; p++) {
             const [unjoinedPath, values, maxAlpha, weights] = targets[p]!;
             this.lastAlphas.set(unjoinedPath.join(","), maxAlpha);
@@ -127,7 +134,7 @@ export class Animator {
             }
         }
     }
-    play(animName: string, onended: () => void, forceRestart: boolean) {
+    play(animName: string, onended?: () => void, forceRestart?: boolean) {
         const anim = this.animations.find(a => a.name === animName);
         if (!anim) throw new Error(`No animation ${animName} on ${this.entity.kind}`);
         for (var s of anim.cancel) {
@@ -139,7 +146,7 @@ export class Animator {
                 a2.unstick(p.target);
             }
         }
-        anim.onEnd.add(onended);
+        if (onended) anim.onEnd.add(onended);
         if (forceRestart || !anim.running) {
             anim.start();
         }
@@ -162,8 +169,14 @@ export class Animator {
 export function buildAnimations(kind: string, animator: Animator) {
     const { anims } = EntityManager.getEntityPrototypeStrict(kind).model;
     if (!anims) return;
+    const toPlay = [];
     for (var animName of Object.keys(anims)) {
-        animator.animations.push(createAnimation(animName, anims[animName]!));
+        const [anim, autoplay] = createAnimation(animName, anims[animName]!);
+        animator.animations.push(anim);
+        if (autoplay) toPlay.push(anim.name);
+    }
+    for (var anim of toPlay) {
+        animator.play(anim);
     }
 }
 

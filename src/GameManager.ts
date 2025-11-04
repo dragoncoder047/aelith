@@ -55,7 +55,7 @@ export function main() {
     setup();
     K.load(datapack());
     K.onLoad(() => {
-        K.go(SceneManager.Scene.SPLASH_SCREEN);
+        K.go(SceneManager.Scene.TITLE_SCREEN);
     });
 }
 

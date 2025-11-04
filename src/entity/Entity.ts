@@ -2,7 +2,7 @@ import { AreaComp, AudioPlay, BodyComp, Comp, GameObj, KEventController, PosComp
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
-import { EntityData, LightData, XY } from "../DataPackFormat";
+import { EntityData, EntityModelData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
 import { Animator, buildAnimations } from "./Animator";
@@ -196,8 +196,8 @@ export class Entity implements Serializable {
         else {
             this._shutUp?.();
             await this.speechBubble?.speakText(text,
-                () => new Promise((a, b) => (this._goOn = a, this._shutUp = () => (this._spitItOut = true, b(true)))),
-                undefined /* TODO: play this.speakSound on self's location */,
+                () => new Promise((a, b) => (this._goOn = a, this._shutUp = () => b(this._spitItOut = true))),
+                () => this.speakSound && this.emitSound(this.speakSound, 1),
                 () => (this._spitItOut ? (this._spitItOut = false, true) : false));
         }
     }
@@ -245,6 +245,7 @@ export class Entity implements Serializable {
             this._lookAtPoint(other.obj.worldPos()!);
         }
         this.targeted = other;
+        // TODO: remove this debugging rectangle
         if (other) {
             const bbox = (other.obj as any).aabb();
             K.drawRect({
@@ -265,6 +266,7 @@ export class Entity implements Serializable {
             this.bones[d.target]!.worldPos(pt);
         }
     }
+    private _moveLooking: Vec2 = K.RIGHT;
     lookInDirection(direction: Vec2) {
         const lookRelToHead = (pt: Vec2) => {
             this._lookAtPoint(this.getHead()!.worldPos()!.add(pt));
@@ -282,7 +284,7 @@ export class Entity implements Serializable {
             return res;
         } else {
             // reset gaze to normal
-            lookRelToHead(K.RIGHT.scale(128));
+            lookRelToHead(this._moveLooking.scale(128));
         }
         return null;
     }
@@ -299,12 +301,17 @@ export class Entity implements Serializable {
         }
     }
     doMove(direction: Vec2, sprint: boolean) {
+        const p = this.getPrototype();
+        const pb = p.behavior;
+        const pk = p.model.kinematics;
         if (direction.isZero()) sprint = false;
         if (this._sprinting && !sprint) {
             EntityManager.startHookOnEntity(this, "stopSprint");
+            if (pk.sprint) this.stopAnim(pk.sprint);
         }
         else if (!this._sprinting && sprint) {
             EntityManager.startHookOnEntity(this, "startSprint");
+            if (pk.sprint) this.playAnim(pk.sprint);
         }
         this._sprinting = sprint;
         if (direction.isZero()) {
@@ -317,20 +324,29 @@ export class Entity implements Serializable {
         }
         this._walking = true;
         EntityManager.startHookOnEntity(this, "move", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
-        const pb = this.getPrototype().behavior;
         const speed = (this._sprinting ? pb.sprintSpeed : null) ?? pb.moveSpeed;
         if (this.obj) {
             if (this._collidingLadder()) this._setClimbing(true);
             if (!this._climbing && !pb.canFly) direction = direction.reject(K.getGravityDirection());
             direction = clampUnit(direction).scale(speed);
             this.obj.move(direction);
-            this._motionAnimation(direction);
+            this._motionAnimation(direction, pk);
+            if (pk.sprint) {
+                this.animator.skinAnim(pk.sprint, this._sprinting ? direction.len() : 0);
+            }
         }
     }
-    private _motionAnimation(direction: Vec2) {
-        const m = this.getPrototype().model.kinematics;
-        const a = this._climbing ? m.climb : m.walk;
-        // TODO
+    private _motionAnimation(direction: Vec2, m: EntityModelData["kinematics"]) {
+        const a = (this._climbing ? m.climb : m.walk) ?? [];
+        const isLeft = direction.x < 0;
+        const isHorizontal = direction.x !== 0;
+        for (var anim of a) {
+            const b = this.bones[anim.bone]!;
+            if (isHorizontal)
+                b.scaleTo(anim.flip?.[isLeft ? 0 : 1] ? 1 : -1, 1);
+        }
+        if (isHorizontal)
+            this._moveLooking = isLeft ? K.LEFT : K.RIGHT;
     }
 }
 
