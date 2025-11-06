@@ -141,9 +141,14 @@ export interface EntityModelData extends JSONObject {
     kinematics: {
         walk?: EntityMotionAnimDef[];
         climb?: EntityMotionAnimDef[];
+        stepLength: number;
+        stepTime: number;
+        stepHeight: number;
         look: EntityLookAnimDef;
         /** anim to be played while sprinting, will be skinned based on amount of sprint */
         sprint?: string;
+        /** anim to be played while not moving */
+        stand?: string;
     }
     speechBubble: {
         origin: string;
@@ -166,12 +171,10 @@ interface EntityMotionAnimDef extends JSONObject {
     /** if this bone should be moved to the target, versus just following */
     target?: boolean;
     /** randomize jitter */
-    jitter?: {
-        pos?: XY;
-        angle?: number;
-    };
+    jitter?: number;
     /** if the bone should be flipped to follow the motion */
-    flip?: [whenMovingLeft: boolean, whenMovingRight: boolean];
+    flip?: [whenMovingLeft: boolean, whenMovingRight: boolean, whenStopped: boolean];
+    parabolic?: boolean;
 }
 
 export interface EntityAnimData extends JSONObject {

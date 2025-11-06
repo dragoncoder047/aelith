@@ -25,12 +25,12 @@ export class Inventory {
         if (otherSize === undefined || this.maxSlots === undefined) return "cannotTake";
         if ((this._occupied + otherSize) > this.maxSlots) return "noRoom";
         if (EntityManager.objIsAlreadyOwned(obj)) return "cannotTake";
-        const t = EntityManager.startHookOnEntity(obj, "taken", { taker: this.me.id });
+        const t = obj.startHook("taken", { taker: this.me.id });
         if (t) {
             const v = await new Promise(res => t.onFinish(res));
             if (t.failed && v instanceof RefuseTake) return "refused";
         }
-        EntityManager.startHookOnEntity(this.me, "take", { taken: obj.id });
+        this.me.startHook("take", { taken: obj.id });
         this._occupied += otherSize;
         this.slots.push(obj);
         obj.currentRoom = null;

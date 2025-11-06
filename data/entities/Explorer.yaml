@@ -281,13 +281,10 @@ model:
       target: gazeTarget
     walk:
       - bone: leftFoot
-        flip: [false, true]
-      # - bone: body
-      #   flip: [false, true]
+        flip: [false, true, false]
       - bone: rightFoot
-        flip: [false, true]
+        flip: [false, true, true]
     sprint: sprinting
+    stand: idle
 hooks:
   action1: [as, agent, setPlayer]
-  startMove: [unanim, idle]
-  stopMove: [anim, idle]

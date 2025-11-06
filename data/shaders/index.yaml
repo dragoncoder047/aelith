@@ -14,3 +14,7 @@
   id: flash
   src:
     frag: !include flash.glsl
+- kind: shader
+  id: starry
+  src:
+    frag: !include starry.glsl

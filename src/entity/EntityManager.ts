@@ -22,14 +22,6 @@ export function getEntityPrototypeStrict(name: string): EntityPrototypeData {
     return proto;
 }
 
-export function startHookOnEntity(entity: Entity, name: string, context: JSONObject = {}): ScriptHandler.Task | null {
-    const proto = getEntityPrototypeStrict(entity.kind);
-    var hook = proto.hooks?.[name] as any;
-    if (!hook) return null;
-    if (Array.isArray(hook)) hook = { impl: hook, priority: 0 };
-    return ScriptHandler.spawnTask(hook.priority, hook.impl, entity, context);
-}
-
 const allEntities: Entity[] = [];
 
 export function getEntityByName(entityName: string): Entity | undefined {
@@ -48,7 +40,7 @@ export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: En
     const realPos = (data.pos ? K.vec2(data.pos.x, data.pos.y) : K.vec2()).add(slotPos);
     const e = new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state, realPos, data.leashed, data.linkGroup, data.lights);
     allEntities.push(e);
-    startHookOnEntity(e, "setup", {});
+    e.startHook("setup");
     if (RoomManager.getCurrentRoom() === inRoom) {
         e.load();
     }
@@ -83,15 +75,14 @@ export function objIsAlreadyOwned(e: Entity) {
 
 export function broadcastMessage(linkGroup: string, message: string, context: JSONValue) {
     for (var e of allEntities) {
-        if (e.linkGroup === linkGroup) startHookOnEntity(e, "message", { message, context });
+        if (e.linkGroup === linkGroup) e.startHook("message", { message, context });
     }
 }
 
 var activePlayer: Entity | null = null;
 export function setPlayer(e: Entity | null) {
     if (activePlayer !== e) {
-        if ((activePlayer = e) !== null)
-            startHookOnEntity(activePlayer, "becamePlayer", {});
+        (activePlayer = e)?.startHook("becamePlayer");
     }
 }
 

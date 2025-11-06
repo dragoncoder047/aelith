@@ -1,7 +1,7 @@
 import { Color, GameObj, LerpValue, Vec2 } from "kaplay";
 import { K } from "../context";
 import { Animation, AnimUpdateResults, createAnimation } from "./Animation";
-import { Entity } from "./Entity";
+import { BonesMap, Entity } from "./Entity";
 import * as EntityManager from "./EntityManager";
 
 /*
@@ -52,17 +52,22 @@ export class Animator {
     }
     init() {
         if (this.entity.obj) {
-            const obj = this.entity.bones;
             for (var anim of this.animations) {
                 for (var ch of anim.channels) {
-                    const key = ch.target.join(",");
-                    if (!this.baseValues.has(key)) {
-                        const [o, k] = splitV(obj, ch.target);
-                        this.baseValues.set(key, [ch.target, o[k]]);
-                    }
+                    this.saveBaseValue(ch.target, this.entity.bones);
                 }
             }
         }
+    }
+    saveBaseValue(path: string[], obj: BonesMap) {
+        const key = path.join(",");
+        if (!this.baseValues.has(key)) {
+            const [o, k] = splitV(obj, path);
+            this.baseValues.set(key, [path, o[k]]);
+        }
+    }
+    getBaseValue(path: string[]) {
+        return this.baseValues.get(path.join(","))?.[1];
     }
     update(dt: number) {
         const targetsMap = new Map<string, AnimUpdateResults>();

@@ -25,7 +25,7 @@ export const FUNCTIONS: Form[] = [
         const oldValue = actor.state[slot];
         actor.state[slot] = value;
         if (!silent) {
-            const subTask = EntityManager.startHookOnEntity(actor, "stateChanged", { slot, oldValue });
+            const subTask = actor.startHook("stateChanged", { slot, oldValue });
             if (subTask) {
                 task.paused = true;
                 subTask.onFinish(() => task.paused = false);

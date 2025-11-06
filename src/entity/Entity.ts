@@ -2,8 +2,9 @@ import { AreaComp, AudioPlay, BodyComp, Comp, GameObj, KEventController, PosComp
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
-import { EntityData, EntityModelData, LightData, XY } from "../DataPackFormat";
+import { EntityData, EntityModelData, EntityPrototypeData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
+import * as ScriptHandler from "../script/ScriptHandler";
 import { Serializable } from "../Serializable";
 import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
@@ -41,6 +42,7 @@ export class Entity implements Serializable {
     inventory: Inventory;
     targeted: Entity | null = null;
     private _updateEv = new K.KEvent;
+    private _prototype: EntityPrototypeData;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -51,9 +53,17 @@ export class Entity implements Serializable {
         public linkGroup: string | undefined,
         public lights: LightData[]
     ) {
+        this._prototype = EntityManager.getEntityPrototypeStrict(kind);
         this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
-        EntityManager.startHookOnEntity(this, "setup", {});
+        this.startHook("setup");
+    }
+    startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
+        const proto = this.getPrototype();
+        var hook = proto.hooks?.[name] as any;
+        if (!hook) return null;
+        if (Array.isArray(hook)) hook = { impl: hook, priority: 0 };
+        return ScriptHandler.spawnTask(hook.priority, hook.impl, this, context);
     }
 
     onUpdate(cb: () => void): KEventController {
@@ -73,7 +83,7 @@ export class Entity implements Serializable {
                 id: "entity",
                 get entity() { return self; },
                 // run in draw() so after the constraints code and anims can override the constraint
-                draw() { self.update(); }
+                draw() { self.update(K.dt()); }
             } as EntityComp,
             self.id,
             self.kind,
@@ -81,13 +91,14 @@ export class Entity implements Serializable {
         ]) as any;
         buildHitbox(self, self.obj!);
         self.obj!.onGround(() => {
-            EntityManager.startHookOnEntity(self, "landed", { force: self.obj!.vel.len() });
+            self.startHook("landed", { force: self.obj!.vel.len() });
         });
         self.bones = buildSkeleton(self, self.obj!);
         self.animator.init();
-        EntityManager.startHookOnEntity(self, "load", {});
+        self._initMotionAnimations();
+        self.startHook("load");
         for (const sensor of this.sensors) {
-            self.bones[sensor]!.onCollide(obj => EntityManager.startHookOnEntity(self, "sensed", {
+            self.bones[sensor]!.onCollide(obj => self.startHook("sensed", {
                 bone: sensor,
                 entity: obj.entity ? obj.entity.id : null,
                 height: (obj as GameObj<PAreaComp>).aabb().height,
@@ -96,7 +107,7 @@ export class Entity implements Serializable {
         }
     }
     getPrototype() {
-        return EntityManager.getEntityPrototypeStrict(this.kind);
+        return this._prototype;
     }
     setPosition(pos: Vec2) {
         this.pos = pos;
@@ -115,7 +126,7 @@ export class Entity implements Serializable {
             this.bones = {};
             this.obj = this.speechBubble = null;
             this.lightObjs = [];
-            EntityManager.startHookOnEntity(this, "unload", {});
+            this.startHook("unload");
         }
         this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
         this._spitItOut = false;
@@ -179,13 +190,12 @@ export class Entity implements Serializable {
     private _collidingLadder() {
         return this.obj!.getCollisions().some(c => c.target.is("ladder"));
     }
-    update() {
+    update(dt: number) {
         this.pos = this.obj!.pos.clone();
-        this.animator.update(K.dt());
+        this.animator.update(dt);
         this.inventory.update();
         this._updateEv.trigger();
         if (!this._collidingLadder()) this._setClimbing(false);
-
         this._updateSounds();
     }
     private _spitItOut = false;
@@ -221,7 +231,7 @@ export class Entity implements Serializable {
             case EntityInputAction.TARGET1:
             case EntityInputAction.TARGET2:
             case EntityInputAction.INSPECT:
-                EntityManager.startHookOnEntity(this, action, { what: this.targeted?.id });
+                this.startHook(action, { what: this.targeted?.id });
                 break;
             default:
                 action satisfies never;
@@ -233,7 +243,7 @@ export class Entity implements Serializable {
             if (this.obj.isGrounded()) {
                 this.obj.jump();
                 this._setClimbing(false);
-                EntityManager.startHookOnEntity(this, "jump");
+                this.startHook("jump");
             }
         }
     }
@@ -289,7 +299,7 @@ export class Entity implements Serializable {
         return null;
     }
     private _sprinting = false;
-    private _walking = false;
+    private _moving = false;
     private _climbing = false;
     private _setClimbing(isClimbing: boolean) {
         this._climbing = isClimbing;
@@ -306,24 +316,25 @@ export class Entity implements Serializable {
         const pk = p.model.kinematics;
         if (direction.isZero()) sprint = false;
         if (this._sprinting && !sprint) {
-            EntityManager.startHookOnEntity(this, "stopSprint");
+            this.startHook("stopSprint");
             if (pk.sprint) this.stopAnim(pk.sprint);
         }
         else if (!this._sprinting && sprint) {
-            EntityManager.startHookOnEntity(this, "startSprint");
+            this.startHook("startSprint");
             if (pk.sprint) this.playAnim(pk.sprint);
         }
         this._sprinting = sprint;
         if (direction.isZero()) {
-            if (this._walking) EntityManager.startHookOnEntity(this, "stopMove");
-            this._walking = false;
+            if (this._moving) this.startHook("stopMove");
+            this._moving = false;
+            this._motionAnimation(direction, pk);
             return;
         }
-        if (!this._walking) {
-            EntityManager.startHookOnEntity(this, "startMove", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
+        if (!this._moving) {
+            this.startHook("startMove");
         }
-        this._walking = true;
-        EntityManager.startHookOnEntity(this, "move", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
+        this._moving = true;
+        this.startHook("move", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
         const speed = (this._sprinting ? pb.sprintSpeed : null) ?? pb.moveSpeed;
         if (this.obj) {
             if (this._collidingLadder()) this._setClimbing(true);
@@ -331,8 +342,60 @@ export class Entity implements Serializable {
             direction = clampUnit(direction).scale(speed);
             this.obj.move(direction);
             this._motionAnimation(direction, pk);
-            if (pk.sprint) {
-                this.animator.skinAnim(pk.sprint, this._sprinting ? direction.len() : 0);
+        }
+    }
+    // TODO: refactor this into MotionAnimation class
+    private _movingBones: [walk: MovingBone[], climb: MovingBone[]] = [[], []];
+    private _movingIntegral: [walk: number, climb: number] = [0, 0];
+    private _updateMovingBones(dt: number, negatedDir: Vec2) {
+        const w2 = this._moving ? this._climbing ? 1 : 0 : -1;
+        const { stepHeight, stepLength, stepTime } = this.getPrototype().model.kinematics;
+        var zerophase = this._movingIntegral[w2 as 0 | 1];
+        if (w2 !== -1) {
+            zerophase += negatedDir.x * dt / stepLength;
+            while (zerophase < 0) zerophase++;
+            while (zerophase >= 1) zerophase--;
+        }
+        const nEntries = this._movingBones[0].length + this._movingBones[1].length;
+        for (var w = 0; w < 2; w++) {
+            const movingBones = this._movingBones[w]!;
+            for (var i = 0; i < movingBones.length; i++) {
+                const b = movingBones[i]!;
+                if (b.planted) {
+                    this.bones[b.bone]?.worldPos(b.cur);
+                    b.progress += negatedDir.x;
+                    if (Math.abs(b.progress) > (stepLength / 2)) {
+                        b.planted = false;
+                        // find next position
+                        const nextX = -b.progress * 2 + b.cur.x;
+                        const r = K.raycast(K.vec2(this.pos.y, nextX), K.DOWN.scale(K.height()), [this.id]);
+                        if (r) {
+                            b.next = r.point;
+                        } else {
+                            b.next = K.vec2(nextX, b.cur.y);
+                        }
+                        b.progress = 0;
+                    }
+                }
+                else {
+                    b.progress += dt / stepTime;
+                    if (w2 === w) {
+                        this.bones[b.bone]?.worldPos(b.lerp(b.cur, b.next, b.progress, stepHeight ?? 0));
+                    }
+                    if (b.progress > 1) {
+                        b.progress = K.map(((i + w / 2) / nEntries) % 1, 0, 1, -stepLength / 2, stepLength / 2);
+                        b.planted = true;
+                        b.cur = b.next;
+                    }
+                }
+            }
+        }
+    }
+    private _initMotionAnimations() {
+        const model = this.getPrototype().model.kinematics;
+        for (var anim of [model.climb, model.walk]) {
+            if (anim) for (var channel of anim) {
+                this.animator.saveBaseValue([channel.bone, "pos"], this.bones);
             }
         }
     }
@@ -340,16 +403,40 @@ export class Entity implements Serializable {
         const a = (this._climbing ? m.climb : m.walk) ?? [];
         const isLeft = direction.x < 0;
         const isHorizontal = direction.x !== 0;
+        console.log(a, this._moving ? (isLeft ? 0 : 1) : 2);
         for (var anim of a) {
             const b = this.bones[anim.bone]!;
-            if (isHorizontal)
-                b.scaleTo(anim.flip?.[isLeft ? 0 : 1] ? 1 : -1, 1);
+            b.scaleTo(anim.flip?.[this._moving ? (isLeft ? 0 : 1) : 2] ? 1 : -1, 1);
         }
-        if (isHorizontal)
+        if (isHorizontal) {
             this._moveLooking = isLeft ? K.LEFT : K.RIGHT;
+        }
+        if (!this._climbing) {
+            if (m.sprint) {
+                this.animator.skinAnim(m.sprint, this._sprinting ? direction.len() : 0);
+            }
+        }
+        this._updateMovingBones(K.dt(), direction.scale(-1));
     }
 }
 
 function clampUnit(v: Vec2): Vec2 {
     return v.slen() > 1 ? v.unit() : v;
+}
+
+type MovingBone = {
+    bone: string;
+    planted: boolean;
+    cur: Vec2;
+    next: Vec2;
+    lerp(x: Vec2, y: Vec2, t: number, h: number): Vec2;
+    progress: number;
+};
+
+function stepFunction(p0: Vec2, p1: Vec2, progress: number, stepHeight: number) {
+    const s = (b: number) => 1 / (1 + Math.sqrt(1 - b));
+    const f = (x: number, b: number) => 1 - ((x - s(b)) ** 2) / (s(b) ** 2);
+    const y = (a: number, b: number, x: number, h: number) => b < a ? h * f(x, (b - a) / h) + a : h * f(1 - x, (a - b) / h) + b;
+    if (stepHeight <= 0) stepHeight = 1e-6;
+    return K.vec2(K.lerp(p0.x, p1.x, progress), y(p0.y, p1.y, progress, stepHeight));
 }
