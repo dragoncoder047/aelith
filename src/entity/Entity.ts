@@ -11,6 +11,7 @@ import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
+import { MotionManager, MotionState } from "./MotionManager";
 
 export interface EntityComp extends Comp {
     readonly entity: Entity;
@@ -39,6 +40,7 @@ export class Entity implements Serializable {
     speakSound: string | undefined;
     lightObjs: GameObj<PosComp | LightComp>[] = [];
     animator: Animator;
+    motionController: MotionManager;
     inventory: Inventory;
     targeted: Entity | null = null;
     private _updateEv = new K.KEvent;
@@ -56,6 +58,22 @@ export class Entity implements Serializable {
         this._prototype = EntityManager.getEntityPrototypeStrict(kind);
         this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
+        this.motionController = new MotionManager(this, this._prototype.model.kinematics);
+        this.motionController.onStateChange((a, b) => {
+            K.debug.log(this.id, "leaving state", MotionState[a], "and entering state", MotionState[b])
+            const aa = {
+                [MotionState.CLIMBING]: "stopClimb",
+                [MotionState.FLYING]: "stopFlying",
+            }[a as number];
+            const bb = {
+                [MotionState.CLIMBING]: "startClimb",
+                [MotionState.FLYING]: "startFlying",
+            }[b as number];
+            if (aa) this.startHook(aa);
+            if (bb) this.startHook(bb);
+            this._updateGravityScale(b);
+        });
+        this.motionController.setState(MotionState.STOPPED);
         this.startHook("setup");
     }
     startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
@@ -95,7 +113,7 @@ export class Entity implements Serializable {
         });
         self.bones = buildSkeleton(self, self.obj!);
         self.animator.init();
-        self._initMotionAnimations();
+        self.motionController.init();
         self.startHook("load");
         for (const sensor of this.sensors) {
             self.bones[sensor]!.onCollide(obj => self.startHook("sensed", {
@@ -153,7 +171,7 @@ export class Entity implements Serializable {
         const player = EntityManager.getPlayer()!;
         const playerPos = player.pos;
         const worldPos = this.pos;
-        const width = K.width() / K.getCamScale().x
+        const width = K.width() / K.getCamScale().x;
         const halfwidth = width / 2;
         const distance = worldPos.sub(playerPos).len();
         const volume = this.currentRoom === player.currentRoom ? K.mapc(distance - halfwidth * Math.sign(distance), 0, halfwidth, masterVolume, 0) : 0;
@@ -187,15 +205,18 @@ export class Entity implements Serializable {
     stopAnim(a: string) {
         this.animator.stop(a);
     }
-    private _collidingLadder() {
+    collidingLadder() {
         return this.obj!.getCollisions().some(c => c.target.is("ladder"));
     }
     update(dt: number) {
         this.pos = this.obj!.pos.clone();
         this.animator.update(dt);
+
+        this.motionController.run(dt, this._lastMove, this._sprintSpeed);
+        this._lastMove = K.Vec2.ZERO;
+
         this.inventory.update();
         this._updateEv.trigger();
-        if (!this._collidingLadder()) this._setClimbing(false);
         this._updateSounds();
     }
     private _spitItOut = false;
@@ -240,11 +261,7 @@ export class Entity implements Serializable {
     }
     tryJump() {
         if (this.obj) {
-            if (this.obj.isGrounded()) {
-                this.obj.jump();
-                this._setClimbing(false);
-                this.startHook("jump");
-            }
+            this.motionController.jump();
         }
     }
     getHead(): GameObj<PosComp> | undefined {
@@ -267,7 +284,7 @@ export class Entity implements Serializable {
                     width: 2,
                     color: K.RED
                 }
-            })
+            });
         }
     }
     private _lookAtPoint(pt: Vec2) {
@@ -298,145 +315,50 @@ export class Entity implements Serializable {
         }
         return null;
     }
-    private _sprinting = false;
+    private _lastMove = K.Vec2.ZERO;
     private _moving = false;
-    private _climbing = false;
-    private _setClimbing(isClimbing: boolean) {
-        this._climbing = isClimbing;
-        if (!this.obj) return;
-        if (isClimbing) {
-            this.obj.gravityScale = 0;
-        } else if (!this.getPrototype().behavior.canFly) {
-            this.obj.gravityScale = 1;
+    private _sprintSpeed = 0;
+    setMotionState(state: MotionState) {
+        this.motionController.setState(state);
+    }
+    private _updateGravityScale(state: MotionState) {
+        if (this.obj) {
+            const os = this.obj.gravityScale;
+            const ns = (this.obj.gravityScale = {
+                [MotionState.STOPPED]: 1,
+                [MotionState.WALKING]: 1,
+                [MotionState.CLIMBING]: 0,
+                [MotionState.FLYING]: 0,
+            }[state] ?? 1);
+            if (os === 1 && ns === 0) this.obj.vel = K.vec2();
         }
     }
     doMove(direction: Vec2, sprint: boolean) {
-        const p = this.getPrototype();
-        const pb = p.behavior;
-        const pk = p.model.kinematics;
+        const pb = this.getPrototype().behavior;
         if (direction.isZero()) sprint = false;
-        if (this._sprinting && !sprint) {
+        if (this.motionController.sprinting && !sprint) {
             this.startHook("stopSprint");
-            if (pk.sprint) this.stopAnim(pk.sprint);
         }
-        else if (!this._sprinting && sprint) {
+        else if (!this.motionController.sprinting && sprint) {
             this.startHook("startSprint");
-            if (pk.sprint) this.playAnim(pk.sprint);
         }
-        this._sprinting = sprint;
+        const speed = ((this.motionController.sprinting = sprint) ? pb.sprintSpeed : null) ?? pb.moveSpeed;
+        if (this.obj) {
+            const l = clampUnit(direction);
+            this._sprintSpeed = l.len();
+            this._lastMove = l.scale(speed);
+        }
         if (direction.isZero()) {
             if (this._moving) this.startHook("stopMove");
             this._moving = false;
-            this._motionAnimation(direction, pk);
-            return;
+        } else {
+            this._moveLooking = direction.x < 0 ? K.LEFT : K.RIGHT;
+            if (!this._moving) this.startHook("startMove");
+            this._moving = true;
         }
-        if (!this._moving) {
-            this.startHook("startMove");
-        }
-        this._moving = true;
-        this.startHook("move", { dir: { x: direction.x, y: direction.y }, sprinting: sprint });
-        const speed = (this._sprinting ? pb.sprintSpeed : null) ?? pb.moveSpeed;
-        if (this.obj) {
-            if (this._collidingLadder()) this._setClimbing(true);
-            if (!this._climbing && !pb.canFly) direction = direction.reject(K.getGravityDirection());
-            direction = clampUnit(direction).scale(speed);
-            this.obj.move(direction);
-            this._motionAnimation(direction, pk);
-        }
-    }
-    // TODO: refactor this into MotionAnimation class
-    private _movingBones: [walk: MovingBone[], climb: MovingBone[]] = [[], []];
-    private _movingIntegral: [walk: number, climb: number] = [0, 0];
-    private _updateMovingBones(dt: number, negatedDir: Vec2) {
-        const w2 = this._moving ? this._climbing ? 1 : 0 : -1;
-        const { stepHeight, stepLength, stepTime } = this.getPrototype().model.kinematics;
-        var zerophase = this._movingIntegral[w2 as 0 | 1];
-        if (w2 !== -1) {
-            zerophase += negatedDir.x * dt / stepLength;
-            while (zerophase < 0) zerophase++;
-            while (zerophase >= 1) zerophase--;
-        }
-        const nEntries = this._movingBones[0].length + this._movingBones[1].length;
-        for (var w = 0; w < 2; w++) {
-            const movingBones = this._movingBones[w]!;
-            for (var i = 0; i < movingBones.length; i++) {
-                const b = movingBones[i]!;
-                if (b.planted) {
-                    this.bones[b.bone]?.worldPos(b.cur);
-                    b.progress += negatedDir.x;
-                    if (Math.abs(b.progress) > (stepLength / 2)) {
-                        b.planted = false;
-                        // find next position
-                        const nextX = -b.progress * 2 + b.cur.x;
-                        const r = K.raycast(K.vec2(this.pos.y, nextX), K.DOWN.scale(K.height()), [this.id]);
-                        if (r) {
-                            b.next = r.point;
-                        } else {
-                            b.next = K.vec2(nextX, b.cur.y);
-                        }
-                        b.progress = 0;
-                    }
-                }
-                else {
-                    b.progress += dt / stepTime;
-                    if (w2 === w) {
-                        this.bones[b.bone]?.worldPos(b.lerp(b.cur, b.next, b.progress, stepHeight ?? 0));
-                    }
-                    if (b.progress > 1) {
-                        b.progress = K.map(((i + w / 2) / nEntries) % 1, 0, 1, -stepLength / 2, stepLength / 2);
-                        b.planted = true;
-                        b.cur = b.next;
-                    }
-                }
-            }
-        }
-    }
-    private _initMotionAnimations() {
-        const model = this.getPrototype().model.kinematics;
-        for (var anim of [model.climb, model.walk]) {
-            if (anim) for (var channel of anim) {
-                this.animator.saveBaseValue([channel.bone, "pos"], this.bones);
-            }
-        }
-    }
-    private _motionAnimation(direction: Vec2, m: EntityModelData["kinematics"]) {
-        const a = (this._climbing ? m.climb : m.walk) ?? [];
-        const isLeft = direction.x < 0;
-        const isHorizontal = direction.x !== 0;
-        console.log(a, this._moving ? (isLeft ? 0 : 1) : 2);
-        for (var anim of a) {
-            const b = this.bones[anim.bone]!;
-            b.scaleTo(anim.flip?.[this._moving ? (isLeft ? 0 : 1) : 2] ? 1 : -1, 1);
-        }
-        if (isHorizontal) {
-            this._moveLooking = isLeft ? K.LEFT : K.RIGHT;
-        }
-        if (!this._climbing) {
-            if (m.sprint) {
-                this.animator.skinAnim(m.sprint, this._sprinting ? direction.len() : 0);
-            }
-        }
-        this._updateMovingBones(K.dt(), direction.scale(-1));
     }
 }
 
 function clampUnit(v: Vec2): Vec2 {
     return v.slen() > 1 ? v.unit() : v;
-}
-
-type MovingBone = {
-    bone: string;
-    planted: boolean;
-    cur: Vec2;
-    next: Vec2;
-    lerp(x: Vec2, y: Vec2, t: number, h: number): Vec2;
-    progress: number;
-};
-
-function stepFunction(p0: Vec2, p1: Vec2, progress: number, stepHeight: number) {
-    const s = (b: number) => 1 / (1 + Math.sqrt(1 - b));
-    const f = (x: number, b: number) => 1 - ((x - s(b)) ** 2) / (s(b) ** 2);
-    const y = (a: number, b: number, x: number, h: number) => b < a ? h * f(x, (b - a) / h) + a : h * f(1 - x, (a - b) / h) + b;
-    if (stepHeight <= 0) stepHeight = 1e-6;
-    return K.vec2(K.lerp(p0.x, p1.x, progress), y(p0.y, p1.y, progress, stepHeight));
 }

@@ -118,3 +118,11 @@ async function stepTasks() {
 export async function advanceAsFarAsPossible() {
     while (await stepTasks());
 }
+
+export function startMainLoop() {
+    const u = K.onUpdate(async () => {
+        u.paused = true;
+        await advanceAsFarAsPossible();
+        u.paused = false;
+    });
+}

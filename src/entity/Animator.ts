@@ -186,7 +186,7 @@ export function buildAnimations(kind: string, animator: Animator) {
 }
 
 function averageAll<T extends LerpValue>(values: T[], weights: number[]): T {
-    var FACTOR = 1 / weights.reduce((a, b) => a + b);
+    var FACTOR = 1 / weights.reduce((a, b) => a + Math.abs(b));
     if (!isFinite(FACTOR)) FACTOR = 1;
     if (values.length >= 1) {
         if (typeof values[0] === "number") return (values as number[]).reduce((a, b, i) => a + b * weights[i]!, 0) * FACTOR as T;

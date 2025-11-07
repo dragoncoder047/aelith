@@ -269,7 +269,6 @@ model:
           relative: true
     idle:
       loop: true
-      autoplay: true
       channels:
         - target: [body, pos]
           keyframes:
@@ -280,11 +279,18 @@ model:
       origin: head
       target: gazeTarget
     walk:
-      - bone: leftFoot
-        flip: [false, true, false]
-      - bone: rightFoot
-        flip: [false, true, true]
-    sprint: sprinting
-    stand: idle
+      sprint: sprinting
+      bones:
+        - bone: leftFoot
+          flip: [true, false, true]
+        - bone: rightFoot
+          flip: [true, false, false]
+    stand:
+      anim: idle
+      bones:
+        - bone: leftFoot
+          flip: [true, true, true]
+        - bone: rightFoot
+          flip: [false, false, false]
 hooks:
   action1: [as, agent, setPlayer]

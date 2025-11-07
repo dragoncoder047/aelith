@@ -106,4 +106,5 @@ model:
         - <<: *squishEye
           target: [leftEye, scale]
 hooks:
+  setup: [fly, true]
   action1: [as, explorer, setPlayer]

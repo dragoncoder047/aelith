@@ -1,6 +1,7 @@
 import { K } from "../context";
 import * as EntityManager from "../entity/EntityManager";
 import { RefuseTake } from "../entity/Inventory";
+import { MotionState } from "../entity/MotionManager";
 import * as RoomManager from "../room/RoomManager";
 import { Form } from "./Form";
 import { evaluateForm, tracebackError } from "./ScriptHandler";
@@ -147,6 +148,9 @@ export const FUNCTIONS: Form[] = [
     }),
     new Form("tp", false, async function* ([eid, room, pos]) {
         EntityManager.teleportEntityTo(EntityManager.getEntityByName(eid)!, room, pos);
+    }),
+    new Form("fly", false, async function* ([flying], task, actor) {
+        actor.motionController.setState(flying ? MotionState.FLYING : MotionState.STOPPED);
     }),
     new Form("refuse", false, async function* () {
         throw new RefuseTake;

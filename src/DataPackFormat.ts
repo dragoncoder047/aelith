@@ -110,8 +110,6 @@ export interface EntityPrototypeData extends JSONObject {
     navHeight: [low: number, high: number];
     behavior: {
         canBePlayer?: boolean;
-        /** if true, won't fall and can fly upwards and downwards */
-        canFly: boolean;
         moveSpeed: number;
         sprintSpeed?: number;
         /** if the camera should zoom in when me is the player */
@@ -139,16 +137,11 @@ export interface EntityModelData extends JSONObject {
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
     kinematics: {
-        walk?: EntityMotionAnimDef[];
-        climb?: EntityMotionAnimDef[];
-        stepLength: number;
-        stepTime: number;
-        stepHeight: number;
+        walk?: EntityMoveAnimDef;
+        climb?: EntityMoveAnimDef;
+        fly?: EntityMoveAnimDef;
+        stand?: EntityMoveAnimDef;
         look: EntityLookAnimDef;
-        /** anim to be played while sprinting, will be skinned based on amount of sprint */
-        sprint?: string;
-        /** anim to be played while not moving */
-        stand?: string;
     }
     speechBubble: {
         origin: string;
@@ -165,16 +158,24 @@ interface EntityLookAnimDef extends JSONObject {
     target: string;
 }
 
-interface EntityMotionAnimDef extends JSONObject {
+export interface EntityMoveAnimDef extends JSONObject {
+    bones?: EntityMovingBoneData[];
+    anim: string;
+    sprint?: string;
+    steps?: {
+        len: number;
+        time: number;
+        height?: number;
+    }
+
+}
+
+export interface EntityMovingBoneData extends JSONObject {
     /** which bone target gets moved */
     bone: string;
-    /** if this bone should be moved to the target, versus just following */
-    target?: boolean;
-    /** randomize jitter */
-    jitter?: number;
-    /** if the bone should be flipped to follow the motion */
-    flip?: [whenMovingLeft: boolean, whenMovingRight: boolean, whenStopped: boolean];
-    parabolic?: boolean;
+    /** if the bone should be flipped/scaled to follow the motion */
+    flip?: [whenMovingLeft: boolean | null, whenMovingRight: boolean | null, whenStopped: boolean | null];
+    stepMode?: "step" | "jump" | "free"
 }
 
 export interface EntityAnimData extends JSONObject {

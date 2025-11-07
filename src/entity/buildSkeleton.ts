@@ -18,7 +18,6 @@ export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
         }));
         rootObj.use(K.body({
             mass,
-            gravityScale: behavior.canFly ? 0 : 1,
             jumpForce: behavior.jumpForce,
             isStatic: static_
         }));

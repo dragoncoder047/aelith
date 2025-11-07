@@ -15,11 +15,7 @@ export function roomScene(whichRoom: string | undefined) {
     RoomManager.enterRoom(whichRoom);
     K.setCamPos(p.pos);
     K.setCamScale(p.getPrototype().behavior.camScale ?? 1);
-    const u = K.onUpdate(async () => {
-        u.paused = true;
-        await ScriptHandler.advanceAsFarAsPossible();
-        u.paused = false;
-    });
+    ScriptHandler.startMainLoop();
     K.scene.onButtonPress("pause_unpause", () => {
         K.play("nav_do_it");
         K.pushScene(SceneManager.Scene.MENU);
