@@ -60,7 +60,6 @@ export class Entity implements Serializable {
         buildAnimations(kind, this.animator = new Animator(this));
         this.motionController = new MotionManager(this, this._prototype.model.kinematics);
         this.motionController.onStateChange((a, b) => {
-            K.debug.log(this.id, "leaving state", MotionState[a], "and entering state", MotionState[b])
             const aa = {
                 [MotionState.CLIMBING]: "stopClimb",
                 [MotionState.FLYING]: "stopFlying",
@@ -115,6 +114,7 @@ export class Entity implements Serializable {
         self.animator.init();
         self.motionController.init();
         self.startHook("load");
+        this._updateGravityScale(this.motionController.state);
         for (const sensor of this.sensors) {
             self.bones[sensor]!.onCollide(obj => self.startHook("sensed", {
                 bone: sensor,
