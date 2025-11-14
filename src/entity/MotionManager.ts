@@ -4,10 +4,11 @@ import { EntityModelData, EntityMoveAnimDef, EntityMovingBoneData } from "../Dat
 import { BonesMap, Entity } from "./Entity";
 
 export enum MotionState {
-    STOPPED,
+    STANDING,
     WALKING,
     CLIMBING,
     FLYING,
+    // TODO: swimming
 }
 
 export class MotionManager {
@@ -39,7 +40,7 @@ export class MotionManager {
         const d = (x?: EntityMoveAnimDef): [string | undefined, string | undefined, EntityMovingBoneData[], number, number, number] =>
             x ? [x.anim, x.sprint, x.bones ?? [], x.steps?.len ?? 1, x.steps?.height ?? 0, x.steps?.time ?? 0] : [, , [], 1, 0, 0];
         return d(this.data[({
-            [MotionState.STOPPED]: "stand",
+            [MotionState.STANDING]: "stand",
             [MotionState.WALKING]: "walk",
             [MotionState.CLIMBING]: "climb",
             [MotionState.FLYING]: "fly",
@@ -49,7 +50,6 @@ export class MotionManager {
         for (var b of this._moving) {
             this.entity.bones[b.bone]!.pos = this.bases[b.bone]!.clone();
         }
-        this._moving = [];
         const [a, s] = this._getData();
         if (a) this.entity.stopAnim(a);
         if (s) this.entity.stopAnim(s);
@@ -63,12 +63,11 @@ export class MotionManager {
         }
     }
     private _createData(d: EntityMovingBoneData[], len: number, height: number, time: number): MovingBone[] {
-        return d.map(({ bone, flip, stepMode }, i) => {
-            const b = new MovingBone(bone, this.bases[bone]!, flip, !!stepMode);
+        return d.map(({ bone, flip, stepMode, phaseOffset }) => {
+            const b = new MovingBone(bone, flip, !!stepMode, this.state === MotionState.CLIMBING);
             if (stepMode) {
-                b.cur = this.entity.bones[bone]!.worldPos()!.clone();
+                b.curOffset = (b.offsetFromPlayerPos = this.entity.obj!.fromWorld(this.entity.bones[bone]!.worldPos()!)).add(len * (phaseOffset - 0.5), 0);
                 b.mode = stepMode;
-                b.progress = i / d.length;
                 b.len = len;
                 b.height = height;
                 b.time = time;
@@ -78,46 +77,54 @@ export class MotionManager {
     }
     jump() {
         switch (this.state) {
-            case MotionState.STOPPED:
+            case MotionState.STANDING:
             case MotionState.WALKING:
                 if (this.entity.obj?.isGrounded()) {
-                    this.setState(MotionState.STOPPED);
+                    this.setState(MotionState.STANDING);
                     this.entity.obj!.jump();
+                    return true;
                 }
                 break;
             case MotionState.CLIMBING:
-                this.setState(MotionState.STOPPED);
+                this.setState(MotionState.STANDING);
                 this.entity.obj!.jump();
-                break;
+                return true;
         }
+        return false;
     }
-    run(dt: number, d: Vec2, ss: number) {
+    run(dt: number, velocity: Vec2, sprintSpeed: number) {
         switch (this.state) {
-            case MotionState.STOPPED:
+            case MotionState.STANDING:
             case MotionState.WALKING:
-                if (!this.entity.obj?.isGrounded() || d.isZero()) {
-                    this.setState(MotionState.STOPPED);
+                if (!this.entity.obj?.isGrounded() || velocity.isZero()) {
+                    this.setState(MotionState.STANDING);
                 }
-                else if (!d.isZero() && this.entity.collidingLadder()) {
+                else if (!velocity.isZero() && this.entity.collidingLadder()) {
                     this.setState(MotionState.CLIMBING);
                 }
                 else {
                     this.setState(MotionState.WALKING);
-                    d = d.reject(K.getGravityDirection());
+                    velocity = velocity.reject(K.getGravityDirection());
                     const [_, s] = this._getData();
-                    if (s) this.entity.animator.skinAnim(s, this.sprinting ? ss : 0);
+                    if (s) this.entity.animator.skinAnim(s, this.sprinting ? sprintSpeed : 0);
                 }
                 break;
             case MotionState.CLIMBING:
                 if (!this.entity.collidingLadder())
-                    this.setState(MotionState.STOPPED);
+                    this.setState(MotionState.STANDING);
                 break;
+            case MotionState.FLYING:
+                // Do nothing. Flying is only exited manually
+                break;
+            default:
+                this.state satisfies never;
         }
         for (var i = 0; i < this._moving.length; i++) {
-            this._moving[i]!.update(dt, d, this.entity.bones, this.entity.id);
+            // TODO: pass in index to be able to PLL-lock phase offsets
+            this._moving[i]!.update(dt, velocity, this.entity.bones, this.entity.id, this.entity.pos);
         }
-        this.entity.obj!.move(d);
-        this.entity.startHook("move", { dir: { x: d.x, y: d.y }, sprinting: this.sprinting });
+        this.entity.obj!.move(velocity);
+        this.entity.startHook("move", { dir: { x: velocity.x, y: velocity.y }, sprinting: this.sprinting });
     }
 }
 
@@ -135,54 +142,55 @@ the "free" mode uses cos(2πt) for constant interpolation
 class MovingBone {
     private _planted = true;
     private _t = 0;
+    offsetFromPlayerPos?: Vec2
+    curOffset?: Vec2
+    nextOffset?: Vec2
+    mode?: EntityMovingBoneData["stepMode"]
+    len?: number
+    height?: number
+    time?: number
+    xoff?: number;
     constructor(public bone: string,
-        public base: Vec2,
         public flip: EntityMovingBoneData["flip"],
         public moving: boolean,
-        public cur?: Vec2,
-        public next?: Vec2,
-        public mode?: EntityMovingBoneData["stepMode"],
-        public progress?: number,
-        public len?: number,
-        public height?: number,
-        public time?: number) { }
-    _check(which: 1 | -1, ignore: string) {
-        const nextX = this.cur!.x | which * this.len!;
-        const r = K.raycast(K.vec2(this.cur!.y, nextX), K.DOWN.scale(K.height()), [ignore]);
-        if (r) {
-            return r.point;
-        } else {
-            return K.vec2(nextX, this.cur!.y);
-        }
-    }
-    update(dt: number, d: Vec2, b: BonesMap, id: string) {
+        // TODO: don't hardcode two of them
+        public ladderMode: boolean) { }
+    update(dt: number, motionSpeed: Vec2, b: BonesMap, id: string, playerRootPos: Vec2) {
+        // what the heck
         const o = b[this.bone]!;
+        const delta = motionSpeed.len() / this.len! * dt;
         if (this.flip) {
-            const s = this.flip[d.isZero() ? 2 : d.x < 0 ? 0 : 1];
+            // TODO: flipping bounds on 
+            const s = this.flip[motionSpeed.isZero() ? 2 : motionSpeed.x < 0 ? 0 : 1];
             if (s !== null) o.scaleTo(s ? -1 : 1, 1);
         }
         if (!this.moving) return;
+        const moveFootToOffset = (offset: Vec2) => {
+            o.worldPos(this.offsetFromPlayerPos!.add(offset.add(playerRootPos)));
+        };
         if (this.mode === "free") {
-            o.worldPos(this.base.add(this.height! * Math.cos(this.progress! += Math.PI * 2 * d.len() / this.len!), 0));
+            moveFootToOffset(K.vec2(this.height! * Math.cos(this._t! += Math.PI * 2 * delta), 0));
         } else {
-            this.progress! += d.len() / this.len!;
+            K.Vec2.addScaled(this.curOffset!, motionSpeed, -dt, this.curOffset!);
             if (this._planted) {
-                o.worldPos(this.cur);
-                if (this.progress! >= 1) {
+                moveFootToOffset(this.curOffset!);
+                if (this.curOffset!.slen() > (this.len! ** 2)) {
                     this._t = 0;
                     this._planted = false;
-                    this.next = this._check(d.x > 0 ? 1 : -1, id);
+                    this.nextOffset ??= K.vec2();
+                    if (this.ladderMode) {
+                        // TODO:
+                    } else {
+                        // TODO:
+                    }
                 }
             } else {
                 const lerpFun = ({ step: stepFunction, jump: K.lerp<Vec2> } as const)[this.mode!];
-                o.worldPos(lerpFun(this.cur!, this.next!, this._t, this.height!));
+                moveFootToOffset(lerpFun(this.curOffset!, this.nextOffset!, this._t, this.height!));
                 if ((this._t += dt / this.time!) >= 1) {
                     this._planted = true;
-                    this.cur = this.next;
+                    K.Vec2.copy(this.nextOffset!, this.curOffset!);
                 }
-            }
-            if (this.progress! >= 1) {
-                this.progress = 0;
             }
         }
     }
@@ -190,8 +198,8 @@ class MovingBone {
 
 function stepFunction(p0: Vec2, p1: Vec2, progress: number, stepHeight: number) {
     const s = (b: number) => 1 / (1 + Math.sqrt(1 - b));
-    const f = (x: number, b: number) => 1 - ((x - s(b)) ** 2) / (s(b) ** 2);
-    const y = (a: number, b: number, x: number, h: number) => b < a ? h * f(x, (b - a) / h) + a : h * f(1 - x, (a - b) / h) + b;
-    if (stepHeight <= 0) stepHeight = 1e-6;
+    const f = (x: number, b: number) => ((x - s(b)) ** 2) / (s(b) ** 2) - 1;
+    const y = (a: number, b: number, x: number, h: number) => b < a ? h * f(1 - x, (b - a) / h) + b : h * f(x, (a - b) / h) + a;
+    if (stepHeight <= 0) stepHeight = 1e-6; // prevent divide by 0
     return K.vec2(K.lerp(p0.x, p1.x, progress), y(p0.y, p1.y, progress, stepHeight));
 }

@@ -143,3 +143,11 @@
   id: nav_do_it
   loader: url
   src: !file sfx/Execute_01_select.ogg
+- kind: sound
+  id: elevator_ding_short
+  loader: zzfx
+  src: "[,0,1e3,.002,.2,.3,,,,,,,,,500]"
+- kind: sound
+  id: elevator_ding_long
+  loader: zzfx
+  src: "[,0,1e3,.002,.4,.4,,,,,,,,,500]"

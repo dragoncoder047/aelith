@@ -41,6 +41,7 @@ export interface RoomData extends JSONObject {
     gravity?: number;
 }
 
+// There must be a better way to do this.
 export interface StaticTileDefinition extends JSONObject {
     render: RenderData;
     tag: string;
@@ -56,6 +57,8 @@ export interface StaticTileDefinition extends JSONObject {
         pats: number[];
         weights?: number[];
     };
+    // TODO: refactor this into a list of "components"
+    // TODO: also add "physics components" to entity bones and main
     physics: {
         restitution?: number;
         friction?: number;
@@ -68,6 +71,8 @@ export interface StaticTileDefinition extends JSONObject {
         /** function or tags list to determine what to not collide with */
         ignore?: string[];
         /** if not null, this is a ladder, the rungs will be evenly spaced around the center */
+        // TODO: make this define areas to grab (for example rope) rather than fixed rungs
+        // and implement swimming like this too but with a different anim
         numRungs?: number;
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
@@ -176,6 +181,7 @@ export interface EntityMovingBoneData extends JSONObject {
     /** if the bone should be flipped/scaled to follow the motion */
     flip?: [whenMovingLeft: boolean | null, whenMovingRight: boolean | null, whenStopped: boolean | null];
     stepMode?: "step" | "jump" | "free"
+    phaseOffset: number;
 }
 
 export interface EntityAnimData extends JSONObject {

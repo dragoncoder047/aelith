@@ -150,7 +150,7 @@ export const FUNCTIONS: Form[] = [
         EntityManager.teleportEntityTo(EntityManager.getEntityByName(eid)!, room, pos);
     }),
     new Form("fly", false, async function* ([flying], task, actor) {
-        actor.motionController.setState(flying ? MotionState.FLYING : MotionState.STOPPED);
+        actor.motionController.setState(flying ? MotionState.FLYING : MotionState.STANDING);
     }),
     new Form("refuse", false, async function* () {
         throw new RefuseTake;

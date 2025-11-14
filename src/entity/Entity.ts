@@ -72,7 +72,7 @@ export class Entity implements Serializable {
             if (bb) this.startHook(bb);
             this._updateGravityScale(b);
         });
-        this.motionController.setState(MotionState.STOPPED);
+        this.motionController.setState(MotionState.STANDING);
         this.startHook("setup");
     }
     startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
@@ -325,7 +325,7 @@ export class Entity implements Serializable {
         if (this.obj) {
             const os = this.obj.gravityScale;
             const ns = (this.obj.gravityScale = {
-                [MotionState.STOPPED]: 1,
+                [MotionState.STANDING]: 1,
                 [MotionState.WALKING]: 1,
                 [MotionState.CLIMBING]: 0,
                 [MotionState.FLYING]: 0,

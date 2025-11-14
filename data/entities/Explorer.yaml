@@ -11,9 +11,9 @@ navHeight: { x: 1, y: 0 }
 behavior:
   canBePlayer: yes
   canFly: no
-  moveSpeed: 128
-  sprintSpeed: 196
-  jumpForce: 256
+  moveSpeed: 125
+  sprintSpeed: 200
+  jumpForce: 250
   inventorySlots: 8
   inventorySize: null
 model:
@@ -259,12 +259,12 @@ model:
           alpha: 30
         - target: [leftHandTarget, pos]
           keyframes:
-            - [0, { x: 0, y: -1 }]
+            - [0, { x: 0, y: -1.5 }]
           alpha: 30
           relative: true
         - target: [rightHandTarget, pos]
           keyframes:
-            - [0, { x: 0, y: 1 }]
+            - [0, { x: 0, y: 1.5 }]
           alpha: 30
           relative: true
     idle:
@@ -272,19 +272,29 @@ model:
       channels:
         - target: [body, pos]
           keyframes:
-            - [1, { x: 0, y: -1 }, easeInOutSine]
             - [1, { x: 0, y: 0 }, easeInOutSine]
+            - [1, { x: 0, y: -1 }, easeInOutSine]
   kinematics:
     look:
       origin: head
       target: gazeTarget
     walk:
       sprint: sprinting
+      steps:
+        len: 8
+        height: 4
+        time: 0.06
       bones:
         - bone: leftFoot
           flip: [true, false, true]
         - bone: rightFoot
           flip: [true, false, false]
+        - bone: leftFootTarget
+          stepMode: step
+          phaseOffset: 0
+        - bone: rightFootTarget
+          stepMode: step
+          phaseOffset: 0.5
     stand:
       anim: idle
       bones:
