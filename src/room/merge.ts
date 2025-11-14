@@ -1,4 +1,3 @@
-import { K } from "../context";
 import { ColliderEntry } from "./Room";
 
 export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number): ColliderEntry[] {
@@ -42,8 +41,9 @@ export function mergeColliders(colliders: ColliderEntry[][][], tileSize: number)
                 const h = thisTile.def.hitbox;
                 const h2 = [
                     h[0],
-                    h[1] + tileSize * addWidth,
-                    h[2] + tileSize * addHeight,
+                    h[1],
+                    h[2] + tileSize * addWidth,
+                    h[3] + tileSize * addHeight,
                 ] as typeof h;
                 outColliders.push({ ...thisTile, def: { ...thisTile.def, hitbox: h2 } });
             }
@@ -59,11 +59,11 @@ function fillGaps(colliders: ColliderEntry[], tileSize: number) {
     const olen = colliders.length;
     var a: number, b: number;
     for (a = 0; a < olen; a++) {
-        const A = colliders[a]!;
+        var A = colliders[a]!;
         const [lA, tA, rA, bA] = toRect(A), hA = bA - tA, wA = rA - lA;
         for (b = a + 1; b < olen; b++) {
-            const B = colliders[b]!;
-            if (A.tag !== B.tag) continue;
+            var B = colliders[b]!;
+            if (!A.tags.some(t => B.tags.includes(t))) continue;
             const [lB, tB, rB, bB] = toRect(B), hB = bB - tB, wB = rB - lB;
 
             // find overlaps and gaps
@@ -103,13 +103,13 @@ function fillGaps(colliders: ColliderEntry[], tileSize: number) {
                     if (hA === height) {
                         A.def = {
                             ...A.def,
-                            hitbox: [K.vec2(slA, stA).sub(A.pos), swA, shA],
+                            hitbox: [slA - A.pos.x, stA - A.pos.y, swA, shA],
                         };
                         continue;
                     } else if (hB === height) {
                         B.def = {
                             ...B.def,
-                            hitbox: [K.vec2(slB, stB).sub(B.pos), swB, shB],
+                            hitbox: [slB - B.pos.x, stB - B.pos.y, swB, shB],
                         };
                         continue;
                     }
@@ -117,18 +117,24 @@ function fillGaps(colliders: ColliderEntry[], tileSize: number) {
                     if (wA === width) {
                         A.def = {
                             ...A.def,
-                            hitbox: [K.vec2(slA, stA).sub(A.pos), swA, shA],
+                            hitbox: [slA - A.pos.x, stA - A.pos.y, swA, shA],
                         };
                         continue;
                     } else if (wB === width) {
                         B.def = {
                             ...B.def,
-                            hitbox: [K.vec2(slB, stB).sub(B.pos), swB, shB],
+                            hitbox: [slB - B.pos.x, stB - B.pos.y, swB, shB],
                         };
                         continue;
                     }
                 }
-                colliders.push({ ...A, def: { ...A.def, hitbox: [K.vec2(connL, connT).sub(A.pos), width, height] } });
+                colliders.push({
+                    ...A,
+                    def: {
+                        ...A.def,
+                        hitbox: [connL - A.pos.x, connT - A.pos.y, width, height]
+                    }
+                });
             }
         }
     }
@@ -140,7 +146,7 @@ function mergeAdjacent(colliders: ColliderEntry[]) {
         var A = colliders[i]!;
         for (j = i + 1; j < colliders.length; j++) {
             const B = colliders[j]!;
-            if (A.tag !== B.tag) continue;
+            if (!A.tags.some(t => B.tags.includes(t))) continue;
             const [l1, t1, r1, b1] = toRect(A);
             const [l2, t2, r2, b2] = toRect(B);
 
@@ -165,7 +171,13 @@ function mergeAdjacent(colliders: ColliderEntry[]) {
                 continue;
             }
 
-            colliders[i] = A = { ...A, def: { ...A.def, hitbox: [K.vec2(ml, mt).sub(A.pos), mw, mh] } }
+            colliders[i] = A = {
+                ...A,
+                def: {
+                    ...A.def,
+                    hitbox: [ml - A.pos.x, mt - A.pos.y, mw, mh]
+                }
+            }
             colliders[j--] = colliders.pop()!;
         }
     }
@@ -173,10 +185,10 @@ function mergeAdjacent(colliders: ColliderEntry[]) {
 
 function toRect(c: ColliderEntry): [number, number, number, number] {
     const h = c.def.hitbox;
-    const left = h[0].x + c.pos.x;
-    const top = h[0].y + c.pos.y;
-    const right = left + h[1];
-    const bottom = top + h[2];
+    const left = h[0] + c.pos.x;
+    const top = h[1] + c.pos.y;
+    const right = left + h[2];
+    const bottom = top + h[3];
     return [left, top, right, bottom];
 }
 

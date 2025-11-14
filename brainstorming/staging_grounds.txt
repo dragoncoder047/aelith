@@ -1,7 +1,0 @@
-I am working on the puzzles in a puzzle platformer game. Here is the description of the game. In the next messages I will send what I have worked on for the actual rooms and puzzles, and what still is left to be designed.
-
-Here is the first half of the rooms document. It is too long for one message (I hope you can internally summarize!)
-
-Here is the 2nd half of the rooms document. There is only one thing left to do:
-
-Component #9 is required to complete the game, but has no blueprint that the player can find or obtain from a puzzle, so they must construct it from the program tapes that they already have. They can construct it using the 'ed' program tape in the server room and the other tapes. However, I have not designed any puzzle to make the player use component #8 in order to obtain the 'ed' tape, however I have decided it will be in the robotics lab. Please help me design it.

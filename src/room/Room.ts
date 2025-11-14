@@ -9,6 +9,7 @@ import { hashPoint, javaHash } from "../hash";
 import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
+import { addPhysicsComponents } from "../physics/addComponents";
 
 
 export type TileEntry = {
@@ -16,13 +17,13 @@ export type TileEntry = {
     r: RenderData,
     ds: number | number[] | undefined;
     auto: StaticTileDefinition["autotile"];
-    tag: Tag;
+    tags: Tag[];
 };
 export type ColliderEntry = {
     i: number;
     pos: Vec2,
     def: StaticTileDefinition["physics"],
-    tag: Tag;
+    tags: Tag[];
 }
 
 const DEPTH = 0.1;
@@ -62,26 +63,17 @@ export class Room implements Serializable {
         });
         EntityManager.loadAllEntitiesInRoom(this.id);
         for (var coll of this.frozen.colliders) {
-            const [{ x, y }, w, h] = coll.def.hitbox;
+            const [x, y, w, h] = coll.def.hitbox;
             const c = K.add([
                 K.pos(coll.pos),
                 K.area({
                     shape: new K.Rect(K.vec2(x, y), w, h),
-                    collisionIgnore: coll.def.ignore,
-                    restitution: coll.def.restitution ?? GameManager.getDefaultValue("restitution"),
-                    friction: coll.def.friction ?? GameManager.getDefaultValue("friction")
                 }),
                 K.body({ isStatic: true }),
                 "tile",
-                coll.tag,
+                ...coll.tags,
             ]);
-            if (coll.def.numRungs) {
-                c.unuse("body");
-                c.tag("ladder")
-                c.use({ numRungs: coll.def.numRungs } as any);
-            } else if (coll.def.platform) {
-                c.use(K.platformEffector({ ignoreSides: [K.LEFT, K.RIGHT, K.UP] }));
-            }
+            addPhysicsComponents(c, coll.def.comps ?? [], true);
         }
         if (this.frozen.tiles.some(t => t.ds)) {
             K.add([
@@ -214,7 +206,7 @@ function buildFrozen(data: RoomData): Room["frozen"] {
                                 r: desc.render,
                                 ds: desc.depth,
                                 auto: desc.autotile,
-                                tag: desc.tag
+                                tags: desc.tags ?? []
                             });
                         }
                         if (desc?.physics !== undefined) {
@@ -222,7 +214,7 @@ function buildFrozen(data: RoomData): Room["frozen"] {
                                 i: index,
                                 pos,
                                 def: desc.physics,
-                                tag: desc.tag
+                                tags: desc.tags ?? []
                             });
                         }
                         break;

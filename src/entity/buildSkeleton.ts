@@ -7,21 +7,11 @@ import * as GameManager from "../GameManager";
 import { naturalDirection } from "./comps/naturaldirection";
 import { speechBubble } from "./comps/speechBubble";
 import { BoneComponents, BonesMap, Entity, EntityComp, EntityComponents } from "./Entity";
+import { addPhysicsComponents } from "../physics/addComponents";
 
 export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
-    const { hitbox, mass, behavior, restitution, friction, static: static_ } = e.getPrototype();
-    if (hitbox) {
-        rootObj.use(K.area({
-            shape: new K.Polygon(hitbox.map(({ x, y }) => K.vec2(x, y))),
-            restitution: restitution ?? GameManager.getDefaultValue("restitution"),
-            friction: friction ?? GameManager.getDefaultValue("friction")
-        }));
-        rootObj.use(K.body({
-            mass,
-            jumpForce: behavior.jumpForce,
-            isStatic: static_
-        }));
-    }
+    const { physics, behavior: { jumpForce } } = e.getPrototype();
+    if (physics) addPhysicsComponents(rootObj, physics, false, jumpForce);
 }
 
 function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleData, constraintEntries: { c: EntityBoneConstraintOptData, t: string }[]) {
@@ -83,12 +73,12 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
         if (!prev.has("layer")) prev.use(K.layer(GameManager.getDefaultValue("entityLayer")))
         pos = pos.add((tentacle.extendDir ? K.vec2(tentacle.extendDir.x, tentacle.extendDir.y).unit() : K.DOWN).scale(tentacle.lps));
         map[tentacle.name + k] = prev;
-        if (tentacle.eachConstraints) {
-            constraintEntries.push({ c: tentacle.eachConstraints, t: tentacle.name + k });
+        if (tentacle.eachConstraint) {
+            constraintEntries.push({ c: tentacle.eachConstraint, t: tentacle.name + k });
         }
     }
-    if (tentacle.endConstraints) {
-        constraintEntries.push({ c: tentacle.endConstraints, t: tentacle.name + (tentacle.n - 1) });
+    if (tentacle.endConstraint) {
+        constraintEntries.push({ c: tentacle.endConstraint, t: tentacle.name + (tentacle.n - 1) });
     }
 }
 
@@ -156,24 +146,28 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     }
     for (var c of constraintEntries) {
         const target = map[c.t]!;
-        if (c.c.angle) {
-            const [src, scale, offset] = c.c.angle;
-            target.use(K.constraint.rotation(assertGet(src), { scale, offset }));
-        }
-        if (c.c.distance) {
-            const [src, distance, bounds] = c.c.distance;
-            target.use(K.constraint.distance(assertGet(src), {
-                distance,
-                mode: (["minimum", "equal", "maximum"] as const)[bounds + 1]!
-            }));
-        }
-        if (c.c.offset) {
-            const [src, { x, y }] = c.c.offset;
-            target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
-        }
-        if (c.c.scale) {
-            const [src] = c.c.scale;
-            target.use(K.constraint.scale(assertGet(src), {}));
+        switch (c.c[0]) {
+            case "angle": {
+                const [_, src, scale, offset] = c.c;
+                target.use(K.constraint.rotation(assertGet(src), { scale, offset }));
+            } break;
+            case "distance": {
+                const [_, src, distance, bounds] = c.c;
+                target.use(K.constraint.distance(assertGet(src), {
+                    distance,
+                    mode: (["minimum", "equal", "maximum"] as const)[bounds + 1]!
+                }));
+            } break;
+            case "offset": {
+                const [_, src, { x, y }] = c.c;
+                target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
+            } break;
+            case "scale": {
+                const [_, src] = c.c;
+                target.use(K.constraint.scale(assertGet(src), {}));
+            } break;
+            default:
+                c.c[0] satisfies never;
         }
     }
     for (var i of ikEntries) {

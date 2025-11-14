@@ -1,12 +1,13 @@
 tags: [explorer]
-hitbox:
-  - { x: 0, y: -31.5 }
-  - { x: 16, y: -16 }
-  - { x: 16, y: 16 }
-  - { x: .1, y: 31.5 }
-  - { x: -0.1, y: 31.5 }
-  - { x: -16, y: 16 }
-  - { x: -16, y: -16 }
+physics:
+  - - poly
+    - { x: 0, y: -31.5 }
+    - { x: 16, y: -16 }
+    - { x: 16, y: 16 }
+    - { x: .1, y: 31.5 }
+    - { x: -0.1, y: 31.5 }
+    - { x: -16, y: 16 }
+    - { x: -16, y: -16 }
 navHeight: { x: 1, y: 0 }
 behavior:
   canBePlayer: yes
@@ -68,8 +69,7 @@ model:
                         color: white
                       ik:
                         target: [gazeTarget, 1]
-                      constraint:
-                        angle: [neck, 0, 0]
+                      constraint: [angle, neck, 0, 0]
                 - name: leftEyeSocket
                   pos: { x: 1, y: -2.4 }
                   children:
@@ -78,8 +78,7 @@ model:
                       render: *eye
                       ik:
                         target: [gazeTarget, 1]
-                      constraint:
-                        angle: [neck, 0, 0]
+                      constraint: [angle, neck, 0, 0]
             - name: gazeSource
               pos: { x: 0, y: -10 }
               ik:
@@ -117,8 +116,7 @@ model:
                         as: sprite
                         sprite: explorerFoot
                         anchor: { x: -0.5, y: -1 }
-                      constraint:
-                        angle: [body, 0, 0]
+                      constraint: [angle, body, 0, 0]
                   ik:
                     target: [leftFootTarget, 2]
         - name: rightUpperLeg
@@ -151,8 +149,7 @@ model:
                   children:
                     - name: rightFoot
                       render: *foot
-                      constraint:
-                        angle: [body, 0, 0]
+                      constraint: [angle, body, 0, 0]
                   ik:
                     target: [rightFootTarget, 2]
         - name: leftUpperArm
@@ -189,8 +186,7 @@ model:
                         sprite: explorerHand
                         anchor: top
                         z: 2
-                      constraint:
-                        angle: [body, 0, 0]
+                      constraint: [angle, body, 0, 0]
                   ik:
                     target: [leftHandTarget, 2]
         - name: rightUpperArm
@@ -223,8 +219,7 @@ model:
                   children:
                     - name: rightHand
                       render: *hand
-                      constraint:
-                        angle: [body, 0, 0]
+                      constraint: [angle, body, 0, 0]
                   ik:
                     target: [rightHandTarget, 2]
   tentacles:
@@ -278,29 +273,46 @@ model:
     look:
       origin: head
       target: gazeTarget
-    walk:
-      sprint: sprinting
-      steps:
-        len: 8
-        height: 4
-        time: 0.06
-      bones:
-        - bone: leftFoot
-          flip: [true, false, true]
-        - bone: rightFoot
-          flip: [true, false, false]
-        - bone: leftFootTarget
-          stepMode: step
-          phaseOffset: 0
-        - bone: rightFootTarget
-          stepMode: step
-          phaseOffset: 0.5
-    stand:
-      anim: idle
-      bones:
-        - bone: leftFoot
-          flip: [true, true, true]
-        - bone: rightFoot
-          flip: [false, false, false]
+    initial: standing
+    states:
+      walking:
+        sprint: sprinting
+        steps:
+          len: 8
+          height: 4
+          time: 0.06
+        allowedComponents: { x: 1, y: 0 }
+        bones:
+          - bone: leftFoot
+            flip: [true, false, true]
+          - bone: rightFoot
+            flip: [true, false, false]
+          - bone: leftFootTarget
+            stepMode: step
+            phaseOffset: 0
+          - bone: rightFootTarget
+            stepMode: step
+            phaseOffset: 0.5
+        transitions: &swt
+          - [standing, [0b0111, [grounded], [moving]]] # 7 = !grounded || !moving
+          # - [climbing, [0b1000, [moving], [colliding, climbable]]] # 8 = moving && onLadder
+          - [walking, [moving]]
+        jumpRule: &swJr [[grounded], standing]
+      standing:
+        anim: idle
+        bones:
+          - bone: leftFoot
+            flip: [true, true, true]
+          - bone: rightFoot
+            flip: [false, false, false]
+        allowedComponents: { x: 1, y: 0 }
+        transitions: *swt
+        jumpRule: *swJr
+      # climbing:
+      #   gravityScale: 0
+      #   bones: # TODO
+      #   transitions:
+      #     - [standing, [0b01, [colliding, climbable]]] # 1 = !onLadder
+      #   jumpRule: [[1], standing] # constant 1 = true
 hooks:
   action1: [as, agent, setPlayer]

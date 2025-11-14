@@ -65,12 +65,12 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 type: MenuItemType.TEXT,
                 text: mmo("graphics.potato")
             },
-            {
-                type: MenuItemType.SETTING,
-                text: mmo("graphics.renderLights"),
-                setting: "renderLights",
-                help: mmo("graphics.infoRenderLights"),
-            },
+            // {
+            //     type: MenuItemType.SETTING,
+            //     text: mmo("graphics.renderLights"),
+            //     setting: "renderLights",
+            //     help: mmo("graphics.infoRenderLights"),
+            // },
             {
                 type: MenuItemType.SETTING,
                 text: mmo("graphics.renderDepth"),
@@ -119,13 +119,13 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     audioSettings: {
         title: mmo("audio.title"),
         options: [
-            {
-                type: MenuItemType.SETTING,
-                text: mmo("audio.musicVolume"),
-                setting: "musicVolume",
-                help: mmo("audio.infoMusicVolume"),
-                formatValue: toPercent,
-            },
+            // {
+            //     type: MenuItemType.SETTING,
+            //     text: mmo("audio.musicVolume"),
+            //     setting: "musicVolume",
+            //     help: mmo("audio.infoMusicVolume"),
+            //     formatValue: toPercent,
+            // },
             {
                 type: MenuItemType.SETTING,
                 text: mmo("audio.sfxVolume"),

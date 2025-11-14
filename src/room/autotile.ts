@@ -16,8 +16,11 @@ export function autotile(tiles: TileEntry[][][]): TileEntry[] {
                     continue;
                 }
                 const { with: tilesWith, bits, pats, weights } = tile.auto;
-                const twNN = tilesWith ?? {};
-                const check = (dx: number, dy: number, bit: number) => (tiles[y + dy]?.[x + dx] ?? []).some(c => c.tag in twNN ? (bit & (twNN[c.tag] ?? 0)) : c.tag === tile.tag);
+                const tilesWith_not_null = tilesWith ?? {};
+                const check = (dx: number, dy: number, bit: number) => (tiles[y + dy]?.[x + dx] ?? []).some(c => {
+                    const z = c.tags.find(t => Object.hasOwn(tilesWith_not_null, t));
+                    return z ? (bit & (tilesWith_not_null[z] ?? 0)) : c.tags.some(t => tile.tags.includes(t));
+                });
                 const up = check(0, -1, 1);
                 const right = check(1, 0, 4);
                 const down = check(0, 1, 16);

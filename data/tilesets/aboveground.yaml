@@ -4,7 +4,7 @@ background: "black"
 tiles:
   # 0: base wall
   - &baseWall
-    tag: wall
+    tags: [wall]
     render:
       as: sprite
       sprite: rocktile
@@ -16,12 +16,12 @@ tiles:
       with:
         noHitWall: 255
     physics:
-      hitbox: [{ x: 4, y: 4 }, 24, 24]
+      hitbox: [4, 4, 24, 24]
       merge: [true, true]
     depth: !include ../textures/rockdepth.yaml
   # 1: wall, but no hitbox
   - <<: *baseWall
-    tag: noHitWall
+    tags: [noHitWall]
     physics: null
     autotile:
       <<: *wa

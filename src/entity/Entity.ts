@@ -2,16 +2,18 @@ import { AreaComp, AudioPlay, BodyComp, Comp, GameObj, KEventController, PosComp
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
-import { EntityData, EntityModelData, EntityPrototypeData, LightData, XY } from "../DataPackFormat";
+import { EntityData, EntityMoveAnimDef, EntityPrototypeData, LightData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import * as ScriptHandler from "../script/ScriptHandler";
 import { Serializable } from "../Serializable";
+import { RangeSetting } from "../settings";
+import { SYSTEM_SETTINGS } from "../static/systemMenus";
 import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
-import { MotionManager, MotionState } from "./MotionManager";
+import { MotionManager } from "./MotionManager";
 
 export interface EntityComp extends Comp {
     readonly entity: Entity;
@@ -58,21 +60,15 @@ export class Entity implements Serializable {
         this._prototype = EntityManager.getEntityPrototypeStrict(kind);
         this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
-        this.motionController = new MotionManager(this, this._prototype.model.kinematics);
+        this.motionController = new MotionManager(this, this._prototype.model.kinematics.states);
         this.motionController.onStateChange((a, b) => {
-            const aa = {
-                [MotionState.CLIMBING]: "stopClimb",
-                [MotionState.FLYING]: "stopFlying",
-            }[a as number];
-            const bb = {
-                [MotionState.CLIMBING]: "startClimb",
-                [MotionState.FLYING]: "startFlying",
-            }[b as number];
+            const aa = a?.leaveHook;
+            const bb = b.startHook;
             if (aa) this.startHook(aa);
             if (bb) this.startHook(bb);
             this._updateGravityScale(b);
         });
-        this.motionController.setState(MotionState.STANDING);
+        this.setMotionState(this._prototype.model.kinematics.initial);
         this.startHook("setup");
     }
     startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
@@ -101,20 +97,21 @@ export class Entity implements Serializable {
                 get entity() { return self; },
                 // run in draw() so after the constraints code and anims can override the constraint
                 draw() { self.update(K.dt()); }
+                // XXX: this is getting called TWICE per frame ?!?
             } as EntityComp,
             self.id,
             self.kind,
             K.pos(self.pos),
         ]) as any;
         buildHitbox(self, self.obj!);
-        self.obj!.onGround(() => {
+        if (self.obj!.has("body")) self.obj!.onGround(() => {
             self.startHook("landed", { force: self.obj!.vel.len() });
         });
         self.bones = buildSkeleton(self, self.obj!);
         self.animator.init();
         self.motionController.init();
         self.startHook("load");
-        this._updateGravityScale(this.motionController.state);
+        this._updateGravityScale(this.motionController.curData());
         for (const sensor of this.sensors) {
             self.bones[sensor]!.onCollide(obj => self.startHook("sensed", {
                 bone: sensor,
@@ -192,6 +189,7 @@ export class Entity implements Serializable {
         }
     }
     emitSound(sound: string, volume: number) {
+        volume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
         const a = K.play(sound, this._getPanVol(volume));
         this._ongoingSounds.push([a, volume]);
     }
@@ -205,15 +203,13 @@ export class Entity implements Serializable {
     stopAnim(a: string) {
         this.animator.stop(a);
     }
-    collidingLadder() {
-        return this.obj!.getCollisions().some(c => c.target.is("ladder"));
-    }
     update(dt: number) {
         this.pos = this.obj!.pos.clone();
         this.animator.update(dt);
 
-        this.motionController.run(dt, this._lastMove, this._sprintSpeed);
+        this.motionController.run(dt, this._lastMove, this._sprintSpeed, this._motionStateShouldEnd);
         this._lastMove = K.Vec2.ZERO;
+        this._motionStateShouldEnd = false;
 
         this.inventory.update();
         this._updateEv.trigger();
@@ -318,19 +314,18 @@ export class Entity implements Serializable {
     private _lastMove = K.Vec2.ZERO;
     private _moving = false;
     private _sprintSpeed = 0;
-    setMotionState(state: MotionState) {
+    setMotionState(state: string) {
         this.motionController.setState(state);
     }
-    private _updateGravityScale(state: MotionState) {
+    private _motionStateShouldEnd = false;
+    endMotionState() {
+        this._motionStateShouldEnd = true;
+    }
+    private _updateGravityScale(state?: EntityMoveAnimDef) {
         if (this.obj) {
             const os = this.obj.gravityScale;
-            const ns = (this.obj.gravityScale = {
-                [MotionState.STANDING]: 1,
-                [MotionState.WALKING]: 1,
-                [MotionState.CLIMBING]: 0,
-                [MotionState.FLYING]: 0,
-            }[state] ?? 1);
-            if (os === 1 && ns === 0) this.obj.vel = K.vec2();
+            const ns = (this.obj.gravityScale = state?.gravityScale ?? 1);
+            if (os > 0 && ns === 0) K.Vec2.copy(K.Vec2.ZERO, this.obj.vel);
         }
     }
     doMove(direction: Vec2, sprint: boolean) {

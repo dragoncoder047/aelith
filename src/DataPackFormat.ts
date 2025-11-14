@@ -17,6 +17,22 @@ export interface AssetData extends JSONObject {
     metadata?: JSONValue;
 }
 
+export type PhysicsComponentData =
+    | StaticPhysicsComponentData
+    | ["rect", x: number, y: number, w: number, h: number]
+    | ["circle", x: number, y: number, r: number]
+    | ["trace"]
+    | ["poly", ...pts: XY[]]
+    | ["mass", number];
+
+export type StaticPhysicsComponentData =
+    | ["surf", friction: number, restitution: number, stickyJump?: number, stickySlide?: number]
+    | ["plat", number]
+    | ["noColl", ...string[]]
+    | ["eff", ...(["area", XY] | ["con", number])]
+    | ["climb"]
+    | ["static"];
+
 export type IndexMapping = number | string;
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
@@ -34,8 +50,6 @@ export interface RoomData extends JSONObject {
     indexMapping: Record<string, IndexMapping[]>;
     /** ID of the tileset to use, such as office */
     tileset: string;
-    /** List of the doors going in and out of this room */
-    doors: Record<string, DoorData>;
     /** Entities directly in here */
     entities?: Record<string, EntityData>
     gravity?: number;
@@ -44,7 +58,7 @@ export interface RoomData extends JSONObject {
 // There must be a better way to do this.
 export interface StaticTileDefinition extends JSONObject {
     render: RenderData;
-    tag: string;
+    tags?: string[];
     /** Only use this if it's a sprite. */
     autotile?: {
         /** autotile with other tile tags; the number is the bits that it can connect with */
@@ -60,20 +74,11 @@ export interface StaticTileDefinition extends JSONObject {
     // TODO: refactor this into a list of "components"
     // TODO: also add "physics components" to entity bones and main
     physics: {
-        restitution?: number;
-        friction?: number;
-        /** if true then entities can jump up and climb down through this as a platform effector */
-        platform?: boolean;
         /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
-        hitbox: [pos: XY, width: number, height: number];
+        hitbox: [x: number, y: number, width: number, height: number];
         /** whether the obj can be merged to make more efficient colliders. It will only merge with the same kind of tile. */
         merge?: [horizontally: boolean, vertically: boolean];
-        /** function or tags list to determine what to not collide with */
-        ignore?: string[];
-        /** if not null, this is a ladder, the rungs will be evenly spaced around the center */
-        // TODO: make this define areas to grab (for example rope) rather than fixed rungs
-        // and implement swimming like this too but with a different anim
-        numRungs?: number;
+        comps?: StaticPhysicsComponentData[]
     };
     /** if not null, the number of sprites to stack for the 2.5D effect. These will ALWAYS be drawn in the "background" layer */
     depth?: number | number[];
@@ -86,17 +91,6 @@ export interface TilesetData extends JSONObject {
     background?: string;
 }
 
-interface DoorData extends JSONObject {
-    /** shared name to connect the doors */
-    link: string;
-    /** in tiles */
-    size: XY;
-    /** how to render the door */
-    render?: string;
-    /** if false, the player will have to "enter" the door manually; if true, it will teleport as soon as the player collides with it */
-    auto: boolean;
-}
-
 export interface EntityPrototypeData extends JSONObject {
     /** name of entity prototype to extend (via recursive Object.assign) */
     extends?: string;
@@ -104,15 +98,7 @@ export interface EntityPrototypeData extends JSONObject {
     tags: string[];
     /** name of the sprite model to use for this */
     model: EntityModelData;
-    /** polygonal hitbox */
-    hitbox?: XY[];
-    static?: boolean;
-    friction?: number;
-    restitution?: number;
-    mass?: number;
-    // TODO: automatic area effector and conveyor effector stuff
-    /** restricted bounds on navigation height (in tiles) for pathfinding */
-    navHeight: [low: number, high: number];
+    physics?: PhysicsComponentData[];
     behavior: {
         canBePlayer?: boolean;
         moveSpeed: number;
@@ -142,10 +128,8 @@ export interface EntityModelData extends JSONObject {
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
     kinematics: {
-        walk?: EntityMoveAnimDef;
-        climb?: EntityMoveAnimDef;
-        fly?: EntityMoveAnimDef;
-        stand?: EntityMoveAnimDef;
+        states: Record<string, EntityMoveAnimDef>;
+        initial: string;
         look: EntityLookAnimDef;
     }
     speechBubble: {
@@ -171,9 +155,26 @@ export interface EntityMoveAnimDef extends JSONObject {
         len: number;
         time: number;
         height?: number;
-    }
-
+    };
+    /** state machine parameters determining when the state changes */
+    transitions?: [string, EntityMotionStateMachineDef][];
+    jumpRule: [EntityMotionStateMachineDef, changeState: string | undefined];
+    allowedComponents?: XY;
+    gravityScale?: number;
+    leaveHook?: string;
+    startHook?: string;
 }
+
+// TODO
+export type EntityMotionStateMachineDef =
+    | EntityMotionStateMachineFunction
+    | EntityMotionStateMachineBoolExpr;
+type EntityMotionStateMachineFunction =
+    | ["grounded"] // if the entity is standing on the ground
+    | ["moving"] // if the player input is nonzero
+    | ["colliding", ...string[]] // if the entity is colliding with an object with all of these tags
+    | ["manual"];
+type EntityMotionStateMachineBoolExpr = [number, EntityMotionStateMachineDef, EntityMotionStateMachineDef, EntityMotionStateMachineDef | undefined, EntityMotionStateMachineDef | undefined, EntityMotionStateMachineDef | undefined]
 
 export interface EntityMovingBoneData extends JSONObject {
     /** which bone target gets moved */
@@ -212,12 +213,11 @@ interface EntityAnimChannelData extends JSONObject {
     relative?: boolean;
 }
 
-export interface EntityBoneConstraintOptData extends JSONObject {
-    distance?: [which: string, distance: number, bounds: -1 | 0 | 1];
-    offset?: [which: string, offset: XY];
-    angle?: [which: string, scale?: number, offset?: number];
-    scale?: [which: string],
-}
+export type EntityBoneConstraintOptData =
+    | ["distance", which: string, distance: number, bounds: -1 | 0 | 1]
+    | ["offset", which: string, offset: XY]
+    | ["angle", which: string, scale?: number, offset?: number]
+    | ["scale", which: string]
 
 export interface EntityModelBoneData extends JSONObject {
     /** child bones */
@@ -261,8 +261,8 @@ export interface EntityModelTentacleData extends JSONObject {
     masses: [start: number, end: number, easingFunc?: string];
     /** if true, the last bone will have forceSelf set to false, to allow it to be moved independently. */
     cord?: boolean;
-    endConstraints?: EntityBoneConstraintOptData;
-    eachConstraints?: EntityBoneConstraintOptData;
+    endConstraint?: EntityBoneConstraintOptData;
+    eachConstraint?: EntityBoneConstraintOptData;
 }
 
 /**
