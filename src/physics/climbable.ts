@@ -4,6 +4,7 @@ export interface ClimbableComp extends Comp {
 }
 export function climbable(): ClimbableComp {
     return {
-        id: "climbable"
+        id: "climbable",
+        require: ["area"]
     }
 }

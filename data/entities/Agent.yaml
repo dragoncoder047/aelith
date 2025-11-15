@@ -72,8 +72,7 @@ model:
       sizes: [3, 1]
       masses: [1, 1]
       gravityIsLocal: yes
-      eachConstraints:
-        angle: [body, 1, -90]
+      eachConstraint: [angle, body, 1, -90]
     - <<: *ht
       name: htB
       pos: { x: 5, y: 2 }

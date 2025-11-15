@@ -176,7 +176,7 @@ model:
                 cap: round
                 width: 3
               ik:
-                angleRange: [-90, -1]
+                angleRange: [-90, 0]
               children:
                 - pos: { x: -10, y: 0 }
                   children:
@@ -213,7 +213,7 @@ model:
                 cap: round
                 width: 3
               ik:
-                angleRange: [1, 90]
+                angleRange: [0, 90]
               children:
                 - pos: { x: 10, y: 0 }
                   children:
@@ -279,7 +279,7 @@ model:
         sprint: sprinting
         steps:
           len: 8
-          height: 4
+          height: 2
           time: 0.06
         allowedComponents: { x: 1, y: 0 }
         bones:

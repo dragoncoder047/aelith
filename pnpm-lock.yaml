@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:dragoncoder047/kaplay#65d1778589f0f0c6d7d4c6071d241986bd141b48
-        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/65d1778589f0f0c6d7d4c6071d241986bd141b48
+        specifier: github:kaplayjs/kaplay#f14ccf82390ef05024c90dd19dc49538f86ee012
+        version: https://codeload.github.com/kaplayjs/kaplay/tar.gz/f14ccf82390ef05024c90dd19dc49538f86ee012
       kaplay-lighting:
         specifier: github:tristanperrow/kaplay-lighting#2aeb008e9e214c08f2f12509209521b51ad97548
         version: https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548
@@ -265,13 +265,13 @@ packages:
     resolution: {tarball: https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548}
     version: 0.1.6
 
-  kaplay@4000.0.0-alpha.22:
-    resolution: {integrity: sha512-AQak0lGSso/7HYq4P0yWKNWIUsEVZgwAMIgKOALATOP054iP04KILhol4b7t9VLo4EPagHKaA1I5aShtNQDGCA==}
+  kaplay@4000.0.0-alpha.23:
+    resolution: {integrity: sha512-2VEQ+68eKQYBbZbSrpd9z11Im6djdfp7cJ/d1m5XXuDHGx1SY5hpJEo6bASui1JZaE1Z+7h8NR3DV3/xMoNWZw==}
     engines: {node: '>=20.0.0'}
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/65d1778589f0f0c6d7d4c6071d241986bd141b48:
-    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/65d1778589f0f0c6d7d4c6071d241986bd141b48}
-    version: 4000.0.0-alpha.22
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/f14ccf82390ef05024c90dd19dc49538f86ee012:
+    resolution: {tarball: https://codeload.github.com/kaplayjs/kaplay/tar.gz/f14ccf82390ef05024c90dd19dc49538f86ee012}
+    version: 4000.0.0-alpha.23
     engines: {node: '>=20.0.0'}
 
   minimatch@3.1.2:
@@ -524,11 +524,11 @@ snapshots:
 
   kaplay-lighting@https://codeload.github.com/tristanperrow/kaplay-lighting/tar.gz/2aeb008e9e214c08f2f12509209521b51ad97548:
     dependencies:
-      kaplay: 4000.0.0-alpha.22
+      kaplay: 4000.0.0-alpha.23
 
-  kaplay@4000.0.0-alpha.22: {}
+  kaplay@4000.0.0-alpha.23: {}
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/65d1778589f0f0c6d7d4c6071d241986bd141b48: {}
+  kaplay@https://codeload.github.com/kaplayjs/kaplay/tar.gz/f14ccf82390ef05024c90dd19dc49538f86ee012: {}
 
   minimatch@3.1.2:
     dependencies:

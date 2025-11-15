@@ -1,4 +1,4 @@
-import { KEventController, Vec2 } from "kaplay";
+import { AreaComp, KEventController, Vec2 } from "kaplay";
 import { K } from "../context";
 import { EntityModelData, EntityMotionStateMachineDef, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
 import { BonesMap, Entity } from "./Entity";
@@ -55,11 +55,13 @@ export class MotionManager {
         return d.map(({ bone, flip, stepMode, phaseOffset }) => {
             const b = new MovingBone(bone, flip, !!stepMode, climbMode);
             if (stepMode) {
-                b.curOffset = (b.offsetFromPlayerPos = this.entity.obj!.fromWorld(this.entity.bones[bone]!.worldPos()!)).add(len * (phaseOffset - 0.5), 0);
+                b.offsetFromPlayerPos = this.entity.obj!.fromWorld(this.entity.bones[bone]!.worldPos()!);
+                b.curOffset = K.vec2();
                 b.mode = stepMode;
                 b.len = len;
                 b.height = height;
                 b.time = time;
+                b.phase = phaseOffset;
             }
             return b;
         });
@@ -107,7 +109,6 @@ export class MotionManager {
         const { allowedComponents, sprint } = this.curData()!;
         if (allowedComponents)
             K.Vec2.scalec(velocity, allowedComponents.x, allowedComponents.y, velocity);
-        console.trace();
         if (sprint) {
             animator.skinAnim(sprint, this.sprinting ? sprintSpeed : 0);
         }
@@ -123,6 +124,8 @@ export class MotionManager {
         var didStep = false;
         for (i = 0; i < this._moving.length; i++) {
             // TODO: pass in index to be able to PLL-lock phase offsets?? how??
+            // They are still getting out of sync. HOW??
+            // - Make global MotionManager track the phase
             didStep ||= this._moving[i]!.update(dt, velocity, bones, id, pos);
         }
         obj!.move(velocity);
@@ -145,6 +148,7 @@ the "free" mode uses cos(2πt) for constant interpolation
 class MovingBone {
     private _planted = true;
     private _t = 0;
+    phase = 0;
     offsetFromPlayerPos?: Vec2
     curOffset?: Vec2
     nextOffset?: Vec2
@@ -157,32 +161,51 @@ class MovingBone {
         public flip: EntityMovingBoneData["flip"],
         public moving: boolean,
         public ladderMode: boolean) { }
-    update(dt: number, motionSpeed: Vec2, b: BonesMap, id: string, playerRootPos: Vec2): boolean {
+    update(dt: number, motionVector: Vec2, b: BonesMap, id: string, playerRootPos: Vec2): boolean {
         const o = b[this.bone]!;
-        const delta = motionSpeed.len() / this.len! * dt;
+        K.debug.log(!!o);
+        const delta = motionVector.len() / this.len! * dt;
         if (this.flip) {
             // TODO: flipping bounds on 
-            const s = this.flip[motionSpeed.isZero() ? 2 : motionSpeed.x < 0 ? 0 : 1];
+            const s = this.flip[motionVector.isZero() ? 2 : motionVector.x < 0 ? 0 : 1];
             if (s !== null) o.scaleTo(s ? -1 : 1, 1);
         }
         if (!this.moving) return false;
+        const zeroOffsetPos = this.offsetFromPlayerPos!.add(playerRootPos);
+        const offsetToWorld = (offset: Vec2) => offset.add(zeroOffsetPos);
+        const worldToOffset = (world: Vec2) => world.sub(zeroOffsetPos);
         const moveFootToOffset = (offset: Vec2) => {
-            o.worldPos(this.offsetFromPlayerPos!.add(offset.add(playerRootPos)));
+            o.worldPos(offsetToWorld(offset));
         };
         if (this.mode === "free") {
             moveFootToOffset(K.vec2(this.height! * Math.cos(this._t! += Math.PI * 2 * delta), 0));
         } else {
-            K.Vec2.addScaled(this.curOffset!, motionSpeed, -dt, this.curOffset!);
+            K.Vec2.addScaled(this.curOffset!, motionVector, -dt, this.curOffset!);
+            this.phase += delta;
             if (this._planted) {
                 moveFootToOffset(this.curOffset!);
-                if (this.curOffset!.slen() > (this.len! ** 2)) {
+                if (this.phase > 1) {
                     this._t = 0;
                     this._planted = false;
-                    this.nextOffset ??= K.vec2();
+                    const o = (this.nextOffset ??= K.vec2());
+                    K.Vec2.scale(this.curOffset!, -1, o);
+                    K.Vec2.unit(o, o);
+                    K.Vec2.scale(o, this.len! / 2, o);
+                    const worldTarget = worldToOffset(this.nextOffset);
+                    const maxLenSq = this.len! ** 2;
                     if (this.ladderMode) {
-                        // TODO:
+                        // Snap to nearest climbable
+                        const objs = K.get<AreaComp>("climbable", { only: "comps" });
+                        // First: check all objects; if we're inside one use that point,
+                        // if not raycast in the current direction; if we get a hit rotate it until the length is less than the step length
+                        // if no ray hit give up
+                        // TODO
+                        for (var obj of objs) {
+                            const area = obj.worldArea();
+                        }
                     } else {
-                        // TODO:
+                        // Raycast to ground
+                        // TODO
                     }
                 }
             } else {
@@ -193,6 +216,7 @@ class MovingBone {
                     return true;
                 }
             }
+            if (this.phase > 1) this.phase -= this.phase | 0; // keep fractional part
         }
         return false;
     }

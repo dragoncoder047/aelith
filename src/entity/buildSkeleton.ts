@@ -56,8 +56,8 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
         if (tentacle.gravityIsLocal) {
             prev.gravityScale = 0;
             prev.use({
-                fixedUpdate(this: GameObj<BodyComp | RotateComp>) {
-                    this.vel = this.vel.add(K._k.game.gravity!.scale(K._k.app.dt() * this.mass).rotate(this.transform.getRotation()));
+                fixedUpdate(this: GameObj<BodyComp>) {
+                    K.Vec2.add(this.vel, K._k.game.gravity!.scale(K._k.app.dt() * this.mass).rotate(this.transform.getRotation()), this.vel);
                 }
             });
         }

@@ -20,8 +20,9 @@ export function splashScreenScene() {
         K.opacity(0),
         K.animate(),
     ]);
-    thing.animate("scale", [K.vec2(.9, .9), K.vec2(1.1, 1.1)], { duration: 2, loops: 1 });
-    img.animate("opacity", [0, 1, 0], { duration: 2, loops: 1 });
-    text.animate("opacity", [0, 1, 0], { duration: 2, loops: 1 });
-    K.wait(2.5, () => K.go(Scene.TITLE_SCREEN));
+    const opt = { duration: 2, loops: 1 };
+    thing.animate("scale", [K.vec2(.9, .9), K.vec2(1.1, 1.1)], opt);
+    img.animate("opacity", [0, 0.5, 1, 0], opt);
+    text.animate("opacity", [0, 0.5, 1, 0], opt);
+    K.wait(2, () => K.go(Scene.TITLE_SCREEN));
 }
