@@ -245,7 +245,7 @@ model:
       sizes: [4, 1, easeOutQuad]
       masses: [1, 1]
   anims:
-    sprinting:
+    sprintright:
       loop: true
       channels:
         - target: [body, angle]
@@ -262,6 +262,23 @@ model:
             - [0, { x: 0, y: 1.5 }]
           alpha: 30
           relative: true
+    sprintleft:
+      loop: true
+      channels:
+        - target: [body, angle]
+          keyframes:
+            - [0, -10]
+          alpha: 30
+        - target: [leftHandTarget, pos]
+          keyframes:
+            - [0, { x: 0, y: 1.5 }]
+          alpha: 30
+          relative: true
+        - target: [rightHandTarget, pos]
+          keyframes:
+            - [0, { x: 0, y: -1.5 }]
+          alpha: 30
+          relative: true
     idle:
       loop: true
       channels:
@@ -276,7 +293,7 @@ model:
     initial: standing
     states:
       walking:
-        sprint: sprinting
+        sprint: [sprintleft, sprintright]
         steps:
           len: 8
           height: 2

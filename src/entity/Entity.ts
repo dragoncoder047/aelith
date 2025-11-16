@@ -1,4 +1,4 @@
-import { AreaComp, AudioPlay, BodyComp, Comp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
+import { AreaComp, AudioPlay, BodyComp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
 import { PAreaComp } from "../context/plugins/kaplay-aabb";
@@ -10,14 +10,11 @@ import { RangeSetting } from "../settings";
 import { SYSTEM_SETTINGS } from "../static/systemMenus";
 import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
+import { EntityComp, entitywrapper } from "./comps/entitywrapper";
 import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
 import { MotionManager } from "./MotionManager";
-
-export interface EntityComp extends Comp {
-    readonly entity: Entity;
-}
 
 export enum EntityInputAction {
     ACTION1 = "action1",
@@ -92,13 +89,13 @@ export class Entity implements Serializable {
             self.unloaded();
         });
         self.obj = K.add([
+            entitywrapper(self),
             {
-                id: "entity",
-                get entity() { return self; },
+                id: "entityroot",
                 // run in draw() so after the constraints code and anims can override the constraint
                 draw() { self.update(K.dt()); }
                 // XXX: this is getting called TWICE per frame ?!?
-            } as EntityComp,
+            },
             self.id,
             self.kind,
             K.pos(self.pos),

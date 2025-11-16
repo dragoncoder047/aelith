@@ -28,10 +28,13 @@ export class MotionManager {
         this.state = state;
         return true;
     }
+    private _lenCache = 0;
     curData() {
-        return this.data[this.state];
+        const z = this.data[this.state];
+        if (z) this._lenCache = z.steps?.len ?? 0;
+        return z;
     }
-    private _getData(): [string | undefined, string | undefined, boolean, EntityMovingBoneData[], stepLen: number, stepTime: number, stepHeight: number] {
+    private _getData(): [string | undefined, string | [string, string] | undefined, boolean, EntityMovingBoneData[], stepLen: number, stepTime: number, stepHeight: number] {
         const x = this.curData();
         return x ? [x.anim, x.sprint, x.gravityScale === 0, x.bones ?? [], x.steps?.len ?? 1, x.steps?.height ?? 0, x.steps?.time ?? 0] : [, , false, [], 1, 0, 0];
     }
@@ -40,14 +43,27 @@ export class MotionManager {
             this.entity.bones[b.bone]!.pos = this.bases[b.bone]!.clone();
         }
         const [a, s] = this._getData();
-        if (a) this.entity.stopAnim(a);
-        if (s) this.entity.stopAnim(s);
+        const stop = (anim: string) => this.entity.stopAnim(anim);
+        if (a) stop(a);
+        if (s) (Array.isArray(s) ? (stop(s[0]), stop(s[1])) : stop(s));
     }
     setState(state: string) {
         if (this._didChangeStateTo(state)) {
             const [a, s, c, d, l, h, t] = this._getData();
-            if (a) this.entity.playAnim(a);
-            if (s) { this.entity.playAnim(s); this.entity.animator.skinAnim(s, 0); }
+            const start = (anim: string) => this.entity.playAnim(anim);
+            const startskin = (anim: string) => {
+                start(anim);
+                this.entity.animator.skinAnim(anim, 0);
+            }
+            if (a) start(a);
+            if (s) {
+                if (Array.isArray(s)) {
+                    startskin(s[0]);
+                    startskin(s[1]);
+                } else {
+                    startskin(s);
+                }
+            }
             this._moving = this._createData(d, c, l, h, t);
         }
     }
@@ -61,7 +77,7 @@ export class MotionManager {
                 b.len = len;
                 b.height = height;
                 b.time = time;
-                b.phase = phaseOffset;
+                b.phaseOffset = phaseOffset;
             }
             return b;
         });
@@ -104,13 +120,19 @@ export class MotionManager {
             this.setState(newState!);
         }
     }
+    private _phase = 0;
     run(dt: number, velocity: Vec2, sprintSpeed: number, manualStop: boolean) {
         const { bones, pos, id, animator, obj } = this.entity;
         const { allowedComponents, sprint } = this.curData()!;
         if (allowedComponents)
             K.Vec2.scalec(velocity, allowedComponents.x, allowedComponents.y, velocity);
         if (sprint) {
-            animator.skinAnim(sprint, this.sprinting ? sprintSpeed : 0);
+            if (Array.isArray(sprint)) {
+                animator.skinAnim(sprint[0], this.sprinting && velocity.x < 0 ? sprintSpeed : 0);
+                animator.skinAnim(sprint[1], this.sprinting && velocity.x > 0 ? sprintSpeed : 0);
+            } else {
+                animator.skinAnim(sprint, this.sprinting ? sprintSpeed : 0);
+            }
         }
         var i: number;
         const trs = this.curData()?.transitions ?? [];
@@ -121,12 +143,14 @@ export class MotionManager {
                 break;
             }
         }
+        const p1 = this._phase;
+        const p2 = (this._phase += velocity.len() / this._lenCache * dt);
         var didStep = false;
         for (i = 0; i < this._moving.length; i++) {
-            // TODO: pass in index to be able to PLL-lock phase offsets?? how??
-            // They are still getting out of sync. HOW??
-            // - Make global MotionManager track the phase
-            didStep ||= this._moving[i]!.update(dt, velocity, bones, id, pos);
+            const b = this._moving[i]!;
+            const op1 = p1 + b.phaseOffset, op2 = p2 + b.phaseOffset;
+            const shouldStartStep = Math.floor(op1) !== Math.floor(op2);
+            didStep ||= b.update(shouldStartStep, dt, velocity, bones, id, pos);
         }
         obj!.move(velocity);
         this.entity.startHook("move", { dir: { x: velocity.x, y: velocity.y }, sprinting: this.sprinting });
@@ -148,7 +172,7 @@ the "free" mode uses cos(2πt) for constant interpolation
 class MovingBone {
     private _planted = true;
     private _t = 0;
-    phase = 0;
+    phaseOffset = 0;
     offsetFromPlayerPos?: Vec2
     curOffset?: Vec2
     nextOffset?: Vec2
@@ -161,12 +185,11 @@ class MovingBone {
         public flip: EntityMovingBoneData["flip"],
         public moving: boolean,
         public ladderMode: boolean) { }
-    update(dt: number, motionVector: Vec2, b: BonesMap, id: string, playerRootPos: Vec2): boolean {
+    update(shouldStartStep: boolean, dt: number, motionVector: Vec2, b: BonesMap, id: string, playerRootPos: Vec2): boolean {
         const o = b[this.bone]!;
-        K.debug.log(!!o);
         const delta = motionVector.len() / this.len! * dt;
         if (this.flip) {
-            // TODO: flipping bounds on 
+            // TODO: flipping bounds on bones
             const s = this.flip[motionVector.isZero() ? 2 : motionVector.x < 0 ? 0 : 1];
             if (s !== null) o.scaleTo(s ? -1 : 1, 1);
         }
@@ -181,10 +204,9 @@ class MovingBone {
             moveFootToOffset(K.vec2(this.height! * Math.cos(this._t! += Math.PI * 2 * delta), 0));
         } else {
             K.Vec2.addScaled(this.curOffset!, motionVector, -dt, this.curOffset!);
-            this.phase += delta;
             if (this._planted) {
                 moveFootToOffset(this.curOffset!);
-                if (this.phase > 1) {
+                if (shouldStartStep) {
                     this._t = 0;
                     this._planted = false;
                     const o = (this.nextOffset ??= K.vec2());
@@ -216,7 +238,6 @@ class MovingBone {
                     return true;
                 }
             }
-            if (this.phase > 1) this.phase -= this.phase | 0; // keep fractional part
         }
         return false;
     }

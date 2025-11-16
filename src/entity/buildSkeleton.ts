@@ -1,13 +1,14 @@
-import { BodyComp, EaseFuncs, GameObj, RotateComp } from "kaplay";
+import { BodyComp, EaseFuncs, GameObj } from "kaplay";
 import { K } from "../context";
 import { DistanceCompPlus } from "../context/plugins/kaplay-extradistance";
 import { EntityBoneConstraintOptData, EntityModelBoneData, EntityModelTentacleData } from "../DataPackFormat";
 import { addRenderComps } from "../draw/primitive";
 import * as GameManager from "../GameManager";
+import { addPhysicsComponents } from "../physics/addComponents";
+import { entitywrapper } from "./comps/entitywrapper";
 import { naturalDirection } from "./comps/naturaldirection";
 import { speechBubble } from "./comps/speechBubble";
-import { BoneComponents, BonesMap, Entity, EntityComp, EntityComponents } from "./Entity";
-import { addPhysicsComponents } from "../physics/addComponents";
+import { BoneComponents, BonesMap, Entity, EntityComponents } from "./Entity";
 
 export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
     const { physics, behavior: { jumpForce } } = e.getPrototype();
@@ -24,10 +25,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             e.id,
             e.kind,
             "tentacle",
-            {
-                id: "entity",
-                get entity() { return e }
-            } as EntityComp,
+            entitywrapper(e),
             K.pos(pos.add(e.obj!.pos)),
             K.rotate(0),
             K.scale(),
@@ -93,10 +91,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 e.id,
                 e.kind,
                 "bone",
-                {
-                    id: "entity",
-                    get entity() { return e }
-                } as EntityComp,
+                entitywrapper(e),
                 K.pos(),
                 K.rotate(),
                 K.scale(),

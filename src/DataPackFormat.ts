@@ -150,7 +150,7 @@ interface EntityLookAnimDef extends JSONObject {
 export interface EntityMoveAnimDef extends JSONObject {
     bones?: EntityMovingBoneData[];
     anim: string;
-    sprint?: string;
+    sprint?: string | [string, string];
     steps?: {
         len: number;
         time: number;
