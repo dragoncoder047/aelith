@@ -10,7 +10,6 @@ export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 // TODO: implement the rest of these
 SYSTEM_SETTINGS.addBoolean("renderLights", true);
 SYSTEM_SETTINGS.addBoolean("renderDepth", true).onChange(v => Room._depthEnabled = v);
-SYSTEM_SETTINGS.addBoolean("speedrunTimer", true);
 SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps5"]).onChange(v => PlatformGuesser.changeGamepadType(v));
 SYSTEM_SETTINGS.addBoolean("controllerRumble", true).onChange(v => K.rumble.enabled = v);
 SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v => K.useLanguage(v === "auto" ? null : v));
@@ -55,12 +54,6 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     graphicsSettings: {
         title: mmo("graphics.title"),
         options: [
-            {
-                type: MenuItemType.SETTING,
-                text: mmo("graphics.speedrunTimer"),
-                setting: "speedrunTimer",
-                help: mmo("graphics.infoSpeedrunTimer")
-            },
             {
                 type: MenuItemType.TEXT,
                 text: mmo("graphics.potato")

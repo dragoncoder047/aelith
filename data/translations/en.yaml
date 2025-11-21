@@ -37,8 +37,6 @@ menu:
       infoRenderLights: (GPU intensive) Render glow around objects that emit light
       renderDepth: Pseudo-3D
       infoRenderDepth: (CPU intensive) Render stacked tiles to create a 3D depth effect
-      speedrunTimer: Speedrun timer
-      infoSpeedrunTimer: Show a timer counting how long you've been playing
     language:
       title: Language
       autodetect: Autodetect from browser settings
@@ -139,7 +137,6 @@ menu:
 #   options:
 #     title: Options
 #     rumble: Enable controller rumble
-#     speedrunTimer: Show speedrun timer
 #     controlHints: Show control hints
 #     music: Play background music
 #     soundEffects: Play sound effects

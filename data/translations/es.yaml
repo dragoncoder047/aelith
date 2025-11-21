@@ -88,7 +88,6 @@ dialog:
 #   options:
 #     title: Opciones
 #     rumble: Habilitar vibracion del mando
-#     speedrunTimer: Mostrar temporizador
 #     controlHints: Mostrar pistas sobre controles
 #     music: Musica de fondo
 #     soundEffects: Efectos de sonido
