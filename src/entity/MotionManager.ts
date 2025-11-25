@@ -1,6 +1,6 @@
 import { AreaComp, KEventController, Vec2 } from "kaplay";
 import { K } from "../context";
-import { EntityModelData, EntityMotionStateMachineDef, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
+import { EntityMotionStateMachineDef, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
 import { BonesMap, Entity } from "./Entity";
 
 export class MotionManager {
@@ -180,7 +180,6 @@ class MovingBone {
     len?: number
     height?: number
     time?: number
-    xoff?: number;
     constructor(public bone: string,
         public flip: EntityMovingBoneData["flip"],
         public moving: boolean,

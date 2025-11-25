@@ -27,12 +27,12 @@ export interface KAPLAYDynamicTextPlugin {
 }
 
 export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KAPLAYDynamicTextPlugin {
-    const _langUrls: Record<string, string> = {};
+    const _langUrls: Record<string, string[]> = {};
     const _loaded: Record<string, boolean> = {};
     const _lazyLoad = (lang: string) => {
-        const url = _langUrls[lang]!;
+        const urls = _langUrls[lang]!;
         _loaded[lang] = true;
-        fetch(url).then(resp => resp.json()).then(json => K.strings[lang] = json);
+        urls.forEach(url => fetch(url).then(resp => resp.json()).then(json => Object.assign(K.strings[lang] ??= {}, json)));
     }
     return {
         strings: {},
@@ -53,7 +53,7 @@ export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KA
             return new K.Asset(Promise.resolve(strings));
         },
         addLanguageURL(lang, url) {
-            _langUrls[lang] = url;
+            (_langUrls[lang] ??= []).push(url);
             _loaded[lang] = false;
         },
         setAvailableLanguages(langs) {
@@ -114,7 +114,8 @@ function subStrings(text: string, vars: NestedStrings): string {
     const { flatStrings, functions } = flatten(vars);
     var changed = 0;
     const anyfun = Object.keys(functions).join("|");
-    const strNames = Object.keys(flatStrings);
+    // Sort by length so we're greedy
+    const strNames = Object.keys(flatStrings).sort((a, b) => b.length - a.length);
     const anykey = strNames.map(s => s.replaceAll(/\./g, "\\.")).join("|")
     const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun}))(?!&(?:${anykey}))[\\s\\S])*?)\\)`, "gm") : undefined;
     do {

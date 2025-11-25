@@ -1,11 +1,13 @@
 # to do
 
+* maybe use planck.js for stuff
 * add random ticks functionality
 * make cropticks slice9 for focus outline instead of just changing color
 * change motion to be using force & velocity (would make sticky platforms better)
 * finish legs
     * animate zug legs using this too
     * give the lil cuties antennae!
+    * add "line from here to pos on other body" primitive
 * need a way for objects to continue moving through unloaded rooms by utilizing nav mesh
     * "bully" cellular automata?
 * remove "continue" action and have NIC advance text based on timer, as text that can't be repeated by interacting with an object, shouldn't be important.
@@ -17,8 +19,10 @@
         2. try item looking at
         3. try item intersecting with (like door)
     * need for a way to be fallback and invoke the hook and stop if the hook exists else continue
-        * something like Lisp's `(multiple-value-bind)` or similar
+        * something like Lisp's `(multiple-value-bind)` or similar on the startHook command
 * add kiwi's depth component for entities that are set back in depth, but modified to allow it to turn off with the setting
+    * use this for background
+    * add a config value for the amount of depth
 * implement nav mesh generation from world tiles
     * allow entities to navigate and move silently in the background when unloaded and then come to current room and be loaded
 * NEED TO GET HOOK/RENDER/ANIM INHERITANCE WORKING

@@ -69,7 +69,6 @@ model:
                         color: white
                       ik:
                         target: [gazeTarget, 1]
-                      constraint: [angle, neck, 0, 0]
                 - name: leftEyeSocket
                   pos: { x: 1, y: -2.4 }
                   children:
@@ -78,7 +77,6 @@ model:
                       render: *eye
                       ik:
                         target: [gazeTarget, 1]
-                      constraint: [angle, neck, 0, 0]
             - name: gazeSource
               pos: { x: 0, y: -10 }
               ik:

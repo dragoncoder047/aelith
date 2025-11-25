@@ -139,8 +139,11 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         if (!b) throw new Error(`no such bone ${bone} in skeleton of ${e.kind}`);
         return b;
     }
+    for (var i of ikEntries) {
+        assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
+    }
     for (var c of constraintEntries) {
-        const target = map[c.t]!;
+        const target = assertGet(c.t);
         switch (c.c[0]) {
             case "angle": {
                 const [_, src, scale, offset] = c.c;
@@ -162,11 +165,8 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 target.use(K.constraint.scale(assertGet(src), {}));
             } break;
             default:
-                c.c[0] satisfies never;
+                c.c satisfies never;
         }
-    }
-    for (var i of ikEntries) {
-        assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     if (model.speechBubble) {
         const { origin, tokenDelay, width, voiceSound } = model.speechBubble;

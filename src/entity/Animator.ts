@@ -1,4 +1,4 @@
-import { Color, GameObj, LerpValue, Vec2 } from "kaplay";
+import { Color, LerpValue, Vec2 } from "kaplay";
 import { K } from "../context";
 import { Animation, AnimUpdateResults, createAnimation } from "./Animation";
 import { BonesMap, Entity } from "./Entity";
@@ -6,7 +6,7 @@ import * as EntityManager from "./EntityManager";
 
 /*
 
-how animations work (new version, not implemented yet):
+how animations work:
 
 each animation has behavior attributes:
 - the "strength" of the animation (skinning/blend parameter)
