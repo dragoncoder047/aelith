@@ -1,6 +1,5 @@
 # to do
 
-* maybe use planck.js for stuff
 * add random ticks functionality
 * make cropticks slice9 for focus outline instead of just changing color
 * change motion to be using force & velocity (would make sticky platforms better)

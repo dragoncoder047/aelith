@@ -182,7 +182,8 @@ export interface EntityMovingBoneData extends JSONObject {
     /** if the bone should be flipped/scaled to follow the motion */
     flip?: [whenMovingLeft: boolean | null, whenMovingRight: boolean | null, whenStopped: boolean | null];
     stepMode?: "step" | "jump" | "free"
-    phaseOffset: number;
+    phaseOffset?: number;
+    len?: number;
 }
 
 export interface EntityAnimData extends JSONObject {

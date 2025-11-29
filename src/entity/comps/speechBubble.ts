@@ -67,13 +67,13 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
             const s = K.sub(msg).trim();
             this.text = "";
             if (s) {
-                const sentences = [... new Intl.Segmenter(K.currentLanguage(), { granularity: "sentence" }).segment(s)];
+                const sentences = segment(s, "sentence");
                 for (var i = 0; i < sentences.length; i++) {
                     const sentence = sentences[i]!;
                     this.text = "";
                     const sen = sentence.segment.trim();
                     if (!sen) continue;
-                    const words = [...new Intl.Segmenter(K.currentLanguage(), { granularity: "word" }).segment(sen)];
+                    const words = segment(sen, "word");
                     for (var word of words) {
                         if (finishSentenceNow?.()) break;
                         await K.wait(this.tokenDelay);
@@ -90,6 +90,11 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                 }
             }
             isSpeaking = false;
+            this.text = "";
         }
     }
+}
+
+function segment(text: string, granularity: Intl.SegmenterOptions["granularity"]): Intl.SegmentData[] {
+    return [...new Intl.Segmenter(K.currentLanguage(), { granularity }).segment(text)]
 }

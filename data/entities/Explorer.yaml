@@ -11,10 +11,9 @@ physics:
 navHeight: { x: 1, y: 0 }
 behavior:
   canBePlayer: yes
-  canFly: no
-  moveSpeed: 125
-  sprintSpeed: 200
-  jumpForce: 250
+  moveSpeed: 80
+  sprintSpeed: 120
+  jumpForce: 200
   inventorySlots: 8
   inventorySize: null
 model:

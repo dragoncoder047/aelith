@@ -94,7 +94,6 @@ export class Entity implements Serializable {
                 id: "entityroot",
                 // run in draw() so after the constraints code and anims can override the constraint
                 draw() { self.update(K.dt()); }
-                // XXX: this is getting called TWICE per frame ?!?
             },
             self.id,
             self.kind,

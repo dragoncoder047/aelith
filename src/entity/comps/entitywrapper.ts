@@ -10,7 +10,11 @@ export function entitywrapper(entity: Entity): EntityComp {
         id: "entity",
         get entity() {
             return entity;
+        },
+        inspect() {
+            return [
+                `motion state: ${entity.motionController.state}`
+            ].join("\n")
         }
-
     }
 }

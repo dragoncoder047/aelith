@@ -185,7 +185,8 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                     transform: DEF_STYLES,
                     pos: K.Vec2.ZERO
                 });
-                this.child!.width = this.width / 2 - PAD - fText2.width;
+                const newWidth = this.width / 2 - PAD - fText2.width;
+                this.child!.width = Math.min(this.child!.width, newWidth);
                 this.height = Math.max(fText.height, this.child!.height) + 2 * PAD * s;
                 K.drawFormattedText(fText);
                 K.drawFormattedText(fText2);

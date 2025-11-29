@@ -4,9 +4,8 @@ physics:
 navHeight: { x: 0, y: 0 }
 behavior:
   canBePlayer: yes
-  canFly: yes
   camScale: 2
-  moveSpeed: 256
+  moveSpeed: 100
   inventorySlots: 2
   inventorySize: null
   inventoryHolder: hands

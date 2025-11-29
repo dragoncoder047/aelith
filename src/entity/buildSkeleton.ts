@@ -139,10 +139,6 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         if (!b) throw new Error(`no such bone ${bone} in skeleton of ${e.kind}`);
         return b;
     }
-    for (var i of ikEntries) {
-        assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
-    }
-    K.debug.log(constraintEntries.map(c => c.c[0]));
     for (var c of constraintEntries) {
         const target = assertGet(c.t);
         switch (c.c[0]) {
@@ -168,6 +164,10 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             default:
                 c.c satisfies never;
         }
+    }
+    // why it breaks if I put this before the constraint entries, I have no clue.
+    for (var i of ikEntries) {
+        assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     if (model.speechBubble) {
         const { origin, tokenDelay, width, voiceSound } = model.speechBubble;

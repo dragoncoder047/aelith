@@ -15,7 +15,7 @@ export function naturalDirection(dir: XY): Comp {
             fFlipX = Math.abs(a) < 90 ? -oFlipX : oFlipX;
             fFlipY = Math.abs(a) < 90 ? oFlipY : -oFlipY;
         },
-        update(this: GameObj<ScaleComp | RotateComp>) {
+        draw(this: GameObj<ScaleComp | RotateComp>) {
             d = (360 + this.transform.getRotation() - a) % 360;
             if (d > 180) this.scaleTo(fFlipX, fFlipY);
             else this.scaleTo(oFlipX, oFlipY);
