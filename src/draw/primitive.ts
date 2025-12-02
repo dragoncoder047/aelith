@@ -2,6 +2,7 @@ import { Anchor, GameObj, LineCap, LineJoin, TextAlign, Uniform } from "kaplay";
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
 import { DEF_STYLES, STYLES } from "../TextStyles";
+import { simpleParticles, SimpleParticlesCompOpt } from "./particle";
 import { polyline } from "./polyline";
 
 type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
@@ -99,6 +100,10 @@ type TextPrimitive = BaseRenderProps & {
     styles?: Record<string, TextTransform>,
 };
 
+type ParticlePrimitive = BaseRenderProps & SimpleParticlesCompOpt & {
+    as: "particles"
+};
+
 export type Primitive =
     | SpritePrimitive
     | RectPrimitive
@@ -106,7 +111,8 @@ export type Primitive =
     | EllipsePrimitive
     | PolygonPrimitive
     | PolylinePrimitive
-    | TextPrimitive;
+    | TextPrimitive
+    | ParticlePrimitive;
 
 export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) {
     addBaseProps(obj, uid, primitive);
@@ -131,11 +137,11 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
         case "ellipse":
             obj.use(K.ellipse(primitive.r?.x, primitive.r?.y)); break;
         case "polygon":
-            obj.use(K.polygon(primitive.pts.map(({ x, y }) => K.vec2(x, y)), {
+            obj.use(K.polygon(primitive.pts.map(K.Vec2.deserialize), {
                 fill: primitive.fill
             })); break;
         case "polyline":
-            obj.use(polyline(primitive.pts.map(({ x, y }) => K.vec2(x, y)), {
+            obj.use(polyline(primitive.pts.map(K.Vec2.deserialize), {
                 width: primitive.width,
                 join: primitive.join,
                 cap: primitive.cap,
@@ -152,6 +158,9 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
                 lineSpacing: primitive.gap?.[1],
             }));
             obj.use(K.dynamicText(primitive.text)); break;
+        case "particles":
+            obj.use(simpleParticles(primitive));
+            break;
         default:
             primitive satisfies never;
     }
@@ -177,7 +186,7 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                 default: switch (Array.isArray(v) && typeof v[0]) {
                     case "string": uv[u] = (v as string[]).map(c => K.rgb(c as string)); break;
                     case "number": uv[u] = v as number[]; break;
-                    case "object": uv[u] = (v as XY[]).map(({x, y}) => K.vec2(x, y)); break;
+                    case "object": uv[u] = (v as XY[]).map(K.Vec2.deserialize); break;
                     case false: uv[u] = K.vec2((v as XY).x, (v as XY).y); break;
                     default:
                         throw new Error("unknown uniform type " + JSON.stringify(v));

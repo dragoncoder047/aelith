@@ -82,7 +82,7 @@ export function addPhysicsComponents(obj: GameObj, comps: PhysicsComponentData[]
                 shape = new K.Circle(K.vec2(x, y), w);
                 break;
             case "poly":
-                shape = new K.Polygon((comp.slice(1) as XY[]).map(({ x, y }) => K.vec2(x, y)));
+                shape = new K.Polygon((comp.slice(1) as XY[]).map(K.Vec2.deserialize));
                 break;
             case "trace":
                 throw new Error("Implement me after trace PR is merged in KAPLAY");

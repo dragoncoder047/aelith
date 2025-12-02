@@ -30,7 +30,6 @@
 * have way to request NIC do stuff
     * lift player up out of sinkhole if they fall in and can't climb out
 * add animations on discrete quantities (such as booleans and frame numbers)
-* add a "particles" primitive for rendering
 * "hidden" settings entries so that options for how to interact with the items won't show up until the player has the item
 * determine where to add haptic effects
 * add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
