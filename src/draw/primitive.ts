@@ -2,7 +2,7 @@ import { Anchor, GameObj, LineCap, LineJoin, TextAlign, Uniform } from "kaplay";
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
 import { DEF_STYLES, STYLES } from "../TextStyles";
-import { simpleParticles, SimpleParticlesCompOpt } from "./particle";
+import { simpleParticles } from "./particle";
 import { polyline } from "./polyline";
 
 type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
@@ -100,8 +100,22 @@ type TextPrimitive = BaseRenderProps & {
     styles?: Record<string, TextTransform>,
 };
 
-type ParticlePrimitive = BaseRenderProps & SimpleParticlesCompOpt & {
-    as: "particles"
+export type ParticlePrimitive = BaseRenderProps & {
+    as: "particles",
+    time?: [number, number],
+    speed?: [number, number],
+    acc?: [XY, XY],
+    damp?: [number, number],
+    dir?: number,
+    spin?: [number, number],
+    anim?: {
+        scale?: number[],
+        color?: string[],
+        trans?: number[],
+    },
+    sprite?: [string, number];
+    pps: number;
+    spread?: number,
 };
 
 export type Primitive =
@@ -187,7 +201,7 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                     case "string": uv[u] = (v as string[]).map(c => K.rgb(c as string)); break;
                     case "number": uv[u] = v as number[]; break;
                     case "object": uv[u] = (v as XY[]).map(K.Vec2.deserialize); break;
-                    case false: uv[u] = K.vec2((v as XY).x, (v as XY).y); break;
+                    case false: uv[u] = K.Vec2.deserialize(v as XY); break;
                     default:
                         throw new Error("unknown uniform type " + JSON.stringify(v));
                 }
@@ -196,7 +210,7 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
         obj.use(K.shader(p.shader, uv));
     }
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
-    if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.vec2(p.anchor.x, p.anchor.y)));
+    if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.Vec2.deserialize(p.anchor)));
     if (p.outline) obj.use(K.outline(p.outline.width, K.rgb(p.outline.color!), p.outline.opacity, p.outline.join, p.outline.miterLimit, p.outline.cap));
     if (p.layer) obj.use(K.layer(p.layer));
     if (p.z) obj.use(K.z(p.z));

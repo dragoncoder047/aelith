@@ -8,6 +8,8 @@ export interface DistancePlusOpt {
     moveOther?: boolean;
     length?: number | "auto"
     drawOpts?: Omit<DrawLinesOpt, "pts">
+    alpha?: number
+    beta?: number
 }
 
 export interface DistanceCompPlus extends Comp {
@@ -16,6 +18,8 @@ export interface DistanceCompPlus extends Comp {
     p2: Vec2,
     length: number
     drawOpts: Omit<DrawLinesOpt, "pts">
+    alpha: number
+    beta: number
     readonly worldP1: Vec2
     readonly worldP2: Vec2
     readonly localP1: Vec2
@@ -26,7 +30,6 @@ export interface KAPLAYSpringsPlugin {
     extradistance(opts?: DistancePlusOpt): DistanceCompPlus
 }
 
-const ALPHA = 1.5, BETA = 0.5;
 export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
     return {
         // @ts-expect-error
@@ -36,10 +39,12 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                 id: "extradistance",
                 require: ["pos"],
                 other: opts.other ?? K.getTreeRoot(),
-                p1: opts.p1 ?? K.vec2(0, 0),
-                p2: opts.p2 ?? K.vec2(0, 0),
+                p1: opts.p1 ?? K.vec2(),
+                p2: opts.p2 ?? K.vec2(),
                 length: opts.length ?? "auto",
                 drawOpts: opts.drawOpts,
+                alpha: opts.alpha ?? 1.5,
+                beta: opts.beta ?? 1,
                 add() {
                     // @ts-expect-error
                     if (this.length === "auto") {
@@ -64,9 +69,7 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
 
                     // world vector A -> B
                     const { x: dx, y: dy } = A.worldP2.sub(A.worldP1);
-                    const dSqr = dx * dx + dy * dy;
-
-                    const dist = Math.sqrt(dSqr);
+                    const dist = Math.hypot(dx, dy);
                     if (!isFinite(dist) || dist === 0) return;
 
                     // unit direction from A -> B (points toward B)
@@ -84,7 +87,7 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     const invSum = invA + invB;
                     if (invSum === 0) return; // both static... how did we get here...
 
-                    const corrMag = error * ALPHA;
+                    const corrMag = error * this.alpha;
 
                     // position corrections: move A toward/away from B by +corr * (invA / invSum)
                     //                   and move B toward/away from A by -corr * (invB / invSum)
@@ -121,10 +124,10 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
 
 
                     // Velocity correction
-                    const vA = A.vel ?? K.vec2(0);
-                    const vB = B.vel ?? K.vec2(0);
+                    const vA = A.vel ?? K.vec2();
+                    const vB = B.vel ?? K.vec2();
                     // relative velocity along dir (scalar): (vB - vA).dot(u)
-                    const relAlong = (vB.x - vA.x) * ux + (vB.y - vA.y) * uy * BETA;
+                    const relAlong = ((vB.x - vA.x) * ux + (vB.y - vA.y) * uy) * this.beta;
                     // velocity change to apply: dvA = +u * (invA/invSum) * relAlong
                     //                           dvB = -u * (invB/invSum) * relAlong
                     const dvAx = ux * (invA / invSum) * relAlong;

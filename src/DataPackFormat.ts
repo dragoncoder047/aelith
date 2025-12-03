@@ -264,6 +264,8 @@ export interface EntityModelTentacleData extends JSONObject {
     cord?: boolean;
     endConstraint?: EntityBoneConstraintOptData;
     eachConstraint?: EntityBoneConstraintOptData;
+    alpha?: number;
+    beta?: number;
 }
 
 /**

@@ -42,7 +42,7 @@ export function addPhysicsComponents(obj: GameObj, comps: PhysicsComponentData[]
                 switch (comp[1]) {
                     case "area":
                         obj.unuse("body");
-                        obj.use(K.areaEffector({ force: K.vec2(comp[2].x, comp[2].y) }));
+                        obj.use(K.areaEffector({ force: K.Vec2.deserialize(comp[2]) }));
                         break;
                     case "con":
                         obj.use(K.surfaceEffector({ speed: comp[2] }));

@@ -9,7 +9,7 @@ export function kaplayHoverArea(k: KAPLAYCtx) {
                 const a = this.localArea();
 
                 k.pushTransform();
-                k.pushTranslate(k.vec2(this.area.offset.x, this.area.offset.y));
+                if (this.area.offset) k.pushTranslate(this.area.offset);
                 const isFixed = (obj: any): boolean => obj.fixed || (obj.parent ? isFixed(obj.parent) : false);
 
                 const opts = {

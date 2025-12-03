@@ -37,7 +37,7 @@ function blankEntityId(forKind: string) {
 }
 
 export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: EntityData): Entity {
-    const realPos = (data.pos ? K.vec2(data.pos.x, data.pos.y) : K.vec2()).add(slotPos);
+    const realPos = (data.pos ? K.Vec2.deserialize(data.pos) : K.vec2()).add(slotPos);
     const e = new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state, realPos, data.leashed, data.linkGroup, data.lights);
     allEntities.push(e);
     e.startHook("setup");

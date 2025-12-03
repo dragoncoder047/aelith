@@ -17,7 +17,7 @@ export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
 
 function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleData, constraintEntries: { c: EntityBoneConstraintOptData, t: string }[]) {
     var prev: GameObj<BoneComponents | BodyComp> = map[tentacle.bone] as any;
-    var pos = tentacle.pos ? K.vec2(tentacle.pos.x, tentacle.pos.y) : K.Vec2.ZERO;
+    var pos = tentacle.pos ? K.Vec2.deserialize(tentacle.pos) : K.Vec2.ZERO;
     for (var k = 0; k < tentacle.n; k++) {
         const sz = K.lerp(tentacle.sizes[0], tentacle.sizes[1], (K.easings[tentacle.sizes[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
         const mass = K.lerp(tentacle.masses[0], tentacle.masses[1], (K.easings[tentacle.masses[2]! as EaseFuncs] ?? K.easings.linear)(k / tentacle.n));
@@ -48,7 +48,9 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
                 p2: k > 0 ? K.Vec2.ZERO : pos,
                 drawOpts: {
                     width: sz,
-                }
+                },
+                alpha: tentacle.alpha,
+                beta: tentacle.beta
             }),
         ]);
         if (tentacle.gravityIsLocal) {
@@ -69,7 +71,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             });
         }
         if (!prev.has("layer")) prev.use(K.layer(GameManager.getDefaultValue("entityLayer")))
-        pos = pos.add((tentacle.extendDir ? K.vec2(tentacle.extendDir.x, tentacle.extendDir.y).unit() : K.DOWN).scale(tentacle.lps));
+        pos = pos.add((tentacle.extendDir ? K.Vec2.deserialize(tentacle.extendDir).unit() : K.DOWN).scale(tentacle.lps));
         map[tentacle.name + k] = prev;
         if (tentacle.eachConstraint) {
             constraintEntries.push({ c: tentacle.eachConstraint, t: tentacle.name + k });
@@ -154,8 +156,8 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 }));
             } break;
             case "offset": {
-                const [_, src, { x, y }] = c.c;
-                target.use(K.constraint.translation(assertGet(src), { offset: K.vec2(x, y) }));
+                const [_, src, p] = c.c;
+                target.use(K.constraint.translation(assertGet(src), { offset: K.Vec2.deserialize(p) }));
             } break;
             case "scale": {
                 const [_, src] = c.c;

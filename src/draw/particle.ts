@@ -1,24 +1,6 @@
 import { Comp, EmitterOpt, GameObj, ParticlesOpt, Quad, Texture } from "kaplay";
 import { K } from "../context";
-import { XY } from "../DataPackFormat";
-
-export interface SimpleParticlesCompOpt {
-    time?: [number, number],
-    speed?: [number, number],
-    acc?: [XY, XY],
-    damp?: [number, number],
-    dir?: number,
-    spin?: [number, number],
-    anim?: {
-        scale?: number[],
-        color?: string[],
-        trans?: number[],
-    },
-    sprite?: [string, number];
-    pps: number;
-    spread?: number,
-}
-
+import { ParticlePrimitive } from "./primitive";
 export interface SimpleParticlesComp extends Comp {
     particles: {
         rate: number;
@@ -27,7 +9,7 @@ export interface SimpleParticlesComp extends Comp {
     }
 }
 
-export function simpleParticles(opt: SimpleParticlesCompOpt): SimpleParticlesComp {
+export function simpleParticles(opt: ParticlePrimitive): SimpleParticlesComp {
     var t: Texture, q: Quad;
     if (opt.sprite) {
         const spr = K.getSprite(opt.sprite[0])!.data!;
@@ -41,7 +23,7 @@ export function simpleParticles(opt: SimpleParticlesCompOpt): SimpleParticlesCom
         max: 1000,
         lifeTime: opt.time,
         speed: opt.speed,
-        acceleration: opt.acc && [K.vec2(opt.acc[0].x, opt.acc[0].y), K.vec2(opt.acc[1].x, opt.acc[1].y)],
+        acceleration: opt.acc && [K.Vec2.deserialize(opt.acc[0]), K.Vec2.deserialize(opt.acc[1])],
         damping: opt.damp,
         scales: opt.anim?.scale,
         colors: opt.anim?.color && opt.anim.color.map(K.rgb),
