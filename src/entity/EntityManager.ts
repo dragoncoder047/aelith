@@ -112,8 +112,8 @@ export function installControlsHandler() {
             if (K[m]("action4")) p.doAction(EntityInputAction.ACTION4);
             if (K[m]("target1")) p.doAction(EntityInputAction.TARGET1);
             if (K[m]("target2")) p.doAction(EntityInputAction.TARGET2);
-            if (K[m]("inspect")) p.doAction(EntityInputAction.INSPECT);
-            if (K[m]("continue")) p.doAction(EntityInputAction.CONTINUE);
+            if (K[m]("action5")) p.doAction(EntityInputAction.ACTION5);
+            if (K[m]("action6")) p.doAction(EntityInputAction.ACTION6);
             // Camera follow
             const alpha = K.dt() * Math.LN2;
             K.setCamPos(K.lerp(K.getCamPos(), p.pos, alpha / GameManager.getDefaultValue("cameraPanAlpha")));

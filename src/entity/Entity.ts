@@ -228,7 +228,7 @@ export class Entity implements Serializable {
     doAction(action: EntityInputAction) {
         switch (action) {
             // @ts-expect-error
-            case EntityInputAction.CONTINUE:
+            case EntityInputAction.ACTION6:
                 if (!this.speechBubble?.isSpeaking()) {
                     if (this.speechBubble) this.speechBubble.text = "";
                 }
@@ -243,7 +243,7 @@ export class Entity implements Serializable {
             case EntityInputAction.ACTION4:
             case EntityInputAction.TARGET1:
             case EntityInputAction.TARGET2:
-            case EntityInputAction.INSPECT:
+            case EntityInputAction.ACTION5:
                 this.startHook(action, { what: this.targeted?.id });
                 break;
             default:

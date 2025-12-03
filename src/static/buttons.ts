@@ -60,10 +60,6 @@ export const BUTTONS: Controls = {
         keyboard: "x",
         gamepad: "ltrigger",
     },
-    inspect: {
-        keyboard: "f",
-        gamepad: "west",
-    },
     action1: {
         keyboard: ["e", "enter"],
         gamepad: "dpad-down",
@@ -80,9 +76,13 @@ export const BUTTONS: Controls = {
         keyboard: "v",
         gamepad: "dpad-up",
     },
-    inspect_next: {
+    action5: {
         keyboard: "g",
         gamepad: "east",
+    },
+    action6: {
+        keyboard: "f",
+        gamepad: "west",
     },
     // inventory controls
     scroll_inventory: {

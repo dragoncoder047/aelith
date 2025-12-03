@@ -2,6 +2,10 @@
 
 * add random ticks functionality
 * make cropticks slice9 for focus outline instead of just changing color
+    * use it
+    * do it as an entity?
+        * follow cursor animation etc.
+        * blinking
 * change motion to be using force & velocity (would make sticky platforms better)
 * finish legs
     * animate zug legs using this too
@@ -10,6 +14,7 @@
 * need a way for objects to continue moving through unloaded rooms by utilizing nav mesh
     * "bully" cellular automata?
 * remove "continue" action and have NIC advance text based on timer, as text that can't be repeated by interacting with an object, shouldn't be important.
+    * it's now under action6 but need to put the "continue" code in a hookable method of Entity
 * implement all of the settings stuff even if music manager is not fully implemented
 * add way for entity to define its main hitbox as a platform effector or sensor
 * remove "doors" section from room definition as I can just use entities for that
@@ -59,6 +64,7 @@
 * mainframe computer
 * 9-track tape
 * NIC's arm
+* MORE
 
 ## sounds to get or make
 
@@ -66,3 +72,4 @@
 * same for spaceship movement
 * 3D printer done beep
 * Elevator running
+* MORE
