@@ -23,8 +23,8 @@ export enum EntityInputAction {
     ACTION4 = "action4",
     TARGET1 = "target1",
     TARGET2 = "target2",
-    INSPECT = "inspect",
-    CONTINUE = "continue",
+    ACTION5 = "action5",
+    ACTION6 = "action6",
 }
 
 export type EntityComponents = EntityComp | PosComp;

@@ -91,7 +91,7 @@ model:
             cap: round
             width: 4
           ik:
-            angleRange: [-90, 30]
+            angleRange: &upperLegRange [-90, 30]
           children:
             - name: leftLowerLeg
               render:
@@ -104,7 +104,7 @@ model:
                 width: 4
               pos: { x: 0, y: 9 }
               ik:
-                angleRange: [-10, 135]
+                angleRange: &lowerLegRange [1, 135]
               children:
                 - pos: { x: 0, y: 9 }
                   children:
@@ -127,7 +127,7 @@ model:
             cap: round
             width: 4
           ik:
-            angleRange: [-90, 30]
+            angleRange: *upperLegRange
           children:
             - name: rightLowerLeg
               render:
@@ -140,7 +140,7 @@ model:
                 width: 4
               pos: { x: 0, y: 9 }
               ik:
-                angleRange: [-10, 135]
+                angleRange: *lowerLegRange
               children:
                 - pos: { x: 0, y: 9 }
                   children:
@@ -160,7 +160,7 @@ model:
             cap: round
             width: 3
           ik:
-            angleRange: [-90, 90]
+            angleRange: &upperArmRange [-90, 90]
           children:
             - name: leftLowerArm
               pos: { x: -12, y: 0 }
@@ -197,7 +197,7 @@ model:
             cap: round
             width: 3
           ik:
-            angleRange: [-90, 90]
+            angleRange: *upperArmRange
           children:
             - name: rightLowerArm
               pos: { x: 12, y: 0 }
@@ -281,8 +281,8 @@ model:
       channels:
         - target: [body, pos]
           keyframes:
-            - [1, { x: 0, y: 0 }, easeInOutSine]
-            - [1, { x: 0, y: -1 }, easeInOutSine]
+            - [1, { x: 0, y: -0.5 }, easeInOutSine]
+            - [1, { x: 0, y: -1.5 }, easeInOutSine]
   kinematics:
     look:
       origin: head
@@ -298,9 +298,17 @@ model:
         allowedComponents: { x: 1, y: 0 }
         bones:
           - bone: leftFoot
-            flip: [true, false, true]
+            flip: [true, false]
           - bone: rightFoot
-            flip: [true, false, false]
+            flip: [true, false]
+          - bone: leftUpperLeg
+            flip: [~, ~, ~, &reflUpperLegRange [-30, 90], *upperLegRange]
+          - bone: rightUpperLeg
+            flip: [~, ~, ~, *reflUpperLegRange, *upperLegRange]
+          - bone: leftLowerLeg
+            flip: [~, ~, ~, &reflLowerLegRange [-135, -1], *lowerLegRange]
+          - bone: rightLowerLeg
+            flip: [~, ~, ~, *reflLowerLegRange, *lowerLegRange]
           - bone: leftFootTarget
             stepMode: step
             phaseOffset: 0
@@ -316,9 +324,17 @@ model:
         anim: idle
         bones:
           - bone: leftFoot
-            flip: [true, true, true]
+            flip: [~, ~, true]
           - bone: rightFoot
-            flip: [false, false, false]
+            flip: [~, ~, false]
+          - bone: leftUpperLeg
+            flip: [~, ~, ~, ~, ~, *reflUpperLegRange]
+          - bone: rightUpperLeg
+            flip: [~, ~, ~, ~, ~, *upperLegRange]
+          - bone: leftLowerLeg
+            flip: [~, ~, ~, ~, ~, *reflLowerLegRange]
+          - bone: rightLowerLeg
+            flip: [~, ~, ~, ~, ~, *lowerLegRange]
         allowedComponents: { x: 1, y: 0 }
         transitions: *swt
         jumpRule: *swJr

@@ -180,7 +180,14 @@ export interface EntityMovingBoneData extends JSONObject {
     /** which bone target gets moved */
     bone: string;
     /** if the bone should be flipped/scaled to follow the motion */
-    flip?: [whenMovingLeft: boolean | null, whenMovingRight: boolean | null, whenStopped: boolean | null];
+    flip?: [
+        whenMovingLeft: boolean | null,
+        whenMovingRight: boolean | null,
+        whenStopped: boolean | null,
+        angleRangeLeft: [number, number] | null,
+        angleRangeRight: [number, number] | null,
+        angleRangeStopped: [number, number] | null,
+    ];
     stepMode?: "step" | "jump" | "free"
     phaseOffset?: number;
     len?: number;
@@ -233,7 +240,7 @@ export interface EntityModelBoneData extends JSONObject {
     /** inverse kinematics definition */
     ik: {
         /** maximum bending angles */
-        angleRange: [number, number];
+        angleRange: [min: number, max: number, center?: number];
         /** the "looking direction" meaning of 0 degrees; this will be flipped to stay right size up */
         naturalDirection: XY;
         /** should only be set on the end */
@@ -274,7 +281,7 @@ export interface EntityModelTentacleData extends JSONObject {
  * hook code to run for key events:
  *
  * * setup
- * * action1, action2, action3, action4, target1, target2, inspect, continue - context includes actor and opposing
+ * * action1, action2, action3, action4, target1, target2, action5, action6 - context includes actor and opposing
  * * randomTick
  * * hitEntity - context includes entity and collision direction
  * * hitTile - both collision events are run in the onBeforePhysicsResolve phase so they can be canceled
@@ -311,7 +318,7 @@ export interface EntityData extends JSONObject {
     /** absolute (if not in a tile slot) or relative (if yes) position in world */
     pos?: XY;
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */
-    leashed?: [string, number];
+    leashed?: [owner: string, distance: number];
     /** name of the link group to receive messages on */
     linkGroup?: string;
     /** if this is in some other entity's inventory */

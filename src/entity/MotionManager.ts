@@ -1,4 +1,4 @@
-import { AreaComp, InternalGameObjRaw, KEventController, Vec2 } from "kaplay";
+import { AreaComp, BoneComp, GameObj, KEventController, Vec2 } from "kaplay";
 import { K } from "../context";
 import { EntityMotionStateMachineDef, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
 import { BonesMap, Entity } from "./Entity";
@@ -185,8 +185,16 @@ class MovingBone {
         const o = b[this.bone]!;
         if (this.flip) {
             // TODO: flipping bounds on bones
-            const s = this.flip[motionVector.isZero() ? 2 : motionVector.x < 0 ? 0 : 1];
-            if (s !== null) o.scaleTo(s ? -1 : 1, 1);
+            const i = motionVector.isZero() ? 2 : motionVector.x < 0 ? 0 : 1;
+            const j = (i + 3) as 3 | 4 | 5; // why is typescript so stupid! it knows i is 0 | 1 | 2 so why can't it add 3??
+            const s = this.flip[i];
+            if (s !== null) {
+                o.scaleTo(s ? -1 : 1, 1);
+            }
+            const b = this.flip[j];
+            if (b !== null && o.has("bone")) {
+                (o as any as GameObj<BoneComp>).setAngles(b[0], b[1]);
+            }
         }
         if (!this.mode) return false;
         const zeroOffsetPos = this.offsetFromPlayerPos!.add(playerRootPos);
