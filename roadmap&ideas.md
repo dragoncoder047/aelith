@@ -1,5 +1,13 @@
 # to do
 
+* add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
+    * allow these as rendering decorations in the rooms
+    * make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
+        * add code to allow the vector math manipulation in the functionscript
+        * add code to access `getGamepadAnalogButton()` for title screen easter egg & other uses in-game
+        * add code for hooks when the player is pressing *AND* releasing the action buttons (for like elevator control buttons)
+    * this is how the inventory menu screen should work as well
+        * true entities have a hook that gets run when they're being rendered in a display entity
 * add random ticks functionality
 * make cropticks slice9 for focus outline instead of just changing color
     * use it
@@ -37,14 +45,6 @@
 * add animations on discrete quantities (such as booleans and frame numbers)
 * "hidden" settings entries so that options for how to interact with the items won't show up until the player has the item
 * determine where to add haptic effects
-* add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
-    * allow these as rendering decorations in the rooms
-    * make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
-        * add code to allow the vector math manipulation in the functionscript
-        * add code to access `getGamepadAnalogButton()` for title screen easter egg & other uses in-game
-        * add code for hooks when the player is pressing *AND* releasing the action buttons (for like elevator control buttons)
-    * this is how the inventory menu screen should work as well
-        * true entities have a hook that gets run when they're being rendered in a display entity
 * swimming
 * tabbed settings menu
     * use unused spinner sfx for tab switch
