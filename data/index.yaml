@@ -6,11 +6,12 @@ assets: !flatten
   - !include translations/index.yaml
   - !include shaders/index.yaml
 tilesets: !include tilesets/index.yaml
-entityTypes: !include entities/index.yaml
+entityTypes: !include entities/prototypes/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no
-  currentPlayer: explorer
+  currentPlayer: spaceship
+  ownedEntities: !include entities/instances/owned.yaml
 renderLayers:
   - [
       "behindEverything",

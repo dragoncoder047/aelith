@@ -1,0 +1,23 @@
+tags: [spaceship]
+physics:
+  - [rect, -30, -30, 60, 60]
+navHeight: { x: 1, y: 1 }
+behavior:
+  canBePlayer: yes
+  camScale: 0.5
+  moveSpeed: 1000
+  inventorySlots: 20
+  inventorySize: null
+  # inventoryHolder: interior
+model:
+  skeleton:
+    - name: body
+      pos: { x: 0, y: 0 }
+      render:
+        as: sprite
+        sprite: spaceship
+  kinematics:
+    initial: flying
+    states:
+      flying:
+        gravityScale: 0

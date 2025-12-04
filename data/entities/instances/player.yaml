@@ -1,0 +1,4 @@
+id: player
+kind: explorer
+state:
+  agent: NIC

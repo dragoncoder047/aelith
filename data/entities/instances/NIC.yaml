@@ -1,0 +1,4 @@
+id: NIC
+kind: agent
+state:
+  owner: player

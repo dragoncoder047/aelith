@@ -105,4 +105,4 @@ model:
       flying:
         gravityScale: 0
 hooks:
-  action1: [as, explorer, setPlayer]
+  action1: [as, [my, owner], setPlayer]

@@ -1,0 +1,28 @@
+tileset: aboveground
+map:
+  [
+  "        S",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "############################",
+  "############################",
+  "############################",
+  "############################"
+]
+indexMapping:
+  "#": [0]
+  "|": [1]
+  S: [spaceship]
+entities:
+  spaceship: !include ../entities/instances/spaceship.yaml
+gravity: 600

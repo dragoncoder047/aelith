@@ -324,6 +324,7 @@ export interface EntityData extends JSONObject {
     linkGroup?: string;
     /** if this is in some other entity's inventory */
     parent?: string;
+    inventory?: string[];
     /** lighting lights things */
     lights: LightData[];
 }

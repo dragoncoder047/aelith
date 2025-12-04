@@ -23,10 +23,6 @@ indexMapping:
   a: [agent]
 doors:
 entities:
-  explorer:
-    id: explorer
-    kind: explorer
-  agent:
-    id: agent
-    kind: agent
+  explorer: !include ../entities/instances/player.yaml
+  agent: !include ../entities/instances/NIC.yaml
 gravity: 600

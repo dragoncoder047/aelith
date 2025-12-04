@@ -44,7 +44,29 @@ export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: En
     if (RoomManager.getCurrentRoom() === inRoom) {
         e.load();
     }
+    maybeRunSpawnCallbacks(e.id);
     return e;
+}
+
+const spawnCallbacks: Record<string, (() => void)[]> = {};
+export function spawnOwnedEntity(ownerID: string, data: EntityData): void {
+    const owner = getEntityByName(ownerID);
+    if (!owner) {
+        (spawnCallbacks[ownerID] ??= []).push(() => spawnOwnedEntity(ownerID, data));
+        return;
+    }
+    const e = new Entity(data.id ?? blankEntityId(data.kind), null, data.kind, data.state, K.vec2(), data.leashed, data.linkGroup, data.lights);
+    allEntities.push(e);
+    e.startHook("setup");
+    maybeRunSpawnCallbacks(e.id);
+}
+
+function maybeRunSpawnCallbacks(newlySpawned: string) {
+    const cbs = spawnCallbacks[newlySpawned];
+    if (cbs) {
+        delete spawnCallbacks[newlySpawned];
+        for (var cb of cbs) cb();
+    }
 }
 
 export function loadAllEntitiesInRoom(id: string) {
