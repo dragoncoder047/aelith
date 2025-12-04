@@ -65,9 +65,9 @@ def file(loader: Loader, node: typing.Any) -> typing.Any:
     contents = file.read_bytes()
     hash = hashlib.md5(contents, usedforsecurity=False).hexdigest()
     if file.suffix != ".yaml":
-        outfile = outdir / "res" / (hash + file.suffix)
+        outfile = outdir / "res" / f"{file.stem}_{hash[:8]}{file.suffix}"
     else:
-        outfile = outdir / "res" / (hash + ".json")
+        outfile = outdir / "res" / f"{file.stem}_{hash[:8]}.json"
         if minify:
             contents = json.dumps(
                 yaml.load(contents.decode(), Loader),
