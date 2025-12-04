@@ -13,6 +13,7 @@ interface Keyframe<T extends LerpValue> {
 }
 
 class AnimChannel<T extends LerpValue> {
+    t = 0;
     /** index into the keyframes array */
     i: number = 0;
     /** relative time into the current keyframe */
@@ -27,7 +28,8 @@ class AnimChannel<T extends LerpValue> {
         public alpha: number = 10,
         public keyframes: Keyframe<T>[],
         public interpolate: (a: T, b: T, progress: number) => T,
-        public relative: boolean = false) {
+        public relative = false,
+        public delay = 0) {
         if (keyframes.length === 0) throw new Error("Not valid to have 0 keyframes");
         if (keyframes.length === 1) {
             keyframes.push(Object.assign({}, keyframes[0]!));
@@ -41,6 +43,7 @@ class AnimChannel<T extends LerpValue> {
         this.rewind();
         this.active = true;
         this.ended = false;
+        this.t = this.delay;
     }
     update(dt: number): T {
         const [f1, f2, alpha] = this._advance(dt);
@@ -54,31 +57,35 @@ class AnimChannel<T extends LerpValue> {
     }
     private _advance(dt: number) {
         var i = this.i, d: number, frames = this.keyframes, len = frames.length;
-        if (this._totalLength === 0) {
-            this.ended = this.sticky || !this.loop;
-            return [frames[0]!._cx, frames[0]!._cx, 1] as const;
-        }
-        if (!this.ended) this.relT += dt;
-        // advance to next keyframes
-        while ((d = frames[i]!.len) < this.relT) {
-            this.relT -= d;
-            i++;
-            if (i === len) {
-                if (this.loop) i = 0;
-                else {
-                    i--;
-                    this.ended = true;
-                    this.active = this.sticky;
-                    break;
+        if (this.t > 0) {
+            this.t -= dt;
+        } else {
+            if (this._totalLength === 0) {
+                this.ended = this.sticky || !this.loop;
+                return [frames[0]!._cx, frames[0]!._cx, 1] as const;
+            }
+            if (!this.ended) this.relT += dt;
+            // advance to next keyframes
+            while ((d = frames[i]!.len) < this.relT) {
+                this.relT -= d;
+                i++;
+                if (i === len) {
+                    if (this.loop) i = 0;
+                    else {
+                        i--;
+                        this.ended = true;
+                        this.active = this.sticky;
+                        break;
+                    }
+                }
+                // re-do the randomization on the next frame
+                const kf = frames[i]!;
+                if (typeof kf.x === "function") {
+                    kf._cx = kf.x();
                 }
             }
-            // re-do the randomization on the next frame
-            const kf = frames[i]!;
-            if (typeof kf.x === "function") {
-                kf._cx = kf.x();
-            }
+            this.i = i;
         }
-        this.i = i;
         return [frames[i]!._cx, frames[(i + 1) % len]!._cx, this.relT / frames[i]!.len] as const;
     }
 }
@@ -133,13 +140,13 @@ export function createAnimation(name: string, json: EntityAnimData) {
     const c = [];
     for (var channel of channels) {
         const frames: Keyframe<any>[] = [];
-        const { target, keyframes, alpha, slerp, relative } = channel;
+        const { target, keyframes, alpha, slerp, relative, delay } = channel;
         var isVec2 = false;
         for (var [len, value, easing] of keyframes) {
             if (len < 0) throw new Error(`invalid length (must be >=0): ${len} (on anim name ${name})`)
             frames.push({ x: Array.isArray(value) ? (typeof value[0] === "number" ? (([a, b]) => () => K.rand(a, b))(value as number[]) : typeof value[0] === "string" ? (([a, b]) => { const ca = K.rgb(a), cb = K.rgb(b); return () => K.rand(ca, cb); })(value as [string, string]) : (([{ x: x1, y: y1 }, { x: x2, y: y2 }, spherical]) => spherical ? () => (K.RIGHT.rotate(K.rand(360)).scale(K.rand()).scale(x2 - x1, y2 - y1).add(x1, y1)) : (() => K.vec2(K.rand(x1, x2), K.rand(y1, y2))))(value as [XY, XY, boolean])) : (typeof value === "number" ? value : typeof value === "string" ? K.rgb(value) : K.vec2(value.x, value.y)), len, ease: (easing as any) === "none" ? () => 1 : K.easings[easing ?? "linear"] }); // ridiculously long line
         }
-        c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp, relative));
+        c.push(new AnimChannel(target, loop, sticky, alpha, frames as any, isVec2 && slerp ? slerpV as any : K.lerp, relative, delay));
     }
     return [new Animation(name, c, interrupt, cancel, shadow), autoplay] as const;
 }

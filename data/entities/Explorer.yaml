@@ -13,7 +13,7 @@ behavior:
   canBePlayer: yes
   moveSpeed: 80
   sprintSpeed: 120
-  jumpForce: 200
+  jumpForce: 250
   inventorySlots: 8
   inventorySize: null
 model:
@@ -283,6 +283,17 @@ model:
           keyframes:
             - [1, { x: 0, y: -0.5 }, easeInOutSine]
             - [1, { x: 0, y: -1.5 }, easeInOutSine]
+        - target: [leftHandTarget, pos]
+          keyframes:
+            - [1.1, { x: -0.5, y: -1 }, easeInOutSine]
+            - [1.1, { x: 0.5, y: -1 }, easeInOutSine]
+          relative: true
+        - target: [rightHandTarget, pos]
+          keyframes:
+            - [1.1, { x: 0.5, y: -1 }, easeInOutSine]
+            - [1.1, { x: -0.5, y: -1 }, easeInOutSine]
+          relative: true
+          delay: 0.2
     jump:
       channels:
         - target: [body, pos]
@@ -364,7 +375,6 @@ model:
         allowedComponents: { x: 1, y: 0 }
         transitions:
           - [standing, [grounded]]
-          - [walking, [moving]]
         jumpRule: [[0]]
       # climbing:
       #   gravityScale: 0

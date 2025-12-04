@@ -3,11 +3,11 @@ import { K } from "../context";
 import * as InputManager from "../controls/InputManager";
 import { EntityData, EntityPrototypeData } from "../DataPackFormat";
 import * as GameManager from "../GameManager";
-import { JSONObject, JSONValue } from "../JSON";
+import { JSONValue } from "../JSON";
 import * as RoomManager from "../room/RoomManager";
 import * as SceneManager from "../scenes/SceneManager";
 import * as ScriptHandler from "../script/ScriptHandler";
-import { Entity, EntityInputAction } from "./Entity";
+import { Entity } from "./Entity";
 
 
 var entityPrototypes: Record<string, EntityPrototypeData> = {};
@@ -106,14 +106,10 @@ export function installControlsHandler() {
             // Jump
             if (K[m]("jump")) p.tryJump();
             // Actions
-            if (K[m]("action1")) p.doAction(EntityInputAction.ACTION1);
-            if (K[m]("action2")) p.doAction(EntityInputAction.ACTION2);
-            if (K[m]("action3")) p.doAction(EntityInputAction.ACTION3);
-            if (K[m]("action4")) p.doAction(EntityInputAction.ACTION4);
-            if (K[m]("target1")) p.doAction(EntityInputAction.TARGET1);
-            if (K[m]("target2")) p.doAction(EntityInputAction.TARGET2);
-            if (K[m]("action5")) p.doAction(EntityInputAction.ACTION5);
-            if (K[m]("action6")) p.doAction(EntityInputAction.ACTION6);
+            const ACTIONS = ["action1", "action2", "action3", "action4", "target1", "target2", "action5", "action6"];
+            for (var i = 0; i < ACTIONS.length; i++) {
+                if (K[m](ACTIONS[i])) p.doAction(ACTIONS[i]!);
+            }
             // Camera follow
             const alpha = K.dt() * Math.LN2;
             K.setCamPos(K.lerp(K.getCamPos(), p.pos, alpha / GameManager.getDefaultValue("cameraPanAlpha")));

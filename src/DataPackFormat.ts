@@ -219,6 +219,7 @@ interface EntityAnimChannelData extends JSONObject {
     /** 1/(time in seconds to move halfway on a step change) */
     alpha?: number;
     relative?: boolean;
+    delay?: number;
 }
 
 export type EntityBoneConstraintOptData =

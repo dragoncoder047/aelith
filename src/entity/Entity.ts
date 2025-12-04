@@ -16,17 +16,6 @@ import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
 import { MotionManager } from "./MotionManager";
 
-export enum EntityInputAction {
-    ACTION1 = "action1",
-    ACTION2 = "action2",
-    ACTION3 = "action3",
-    ACTION4 = "action4",
-    TARGET1 = "target1",
-    TARGET2 = "target2",
-    ACTION5 = "action5",
-    ACTION6 = "action6",
-}
-
 export type EntityComponents = EntityComp | PosComp;
 export type BoneComponents = EntityComponents | RotateComp | ScaleComp | AreaComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
@@ -224,32 +213,19 @@ export class Entity implements Serializable {
                 () => (this._spitItOut ? (this._spitItOut = false, true) : false));
         }
     }
-
-    doAction(action: EntityInputAction) {
-        switch (action) {
-            // @ts-expect-error
-            case EntityInputAction.ACTION6:
-                if (!this.speechBubble?.isSpeaking()) {
-                    if (this.speechBubble) this.speechBubble.text = "";
-                }
-                else if (this._goOn) {
-                    this._goOn();
-                    this._goOn = undefined;
-                }
-                else this._spitItOut = true;
-            case EntityInputAction.ACTION1:
-            case EntityInputAction.ACTION2:
-            case EntityInputAction.ACTION3:
-            case EntityInputAction.ACTION4:
-            case EntityInputAction.TARGET1:
-            case EntityInputAction.TARGET2:
-            case EntityInputAction.ACTION5:
-                this.startHook(action, { what: this.targeted?.id });
-                break;
-            default:
-                action satisfies never;
-                throw new Error(`wtf what is entity supposed to do with ${action}`);
+    continueSpeaking() {
+        if (!this.speechBubble?.isSpeaking()) {
+            if (this.speechBubble) this.speechBubble.text = "";
         }
+        else if (this._goOn) {
+            this._goOn();
+            this._goOn = undefined;
+        }
+        else this._spitItOut = true;
+    }
+
+    doAction(action: string) {
+        this.startHook(action, { what: this.targeted?.id });
     }
     tryJump() {
         if (this.obj) {
