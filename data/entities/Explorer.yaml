@@ -283,6 +283,27 @@ model:
           keyframes:
             - [1, { x: 0, y: -0.5 }, easeInOutSine]
             - [1, { x: 0, y: -1.5 }, easeInOutSine]
+    jump:
+      channels:
+        - target: [body, pos]
+          alpha: 100
+          relative: true
+          keyframes:
+            - [0.1, { x: 0, y: 0 }]
+            - [0.1, { x: 0, y: 6 }]
+            - [0.1, { x: 0, y: 0 }]
+        - target: [leftEye, scale]
+          alpha: 100
+          keyframes:
+            - [0.1, { x: 1, y: 3 }]
+            - [0.1, { x: 5, y: 0.5 }]
+            - [0.1, { x: 1, y: 3 }]
+        - target: [rightEye, scale]
+          alpha: 100
+          keyframes:
+            - [0.1, { x: 1, y: 3 }]
+            - [0.1, { x: 5, y: 0.5 }]
+            - [0.1, { x: 1, y: 3 }]
   kinematics:
     look:
       origin: head
@@ -319,9 +340,14 @@ model:
           - [standing, [0b0111, [grounded], [moving]]] # 7 = !grounded || !moving
           # - [climbing, [0b1000, [moving], [colliding, climbable]]] # 8 = moving && onLadder
           - [walking, [moving]]
-        jumpRule: &swJr [[grounded], standing]
+        jumpRule: &swJr [[grounded], jumping]
       standing:
         anim: idle
+        allowedComponents: { x: 1, y: 0 }
+        transitions: *swt
+        jumpRule: *swJr
+      jumping:
+        anim: jump
         bones:
           - bone: leftFoot
             flip: [~, ~, true]
@@ -336,13 +362,17 @@ model:
           - bone: rightLowerLeg
             flip: [~, ~, ~, ~, ~, *lowerLegRange]
         allowedComponents: { x: 1, y: 0 }
-        transitions: *swt
-        jumpRule: *swJr
+        transitions:
+          - [standing, [grounded]]
+          - [walking, [moving]]
+        jumpRule: [[0]]
       # climbing:
       #   gravityScale: 0
       #   bones: # TODO
       #   transitions:
       #     - [standing, [0b01, [colliding, climbable]]] # 1 = !onLadder
       #   jumpRule: [[1], standing] # constant 1 = true
+      # swimming:
+      #   # TODO
 hooks:
   action1: [as, agent, setPlayer]

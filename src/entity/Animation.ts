@@ -66,8 +66,10 @@ class AnimChannel<T extends LerpValue> {
             if (i === len) {
                 if (this.loop) i = 0;
                 else {
+                    i--;
                     this.ended = true;
                     this.active = this.sticky;
+                    break;
                 }
             }
             // re-do the randomization on the next frame
