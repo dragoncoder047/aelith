@@ -12,7 +12,7 @@ map:
   "",
   "",
   "",
-  "",
+  "        e",
   "",
   "############################",
   "############################",
@@ -23,6 +23,10 @@ indexMapping:
   "#": [0]
   "|": [1]
   S: [spaceship]
+  e: [explorer]
 entities:
   spaceship: !include ../entities/instances/spaceship.yaml
+  explorer:
+    id: explorer2
+    kind: explorer
 gravity: 600

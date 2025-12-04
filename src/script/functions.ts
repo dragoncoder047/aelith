@@ -34,8 +34,8 @@ export const FUNCTIONS: Form[] = [
         }
         return value;
     }),
-    new Form("as", true, async function* ([who, ...what], task, _, env, context, traceback) {
-        const realActor = EntityManager.getEntityByName(who);
+    new Form("as", true, async function* ([who, ...what], task, actor, env, context, traceback) {
+        const realActor = EntityManager.getEntityByName(yield* evaluateForm(who, task, actor, env, context, traceback));
         if (!realActor) throw tracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
         return yield* evaluateForm(what, task, realActor, env, context, traceback);
     }),

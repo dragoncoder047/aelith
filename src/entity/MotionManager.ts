@@ -188,12 +188,12 @@ class MovingBone {
             const i = motionVector.isZero() ? 2 : motionVector.x < 0 ? 0 : 1;
             const j = (i + 3) as 3 | 4 | 5; // why is typescript so stupid! it knows i is 0 | 1 | 2 so why can't it add 3??
             const s = this.flip[i];
-            if (s !== null) {
+            if ((s ?? null) !== null) {
                 o.scaleTo(s ? -1 : 1, 1);
             }
             const b = this.flip[j];
-            if (b !== null && o.has("bone")) {
-                (o as any as GameObj<BoneComp>).setAngles(b[0], b[1]);
+            if ((b ?? null) !== null && o.has("bone")) {
+                (o as any as GameObj<BoneComp>).setAngles(b![0], b![1]);
             }
         }
         if (!this.mode) return false;

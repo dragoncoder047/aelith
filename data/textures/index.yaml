@@ -45,3 +45,7 @@
   loader: url
   src: !file ui.png
   metadata: !include ui.yaml
+- kind: sprite
+  id: spaceship
+  loader: url
+  src: !include spaceship.png

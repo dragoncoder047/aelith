@@ -30,7 +30,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             K.rotate(0),
             K.scale(),
             K.area({
-                collisionIgnore: [e.id],
+                collisionIgnore: [e.id, ...(e.obj?.collisionIgnore ?? [])],
                 restitution: (e.obj as any).restitution ?? GameManager.getDefaultValue("restitution"),
                 friction: (e.obj as any).friction ?? GameManager.getDefaultValue("friction"),
                 shape: new K.Circle(K.Vec2.ZERO, sz / 2),
