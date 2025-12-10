@@ -135,7 +135,7 @@ export class MotionManager {
         var i: number;
         const trs = this.curData()?.transitions ?? [];
         for (i = 0; i < trs.length; i++) {
-            const [newState, condition] = trs[i]!;
+            const d = trs[i]!, newState = d[0], condition = d[1];
             if (this._evaluateCondition(condition, !velocity.isZero(), manualStop)) {
                 this.setState(newState);
                 break;

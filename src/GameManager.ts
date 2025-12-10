@@ -29,11 +29,11 @@ export function setup() {
     // where do I put THIS?
     K.strings.os = PlatformGuesser.guessOS();
     K.strings.switch = (switchData) => {
-        const [key, ...caseStrings] = switchData.split("~");
+        const bits = switchData.split("~"), key = bits[0];
         const procCases = {} as Record<string, string>;
-        for (var caseStr of caseStrings) {
-            const [caseKey, caseValue] = caseStr.split(":");
-            procCases[caseKey!] = caseValue!;
+        for (var i = 1; i < bits.length; i++) {
+            const pair = bits[i]!.split(":");
+            procCases[pair[0]!] = pair[1]!;
         }
         return String(procCases[key!]);
     }

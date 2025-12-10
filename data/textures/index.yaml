@@ -49,3 +49,4 @@
   id: spaceship
   loader: url
   src: !include spaceship.png
+  metadata: !include spaceship.yaml

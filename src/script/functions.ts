@@ -2,26 +2,36 @@ import { K } from "../context";
 import * as EntityManager from "../entity/EntityManager";
 import { RefuseTake } from "../entity/Inventory";
 import * as RoomManager from "../room/RoomManager";
-import { Form } from "./Form";
+import { Form, FormFunc } from "./Form";
 import { evaluateForm, tracebackError } from "./ScriptHandler";
 
+function macro(name: string, body: FormFunc): Form {
+    return new Form(name, true, body);
+}
+
+function func(name: string, body: FormFunc): Form {
+    return new Form(name, false, body);
+}
+
 export const FUNCTIONS: Form[] = [
-    new Form("comment", true, async function* () { }),
-    new Form("uncomment", true, async function* (args, task) {
+    macro("comment", async function* () { }),
+    macro("uncomment", async function* (args, task) {
         task.tc = true;
         return ["do", ...args];
     }),
-    new Form("debug", false, async function* (args, task, actor, env, context, traceback) {
+    func("log", async function* (args) {
+        console.log(JSON.stringify(args, null, 4));
+    }),
+    func("debug", async function* (args, task, actor, env, context, traceback) {
         console.log(JSON.stringify({ args, task, actor, env, context, traceback }, null, 4));
     }),
-    new Form("wait", false, async function* ([t]) {
+    func("wait", async function* ([t]) {
         await K.wait(t);
     }),
-    new Form("list", false, async function* (args) {
+    func("list", async function* (args) {
         return args;
     }),
-    new Form("be", false, async function* (args, task, actor) {
-        const [slot, value, silent] = args;
+    func("be", async function* ([slot, value, silent], task, actor) {
         const oldValue = actor.state[slot];
         actor.state[slot] = value;
         if (!silent) {
@@ -34,36 +44,36 @@ export const FUNCTIONS: Form[] = [
         }
         return value;
     }),
-    new Form("as", true, async function* ([who, ...what], task, actor, env, context, traceback) {
+    macro("as", async function* ([who, ...what], task, actor, env, context, traceback) {
         const realActor = EntityManager.getEntityByName(yield* evaluateForm(who, task, actor, env, context, traceback));
         if (!realActor) throw tracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
         return yield* evaluateForm(what, task, realActor, env, context, traceback);
     }),
-    new Form("do", true, async function* (forms, task, actor, env, context, traceback) {
+    macro("do", async function* (forms, task, actor, env, context, traceback) {
         for (var i = 0; i < forms.length - 1; i++) {
             env.it = env.them = yield* evaluateForm(forms[i]!, task, actor, env, context, traceback);
         }
         task.tc = true;
         return forms.at(-1);
     }),
-    new Form("when", true, async function* ([cond, ...body], task) {
+    macro("when", async function* ([cond, ...body], task) {
         task.tc = true;
         return ["if", cond, ["do", ...body]];
     }),
-    new Form("unless", true, async function* ([cond, ...body], task) {
+    macro("unless", async function* ([cond, ...body], task) {
         task.tc = true;
         return ["if", cond, undefined, ["do", ...body]];
     }),
-    new Form("if", true, async function* ([test, a, b], task, actor, env, context, traceback) {
+    macro("if", async function* ([test, a, b], task, actor, env, context, traceback) {
         const cond = yield* evaluateForm(test, task, actor, env, context, traceback);
         task.tc = true;
         return cond ? a : b;
     }),
-    new Form("switch", false, async function* ([value, cases], task) {
+    func("switch", async function* ([value, cases], task) {
         task.tc = true;
         return cases[value];
     }),
-    new Form("each", true, async function* ([name, listEx, ...body], task, actor, env, context, traceback) {
+    macro("each", async function* ([name, listEx, ...body], task, actor, env, context, traceback) {
         const block = ["do", ...body];
         const list = yield* evaluateForm(listEx, task, actor, env, context, traceback);
         for (var item of list) {
@@ -71,106 +81,112 @@ export const FUNCTIONS: Form[] = [
             yield* evaluateForm(block, task, actor, env, context, traceback);
         }
     }),
-    new Form("while", true, async function* ([test, ...body], task) {
+    macro("while", async function* ([test, ...body], task) {
         const b = ["do", ...body];
         task.tc = true;
         return ["when", test, b, ["while", test, b]];
     }),
-    new Form("until", true, async function* ([test, ...body], task) {
+    macro("until", async function* ([test, ...body], task) {
         const b = ["do", ...body];
         task.tc = true;
         return ["unless", test, b, ["until", test, b]];
     }),
-    new Form("iota", false, async function* ([start, stop, step]) {
+    func("iota", async function* ([start, stop, step]) {
         const l = [];
         for (var i = start; i < stop; i += step ?? 1) l.push(i);
         return l;
     }),
-    new Form("repeat", true, async function* ([name, range, ...body], task) {
+    macro("repeat", async function* ([name, range, ...body], task) {
         task.tc = true;
         return ["each", name, ["iota", ...range], ...body];
     }),
-    new Form("ami", false, async function* ([slot, target], _, actor) {
+    func("ami", async function* ([slot, target], _, actor) {
         const value = actor.state[slot];
         if (target !== undefined) {
             return value === target;
         }
         return !!value;
     }),
-    new Form("my", false, async function* ([slot], _, actor) {
+    func("my", async function* ([slot], _, actor) {
         return actor.state[slot];
     }),
-    new Form("render", false, async function* ([slot, newValue], task, actor, env, context, traceback) {
+    func("render", async function* ([slot, newValue], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
-    new Form("anim", false, async function* ([animName, restart], task, actor) {
+    func("anim", async function* ([animName, restart], task, actor) {
         actor.playAnim(animName, restart);
     }),
-    new Form("skinAnim", false, async function* ([animName, value], task, actor) {
+    func("skinAnim", async function* ([animName, value], task, actor) {
         actor.animator.skinAnim(animName, value);
     }),
-    new Form("anim/w", false, async function* ([animName], task, actor, env, context, traceback) {
+    func("anim/w", async function* ([animName], task, actor, env, context, traceback) {
         task.paused = true;
         actor.playAnim(animName).then(() => task.paused = false);
         yield;
     }),
-    new Form("unanim", false, async function* ([animName], task, actor) {
+    func("unanim", async function* ([animName], task, actor) {
         actor.stopAnim(animName);
     }),
-    new Form("playsound", false, async function* ([soundName, global], task, actor, env, context, traceback) {
+    func("playsound", async function* ([soundName, global], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
-    new Form("playsound/w", false, async function* ([soundName, global], task, actor, env, context, traceback) {
+    func("playsound/w", async function* ([soundName, global], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
-    new Form("say", false, async function* ([text], task, actor) {
+    func("say", async function* ([text], task, actor) {
+        actor.say(text);
+    }),
+    func("say/w", async function* ([text], task, actor) {
         await actor.say(text);
     }),
-    new Form("the", false, async function* ([name], task, actor, env, context) {
+    func("the", async function* ([name], task, actor, env, context) {
         return context[name];
     }),
     // TODO: global variables and stuff
-    new Form("get", false, async function* ([name], task, actor, env) {
+    func("get", async function* ([name], task, actor, env) {
         return env[name];
     }),
-    new Form("set", false, async function* ([name, value], task, actor, env) {
+    func("set", async function* ([name, value], task, actor, env) {
         return env[name] = value;
     }),
-    new Form("here", false, async function* (args, task, actor) {
+    func("here", async function* (args, task, actor) {
         return actor.pos;
     }),
-    new Form("spawn", false, async function* ([kind, pos, room, data]) {
+    func("spawn", async function* ([kind, pos, room, data]) {
         return EntityManager.spawnEntityInRoom(pos, room ?? RoomManager.getCurrentRoom(), { ...data, kind, pos: null }).id;
     }),
-    new Form("die", false, async function* (args, task, actor) {
+    func("die", async function* (args, task, actor) {
         EntityManager.destroyEntity(actor);
     }),
-    new Form("tp", false, async function* ([eid, room, pos]) {
+    func("tp", async function* ([eid, room, pos]) {
         EntityManager.teleportEntityTo(EntityManager.getEntityByName(eid)!, room, pos);
     }),
-    new Form("mState", false, async function* ([state], task, actor) {
+    func("mState", async function* ([state], task, actor) {
         if (state !== null) actor.setMotionState(state);
         else actor.endMotionState();
     }),
-    new Form("refuse", false, async function* () {
+    func("refuse", async function* () {
         throw new RefuseTake;
     }),
-    new Form("take", false, async function* ([itemid], task, actor) {
+    func("take", async function* ([itemid], task, actor) {
         return await actor.inventory.tryAdd(EntityManager.getEntityByName(itemid)!);
     }),
-    new Form("hold", false, async function* ([itemid], task, actor) {
+    func("hold", async function* ([itemid], task, actor) {
         return actor.inventory.displayObj(EntityManager.getEntityByName(itemid)!);
     }),
-    new Form("drop", false, async function* ([itemid], task, actor) {
+    func("drop", async function* ([itemid], task, actor) {
         return actor.inventory.drop(EntityManager.getEntityByName(itemid)!);
     }),
-    new Form("setPlayer", false, async function* (args, task, actor) {
+    func("setPlayer", async function* (args, task, actor) {
         EntityManager.setPlayer(actor);
     }),
-    new Form("#", false, async function* ([{ x, y }]) {
+    func("#", async function* ([{ x, y }]) {
         return Math.hypot(x, y);
     }),
-    new Form("*", false, async function* (values) {
+    func("*", async function* (values) {
         return values.reduce((a, b) => a * b);
+    }),
+    func("not", async function* ([value]) {
+        return !value;
     }),
 ];

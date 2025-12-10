@@ -129,9 +129,8 @@ function subStrings(text: string, vars: NestedStrings): string {
         if (funcRegex) {
             const mm = funcRegex.exec(text);
             if (mm) {
-                const [_, fun, inside] = mm;
-                if (fun! in functions) {
-                    text = text.replace(new RegExp(`\\$${fun}\\(${inside}\\)`, "gm"), functions[fun!]!(inside!));
+                if (mm[1]! in functions) {
+                    text = text.replace(new RegExp(`\\$${mm[1]}\\(${mm[2]}\\)`, "gm"), functions[mm[1]!]!(mm[2]!));
                 } else throw new Error("bad");
                 changed = 2;
             }

@@ -14,11 +14,34 @@ model:
   skeleton:
     - name: gazeTarget
     - name: body
-      pos: { x: 0, y: 0 }
       render:
         as: sprite
         sprite: spaceship
         anchor: center
+        frame: 2
+        z: 0
+      children:
+        - name: backdoor
+          render:
+            as: sprite
+            sprite: spaceship
+            anchor: center
+            frame: 1
+            z: -1
+        - name: interior
+          render:
+            as: sprite
+            sprite: spaceship
+            anchor: center
+            frame: 0
+            z: -1
+        - name: frontdoor
+          render:
+            as: sprite
+            sprite: spaceship
+            anchor: center
+            frame: 1
+            z: 0
   tentacles:
     - &st
       name: ta
@@ -48,3 +71,31 @@ model:
         bones:
           - bone: body
             flip: [false, true]
+  anims:
+    doorOpen:
+      relative: true
+      sticky: true
+      channels:
+        - target: [frontdoor, pos]
+          keyframes:
+            - [0, { x: 0, y: -64 }]
+        - target: [frontdoor, angle]
+          keyframes:
+            - [0, -30]
+    doorClose:
+      relative: true
+      sticky: true
+      channels:
+        - target: [frontdoor, pos]
+          keyframes:
+            - [0, { x: 0, y: 0 }]
+        - target: [frontdoor, angle]
+          keyframes:
+            - [0, 0]
+hooks:
+  setup: [do, [be, doorOpen, true], [log, setup!]]
+  stateChanged:
+    - switch
+    - [the, slot]
+    - doorOpen: [anim, [if, [the, value], doorOpen, doorClose]]
+  action1: [do, [be, doorOpen, [not, [my, doorOpen]]], [say, [if, [my, doorOpen], doors opening, doors closing]]]

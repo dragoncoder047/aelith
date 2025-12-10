@@ -204,13 +204,27 @@ export class Entity implements Serializable {
     private _goOn: (() => void) | undefined;
     private _shutUp: (() => void) | undefined;
     async say(text: string | undefined) {
-        if (!text) this.speechBubble && (this.speechBubble.text = "", this._spitItOut = false);
+        if (!text) {
+            if (this.speechBubble) {
+                this.speechBubble.text = "";
+                this._spitItOut = false;
+            }
+        }
         else {
             this._shutUp?.();
             await this.speechBubble?.speakText(text,
-                () => new Promise((a, b) => (this._goOn = a, this._shutUp = () => b(this._spitItOut = true))),
-                () => this.speakSound && this.emitSound(this.speakSound, 1),
-                () => (this._spitItOut ? (this._spitItOut = false, true) : false));
+                () => new Promise((resolve, reject) => {
+                    this._goOn = resolve;
+                    this._shutUp = () => reject(this._spitItOut = true);
+                }),
+                () => { if (this.speakSound) this.emitSound(this.speakSound, 1); },
+                () => {
+                    if (this._spitItOut) {
+                        this._spitItOut = false;
+                        return true;
+                    }
+                    return false;
+                });
         }
     }
     continueSpeaking() {

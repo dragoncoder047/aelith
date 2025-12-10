@@ -108,7 +108,7 @@ export class Room implements Serializable {
         var t: number, i = 0;
         // set up counters
         for (i = 0; i < this.depthTiles.length; i++) {
-            const [obj, depthSteps] = this.depthTiles[i]!;
+            const d = this.depthTiles[i]!, obj = d[0], depthSteps = d[1];
             t = 0;
             while (t < DEPTH) t += DEPTH / depthSteps;
             this.depthCache.set(obj, t);
@@ -126,7 +126,7 @@ export class Room implements Serializable {
             const colorLerpValue = t * COLOR_FACTOR;
             const scale = 1 - t;
             for (i = 0; i < this.depthTiles.length; i++) {
-                const [obj, ds] = this.depthTiles[i]!;
+                const d = this.depthTiles[i]!, obj = d[0], ds = d[1];
                 if (obj.hidden) continue;
                 const step = DEPTH / ds;
                 const nextT = this.depthCache.get(obj)!;

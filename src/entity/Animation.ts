@@ -46,7 +46,7 @@ class AnimChannel<T extends LerpValue> {
         this.t = this.delay;
     }
     update(dt: number): T {
-        const [f1, f2, alpha] = this._advance(dt);
+        const data = this._advance(dt), f1 = data[0], f2 = data[1], alpha = data[2];
         return this.interpolate(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
     }
     rewind() {
@@ -61,7 +61,7 @@ class AnimChannel<T extends LerpValue> {
             this.t -= dt;
         } else {
             if (this._totalLength === 0) {
-                this.ended = this.sticky || !this.loop;
+                this.ended = !(this.active = this.sticky || this.loop);
                 return [frames[0]!._cx, frames[0]!._cx, 1] as const;
             }
             if (!this.ended) this.relT += dt;

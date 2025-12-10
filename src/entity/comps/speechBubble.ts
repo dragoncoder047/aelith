@@ -27,7 +27,7 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
         tokenDelay: opt.tokenDelay ?? 0.1,
         draw(this: GameObj<SpeechBubbleComp>) {
             if (this.text === "") return;
-            K.pushTranslate();
+            K.pushTransform();
             K.pushMatrix(K.Mat23.fromTranslation(this.transform.getTranslation()));
             const textOpt: DrawTextOpt = {
                 text: this.text,

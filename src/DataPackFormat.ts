@@ -315,7 +315,7 @@ export interface EntityData extends JSONObject {
     /** id of the entity prototype */
     kind: string;
     /** this entity's state */
-    state: JSONObject;
+    state?: JSONObject;
     /** absolute (if not in a tile slot) or relative (if yes) position in world */
     pos?: XY;
     /** if this entity should run its 'leash' hook when more than n tiles away from the owner */

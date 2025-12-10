@@ -92,7 +92,7 @@ function directionalButton(directional: NonNullable<ExtendedButtonBinding["direc
     var str = "[?d-unk?]";
     if (K.getLastInputDeviceType() === "gamepad") {
         if (directional.gamepad) {
-            const [s, d] = directional.gamepad;
+            const dd = directional.gamepad, s = dd[0], d = dd[1];
             str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
         }
     } else if (directional.mouseMove) {

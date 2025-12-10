@@ -62,8 +62,8 @@ export class Animator {
     saveBaseValue(path: string[], obj: BonesMap) {
         const key = path.join(",");
         if (!this.baseValues.has(key)) {
-            const [o, k] = splitV(obj, path);
-            this.baseValues.set(key, [path, o[k]]);
+            const p = splitV(obj, path);
+            this.baseValues.set(key, [path, p[0][p[1]]]);
         }
     }
     getBaseValue(path: string[]) {
@@ -89,7 +89,7 @@ export class Animator {
             var res: AnimUpdateResults;
             usedPaths.add(key);
             if (relative) {
-                const [_, base] = this.baseValues.get(key)!;
+                const base = this.baseValues.get(key)![1];
                 if ((base instanceof K.Vec2) || (base instanceof K.Color)) {
                     val = val.add(base)
                 } else {
@@ -109,7 +109,7 @@ export class Animator {
         }
         for (var i = 0; i < this.animations.length; i++) {
             const anim = this.animations[i]!;
-            const [interrupted, shadowed] = si[i]!
+            const d = si[i]!, interrupted = d[0], shadowed = d[1];
             for (var j = 0; j < anim.channels.length; j++) {
                 const channel = anim.channels[j]!
                 if (channel.active) {
@@ -130,12 +130,12 @@ export class Animator {
     }
     private _copyValues(dt: number, targets: AnimUpdateResults[]) {
         for (var p = 0; p < targets.length; p++) {
-            const [unjoinedPath, values, maxAlpha, weights] = targets[p]!;
+            const d = targets[p]!, unjoinedPath = d[0], values = d[1], maxAlpha = d[2], weights = d[3];
             this.lastAlphas.set(unjoinedPath.join(","), maxAlpha);
             if (this.entity.obj) {
                 const targetValue = averageAll(values, weights);
-                const [tv, lk] = splitV(this.entity.bones, unjoinedPath);
-                tv[lk] = K.lerp(tv[lk] as LerpValue, targetValue, K.clamp(dt * Math.LN2 * maxAlpha, 0, 1));
+                const p = splitV(this.entity.bones, unjoinedPath);
+                p[0][p[1]] = K.lerp(p[0][p[1]] as LerpValue, targetValue, K.clamp(dt * Math.LN2 * maxAlpha, 0, 1));
             }
         }
     }

@@ -69,9 +69,10 @@ export async function* evaluateForm(form: JSONValue, task: Task, actor: Entity, 
 const tasks: Task[] = [];
 
 function sortTasks() {
-    tasks.sort((t1, t2) => t2.priority - t1.priority);
+    K.insertionSort(tasks, (t1, t2) => t1.priority > t2.priority);
 }
 
+// TODO: use actor-local priority instead of global priority
 export function spawnTask(priority: number, form: JSONValue, actor: Entity, context: Env): Task {
     const t = new Task(priority, actor);
     t.gen = evaluateForm(form, t, actor, {}, context, []);
@@ -83,6 +84,7 @@ export function spawnTask(priority: number, form: JSONValue, actor: Entity, cont
 export function killAllTasksControlledBy(actor: Entity) {
     for (var i = 0; i < tasks.length; i++) {
         if (tasks[i]!.controller === actor) {
+            tasks[i]!.complete.trigger(undefined);
             tasks.splice(i--, 1);
         }
     }

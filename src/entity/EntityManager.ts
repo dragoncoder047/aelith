@@ -36,9 +36,13 @@ function blankEntityId(forKind: string) {
     }
 }
 
+function _createEntity(data: EntityData, inRoom: string | null, realPos: Vec2) {
+    return new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state ?? {}, realPos, data.leashed, data.linkGroup, data.lights);
+}
+
 export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: EntityData): Entity {
     const realPos = (data.pos ? K.Vec2.deserialize(data.pos) : K.vec2()).add(slotPos);
-    const e = new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state, realPos, data.leashed, data.linkGroup, data.lights);
+    const e = _createEntity(data, inRoom, realPos);
     allEntities.push(e);
     e.startHook("setup");
     if (RoomManager.getCurrentRoom() === inRoom) {
@@ -55,7 +59,7 @@ export function spawnOwnedEntity(ownerID: string, data: EntityData): void {
         (spawnCallbacks[ownerID] ??= []).push(() => spawnOwnedEntity(ownerID, data));
         return;
     }
-    const e = new Entity(data.id ?? blankEntityId(data.kind), null, data.kind, data.state, K.vec2(), data.leashed, data.linkGroup, data.lights);
+    const e = _createEntity(data, null, K.vec2());
     allEntities.push(e);
     e.startHook("setup");
     maybeRunSpawnCallbacks(e.id);
