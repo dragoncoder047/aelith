@@ -29,4 +29,3 @@ entities:
   explorer:
     id: explorer2
     kind: explorer
-gravity: 600

@@ -25,4 +25,3 @@ doors:
 entities:
   explorer: !include ../entities/instances/player.yaml
   agent: !include ../entities/instances/NIC.yaml
-gravity: 600

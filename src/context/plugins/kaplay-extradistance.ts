@@ -4,8 +4,6 @@ export interface DistancePlusOpt {
     other?: GameObj<BodyComp | PosComp>
     p1?: Vec2
     p2?: Vec2
-    moveSelf?: boolean;
-    moveOther?: boolean;
     length?: number | "auto"
     drawOpts?: Omit<DrawLinesOpt, "pts">
     alpha?: number
@@ -26,15 +24,25 @@ export interface DistanceCompPlus extends Comp {
     readonly localP2: Vec2;
 }
 
-export interface KAPLAYSpringsPlugin {
-    extradistance(opts?: DistancePlusOpt): DistanceCompPlus
+export interface ChainMovableComp {
 }
 
-export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
+export interface KAPLAYDistanceCompPlusPlugin {
+    extradistance(opts?: DistancePlusOpt): DistanceCompPlus
+    chainmovable(): ChainMovableComp
+}
+
+type DC = PosComp | BodyComp | DistanceCompPlus;
+
+export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYDistanceCompPlusPlugin {
     return {
         // @ts-expect-error
         extradistance(opts = {}) {
-            if (!opts.other?.has("body")) opts.moveOther = false;
+            const
+                scratch1 = K.vec2(),
+                scratch2 = K.vec2(),
+                scratch3 = K.vec2(),
+                scratch4 = K.vec2();
             return {
                 id: "extradistance",
                 require: ["pos"],
@@ -52,91 +60,30 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     }
                 },
                 get worldP2() {
-                    return this.other.transform.transformPointV(this.p2, K.vec2());
+                    return this.other.transform.transformPointV(this.p2, scratch1);
                 },
                 get worldP1() {
-                    return (this as any).transform.transformPointV(this.p1, K.vec2());
+                    return (this as any).transform.transformPointV(this.p1, scratch2);
                 },
                 get localP1() {
-                    return (this as any).transform.inverse.transformPointV(this.worldP1, K.vec2());
+                    return (this as any).transform.inverse.transformPointV(this.worldP1, scratch3);
                 },
                 get localP2() {
-                    return (this as any).transform.inverse.transformPointV(this.worldP2, K.vec2());
+                    return (this as any).transform.inverse.transformPointV(this.worldP2, scratch4);
                 },
-                update(this: GameObj<PosComp | BodyComp | DistanceCompPlus>) {
-
-                    const A = this, B = this.other;
-
-                    // world vector A -> B
-                    const { x: dx, y: dy } = A.worldP2.sub(A.worldP1);
-                    const dist = Math.hypot(dx, dy);
-                    if (!isFinite(dist) || dist === 0) return;
-
-                    // unit direction from A -> B (points toward B)
-                    const ux = dx / dist;
-                    const uy = dy / dist;
-
-                    // positional error: positive if currently too long
-                    const error = dist - this.length;
-
-                    // use inverse mass weighting
-                    const mA = A.isStatic || !opts.moveSelf ? Infinity : A.mass;
-                    const mB = B.isStatic || !opts.moveOther ? Infinity : B.mass;
-                    const invA = mA > 0 ? 1 / mA : 0;
-                    const invB = mB > 0 ? 1 / mB : 0;
-                    const invSum = invA + invB;
-                    if (invSum === 0) return; // both static... how did we get here...
-
-                    const corrMag = error * this.alpha;
-
-                    // position corrections: move A toward/away from B by +corr * (invA / invSum)
-                    //                   and move B toward/away from A by -corr * (invB / invSum)
-                    const corrAx = ux * corrMag * (invA / invSum);
-                    const corrAy = uy * corrMag * (invA / invSum);
-                    const corrBx = -ux * corrMag * (invB / invSum);
-                    const corrBy = -uy * corrMag * (invB / invSum);
-
-                    // Update local pos if parented (so we don't just get reset by the next calcTransform())
-                    if (opts.moveSelf) {
-                        A.transform.e += corrAx;
-                        A.transform.f += corrAy;
-                        if (A.parent) {
-                            const t = A.parent.transform.inverse.mul(A.transform);
-                            A.pos.x = t.e;
-                            A.pos.y = t.f;
-                        } else {
-                            A.pos.x = A.transform.e;
-                            A.pos.y = A.transform.f;
+                update(this: GameObj<DC>) {
+                    var P = this,
+                        len = this.length,
+                        doVel = true;
+                    for (; ;) {
+                        doCorrections(this, P, len, doVel, K);
+                        if (P.other.has("extradistance")) {
+                            doVel = false;
+                            len += (P.other as any).length;
+                            P = P.other as any;
                         }
+                        else break;
                     }
-                    if (opts.moveOther) {
-                        B.transform.e += corrBx;
-                        B.transform.f += corrBy;
-                        if (B.parent) {
-                            const t2 = B.parent.transform.inverse.mul(B.transform);
-                            B.pos.x = t2.e;
-                            B.pos.y = t2.f;
-                        } else {
-                            B.pos.x = B.transform.e;
-                            B.pos.y = B.transform.f;
-                        }
-                    }
-
-
-                    // Velocity correction
-                    const vA = A.vel ?? K.vec2();
-                    const vB = B.vel ?? K.vec2();
-                    // relative velocity along dir (scalar): (vB - vA).dot(u)
-                    const relAlong = ((vB.x - vA.x) * ux + (vB.y - vA.y) * uy) * this.beta;
-                    // velocity change to apply: dvA = +u * (invA/invSum) * relAlong
-                    //                           dvB = -u * (invB/invSum) * relAlong
-                    const dvAx = ux * (invA / invSum) * relAlong;
-                    const dvAy = uy * (invA / invSum) * relAlong;
-                    const dvBx = -ux * (invB / invSum) * relAlong;
-                    const dvBy = -uy * (invB / invSum) * relAlong;
-
-                    if (opts.moveSelf) A.applyImpulse(K.vec2(dvAx, dvAy));
-                    if (opts.moveOther) B.applyImpulse(K.vec2(dvBx, dvBy));
                 },
                 draw(this: GameObj<PosComp | DistanceCompPlus>) {
                     K.drawLines({
@@ -147,6 +94,84 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYSpringsPlugin {
                     });
                 }
             }
-        }
+        },
+        chainmovable() {
+            return {
+                id: "chainmovable",
+                require: ["body"]
+            }
+        },
     };
+}
+
+function canBeMoved(obj: GameObj<DC>) {
+    return obj.has("chainmovable") && !obj.isStatic;
+}
+
+function doCorrections(A: GameObj<DC>, M: GameObj<DC>, len: number, doMinimum: boolean, K: KAPLAYCtx) {
+    // world vector A -> B
+    const B = M.other as GameObj<DC>;
+    const { x: dx, y: dy } = M.worldP2.sub(M.worldP1);
+    const dist = Math.hypot(dx, dy);
+    if (!isFinite(dist) || dist === 0) return;
+
+    // unit direction from A -> B (points toward B)
+    const ux = dx / dist;
+    const uy = dy / dist;
+
+    // positional error: positive if currently too long
+    const error = dist - len;
+    if (!doMinimum && error < 0) return;
+
+    // use inverse mass weighting
+    const mA = canBeMoved(A) ? A.mass : Infinity;
+    const mB = canBeMoved(B) ? B.mass : Infinity;
+    const invA = mA > 0 ? 1 / mA : 0;
+    const invB = mB > 0 ? 1 / mB : 0;
+    const invSum = invA + invB;
+    if (invSum === 0) return; // both static... how did we get here...
+
+    const corrMag = error * A.alpha;
+
+    // position corrections: move A toward/away from B by +corr * (invA / invSum)
+    //                   and move B toward/away from A by -corr * (invB / invSum)
+    const corrAx = ux * corrMag * (invA / invSum);
+    const corrAy = uy * corrMag * (invA / invSum);
+    const corrBx = -ux * corrMag * (invB / invSum);
+    const corrBy = -uy * corrMag * (invB / invSum);
+
+    // Update local pos if parented (so we don't just get reset by the next calcTransform())
+    correct(A, corrAx, corrAy);
+    correct(B, corrBx, corrBy);
+
+    // Velocity correction
+    const vA = A.vel ?? K.Vec2.ZERO;
+    const vB = B.vel ?? K.Vec2.ZERO;
+    // relative velocity along dir (scalar): (vB - vA).dot(u)
+    const relAlong = ((vB.x - vA.x) * ux + (vB.y - vA.y) * uy);
+    if (!doMinimum && relAlong < 0) return;
+    const factor = relAlong * A.beta;
+    // velocity change to apply: dvA = +u * (invA/invSum) * relAlong
+    //                           dvB = -u * (invB/invSum) * relAlong
+    const dvAx = ux * (invA / invSum) * factor;
+    const dvAy = uy * (invA / invSum) * factor;
+    const dvBx = -ux * (invB / invSum) * factor;
+    const dvBy = -uy * (invB / invSum) * factor;
+    if (canBeMoved(A)) A.applyImpulse(K.vec2(dvAx, dvAy));
+    if (canBeMoved(B)) B.applyImpulse(K.vec2(dvBx, dvBy));
+}
+
+function correct(obj: GameObj<DC>, dx: number, dy: number) {
+    if (canBeMoved(obj)) {
+        obj.transform.e += dx;
+        obj.transform.f += dy;
+        if (obj.parent) {
+            const t = obj.parent.transform.inverse.mul(obj.transform);
+            obj.pos.x = t.e;
+            obj.pos.y = t.f;
+        } else {
+            obj.pos.x = obj.transform.e;
+            obj.pos.y = obj.transform.f;
+        }
+    }
 }

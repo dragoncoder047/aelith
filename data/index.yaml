@@ -10,7 +10,7 @@ entityTypes: !include entities/prototypes/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no
-  currentPlayer: spaceship
+  currentPlayer: player
   ownedEntities: !include entities/instances/owned.yaml
 renderLayers:
   - [
@@ -23,6 +23,7 @@ renderLayers:
     ]
   - "tiles"
 defaults:
+  gravity: 600
   depthLayer: background
   entityLayer: entities
   tileLayer: tiles

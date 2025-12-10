@@ -27,16 +27,16 @@ model:
         color: xt250
         cap: round
         z: -1
-      pos: { x: 35, y: 20 }
+      pos: { x: 40, y: 20 }
       n: 8
-      lps: 5
-      sizes: [20, 1]
+      lps: 6
+      sizes: [12, 1]
       masses: [1, 1]
       gravityIsLocal: yes
       eachConstraint: [angle, body, 1, -90]
     - <<: *st
       name: tb
-      pos: { x: 35, y: -30 }
+      pos: { x: 40, y: -30 }
   kinematics:
     look:
       origin: body

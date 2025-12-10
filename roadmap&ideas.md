@@ -21,10 +21,8 @@
     * add "line from here to pos on other body" primitive
 * need a way for objects to continue moving through unloaded rooms by utilizing nav mesh
     * "bully" cellular automata?
-* remove "continue" action and have NIC advance text based on timer, as text that can't be repeated by interacting with an object, shouldn't be important.
-    * it's now under action6 but need to put the "continue" code in a hookable method of Entity
+* need to put the "continue" code in a hook api function
 * implement all of the settings stuff even if music manager is not fully implemented
-* add way for entity to define its main hitbox as a platform effector or sensor
 * remove "doors" section from room definition as I can just use entities for that
     * define check order when player presses action button
         1. try item currently holding
@@ -54,6 +52,8 @@
 * get deltarune prophecy shader for hologram things <https://godotshaders.com/shader/deltarune-the-prophecy-panel-shader/>
 * JUICE!! (Consult Amy on this.)
 * possibly add more parkour stuff like ledge grab, wall jump, and double jump
+    * why
+    * make it configurable
 
 ## to draw
 

@@ -41,8 +41,6 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             }),
             K.extradistance({
                 other: prev as any,
-                moveOther: k !== 0,
-                moveSelf: tentacle.cord ? k !== (tentacle.n - 1) : true,
                 length: tentacle.lps,
                 p1: K.Vec2.ZERO,
                 p2: k > 0 ? K.Vec2.ZERO : pos,
@@ -52,12 +50,16 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
                 alpha: tentacle.alpha,
                 beta: tentacle.beta
             }),
+            K.chainmovable(),
         ]);
         if (tentacle.gravityIsLocal) {
             prev.gravityScale = 0;
             prev.use({
                 fixedUpdate(this: GameObj<BodyComp>) {
-                    K.Vec2.add(this.vel, K._k.game.gravity!.scale(K._k.app.dt() * this.mass).rotate(this.transform.getRotation()), this.vel);
+                    const v = K._k.game.gravity!.clone();
+                    K.Vec2.scale(v, K.dt() * this.mass, v);
+                    K.Vec2.rotateByAngle(v, K.deg2rad(this.transform.getRotation()), v);
+                    K.Vec2.add(this.vel, v, this.vel);
                 }
             });
         }
@@ -76,6 +78,9 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
         if (tentacle.eachConstraint) {
             constraintEntries.push({ c: tentacle.eachConstraint, t: tentacle.name + k });
         }
+    }
+    if (tentacle.cord) {
+        prev.unuse("chainmovable");
     }
     if (tentacle.endConstraint) {
         constraintEntries.push({ c: tentacle.endConstraint, t: tentacle.name + (tentacle.n - 1) });
