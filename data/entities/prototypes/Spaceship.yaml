@@ -73,8 +73,6 @@ model:
             flip: [false, true]
   anims:
     doorOpen:
-      relative: true
-      sticky: true
       channels:
         - target: [frontdoor, pos]
           keyframes:
@@ -83,8 +81,6 @@ model:
           keyframes:
             - [0, -30]
     doorClose:
-      relative: true
-      sticky: true
       channels:
         - target: [frontdoor, pos]
           keyframes:
@@ -98,4 +94,4 @@ hooks:
     - switch
     - [the, slot]
     - doorOpen: [anim, [if, [the, value], doorOpen, doorClose]]
-  action1: [do, [be, doorOpen, [not, [my, doorOpen]]], [say, [if, [my, doorOpen], doors opening, doors closing]]]
+  action1: [be, doorOpen, [not, [my, doorOpen]]]

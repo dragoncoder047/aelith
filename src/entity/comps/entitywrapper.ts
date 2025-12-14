@@ -13,7 +13,8 @@ export function entitywrapper(entity: Entity): EntityComp {
         },
         inspect() {
             return [
-                `motion state: ${entity.motionController.state}`
+                `motion state: ${entity.motionController.state}`,
+                `animations running: ${entity.animator.animations.flatMap(({ name, running }) => running ? [name] : [])}`
             ].join("\n")
         }
     }

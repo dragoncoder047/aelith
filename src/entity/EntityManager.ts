@@ -44,7 +44,6 @@ export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: En
     const realPos = (data.pos ? K.Vec2.deserialize(data.pos) : K.vec2()).add(slotPos);
     const e = _createEntity(data, inRoom, realPos);
     allEntities.push(e);
-    e.startHook("setup");
     if (RoomManager.getCurrentRoom() === inRoom) {
         e.load();
     }
@@ -61,7 +60,6 @@ export function spawnOwnedEntity(ownerID: string, data: EntityData): void {
     }
     const e = _createEntity(data, null, K.vec2());
     allEntities.push(e);
-    e.startHook("setup");
     maybeRunSpawnCallbacks(e.id);
 }
 

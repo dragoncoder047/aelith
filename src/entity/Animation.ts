@@ -108,9 +108,7 @@ export class Animation {
         public cancel: string[] = [],
         public shadow: string[] = []) { }
     start() {
-        for (var ch of this.channels) {
-            ch.start();
-        }
+        this.channels.forEach(c => c.start());
         this.running = true;
     }
     unstick(path: string[]) {

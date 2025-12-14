@@ -20,7 +20,7 @@ export const FUNCTIONS: Form[] = [
         return ["do", ...args];
     }),
     func("log", async function* (args) {
-        console.log(JSON.stringify(args, null, 4));
+        K.debug.log(args);
     }),
     func("debug", async function* (args, task, actor, env, context, traceback) {
         console.log(JSON.stringify({ args, task, actor, env, context, traceback }, null, 4));
@@ -35,7 +35,7 @@ export const FUNCTIONS: Form[] = [
         const oldValue = actor.state[slot];
         actor.state[slot] = value;
         if (!silent) {
-            const subTask = actor.startHook("stateChanged", { slot, oldValue });
+            const subTask = actor.startHook("stateChanged", { slot, oldValue, value });
             if (subTask) {
                 task.paused = true;
                 subTask.onFinish(() => task.paused = false);
@@ -117,6 +117,7 @@ export const FUNCTIONS: Form[] = [
         actor.playAnim(animName, restart);
     }),
     func("skinAnim", async function* ([animName, value], task, actor) {
+        K.debug.log("started anim", animName);
         actor.animator.skinAnim(animName, value);
     }),
     func("anim/w", async function* ([animName], task, actor, env, context, traceback) {
