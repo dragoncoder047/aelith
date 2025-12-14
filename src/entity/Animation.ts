@@ -13,7 +13,8 @@ interface Keyframe<T extends LerpValue> {
 }
 
 class AnimChannel<T extends LerpValue> {
-    t = 0;
+    /** delay start */
+    d = 0;
     /** index into the keyframes array */
     i: number = 0;
     /** relative time into the current keyframe */
@@ -23,9 +24,9 @@ class AnimChannel<T extends LerpValue> {
     private _totalLength: number;
     constructor(
         public target: string[],
-        public loop: boolean = false,
-        public sticky: boolean = true,
-        public alpha: number = 10,
+        public loop = false,
+        public sticky = true,
+        public alpha = 10,
         public keyframes: Keyframe<T>[],
         public interpolate: (a: T, b: T, progress: number) => T,
         public relative = false,
@@ -43,11 +44,11 @@ class AnimChannel<T extends LerpValue> {
         this.rewind();
         this.active = true;
         this.ended = false;
-        this.t = this.delay;
+        this.d = this.delay;
     }
     update(dt: number): T {
         const data = this._advance(dt), f1 = data[0], f2 = data[1], alpha = data[2];
-        return this.interpolate(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(alpha));
+        return this.interpolate(f1!, f2!, (this.keyframes[this.i]!.ease ?? ((x: number) => x))(isFinite(alpha) ? alpha : 0));
     }
     rewind() {
         this.i = this.relT = 0;
@@ -57,34 +58,36 @@ class AnimChannel<T extends LerpValue> {
     }
     private _advance(dt: number) {
         var i = this.i, d: number, frames = this.keyframes, len = frames.length;
-        if (this.t > 0) {
-            this.t -= dt;
+        if (this.d > 0) {
+            this.d -= dt;
         } else {
             if (this._totalLength === 0) {
                 this.ended = !(this.active = this.sticky || this.loop);
                 return [frames[0]!._cx, frames[0]!._cx, 1] as const;
             }
-            if (!this.ended) this.relT += dt;
-            // advance to next keyframes
-            while ((d = frames[i]!.len) < this.relT) {
-                this.relT -= d;
-                i++;
-                if (i === len) {
-                    if (this.loop) i = 0;
-                    else {
-                        i--;
-                        this.ended = true;
-                        this.active = this.sticky;
-                        break;
+            if (!this.ended) {
+                this.relT += dt;
+                // advance to next keyframes
+                while ((d = frames[i]!.len) < this.relT) {
+                    this.relT -= d;
+                    i++;
+                    if (i === len) {
+                        if (this.loop) i = 0;
+                        else {
+                            i--;
+                            this.ended = true;
+                            this.active = this.sticky;
+                            break;
+                        }
+                    }
+                    // re-do the randomization on the next frame
+                    const kf = frames[i]!;
+                    if (typeof kf.x === "function") {
+                        kf._cx = kf.x();
                     }
                 }
-                // re-do the randomization on the next frame
-                const kf = frames[i]!;
-                if (typeof kf.x === "function") {
-                    kf._cx = kf.x();
-                }
+                this.i = i;
             }
-            this.i = i;
         }
         return [frames[i]!._cx, frames[(i + 1) % len]!._cx, this.relT / frames[i]!.len] as const;
     }

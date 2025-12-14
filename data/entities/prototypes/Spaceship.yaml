@@ -73,20 +73,26 @@ model:
             flip: [false, true]
   anims:
     doorOpen:
+      cancel: [doorClose]
       channels:
         - target: [frontdoor, pos]
           keyframes:
-            - [0, { x: 0, y: -64 }]
+            - [&doorTime 2, { x: 0, y: 0 }]
+            - [0, { x: 0, y: &doorMotion -64 }]
         - target: [frontdoor, angle]
           keyframes:
-            - [0, -30]
+            - [*doorTime, 0]
+            - [0, &doorTilt -30]
     doorClose:
+      cancel: [doorOpen]
       channels:
         - target: [frontdoor, pos]
           keyframes:
+            - [*doorTime, { x: 0, y: *doorMotion }]
             - [0, { x: 0, y: 0 }]
         - target: [frontdoor, angle]
           keyframes:
+            - [*doorTime, *doorTilt]
             - [0, 0]
 hooks:
   setup: [do, [be, doorOpen, true], [log, setup!]]
