@@ -1,7 +1,7 @@
 import { K } from "../context";
 import { Entity } from "../entity/Entity";
 import { JSONObject, JSONValue } from "../JSON";
-import { FUNCTIONS } from "./functions";
+import { FUNCTIONS_MAP } from "./functions";
 
 export type Env = JSONObject;
 export type TracebackArray = (string | { f: string, n: number })[]
@@ -30,19 +30,30 @@ export function tracebackError(error: Error | string, traceback: TracebackArray)
     var m: string, e: Error;
     const tb = traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ");
     switch (typeof error) {
-        case "string": m = `${error}\ntraceback: ${tb}`, e = new Error(m); break;
-        default: m = `${error.message}\ntraceback: ${tb}`, (error as any)._tb ? e = error : (e = new Error(m), e.cause = error);
+        case "string":
+            m = `${error}\ntraceback: ${tb}`;
+            e = new Error(m);
+            break;
+        default:
+            m = `${error.message}\ntraceback: ${tb}`;
+            if ((error as any)._tb) {
+                e = error;
+            }
+            else {
+                e = new Error(m, { cause: error });
+            }
     }
-    return (e as any)._tb = true, e;
+    (e as any)._tb = true;
+    return e;
 }
 
 export async function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
-    do {
+    for (; ;) {
         task.tc = false;
         if (!Array.isArray(form)) return form;
         const name = form[0];
         if (typeof name !== "string") throw tracebackError("illegal function name " + name, traceback);
-        const impl = FUNCTIONS.find(f => f.name === name);
+        const impl = FUNCTIONS_MAP[name];
         if (!impl) throw tracebackError(`no such function ${JSON.stringify(name)}`, traceback);
         const args = form.slice(1);
         if (!impl.special) {
@@ -60,8 +71,9 @@ export async function* evaluateForm(form: JSONValue, task: Task, actor: Entity, 
         } finally {
             traceback.pop();
         }
-        if (task.tc) bumpTailCall(name, traceback);
-    } while (task.tc);
+        if (!task.tc) break;
+        bumpTailCall(name, traceback);
+    }
     task.tc = false;
     return form;
 }

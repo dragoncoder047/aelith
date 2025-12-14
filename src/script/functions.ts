@@ -190,3 +190,5 @@ export const FUNCTIONS: Form[] = [
         return !value;
     }),
 ];
+
+export const FUNCTIONS_MAP = Object.fromEntries(FUNCTIONS.map(f => [f.name, f]));
