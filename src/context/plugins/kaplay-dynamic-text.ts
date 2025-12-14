@@ -97,9 +97,11 @@ function findPreferredLanguage(availableLangs: NavigatorLanguage["languages"]): 
     const preferredLangs = navigator?.languages ?? [navigator.language];
     var bestScore = -1;
     var bestLang = "";
-    for (var candidate of availableLangs) {
+    for (var i = 0; i < availableLangs.length; i++) {
+        const candidate = availableLangs[i]!;
         var score = 0;
-        for (var preferred of preferredLangs) {
+        for (var j = 0; j < preferredLangs.length; j++) {
+            const preferred = preferredLangs[j]!;
             score += matchiness(preferred, candidate);
         }
         if (score > bestScore) {
@@ -119,7 +121,8 @@ function subStrings(text: string, vars: NestedStrings): string {
     const anykey = strNames.map(s => s.replaceAll(/\./g, "\\.")).join("|")
     const funcRegex = anyfun ? new RegExp(`\\$(${anyfun})\\(((?:(?!\\$(?:${anyfun}))(?!&(?:${anykey}))[\\s\\S])*?)\\)`, "gm") : undefined;
     do {
-        for (var key of strNames) {
+        for (var i = 0; i < strNames.length; i++) {
+            const key = strNames[i]!;
             const rep = `&${key}`;
             if (text.indexOf(rep) !== -1) {
                 text = text.replaceAll(rep, flatStrings[key]!);
@@ -157,9 +160,7 @@ function flatten(vars: NestedStrings) {
             functions[curPath.join(".")] = obj;
         }
         else if (typeof obj === "object" && obj !== null) {
-            for (var next of Object.getOwnPropertyNames(obj)) {
-                recur(curPath.concat(next), obj[next]!);
-            }
+            Object.getOwnPropertyNames(obj).forEach(next => recur(curPath.concat(next), obj[next]!));
         } else {
             throw new Error(`bad type to flatten(): ${obj} (${curPath})`);
         }

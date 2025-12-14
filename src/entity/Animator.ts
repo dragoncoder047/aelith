@@ -76,7 +76,8 @@ export class Animator {
         const si = this.animations.map(({ name }) => {
             var shadowed = false;
             var interrupted = false;
-            for (var anim2 of this.animations) {
+            for (var i = 0; i < this.animations.length; i++) {
+                const anim2 = this.animations[i]!;
                 if (anim2.running) {
                     if (anim2.interrupt.some(x => x === name)) interrupted = true;
                     if (anim2.shadow.some(x => x === name)) shadowed = true;
@@ -123,9 +124,7 @@ export class Animator {
                 anim.stop();
             }
         }
-        for (var [k, [path, value]] of this.baseValues.entries()) {
-            addValue(path, value, usedPaths.has(k) ? undefined : (this.lastAlphas.get(k) ?? 10), 1e-6, false);
-        }
+        this.baseValues.forEach(([path, value], k) => addValue(path, value, usedPaths.has(k) ? undefined : (this.lastAlphas.get(k) ?? 10), 1e-6, false));
         this._copyValues(dt, targetsList);
     }
     private _copyValues(dt: number, targets: AnimUpdateResults[]) {
@@ -149,6 +148,7 @@ export class Animator {
             for (var a2 of this.animations) {
                 if (a2 === anim) continue;
                 a2.unstick(p.target);
+                if (a2.allDone()) a2.stop();
             }
         }
         if (onended) anim.onEnd.add(onended);

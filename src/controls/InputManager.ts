@@ -152,8 +152,9 @@ function gamepadButtons(btn: ChordedKGamepadButton[], checkPressed: boolean): st
             return [splitted.map(b => gamepadButtons([b], checkPressed)).join("")]
         }
     }
-    var ch: string | undefined;
-    for (var [candBtn, candCh] of GAMEPAD_BUTTONS) {
+    var ch: string | undefined, i;
+    for (i = 0; i < GAMEPAD_BUTTONS.length; i++) {
+        const entry = GAMEPAD_BUTTONS[i]!, candBtn = entry[0], candCh = entry[1];
         if (candBtn.sort().join() === btn.sort().join()) {
             ch = candCh;
             break;
