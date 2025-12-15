@@ -42,12 +42,11 @@ var pack: DataPackData;
 export async function datapack() {
     pack = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);
+    DownloadManager.doneWithInitialJSON();
     EntityManager.setEntityLibrary(pack.entityTypes);
     RoomManager.registerTilesets(pack.tilesets);
     if (pack.renderLayers) K.setLayers(pack.renderLayers[0], pack.renderLayers[1]);
-    for (var asset of pack.assets) {
-        await AssetLoader.loadAsset(asset);
-    }
+    await Promise.all(pack.assets.map(AssetLoader.loadAsset));
     StateManager.setupInitialState(pack.initial);
 }
 

@@ -1,9 +1,11 @@
 import { K } from "./context";
+import * as AssetLoader from "./AssetLoader";
 
 const spinner = ["-", "\\\\", "|", "/"]; // need 2 \'s because formatted text
 const spinSpeed = 100; // ms per frame
 var spinOrigin = 0;
-const tagline = "downloading assets..."
+const tagline_json = "downloading game data...";
+const tagline_assets = "downloading assets...";
 var bytesDownloaded = 0, bytesToDownload = 0;
 var eta = "\ncalculating time...";
 
@@ -23,11 +25,19 @@ function etaEntry(bytes: number, time: number) {
     eta = `${speed}\neta ${timeLeft}`;
 }
 
+var isDownloadingJSON = true;
+export function doneWithInitialJSON() {
+    isDownloadingJSON = false;
+    eta = "";
+}
+
 function drawLoadingScreen() {
     const width = K.width() * 3 / 4;
     const left = K.center().sub(width / 2, 0);
     const right = K.center().add(width / 2, 0);
-    const progRight = K.lerp(left, right, bytesDownloaded / bytesToDownload);
+    const format = (x: number, y: number, fmt: (x: number) => string) => [x / y, fmt(x), fmt(y)] as const;
+    const [progress, data1, data2] = isDownloadingJSON ? format(bytesDownloaded, bytesToDownload, niceBytes) : format(AssetLoader.getLoadedAssets(), AssetLoader.getTotalAssets(), x => "" + x);
+    const progRight = K.lerp(left, right, progress);
     const barsize = 16;
     const baroutline = 8;
     const spinI = (((performance.now() - spinOrigin) / spinSpeed) | 0) % spinner.length;
@@ -59,7 +69,7 @@ function drawLoadingScreen() {
     });
     // text and stuff
     K.drawText({
-        text: `${tagline}${spinner[spinI]}\n${niceBytes(bytesDownloaded)}/${niceBytes(bytesToDownload)} ${eta}`,
+        text: `${isDownloadingJSON ? tagline_json : tagline_assets}${spinner[spinI]}\n${data1}/${data2} ${eta}`,
         anchor: "bot",
         align: "center",
         font: "monospace",

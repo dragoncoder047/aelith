@@ -1,3 +1,4 @@
+import { Asset } from "kaplay";
 import { K } from "./context";
 import { NestedStrings } from "./context/plugins/kaplay-dynamic-text";
 import { AssetData } from "./DataPackFormat";
@@ -43,26 +44,43 @@ function changeFavicon(url: string) {
     link.href = url;
 }
 
+var totalAssets = 0;
+var loadedAssets = 0;
+
+function logLoad<T>(asset: Asset<T>): Asset<T> {
+    asset.then(() => loadedAssets++);
+    totalAssets++;
+    return asset;
+}
+
+export function getTotalAssets() {
+    return totalAssets;
+}
+
+export function getLoadedAssets() {
+    return loadedAssets;
+}
+
 export async function loadAsset(asset: AssetData): Promise<unknown> {
     var kindOK = false;
     switch (asset.kind) {
         case "font": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadFont(asset.id, asset.src as string);
+                    return logLoad(K.loadFont(asset.id, asset.src as string));
                 case "bin":
-                    return K.loadFont(asset.id, await binSrc(asset));
+                    return logLoad(K.loadFont(asset.id, await binSrc(asset)));
             }
             break;
         case "shader": kindOK = true;
             switch (asset.loader) {
                 case "url":
                     // @ts-expect-error
-                    return K.loadShaderURL(asset.id, asset.src.vert, asset.src.frag);
+                    return logLoad(K.loadShaderURL(asset.id, asset.src.vert, asset.src.frag));
                 case undefined:
                 case null:
                     // @ts-expect-error
-                    return K.loadShader(asset.id, asset.src.vert && ("\n" + asset.src.vert), asset.src.frag && ("\n" + asset.src.frag));
+                    return logLoad(K.loadShader(asset.id, asset.src.vert && ("\n" + asset.src.vert), asset.src.frag && ("\n" + asset.src.frag)));
             }
             break;
         case "song": kindOK = true;
@@ -74,7 +92,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
                     return K.loadMusic(asset.id, asset.src as string);
                 case "bin":
                     MusicManager.addSong(theSong)
-                    return K.loadSound(asset.id, await binSrc(asset));
+                    return logLoad(K.loadSound(asset.id, await binSrc(asset)));
                 case "zzfxm":
                     // XXX: commented out for now because the web workers hog so much CPU
                     // K.onLoad(async () => {
@@ -88,30 +106,30 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "sound": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadSound(asset.id, asset.src as string);
+                    return logLoad(K.loadSound(asset.id, asset.src as string));
                 case "bin":
-                    return K.loadSound(asset.id, await binSrc(asset));
+                    return logLoad(K.loadSound(asset.id, await binSrc(asset)));
                 case "zzfx":
-                    return K.loadZzFX(asset.id, zzParse(asset.src as string));
+                    return logLoad(K.loadZzFX(asset.id, zzParse(asset.src as string)));
             }
             break;
         case "sprite": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadSprite(asset.id, asset.src as string | string[], asset.metadata as any);
+                    return logLoad(K.loadSprite(asset.id, asset.src as string | string[], asset.metadata as any));
             }
             break;
         case "spritemap": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.loadSpriteAtlas(asset.src as string, asset.metadata as any);
+                    return logLoad(K.loadSpriteAtlas(asset.src as string, asset.metadata as any));
             }
             break;
         case "spritefont": kindOK = true;
             switch (asset.loader) {
                 case undefined:
                 case null:
-                    return K.loadBitmapFontFromSprite(asset.id, asset.src as string);
+                    return logLoad(K.loadBitmapFontFromSprite(asset.id, asset.src as string));
             }
             break;
         case "favicon": kindOK = true;
