@@ -35,4 +35,22 @@ defaults:
   cameraScaleAlpha: 0.08
 title:
   entity: logosprite
-  buttonsY:
+  ui:
+    colors:
+      normal: cyan
+      focus: lime
+      hover: yellow
+    sounds:
+      action: nav_do_it
+      switch: nav_switch
+      select: nav_select
+      open: nav_open
+      back: nav_back
+    sprites:
+      focus: cropticks
+      button: button
+      radio: radio
+      checkbox: check
+      switch: switch
+      sliderTrack: slider_track
+      sliderThumb: slider_thumb

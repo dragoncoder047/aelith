@@ -443,7 +443,27 @@ export interface DataPackData extends JSONObject {
         entity: string;
         buttonsY: number;
         ui: {
-            // TODO
+            sounds: {
+                select: string;
+                switch: string;
+                open: string;
+                back: string;
+                action: string;
+            },
+            sprites: {
+                focus: string;
+                button: string;
+                checkbox: string;
+                radio: string;
+                switch: string;
+                sliderTrack: string;
+                sliderThumb: string;
+            },
+            colors: {
+                normal: string;
+                focus: string;
+                hover: string;
+            }
         }
     };
     defaults: {

@@ -190,6 +190,9 @@ export const FUNCTIONS: Form[] = [
     func("not", async function* ([value]) {
         return !value;
     }),
+    func("isVoid", async function* ([value]) {
+        return value === undefined;
+    }),
     func("v+", async function* (values) {
         const res = K.vec2();
         for (var v of values) {

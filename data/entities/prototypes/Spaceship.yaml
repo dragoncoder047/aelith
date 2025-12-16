@@ -99,5 +99,5 @@ hooks:
   stateChanged:
     - switch
     - [the, slot]
-    - doorOpen: [anim, [if, [the, value], doorOpen, doorClose]]
+    - doorOpen: [unless, [isVoid, [the, oldValue]], [anim, [if, [the, value], doorOpen, doorClose]]]
   action1: [be, doorOpen, [not, [my, doorOpen]]]

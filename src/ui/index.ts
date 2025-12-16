@@ -23,8 +23,8 @@ export const PAD = 10;
 export function uiButton(tw: number, s: number, text: string, btn: string | null, action: () => void) {
     return [
         K.pos(),
-        K.sprite("button", { width: tw, height: tw / 5 }),
-        K.color(K.CYAN),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw, height: tw / 5 }),
+        K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
         <UiObjComp>{
             action,
             add(this: GameObj<AreaComp | UiObjComp>) {
@@ -46,7 +46,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 K.drawFormattedText(fText);
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp>) {
-                this.color = this.is("focused") ? K.GREEN : this.isHovering() ? K.YELLOW : K.CYAN;
+                this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : this.isHovering() ? "hover" : "normal"));
             },
             rawText() {
                 return btn ? `$mbutton(${btn})${text}` : text;
@@ -64,9 +64,9 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
 export function uiPog(tw: number, s: number, text: string, sprite: string, getValue: () => boolean, action: () => void) {
     return [
         K.pos(),
-        K.sprite("button", { width: tw }),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw }),
         K.opacity(0),
-        K.color(K.YELLOW),
+        K.color(K.rgb(GameManager.getUIKey("colors", "hover"))),
         <UiObjComp>{
             id: "uiObj",
             action,
@@ -76,7 +76,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                     K.pos(PAD - this.width / 2, 0),
                     K.sprite(sprite),
                     K.anchor("left"),
-                    K.color(K.CYAN),
+                    K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
                 ]);
             },
             draw(this: GameObj<RectComp | UiObjComp>) {
@@ -96,7 +96,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
-                this.color = this.is("focused") ? K.GREEN : K.YELLOW;
+                this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child!.frame = getValue() ? 1 : 0;
             },
             rawText() {
@@ -120,7 +120,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
     }
     return [
         K.pos(),
-        K.sprite("button", { width: tw, height: tw / 5 }),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw, height: tw / 5 }),
         K.opacity(0),
         K.color(K.YELLOW),
         <UiSliderComp>{
@@ -148,15 +148,15 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             add(this: GameObj<AreaComp | RectComp | UiSliderComp | PosComp | FixedComp>) {
                 this.child = this.add([
                     K.pos(this.width / 2 - PAD, 0),
-                    K.sprite("slider_track", { width: this.width / 2 - PAD, height: 2 }),
+                    K.sprite(GameManager.getUIKey("sprites", "sliderTrack"), { width: this.width / 2 - PAD, height: 2 }),
                     K.anchor("right"),
-                    K.color(K.CYAN),
+                    K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
                 ]);
                 var c = this.child2 = this.add([
                     K.pos(this.width / 2 - PAD, 0),
-                    K.sprite("slider_thumb"),
+                    K.sprite(GameManager.getUIKey("sprites", "sliderThumb")),
                     K.anchor("center"),
-                    K.color(K.CYAN),
+                    K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
                     K.area({ scale: 2 }),
                 ]);
                 var draggin = false, moving = false;
@@ -200,7 +200,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiSliderComp | OpacityComp>) {
                 this.opacity = +(this.is("focused") || this.isHovering());
-                this.color = this.is("focused") ? K.GREEN : K.YELLOW;
+                this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child2!.pos.x = this.valueToPos(getValue());
             },
             rawText() {
@@ -273,7 +273,7 @@ export function tooltip(tip: string) {
                             width: fText.width + PAD,
                             radius: 2,
                             height: fText.height + PAD,
-                            color: K.CYAN,
+                            color: K.rgb(GameManager.getUIKey("colors", "normal")),
                         });
                         K.drawFormattedText(fText);
                     },

@@ -14,10 +14,10 @@ cropticks:
   width: 16
   height: 16
   slice9:
-  left: 7
-  right: 7
-  top: 7
-  bottom: 7
+    left: 7
+    right: 7
+    top: 7
+    bottom: 7
 switch: &x
   x: 0
   y: 32

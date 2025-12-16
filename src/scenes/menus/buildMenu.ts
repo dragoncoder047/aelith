@@ -30,21 +30,21 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
     switch (item.type) {
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
-                K.play("nav_open");
+                K.play(GameManager.getUIKey("sounds", "open"));
                 K.pushScene(Scene.MENU, set[item.next], set, settings);
             }));
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BACK:
             obj = K.add(uiButton(bw, 1.5, item.text, "nav_back", () => {
-                K.play("nav_back");
+                K.play(GameManager.getUIKey("sounds", "back"));
                 K.popScene();
             }));
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BUTTON:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
-                K.play("nav_do_it");
+                K.play(GameManager.getUIKey("sounds", "action"));
                 item.action();
             }));
             obj.use(below(prev, PAD));
@@ -80,7 +80,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             K.pos(),
             K.anchor("center"),
             K.area(),
-            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw, font: GameManager.getDefaultValue("font"), }),
+            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw, font: GameManager.getDefaultValue("font") }),
             K.dynamicText(item.text),
         ]);
         addStuff(true);
@@ -88,9 +88,9 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
     }
     switch (s.kind) {
         case SettingKind.BOOLEAN:
-            obj = K.add(uiPog(tw, 1.5, item.text, alt ? "check" : "switch", () => s.value, () => {
+            obj = K.add(uiPog(tw, 1.5, item.text, GameManager.getUIKey("sprites", alt ? "checkbox" : "switch"), () => s.value, () => {
                 s.value = !s.value;
-                K.play("nav_select")
+                K.play(GameManager.getUIKey("sounds", "select"))
             }))
             addStuff(true, PAD / 5);
             break;
@@ -102,9 +102,9 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             options = item.optionTextMap!;
             addGroup();
             for (const option of (s as SelectSetting<any>).options) {
-                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value === option, () => {
+                obj = K.add(uiPog(tw, 1.5, options[option]!, GameManager.getUIKey("sprites", "radio"), () => s.value === option, () => {
                     s.value = option;
-                    K.play("nav_select")
+                    K.play(GameManager.getUIKey("sounds", "select"))
                 }));
                 addStuff(false, PAD / 5);
                 prev = obj;
@@ -114,12 +114,12 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             options = item.optionTextMap!;
             addGroup();
             for (const option of (s as SelectMultipleSetting<any>).options) {
-                obj = K.add(uiPog(tw, 1.5, options[option]!, "radio", () => s.value.includes(option), () => {
+                obj = K.add(uiPog(tw, 1.5, options[option]!, GameManager.getUIKey("sprites", "checkbox"), () => s.value.includes(option), () => {
                     if (s.value.includes(option))
                         s.value.splice(s.value.indexOf(option), 1);
                     else
                         s.value.push(option);
-                    K.play("nav_select")
+                    K.play(GameManager.getUIKey("sounds", "select"))
                 }));
                 addStuff(false, PAD / 5);
                 prev = obj;

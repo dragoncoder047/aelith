@@ -42,6 +42,10 @@ var pack: DataPackData;
 export function getTitleData() {
     return pack.title;
 }
+export function getUIKey<T extends keyof DataPackData["title"]["ui"], U extends keyof DataPackData["title"]["ui"][T]>(k1: T, k2: U): DataPackData["title"]["ui"][T][U] {
+    return getTitleData().ui[k1][k2];
+}
+
 export async function datapack() {
     pack = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);
