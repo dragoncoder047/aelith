@@ -4,6 +4,7 @@ import { XY } from "../DataPackFormat";
 import { DEF_STYLES, STYLES } from "../TextStyles";
 import { simpleParticles } from "./particle";
 import { polyline } from "./polyline";
+import * as GameManager from "../GameManager";
 
 type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
 
@@ -98,6 +99,7 @@ type TextPrimitive = BaseRenderProps & {
     gap?: [letter: number, line: number],
     transform?: TextTransform,
     styles?: Record<string, TextTransform>,
+    font?: string;
 };
 
 export type ParticlePrimitive = BaseRenderProps & {
@@ -170,6 +172,7 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
                 align: primitive.align,
                 letterSpacing: primitive.gap?.[0],
                 lineSpacing: primitive.gap?.[1],
+                font: primitive.font ?? GameManager.getDefaultValue("font"),
             }));
             obj.use(K.dynamicText(primitive.text)); break;
         case "particles":

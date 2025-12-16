@@ -39,6 +39,9 @@ export function setup() {
     }
 }
 var pack: DataPackData;
+export function getTitleData() {
+    return pack.title;
+}
 export async function datapack() {
     pack = await DownloadManager.loadJSON("build/aelith.json") as any;
     console.log(pack);

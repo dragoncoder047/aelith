@@ -23,6 +23,7 @@ renderLayers:
     ]
   - "tiles"
 defaults:
+  font: Unscii
   gravity: 600
   depthLayer: background
   entityLayer: entities
@@ -32,3 +33,6 @@ defaults:
   speechBubbleWidth: 100
   cameraPanAlpha: 0.2
   cameraScaleAlpha: 0.08
+title:
+  entity: logosprite
+  buttonsY:

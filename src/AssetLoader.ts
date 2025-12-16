@@ -4,6 +4,7 @@ import { NestedStrings } from "./context/plugins/kaplay-dynamic-text";
 import { AssetData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
 import * as MusicManager from "./music/MusicManager";
+import { JSONObject } from "./JSON";
 
 declare global {
     interface Uint8ArrayConstructor {
@@ -141,7 +142,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "translation": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return K.addLanguageURL(asset.id, asset.src as string);
+                    return (asset.metadata as JSONObject | undefined)?.immediate ? K.loadJSON(asset.id, asset.src as string).then(d => K.strings[asset.id] = d) : K.addLanguageURL(asset.id, asset.src as string);
                 case null:
                 case undefined:
                     return K.strings[asset.id] = asset.src as NestedStrings;

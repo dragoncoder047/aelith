@@ -27,3 +27,8 @@ tiles:
       <<: *wa
       with:
         wall: 255
+  # 2: barrier
+  - tags: [barrier]
+    physics:
+      hitbox: [4, 4, 24, 24]
+      merge: [true, true]

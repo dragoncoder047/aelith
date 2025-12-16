@@ -77,7 +77,7 @@ model:
       channels:
         - target: [frontdoor, pos]
           keyframes:
-            - [&doorTime 2, { x: 0, y: 0 }]
+            - [&doorTime 1, { x: 0, y: 0 }]
             - [0, { x: 0, y: &doorMotion -64 }]
         - target: [frontdoor, angle]
           keyframes:
@@ -95,7 +95,7 @@ model:
             - [*doorTime, *doorTilt]
             - [0, 0]
 hooks:
-  setup: [do, [be, doorOpen, true], [log, setup!]]
+  setup: [do, [be, doorOpen, false]]
   stateChanged:
     - switch
     - [the, slot]

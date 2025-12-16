@@ -1,6 +1,7 @@
 import { Comp, DrawTextOpt, GameObj } from "kaplay";
 import { K } from "../../context";
 import { STYLES } from "../../TextStyles";
+import * as GameManager from "../../GameManager";
 
 export interface SpeechBubbleOpt {
     tokenDelay?: number;
@@ -36,6 +37,7 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                 align: "center",
                 anchor: "bot",
                 size: 8,
+                font: GameManager.getDefaultValue("font"),
                 pos: K.vec2(0, -PAD - PTR_H),
             };
             var t = K.formatText(textOpt);

@@ -1,5 +1,6 @@
 import { GameObj, PosComp } from "kaplay";
 import { K } from "../../context";
+import * as GameManager from "../../GameManager";
 import { RangeSetting, SelectMultipleSetting, SelectSetting, SettingKind, Settings } from "../../settings";
 import { DEF_STYLES, STYLES } from "../../TextStyles";
 import { below, layoutAnchor, PAD, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
@@ -12,7 +13,7 @@ export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Setti
     const topText = K.add([
         K.pos(),
         K.anchor("center"),
-        K.text("", { styles: STYLES, transform: DEF_STYLES, size: 24, align: "center" }),
+        K.text("", { styles: STYLES, transform: DEF_STYLES, size: 24, align: "center", font: GameManager.getDefaultValue("font"), }),
         K.dynamicText(menu.title),
         below(topAnchor, PAD),
     ]);
@@ -53,7 +54,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
             obj = K.add([
                 K.pos(),
                 K.anchor("center"),
-                K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: w }),
+                K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: w, font: GameManager.getDefaultValue("font") }),
                 K.dynamicText(item.text),
             ]);
             obj.use(below(prev, PAD));
@@ -70,19 +71,19 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
     const alt = item.altDisplay;
     var obj: GameObj<PosComp>;
     var options: Record<string, string>;
-    const addStuff = (pad = PAD) => {
+    const addStuff = (showHelp: boolean, pad = PAD) => {
         obj.use(below(prev, pad));
-        obj.use(tooltip(item.help));
+        if (showHelp) obj.use(tooltip(item.help));
     }
     const addGroup = () => {
         obj = K.add([
             K.pos(),
             K.anchor("center"),
             K.area(),
-            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw }),
+            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw, font: GameManager.getDefaultValue("font"), }),
             K.dynamicText(item.text),
         ]);
-        addStuff();
+        addStuff(true);
         prev = obj;
     }
     switch (s.kind) {
@@ -91,11 +92,11 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                 s.value = !s.value;
                 K.play("nav_select")
             }))
-            addStuff(PAD / 5);
+            addStuff(true, PAD / 5);
             break;
         case SettingKind.RANGE:
             obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => s.value = v, item.formatValue ?? (x => x.toFixed(2))));
-            addStuff(PAD / 5);
+            addStuff(true, PAD / 5);
             break;
         case SettingKind.SELECT:
             options = item.optionTextMap!;
@@ -105,7 +106,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                     s.value = option;
                     K.play("nav_select")
                 }));
-                addStuff(PAD / 5);
+                addStuff(false, PAD / 5);
                 prev = obj;
             }
             break;
@@ -120,7 +121,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                         s.value.push(option);
                     K.play("nav_select")
                 }));
-                addStuff(PAD / 5);
+                addStuff(false, PAD / 5);
                 prev = obj;
             }
             break;

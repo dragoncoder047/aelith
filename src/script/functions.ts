@@ -190,6 +190,13 @@ export const FUNCTIONS: Form[] = [
     func("not", async function* ([value]) {
         return !value;
     }),
+    func("v+", async function* (values) {
+        const res = K.vec2();
+        for (var v of values) {
+            K.Vec2.add(res, v, res);
+        }
+        return res;
+    }),
 ];
 
 export const FUNCTIONS_MAP = Object.fromEntries(FUNCTIONS.map(f => [f.name, f]));

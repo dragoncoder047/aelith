@@ -30,7 +30,7 @@ export function kaplayDynamicStrings(K: KAPLAYCtx & KAPLAYDynamicTextPlugin): KA
     const _langUrls: Record<string, string[]> = {};
     const _loaded: Record<string, boolean> = {};
     const _lazyLoad = (lang: string) => {
-        const urls = _langUrls[lang]!;
+        const urls = _langUrls[lang] ?? [];
         _loaded[lang] = true;
         urls.forEach(url => fetch(url).then(resp => resp.json()).then(json => Object.assign(K.strings[lang] ??= {}, json)));
     }

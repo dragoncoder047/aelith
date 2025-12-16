@@ -438,11 +438,16 @@ export interface DataPackData extends JSONObject {
     /** initial world state */
     initial: Savefile;
     /** metadata for the main menu stuff */
-    meta: {
-        title: string;
-        sprite: string;
+    title: {
+        /** Name of the entity kind to display on the title screen */
+        entity: string;
+        buttonsY: number;
+        ui: {
+            // TODO
+        }
     };
     defaults: {
+        font?: string;
         background?: string;
         depthLayer: string;
         gravity?: number;

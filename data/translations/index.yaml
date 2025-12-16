@@ -2,7 +2,15 @@
   id: en
   loader: url
   src: !file en.yaml
+  metadata:
+    immediate: true
 - kind: translation
   id: es
   loader: url
   src: !file es.yaml
+- kind: translation
+  id: splashes
+  loader: url
+  src: !file splashes.yaml
+  metadata:
+    immediate: true

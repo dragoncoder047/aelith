@@ -1,5 +1,6 @@
 import { AnchorComp, AreaComp, ColorComp, Comp, FixedComp, GameObj, OpacityComp, PosComp, RectComp, TextComp, Vec2 } from "kaplay";
 import { K } from "../context";
+import * as GameManager from "../GameManager";
 import { DEF_STYLES, DEF_TEXT_SIZE, STYLES } from "../TextStyles";
 
 export interface UiObjComp extends Comp {
@@ -39,6 +40,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                     styles: STYLES,
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
+                    font: GameManager.getDefaultValue("font"),
                 });
                 this.height = fText.height + PAD * s;
                 K.drawFormattedText(fText);
@@ -86,6 +88,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                     styles: STYLES,
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
+                    font: GameManager.getDefaultValue("font"),
                     pos: K.vec2(PAD * 2 - this.width / 2 + this.child!.width, 0)
                 });
                 this.height = Math.max(fText.height, this.child!.height) + PAD * s;
@@ -175,7 +178,9 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                     styles: STYLES,
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
-                    pos: K.vec2(PAD - this.width / 2, 0)
+                    pos: K.vec2(PAD - this.width / 2, 0),
+                    font: GameManager.getDefaultValue("font"),
+
                 });
                 const fText2 = K.formatText({
                     text: formatValue(getValue()),
@@ -183,7 +188,9 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                     styles: STYLES,
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
-                    pos: K.Vec2.ZERO
+                    pos: K.Vec2.ZERO,
+                    font: GameManager.getDefaultValue("font"),
+
                 });
                 const newWidth = this.width / 2 - PAD - fText2.width;
                 this.child!.width = Math.min(this.child!.width, newWidth);
@@ -258,6 +265,7 @@ export function tooltip(tip: string) {
                             size: DEF_TEXT_SIZE,
                             transform: DEF_STYLES,
                             pos: anchorPt.add(PAD / 2, PAD / 2),
+                            font: GameManager.getDefaultValue("font"),
                         });
                         K.drawRect({
                             pos: anchorPt,
