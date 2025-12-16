@@ -1,7 +1,6 @@
 import kaplay from "kaplay";
 import kaplayLighting from "kaplay-lighting";
 import { SCALE } from "../static/constants";
-import { kaplayAABB } from "./plugins/kaplay-aabb";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayExtraDistance } from "./plugins/kaplay-extradistance";
 import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
@@ -27,7 +26,6 @@ export const K = kaplay({
         kaplayExtraDistance,
         kaplayDynamicStrings,
         kaplayRumble,
-        kaplayAABB,
         kaplayLighting,
         kaplayHoverArea
     ],

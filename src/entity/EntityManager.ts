@@ -37,7 +37,7 @@ function blankEntityId(forKind: string) {
 }
 
 function _createEntity(data: EntityData, inRoom: string | null, realPos: Vec2) {
-    return new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state ?? {}, realPos, data.leashed, data.linkGroup, data.lights);
+    return new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state ?? {}, realPos, data.leashed, data.linkGroup);
 }
 
 export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: EntityData): Entity {

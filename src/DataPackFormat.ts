@@ -325,11 +325,7 @@ export interface EntityData extends JSONObject {
     /** if this is in some other entity's inventory */
     parent?: string;
     inventory?: string[];
-    /** lighting lights things */
-    lights: LightData[];
 }
-
-export type LightData = [pos: XY, radius: number, intensity: number, color: string | number, onlyLights?: (string | null)[]];
 
 /**
  * like LISP.

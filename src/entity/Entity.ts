@@ -1,8 +1,7 @@
 import { AreaComp, AudioPlay, BodyComp, GameObj, KEventController, PosComp, RotateComp, ScaleComp, Vec2 } from "kaplay";
 import { LightComp } from "kaplay-lighting";
 import { K } from "../context";
-import { PAreaComp } from "../context/plugins/kaplay-aabb";
-import { EntityData, EntityMoveAnimDef, EntityPrototypeData, LightData, XY } from "../DataPackFormat";
+import { EntityData, EntityMoveAnimDef, EntityPrototypeData, XY } from "../DataPackFormat";
 import { JSONObject } from "../JSON";
 import * as ScriptHandler from "../script/ScriptHandler";
 import { Serializable } from "../Serializable";
@@ -40,8 +39,7 @@ export class Entity implements Serializable {
         public state: JSONObject,
         public pos: Vec2,
         public leashed: [string, number] | undefined,
-        public linkGroup: string | undefined,
-        public lights: LightData[]
+        public linkGroup: string | undefined
     ) {
         this._prototype = EntityManager.getEntityPrototypeStrict(kind);
         this.inventory = new Inventory(this);
@@ -101,8 +99,8 @@ export class Entity implements Serializable {
             self.bones[sensor]!.onCollide(obj => self.startHook("sensed", {
                 bone: sensor,
                 entity: obj.entity ? obj.entity.id : null,
-                height: (obj as GameObj<PAreaComp>).aabb().height,
-                width: (obj as GameObj<PAreaComp>).aabb().width,
+                height: (obj as GameObj<AreaComp>).worldBbox().height,
+                width: (obj as GameObj<AreaComp>).worldBbox().width,
             }));
         }
     }
@@ -138,13 +136,6 @@ export class Entity implements Serializable {
             kind: this.kind,
             state: this.state,
             leashed: this.leashed,
-            lights: this.lightObjs.map(l => [
-                l.pos as XY,
-                l.light!.radius,
-                l.light!.strength,
-                l.light!.color.toHex(),
-                [] // TODO: serialize light tags once it's implemented
-            ]),
             pos: this.pos as XY,
         }
     }
@@ -256,7 +247,7 @@ export class Entity implements Serializable {
         this.targeted = other;
         // TODO: remove this debugging rectangle
         if (other) {
-            const bbox = (other.obj as any).aabb();
+            const bbox = other.obj!.worldBbox();
             K.drawRect({
                 width: bbox.width,
                 height: bbox.height,
@@ -312,6 +303,13 @@ export class Entity implements Serializable {
             const os = this.obj.gravityScale;
             const ns = (this.obj.gravityScale = state?.gravityScale ?? 1);
             if (os > 0 && ns === 0) K.Vec2.copy(K.Vec2.ZERO, this.obj.vel);
+            for (var bone of Object.keys(this.bones)) {
+                const b = this.bones[bone] as any;
+                if (b.has("body")) {
+                    b.gravityScale = ns;
+                    if (os > 0 && ns === 0) K.Vec2.copy(K.Vec2.ZERO, b.vel);
+                }
+            }
         }
     }
     doMove(direction: Vec2, sprint: boolean) {

@@ -63,7 +63,9 @@ export class Animator {
         const key = path.join(",");
         if (!this.baseValues.has(key)) {
             const p = splitV(obj, path);
-            this.baseValues.set(key, [path, p[0][p[1]]]);
+            var value = p[0][p[1]];
+            if (typeof value.clone === "function") value = value.clone();
+            this.baseValues.set(key, [path, value]);
         }
     }
     getBaseValue(path: string[]) {

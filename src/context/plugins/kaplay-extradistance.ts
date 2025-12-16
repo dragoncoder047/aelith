@@ -1,4 +1,4 @@
-import type { BodyComp, Comp, DrawCircleOpt, DrawLineOpt, DrawLinesOpt, GameEventMap, GameObj, KAPLAYCtx, PosComp, Vec2 } from "kaplay";
+import type { BodyComp, Comp, DrawLinesOpt, GameObj, InternalGameObjRaw, KAPLAYCtx, PosComp, Vec2 } from "kaplay";
 
 export interface DistancePlusOpt {
     other?: GameObj<BodyComp | PosComp>
@@ -43,6 +43,20 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYDistanceCompPlusPlugin 
                 scratch2 = K.vec2(),
                 scratch3 = K.vec2(),
                 scratch4 = K.vec2();
+            const math = (obj: GameObj<DC>) => {
+                var P = obj,
+                    len = obj.length,
+                    doVel = true;
+                for (; ;) {
+                    doCorrections(obj, P, len, doVel, K);
+                    if (P.other.has("extradistance")) {
+                        doVel = false;
+                        len += (P.other as any).length;
+                        P = P.other as any;
+                    }
+                    else break;
+                }
+            }
             return {
                 id: "extradistance",
                 require: ["pos"],
@@ -72,18 +86,10 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYDistanceCompPlusPlugin 
                     return (this as any).transform.inverse.transformPointV(this.worldP2, scratch4);
                 },
                 update(this: GameObj<DC>) {
-                    var P = this,
-                        len = this.length,
-                        doVel = true;
-                    for (; ;) {
-                        doCorrections(this, P, len, doVel, K);
-                        if (P.other.has("extradistance")) {
-                            doVel = false;
-                            len += (P.other as any).length;
-                            P = P.other as any;
-                        }
-                        else break;
-                    }
+                    math(this);
+                },
+                fixedUpdate(this: GameObj<DC>) {
+                    math(this);
                 },
                 draw(this: GameObj<PosComp | DistanceCompPlus>) {
                     K.drawLines({
@@ -140,9 +146,8 @@ function doCorrections(A: GameObj<DC>, M: GameObj<DC>, len: number, doMinimum: b
     const corrBx = -ux * corrMag * (invB / invSum);
     const corrBy = -uy * corrMag * (invB / invSum);
 
-    // Update local pos if parented (so we don't just get reset by the next calcTransform())
-    correct(A, corrAx, corrAy);
-    correct(B, corrBx, corrBy);
+    correct(A, corrAx, corrAy, K);
+    correct(B, corrBx, corrBy, K);
 
     // Velocity correction
     const vA = A.vel ?? K.Vec2.ZERO;
@@ -161,7 +166,7 @@ function doCorrections(A: GameObj<DC>, M: GameObj<DC>, len: number, doMinimum: b
     if (canBeMoved(B)) B.applyImpulse(K.vec2(dvBx, dvBy));
 }
 
-function correct(obj: GameObj<DC>, dx: number, dy: number) {
+function correct(obj: GameObj<DC>, dx: number, dy: number, K: KAPLAYCtx) {
     if (canBeMoved(obj)) {
         obj.transform.e += dx;
         obj.transform.f += dy;
@@ -173,5 +178,6 @@ function correct(obj: GameObj<DC>, dx: number, dy: number) {
             obj.pos.x = obj.transform.e;
             obj.pos.y = obj.transform.f;
         }
+        (obj as any as InternalGameObjRaw)._transformVersion = Infinity;
     }
 }
