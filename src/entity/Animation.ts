@@ -44,7 +44,7 @@ class AnimChannel<T extends LerpValue> {
         this.rewind();
         this.active = true;
         this.ended = false;
-        this.d = this.delay;
+        this.d = Math.abs(this.delay);
     }
     update(dt: number): T {
         const data = this._advance(dt), f1 = data[0], f2 = data[1], alpha = data[2];
@@ -59,8 +59,14 @@ class AnimChannel<T extends LerpValue> {
     private _advance(dt: number) {
         var i = this.i, d: number, frames = this.keyframes, len = frames.length;
         if (this.d > 0) {
-            this.d -= dt;
-        } else {
+            if (this.delay > 0) {
+                this.d -= dt;
+            } else {
+                this.d = -1;
+                dt += this.delay;
+            }
+        }
+        if (this.d <= 0) {
             if (this._totalLength === 0) {
                 this.ended = !(this.active = this.sticky || this.loop);
                 return [frames[0]!._cx, frames[0]!._cx, 1] as const;

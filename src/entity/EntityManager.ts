@@ -29,7 +29,7 @@ export function getEntityByName(entityName: string): Entity | undefined {
 }
 
 var idc = 0;
-function blankEntityId(forKind: string) {
+export function blankEntityId(forKind: string) {
     for (; ;) {
         const newId = forKind + (idc++);
         if (allEntities.every(e => e.id !== newId)) return newId;
@@ -79,7 +79,7 @@ export function destroyEntity(e: Entity) {
     const i = allEntities.indexOf(e);
     if (i >= 0) {
         allEntities[i] = allEntities.pop()!;
-        e.destroy();
+        e.unload();
         ScriptHandler.killAllTasksControlledBy(e);
     }
 }
@@ -87,7 +87,7 @@ export function destroyEntity(e: Entity) {
 export function teleportEntityTo(e: Entity, room: string | null, pos: Vec2) {
     if (e.currentRoom !== room) {
         const cr = RoomManager.getCurrentRoom();
-        if (e.currentRoom === cr) e.destroy();
+        if (e.currentRoom === cr) e.unload();
         else if (room === cr) e.load();
     }
     e.setPosition(pos);

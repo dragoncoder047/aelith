@@ -1,4 +1,5 @@
 import { K } from "../context";
+import { DisplayEntity } from "./DisplayEntity";
 import { Entity } from "./Entity";
 import * as EntityManager from "./EntityManager";
 
@@ -12,28 +13,31 @@ export class Inventory {
     slots: Entity[] = [];
     maxSlots: number | undefined;
     private _occupied = 0;
-    displayed: Entity | null = null;
+    displayed: DisplayEntity | null = null;
     private _handsBone: string | undefined
     constructor(public me: Entity) {
-        const { inventorySize, inventorySlots, inventoryHolder } = me.getPrototype().behavior;
-        this.size = inventorySize;
-        this.maxSlots = inventorySlots;
-        this._handsBone = inventoryHolder;
+        const b = me.getPrototype().behavior;
+        if (b) {
+            this.size = b.inventorySize;
+            this.maxSlots = b.inventorySlots;
+            this._handsBone = b.inventoryHolder;
+        }
     }
     async tryAdd(obj: Entity) {
         const otherSize = obj.inventory.size;
         if (otherSize === undefined || this.maxSlots === undefined) return "cannotTake";
         if ((this._occupied + otherSize) > this.maxSlots) return "noRoom";
+        // TODO: this is a very expensive check.
         if (EntityManager.objIsAlreadyOwned(obj)) return "cannotTake";
         const t = obj.startHook("taken", { taker: this.me.id });
         if (t) {
-            const v = await new Promise(res => t.onFinish(res));
+            const v = await new Promise<any>(res => t.onFinish(res));
             if (t.failed && v instanceof RefuseTake) return "refused";
         }
         this.me.startHook("take", { taken: obj.id });
         this._occupied += otherSize;
         this.slots.push(obj);
-        obj.currentRoom = null;
+        EntityManager.teleportEntityTo(obj, null, K.Vec2.ZERO);
         this.displayObj(obj);
         return "taken";
     }
@@ -46,22 +50,20 @@ export class Inventory {
         EntityManager.teleportEntityTo(obj, this.me.currentRoom, pos);
         return true;
     }
-    displayObj(obj: Entity) {
-        if (!this.slots.includes(obj)) return false;
+    displayObj(obj: Entity | null) {
+        if (obj && !this.slots.includes(obj)) return false;
         if (this.me.obj && this.displayed) {
-            this.displayed.destroy();
+            this.displayed.unload();
+            this.displayed = null;
         }
-        this.displayed = obj;
+        if (obj) {
+            this.displayed = obj.toDisplayEntity();
+            obj.obj!.parent = this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
+            obj.setPosition(K.vec2());
+        }
         return true;
     }
     update() {
-        const o = this.displayed;
-        if (!o) return;
-        o.load();
-        o.obj!.parent = this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
-        // Pull it to the middle
-        o.setPosition(K.vec2());
-        // Reset velocity to prevent infinite falling
-        (o as any).obj.vel = K.vec2();
+        // nothing?
     }
 }

@@ -1,0 +1,63 @@
+model:
+  skeleton:
+    - name: centerpos
+      pos: { x: 0, y: 128 }
+      children:
+        - name: logo
+          render:
+            as: sprite
+            sprite: gameLogo
+            anchor: center
+            angle: 0
+            scale: { x: 0.8, y: 0.8 }
+          children:
+            - name: particles
+              render:
+                as: particles
+                time: [0.25, 0.5]
+                speed: [100, 150]
+                acc: [{ x: 0, y: 300 }, { x: 0, y: 500 }]
+                damp: [0, 10]
+                dir: -90
+                pps: 20
+                spread: 160
+                anim:
+                  color: [cyan]
+                  trans: [0.7]
+                  scale: [2.5]
+  anims:
+    1:
+      loop: true
+      autoplay: true
+      channels:
+        - target: [logo, pos]
+          keyframes:
+            - [3.1, { x: 0, y: -70 }, easeInOutSine]
+            - [3.1, { x: 0, y: -60 }, easeInOutSine]
+        - target: [logo, angle]
+          delay: -2
+          keyframes:
+            - [2.4, -1, easeInOutSine]
+            - [2.4, 1, easeInOutSine]
+        - target: [logo, scale]
+          delay: -4
+          keyframes:
+            - [2.6, { x: 0.79, y: 0.79 }, easeInOutSine]
+            - [2.6, { x: 0.82, y: 0.82 }, easeInOutSine]
+hooks:
+  loadAsDisplay:
+    - do
+    - - while
+      - 1
+      - [wait, 0] # prevent a lockup loop
+      - [worldPos, particles, [vec2, [nth, 0, [xys, [worldPos, particles]]], 0]]
+      - [
+          apset,
+          [list, particles, pos],
+          [vec2, -150, [apget, [list, particles, pos, "y"]]],
+        ]
+      - [
+          apset,
+          [list, particles, particles, rate],
+          [lerp, 20, 1500, [getanalog, throw]], # TODO: update this if right trigger is reassigned.
+        ]

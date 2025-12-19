@@ -9,7 +9,7 @@ export class MotionManager {
     private _moving: MovingBone[] = [];
     private _stateChange = new K.KEvent<[EntityMoveAnimDef | null, EntityMoveAnimDef]>();
     sprinting = false;
-    constructor(public entity: Entity, public data: Record<string, EntityMoveAnimDef>) {
+    constructor(public entity: Entity, public data: Record<string, EntityMoveAnimDef> = {}) {
     }
     init() {
         for (var def of Object.keys(this.data)) {
@@ -44,8 +44,8 @@ export class MotionManager {
         if (a) stop(a);
         if (s) (Array.isArray(s) ? (stop(s[0]), stop(s[1])) : stop(s));
     }
-    setState(state: string) {
-        if (this._didChangeStateTo(state)) {
+    setState(state: string | null) {
+        if (this._didChangeStateTo(state!)) {
             const [a, s, c, d, l, h, t] = this._getData();
             const start = (anim: string) => this.entity.playAnim(anim);
             const startskin = (anim: string) => {
@@ -121,7 +121,7 @@ export class MotionManager {
     private _phase = 0;
     run(dt: number, velocity: Vec2, sprintValue: number, manualStop: boolean) {
         const { bones, pos, id, animator, obj } = this.entity;
-        const { allowedComponents, sprint, steps } = this.curData()!;
+        const { allowedComponents, sprint, steps } = this.curData() ?? {};
         if (allowedComponents)
             K.Vec2.scalec(velocity, allowedComponents.x, allowedComponents.y, velocity);
         if (sprint) {
@@ -151,7 +151,8 @@ export class MotionManager {
             didStep ||= b.update(op2, shouldStartStep, dt, velocity, bones, id, pos);
         }
         obj!.move(velocity);
-        this.entity.startHook("move", { dir: { x: velocity.x, y: velocity.y }, sprinting: this.sprinting });
+        if (!velocity.isZero())
+            this.entity.startHook("move", { dir: { x: velocity.x, y: velocity.y }, sprinting: this.sprinting });
         if (didStep) this.entity.startHook("step");
     }
 }

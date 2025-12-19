@@ -14,6 +14,7 @@ import { SpeechBubbleComp } from "./comps/speechBubble";
 import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
 import { MotionManager } from "./MotionManager";
+import { DisplayEntity } from "./DisplayEntity";
 
 export type EntityComponents = EntityComp | PosComp;
 export type BoneComponents = EntityComponents | RotateComp | ScaleComp | AreaComp;
@@ -41,10 +42,10 @@ export class Entity implements Serializable {
         public leashed: [string, number] | undefined,
         public linkGroup: string | undefined
     ) {
-        this._prototype = EntityManager.getEntityPrototypeStrict(kind);
+        const p = this._prototype = EntityManager.getEntityPrototypeStrict(kind);
         this.inventory = new Inventory(this);
         buildAnimations(kind, this.animator = new Animator(this));
-        this.motionController = new MotionManager(this, this._prototype.model.kinematics.states);
+        this.motionController = new MotionManager(this, p.model?.kinematics?.states);
         this.motionController.onStateChange((a, b) => {
             const aa = a?.leaveHook;
             const bb = b.startHook;
@@ -52,7 +53,7 @@ export class Entity implements Serializable {
             if (bb) this.startHook(bb);
             this._updateGravityScale(b);
         });
-        this.setMotionState(this._prototype.model.kinematics.initial);
+        this.setMotionState(p.model?.kinematics?.initial ?? null);
         this.startHook("setup");
     }
     startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
@@ -66,7 +67,7 @@ export class Entity implements Serializable {
     onUpdate(cb: () => void): KEventController {
         return this._updateEv.add(cb);
     }
-    private _unloadedBySceneChange: KEventController | undefined;
+    protected _unloadedBySceneChange: KEventController | undefined;
     load() {
         // needed for the entity getter on entity comp so I used it everywhere for extra minification ;)
         const self = this;
@@ -111,7 +112,7 @@ export class Entity implements Serializable {
         this.pos = pos;
         if (this.obj) this.obj.pos = pos;
     }
-    destroy() {
+    unload() {
         this.obj?.destroy();
         for (var k of Object.keys(this.bones)) {
             this.bones[k]?.destroy();
@@ -237,8 +238,9 @@ export class Entity implements Serializable {
             this.motionController.jump();
         }
     }
-    getHead(): GameObj<PosComp> | undefined {
-        return this.bones[this.getPrototype().model.kinematics.look.origin];
+    getHead(): GameObj<PosComp> {
+        const b = this.getPrototype().model?.kinematics?.look.origin;
+        return b ? this.bones[b]! : this.obj!;
     }
     target(other: Entity | null) {
         if (other?.obj) {
@@ -261,8 +263,8 @@ export class Entity implements Serializable {
         }
     }
     private _lookAtPoint(pt: Vec2) {
-        if (this.obj) {
-            const d = this.getPrototype().model.kinematics.look;
+        const d = this.getPrototype().model?.kinematics?.look;
+        if (this.obj && d) {
             this.bones[d.target]!.worldPos(pt);
         }
     }
@@ -272,9 +274,9 @@ export class Entity implements Serializable {
             this._lookAtPoint(this.getHead()!.worldPos()!.add(pt));
         }
         if (this.obj && !direction.isZero()) {
-            const d = this.getPrototype().model.kinematics.look;
-            const origin = this.bones[d.origin]!.worldPos()!;
-            const res = K.raycast(origin, direction.scale((this.getPrototype().behavior.interactDistance ?? 4) * 32), [this.id]);
+            const d = this.getPrototype().model?.kinematics?.look;
+            const origin = (d ? this.bones[d.origin] : this.obj)!.worldPos()!;
+            const res = K.raycast(origin, direction.scale((this.getPrototype().behavior?.interactDistance ?? 4) * 32), [this.id]);
             if (res) {
                 if (!(res.object?.entity) && res.point) this._lookAtPoint(res.point);
             } else {
@@ -291,7 +293,7 @@ export class Entity implements Serializable {
     private _lastMove = K.Vec2.ZERO;
     private _moving = false;
     private _sprintSpeed = 0;
-    setMotionState(state: string) {
+    setMotionState(state: string | null) {
         this.motionController.setState(state);
     }
     private _motionStateShouldEnd = false;
@@ -321,11 +323,11 @@ export class Entity implements Serializable {
         else if (!this.motionController.sprinting && sprint) {
             this.startHook("startSprint");
         }
-        const speed = ((this.motionController.sprinting = sprint) ? pb.sprintSpeed : null) ?? pb.moveSpeed;
+        const speed = ((this.motionController.sprinting = sprint) ? pb?.sprintSpeed : null) ?? pb?.moveSpeed;
         if (this.obj) {
             const l = clampUnit(direction);
             this._sprintSpeed = l.len();
-            this._lastMove = l.scale(speed);
+            this._lastMove = l.scale(speed ?? 1);
         }
         if (direction.isZero()) {
             if (this._moving) this.startHook("stopMove");
@@ -335,6 +337,9 @@ export class Entity implements Serializable {
             if (!this._moving) this.startHook("startMove");
             this._moving = true;
         }
+    }
+    toDisplayEntity(): DisplayEntity {
+        return new DisplayEntity(this.kind, this.pos, this.state);
     }
 }
 

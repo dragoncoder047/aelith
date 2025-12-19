@@ -12,6 +12,20 @@ export function getMotionInput(name: string, origin: Entity | null) {
     const v = motionControls[name]!.reduce((a, inp) => a.add(inp.poll(origin)), K.Vec2.ZERO);
     return v.slen() > 1 ? v.unit() : v;
 }
+
+export function getAnalog(name: string) {
+    // only game controllers can provide analog inputs
+    var gAnalog = BUTTONS[name]?.gamepad;
+    var res = 0;
+    if (gAnalog) {
+        if (!Array.isArray(gAnalog)) gAnalog = [gAnalog];
+        for (var i = 0; i < gAnalog.length; i++) {
+            res += K.getGamepadAnalogButton(gAnalog[i]! as any);
+        }
+    }
+    return res;
+}
+
 export function setupControls() {
     for (var button of Object.keys(BUTTONS)) {
         const entry = BUTTONS[button]!;

@@ -6,7 +6,7 @@ import { FUNCTIONS_MAP } from "./functions";
 export type Env = JSONObject;
 export type TracebackArray = (string | { f: string, n: number })[]
 
-export type TaskGen = AsyncGenerator<void, any, void>;
+export type TaskGen = Generator<void, any, void>;
 export class Task {
     paused = false;
     tc = false;
@@ -14,7 +14,7 @@ export class Task {
     gen: TaskGen = null as any;
     result: any;
     failed: boolean = false;
-    constructor(public priority: number, public controller: Entity) { }
+    constructor(public priority: number, public entity: Entity) { }
     onFinish(cb: (value: any) => void) {
         return this.complete.add(cb);
     }
@@ -47,7 +47,7 @@ export function tracebackError(error: Error | string, traceback: TracebackArray)
     return e;
 }
 
-export async function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
+export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
     for (; ;) {
         task.tc = false;
         if (!Array.isArray(form)) return form;
@@ -95,25 +95,27 @@ export function spawnTask(priority: number, form: JSONValue, actor: Entity, cont
 
 export function killAllTasksControlledBy(actor: Entity) {
     for (var i = 0; i < tasks.length; i++) {
-        if (tasks[i]!.controller === actor) {
+        if (tasks[i]!.entity === actor) {
             tasks[i]!.complete.trigger(undefined);
             tasks.splice(i--, 1);
         }
     }
 }
 
-async function stepTasks() {
+const _maxPriorityByEntity = new Map<Entity, number>();
+function stepTasks() {
     var madeProgress = false;
-    var runnedP = undefined;
+    _maxPriorityByEntity.clear();
     for (var i = 0; i < tasks.length; i++) {
         const t = tasks[i]!;
-        if (t.paused) continue;
-        if (runnedP !== undefined && runnedP > t.priority) break;
-        runnedP = t.priority;
+        if (t.paused || (_maxPriorityByEntity.has(t.entity) && _maxPriorityByEntity.get(t.entity)! > t.priority)) {
+            continue;
+        }
+        _maxPriorityByEntity.set(t.entity, t.priority);
         madeProgress = true;
         var res;
         try {
-            res = await t.gen!.next();
+            res = t.gen!.next();
         } catch (e) {
             if (t.complete.numListeners() > 0) {
                 t.failed = true;
@@ -130,13 +132,9 @@ async function stepTasks() {
 }
 
 export async function advanceAsFarAsPossible() {
-    while (await stepTasks());
+    while (stepTasks());
 }
 
 export function startMainLoop() {
-    const u = K.onUpdate(async () => {
-        u.paused = true;
-        await advanceAsFarAsPossible();
-        u.paused = false;
-    });
+    K.onUpdate(advanceAsFarAsPossible);
 }

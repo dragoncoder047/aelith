@@ -174,7 +174,7 @@ export class Animator {
 }
 
 export function buildAnimations(kind: string, animator: Animator) {
-    const { anims } = EntityManager.getEntityPrototypeStrict(kind).model;
+    const anims = EntityManager.getEntityPrototypeStrict(kind).model?.anims;
     if (!anims) return;
     const toPlay = [];
     for (var animName of Object.keys(anims)) {
@@ -198,7 +198,7 @@ function averageAll<T extends LerpValue>(values: T[], weights: number[]): T {
     throw new Error("aaa no values");
 }
 
-function splitV(obj: any, path: string[]): [any, string] {
+export function splitV(obj: any, path: string[]): [any, string] {
     for (var i = 0; i < path.length - 1; i++) {
         obj = obj[path[i]!];
     }

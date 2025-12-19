@@ -20,14 +20,15 @@ export function simpleParticles(opt: ParticlePrimitive): SimpleParticlesComp {
         q = K.quad(0, 0, 1, 1);
     }
     const pOpt: ParticlesOpt = {
-        max: 1000,
+        max: 2000,
         lifeTime: opt.time,
         speed: opt.speed,
         acceleration: opt.acc && [K.Vec2.deserialize(opt.acc[0]), K.Vec2.deserialize(opt.acc[1])],
         damping: opt.damp,
         scales: opt.anim?.scale,
-        colors: opt.anim?.color && opt.anim.color.map(K.rgb),
+        colors: opt.anim?.color && opt.anim.color.map(c => K.rgb(c)),
         opacities: opt.anim?.trans,
+        angularVelocity: opt.spin,
         texture: t,
         quads: [q]
     };

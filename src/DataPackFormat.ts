@@ -97,9 +97,9 @@ export interface EntityPrototypeData extends JSONObject {
     /** tags for "get" function; names and stuff also are used as tags */
     tags: string[];
     /** name of the sprite model to use for this */
-    model: EntityModelData;
+    model?: EntityModelData;
     physics?: PhysicsComponentData[];
-    behavior: {
+    behavior?: {
         canBePlayer?: boolean;
         moveSpeed: number;
         sprintSpeed?: number;
@@ -127,12 +127,12 @@ export interface EntityModelData extends JSONObject {
     /** definition of animations or emotes */
     anims?: Record<string, EntityAnimData>;
     /** The inverse-kinematics points that will be moved to create the natural motion driven animation */
-    kinematics: {
+    kinematics?: {
         states: Record<string, EntityMoveAnimDef>;
         initial: string;
         look: EntityLookAnimDef;
     }
-    speechBubble: {
+    speechBubble?: {
         origin: string;
         width?: number;
         tokenDelay: number;
@@ -364,7 +364,7 @@ export interface EntityData extends JSONObject {
  * * stop - early return from hook
  * * ask <entity> <questionName>
  * * answer <value> - respond to question from another entity
- * * setPlayer <entity> - switch controls and camera following to it
+ * * bePlayer <entity> - switch controls and camera following to it
  * * win - causes the bluescreen and hasWon to be set to true
  * * lookAt <entity> - rotates to look at it
  * * goto <location> - sets navigation goal
@@ -437,7 +437,6 @@ export interface DataPackData extends JSONObject {
     title: {
         /** Name of the entity kind to display on the title screen */
         entity: string;
-        buttonsY: number;
         ui: {
             sounds: {
                 select: string;

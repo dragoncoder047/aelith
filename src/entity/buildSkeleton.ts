@@ -11,8 +11,8 @@ import { speechBubble } from "./comps/speechBubble";
 import { BoneComponents, BonesMap, Entity, EntityComponents } from "./Entity";
 
 export function buildHitbox(e: Entity, rootObj: GameObj<EntityComponents>) {
-    const { physics, behavior: { jumpForce } } = e.getPrototype();
-    if (physics) addPhysicsComponents(rootObj, physics, false, jumpForce);
+    const { physics, behavior } = e.getPrototype();
+    if (physics) addPhysicsComponents(rootObj, physics, false, behavior?.jumpForce);
 }
 
 function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleData, constraintEntries: { c: EntityBoneConstraintOptData, t: string }[]) {
@@ -90,6 +90,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
 export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): BonesMap {
     const map: BonesMap = {};
     const model = e.getPrototype().model;
+    if (!model) return {};
     const constraintEntries: { c: EntityBoneConstraintOptData, t: string }[] = [];
     const ikEntries: { s: string, t: string, d: number }[] = [];
     const buildBone = (parent: GameObj, bonesList: EntityModelBoneData[]) => {

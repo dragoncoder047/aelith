@@ -1,21 +1,26 @@
 import { Vec2 } from "kaplay";
 import { K } from "../context";
+import * as ScriptHandler from "../script/ScriptHandler";
 import { Entity } from "./Entity";
+import * as EntityManager from "./EntityManager";
+import { JSONObject } from "../JSON";
 
 export class DisplayEntity extends Entity {
     constructor(
         kind: string,
         pos: Vec2,
+        state: JSONObject,
     ) {
-        super("", null, kind, {}, pos, undefined, undefined, []);
+        super(EntityManager.blankEntityId(kind), null, kind, state, pos, undefined, undefined);
         this.load();
     }
     load() {
         super.load();
         this.obj!.unuse("body");
         this.obj!.unuse("area");
+        this._unloadedBySceneChange?.cancel();
         K.onSceneLeave(() => {
-            this.destroy();
+            ScriptHandler.killAllTasksControlledBy(this);
         });
         this.startHook("loadAsDisplay");
     }

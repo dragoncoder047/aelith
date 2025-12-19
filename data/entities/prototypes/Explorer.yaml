@@ -396,4 +396,4 @@ model:
       # swimming:
       #   # TODO
 hooks:
-  action1: [as, [my, agent], setPlayer]
+  action1: [as, [my, agent], bePlayer]

@@ -1,3 +1,4 @@
 explorer: !include Explorer.yaml
 agent: !include Agent.yaml
 spaceship: !include Spaceship.yaml
+logosprite: !include logo.yaml
