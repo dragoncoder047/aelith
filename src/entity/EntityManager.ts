@@ -138,7 +138,7 @@ export function installControlsHandler() {
             const alpha = K.dt() * Math.LN2;
             K.setCamPos(K.lerp(K.getCamPos(), p.pos, alpha / GameManager.getDefaultValue("cameraPanAlpha")));
             // Zoom in
-            K.setCamScale(K.lerp(K.getCamScale(), K.vec2(p.getPrototype().behavior.camScale ?? 1), alpha / GameManager.getDefaultValue("cameraScaleAlpha")));
+            K.setCamScale(K.lerp(K.getCamScale(), K.vec2(p.getPrototype().behavior?.camScale ?? 1), alpha / GameManager.getDefaultValue("cameraScaleAlpha")));
         }
     });
 }

@@ -14,7 +14,7 @@ export function roomScene(whichRoom: string | undefined) {
     EntityManager.installControlsHandler();
     RoomManager.enterRoom(whichRoom);
     K.setCamPos(p.pos);
-    K.setCamScale(p.getPrototype().behavior.camScale ?? 1);
+    K.setCamScale(p.getPrototype().behavior?.camScale ?? 1);
     ScriptHandler.startMainLoop();
     K.scene.onButtonPress("pause_unpause", () => {
         K.play("nav_do_it");

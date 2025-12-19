@@ -57,6 +57,13 @@ menu:
       title: Debug
       inspectView: Inspector
       infoInspectView: Show the KAPLAY inspect view (can cause FPS drop)
+      long:
+        button: Test Long Menu
+        title: Long menu test
+        dummy: Button
+      crash:
+        text: Test Error
+        help: Deliberately throws an error and breaks the game
 
 # lore:
 #   memory:

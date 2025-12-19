@@ -1,9 +1,9 @@
 import { K } from "../context";
-import { Room } from "../room/Room";
-import { Menu, MenuItemType } from "../scenes/menus/types";
-import { Settings } from "../settings";
 import * as PlatformGuesser from "../PlatformGuesser";
+import { Room } from "../room/Room";
+import { Menu, MenuItem, MenuItemType } from "../scenes/menus/types";
 import { Scene } from "../scenes/SceneManager";
+import { Settings } from "../settings";
 
 export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 
@@ -137,8 +137,30 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 setting: "debugInspect",
                 help: mmo("debug.infoInspectView"),
                 altDisplay: true
+            },
+            {
+                type: MenuItemType.SUBMENU,
+                next: "debugLongMenu",
+                text: mmo("debug.long.button")
+            },
+            {
+                type: MenuItemType.BUTTON,
+                help: mmo("debug.crash.help"),
+                text: mmo("debug.crash.text"),
+                async action() {
+                    throw new Error("you asked for it!");
+                }
             }
         ]
+    },
+    debugLongMenu: {
+        title: mmo("debug.long.title"),
+        options: new Array<MenuItem>(20).fill({
+            type: MenuItemType.BUTTON,
+            help: "",
+            text: mmo("debug.long.dummy"),
+            async action() { }
+        }),
     },
     // Pause menu
     paused: {

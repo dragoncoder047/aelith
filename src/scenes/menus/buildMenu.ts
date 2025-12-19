@@ -31,7 +31,11 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
                 K.play(GameManager.getUIKey("sounds", "open"));
-                K.pushScene(Scene.MENU, set[item.next], set, settings);
+                const menu = set[item.next];
+                if (menu === undefined) {
+                    throw new Error(`Menu ${item.next} doesn't exist`);
+                }
+                K.pushScene(Scene.MENU, menu, set, settings);
             }));
             obj.use(below(prev, PAD));
             break;
