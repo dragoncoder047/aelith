@@ -101,12 +101,12 @@
 * contains an elevator that goes down to the labs
 * security cameras watching the exits (through entryway and loading dock)
 * the player can only get in to the elevator using the vurbilizer found in the
-  board room
+  conference room
   * the elevator can be called by pressing a button, but that also
     closes the security gate in front of the elevator, and the call button is on the
     wrong side of the gate
 
-    `[exit to loading dock]---[2nd elevator call button]---[elevator]----[security gate]-----[elevator call button]-----[entry doors]----[to front desk]`
+    `[exit to loading dock]---[broken elevator call button]---[elevator]----[security gate]-----[elevator call button]-----[entry doors]----[to front desk]`
 * sequence to enter elevator:
     1. player goes to conference room and gets vurbilizer.
     2. player un-calls elevator if they called it, this opens the security gate.
@@ -216,7 +216,7 @@
 * the control panel for the machine is only accessible after crossing the removable
   panels
   * the player cannot jump over it due to the catwalk above it and if they jump in,
-    there is an emergency walkway that gets them back to the entryway doors, but
+    there is a ladder that gets them back to the entryway doors, but
     they cannot jump back up to the controls
 * there is a cryocooler and helium compressor available for the player to
   jerry rig attach to the press jaws to keep the zug frozen (otherwise it would

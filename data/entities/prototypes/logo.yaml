@@ -1,7 +1,7 @@
 model:
   skeleton:
     - name: centerpos
-      pos: { x: 0, y: 128 }
+      pos: { x: 0, y: 100 }
       children:
         - name: logo
           render:
@@ -25,12 +25,24 @@ model:
                   color: [cyan]
                   trans: [0.7]
                   scale: [2.5]
+            - name: splash
+              pos: { x: 200, y: 100 }
+              render:
+                as: text
+                anchor: topright
+                text: ""
+                size: 12
+                color: yellow
+                width: 300
+                align: right
+
   anims:
     1:
       loop: true
       autoplay: true
       channels:
         - target: [logo, pos]
+          alpha: 100
           keyframes:
             - [3.1, { x: 0, y: -70 }, easeInOutSine]
             - [3.1, { x: 0, y: -60 }, easeInOutSine]
@@ -47,6 +59,11 @@ model:
 hooks:
   loadAsDisplay:
     - do
+    - [
+        apset,
+        [list, splash, t],
+        [+, "&splashes.", [randi, 0, [toNumber, [expand, "&splashes.length"]]]],
+      ]
     - - while
       - 1
       - [wait, 0] # prevent a lockup loop

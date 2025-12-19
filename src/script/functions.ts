@@ -194,6 +194,9 @@ export const FUNCTIONS: Form[] = [
     func("*", function* (values) {
         return values.reduce((a, b) => a * b);
     }),
+    func("+", function* (values) {
+        return values.length > 1 ? values.reduce((a, b) => a + b) : Math.abs(values[0]);
+    }),
     func("/", function* (values) {
         return values.length > 1 ? values[0] / values.slice(1).reduce((a, b) => a * b) : 1 / values[0];
     }),
@@ -244,6 +247,16 @@ export const FUNCTIONS: Form[] = [
     }),
     func("lerp", function* ([a, b, t]) {
         return K.lerp(a, b, t);
+    }),
+    func("randi", function* ([low, high]) {
+        console.log(low, high);
+        return K.randi(low, high);
+    }),
+    func("toNumber", function* ([string]) {
+        return Number(string);
+    }),
+    func("expand", function* ([code, data]) {
+        return K.sub(code, data);
     }),
 ];
 
