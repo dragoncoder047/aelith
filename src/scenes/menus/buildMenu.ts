@@ -3,29 +3,52 @@ import { K } from "../../context";
 import * as GameManager from "../../GameManager";
 import { RangeSetting, SelectMultipleSetting, SelectSetting, SettingKind, Settings } from "../../settings";
 import { DEF_STYLES, STYLES } from "../../TextStyles";
-import { below, layoutAnchor, PAD, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
+import { below, layoutAnchor, PAD, scroller, ScrollerComp, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
 import { Scene } from "../SceneManager";
 import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
 
 
-export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings) {
+export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings): GameObj<ScrollerComp> {
     const topAnchor = K.add([K.pos(), layoutAnchor(top)]);
+    const bw = K.width() / 5;
+    const w = 4 * bw;
     const topText = K.add([
         K.pos(),
         K.anchor("center"),
+        {
+            draw(this: GameObj) {
+                K.drawRect({
+                    ...this,
+                    color: K.BLACK,
+                    pos: K.Vec2.ZERO,
+                    width: w,
+                    height: this.height + PAD * 2,
+                });
+            }
+        },
         K.text("", { styles: STYLES, transform: DEF_STYLES, size: 24, align: "center", font: GameManager.getDefaultValue("font"), }),
         K.dynamicText(menu.title),
         below(topAnchor, PAD),
+        K.z(1),
     ]);
-    const bw = K.width() / 5;
-    const w = 4 * bw;
-    var prev = topText as GameObj<PosComp>;
+    const scrollAnchor = K.add([
+        K.pos(),
+        below(topText, 0),
+        "scroller",
+    ]);
+    var prev = scrollAnchor;
     for (var i = 0; i < menu.options.length; i++) {
-        prev = makeMenuItem(w, bw, prev, menu.options[i]!, set, settings);
+        prev = makeMenuItem(w, bw, prev, menu.options[i]!, set, settings, i === 0);
     }
+    const last = K.add([
+        K.pos(),
+        below(prev, PAD),
+    ]);
+    scrollAnchor.use(scroller(last));
+    return scrollAnchor as any;
 }
 
-function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings) {
+function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean) {
     var obj: GameObj<PosComp>;
     switch (item.type) {
         case MenuItemType.SUBMENU:
@@ -58,19 +81,26 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
             obj = K.add([
                 K.pos(),
                 K.anchor("center"),
-                K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: w, font: GameManager.getDefaultValue("font") }),
+                K.text("", {
+                    styles: STYLES,
+                    transform: DEF_STYLES,
+                    size: 12,
+                    align: "left",
+                    width: w,
+                    font: GameManager.getDefaultValue("font")
+                }),
                 K.dynamicText(item.text),
             ]);
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.SETTING:
-            obj = makeSetting(w, prev, item, set, settings);
+            obj = makeSetting(w, prev, item, set, settings, first);
             break;
     }
     return obj;
 }
 
-function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, set: Record<string, Menu>, settings: Settings) {
+function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, set: Record<string, Menu>, settings: Settings, first: boolean) {
     const s = settings.settings[item.setting]!;
     const alt = item.altDisplay;
     var obj: GameObj<PosComp>;
@@ -96,11 +126,11 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                 s.value = !s.value;
                 K.play(GameManager.getUIKey("sounds", "select"))
             }))
-            addStuff(true, PAD / 5);
+            addStuff(true, first ? PAD : PAD / 5);
             break;
         case SettingKind.RANGE:
             obj = K.add(uiSlider(tw, 1.5, item.text, (s as RangeSetting).min, (s as RangeSetting).max, (s as RangeSetting).step, () => s.value, v => s.value = v, item.formatValue ?? (x => x.toFixed(2))));
-            addStuff(true, PAD / 5);
+            addStuff(true, first ? PAD : PAD / 5);
             break;
         case SettingKind.SELECT:
             options = item.optionTextMap!;
@@ -110,7 +140,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                     s.value = option;
                     K.play(GameManager.getUIKey("sounds", "select"))
                 }));
-                addStuff(false, PAD / 5);
+                addStuff(false, first ? PAD : PAD / 5);
                 prev = obj;
             }
             break;
@@ -125,7 +155,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                         s.value.push(option);
                     K.play(GameManager.getUIKey("sounds", "select"))
                 }));
-                addStuff(false, PAD / 5);
+                addStuff(false, first ? PAD : PAD / 5);
                 prev = obj;
             }
             break;

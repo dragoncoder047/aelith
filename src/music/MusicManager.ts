@@ -1,3 +1,7 @@
+import { AudioPlay } from "kaplay";
+import { SYSTEM_SETTINGS } from "../static/systemMenus";
+import { RangeSetting } from "../settings";
+
 interface Song {
     id: string;
     title: string;
@@ -5,10 +9,15 @@ interface Song {
     tags: string[];
 }
 
-const all_songs = [];
+const allSongs = [];
 
 export function addSong(song: Song) {
-    all_songs.push(song);
+    allSongs.push(song);
 }
 
 // TODO: play and pause songs
+
+var currentSong: AudioPlay | undefined;
+export function update() {
+    if (currentSong) currentSong.volume = SYSTEM_SETTINGS.getValue<RangeSetting>("musicVolume")!;
+}

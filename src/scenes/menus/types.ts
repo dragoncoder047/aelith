@@ -37,7 +37,7 @@ export interface BackMenuItem extends MenuItemCommon {
 export interface ButtonMenuItem extends MenuItemCommon {
     type: MenuItemType.BUTTON;
     help: string;
-    action(): Promise<void>;
+    action(): void | Promise<void>;
 }
 
 export interface TextMenuItem extends MenuItemCommon {

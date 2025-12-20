@@ -3,18 +3,18 @@ import { K } from "../context";
 import { DisplayEntity } from "../entity/DisplayEntity";
 import * as GameManager from "../GameManager";
 import * as ScriptHandler from "../script/ScriptHandler";
+import * as FPSMonitor from "../static/fpsMonitor";
 import { below, layoutAnchor, uiButton } from "../ui";
-import { installTabNavigation } from "./menus/tabNav";
+import { installTabNavigation } from "../ui/tabNav";
 import * as SceneManager from "./SceneManager";
 
+var first = true;
 
 export function titleScreenScene() {
     BlueScreen.install();
+    FPSMonitor.install();
     K.setBackground(K.BLACK);
-    // K.onUpdate(() => {
-    //     emitterOpt.rate = K.lerp(20, 1500, Math.pow(K.getGamepadAnalogButton("rtrigger"), 2));
-    // });
-    const e = new DisplayEntity(GameManager.getTitleData().entity, K.Vec2.ZERO, {});
+    const e = new DisplayEntity(GameManager.getTitleData().entity, K.vec2(K.width() / 2, 0), {});
     ScriptHandler.startMainLoop();
     e.obj!.onUpdate(() => {
         e.setPosition(K.vec2(K.width() / 2, 0));
@@ -30,5 +30,6 @@ export function titleScreenScene() {
     }));
     enterBtn.use(layoutAnchor(K.center));
     optionsBtn.use(below(enterBtn, 10));
-    installTabNavigation();
+    installTabNavigation(!first);
+    first = false;
 }

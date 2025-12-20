@@ -7,7 +7,6 @@ import { kaplayRumble } from "./plugins/kaplay-gamepad-rumble";
 import { kaplayHoverArea } from "./plugins/kaplay-hover-area";
 import { kaplayXterm256 } from "./plugins/kaplay-xterm256";
 import { kaplayZzFX } from "./plugins/kaplay-zzfx";
-import { kaplayZzFXM } from "./plugins/kaplay-zzfxm";
 
 export const K = kaplay({
     debug: true,
@@ -22,7 +21,7 @@ export const K = kaplay({
     plugins: [
         kaplayXterm256,
         kaplayZzFX,
-        kaplayZzFXM,
+        // kaplayZzFXM,
         kaplayExtraDistance,
         kaplayDynamicStrings,
         kaplayRumble,

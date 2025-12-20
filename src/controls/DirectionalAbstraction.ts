@@ -29,8 +29,8 @@ export class MouseWheelInput extends DirectionalInput {
     delta: Vec2 = K.Vec2.ZERO;
     constructor(axes: Vec2) {
         super(axes);
-        K.onScroll(delta => this.delta = delta);
-        K.onDraw(() => this.delta = K.Vec2.ZERO);
+        K.app.onScroll(delta => this.delta = delta.reflect(K.UP));
+        K.app.onDraw(() => this.delta = K.Vec2.ZERO);
     }
     raw() { return this.delta; }
 }

@@ -16,6 +16,7 @@ SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v =
 SYSTEM_SETTINGS.addRange("musicVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
+SYSTEM_SETTINGS.addBoolean("debugFPSGraph", true);
 
 const mmo = (s: string) => `&msg.menu.options.${s}`;
 const mmp = (s: string) => `&msg.menu.pause.${s}`;
@@ -58,17 +59,17 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 type: MenuItemType.TEXT,
                 text: mmo("graphics.potato")
             },
-            // {
-            //     type: MenuItemType.SETTING,
-            //     text: mmo("graphics.renderLights"),
-            //     setting: "renderLights",
-            //     help: mmo("graphics.infoRenderLights"),
-            // },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("graphics.renderDepth"),
+                text: mmo("graphics.lights.name"),
+                setting: "renderLights",
+                help: mmo("graphics.lights.help"),
+            },
+            {
+                type: MenuItemType.SETTING,
+                text: mmo("graphics.depth.name"),
                 setting: "renderDepth",
-                help: mmo("graphics.infoRenderDepth"),
+                help: mmo("graphics.depth.help"),
             }
         ]
     },
@@ -93,15 +94,15 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("controller.rumble"),
+                text: mmo("controller.rumble.name"),
                 setting: "controllerRumble",
-                help: mmo("controller.infoRumble")
+                help: mmo("controller.rumble.help")
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("controller.type"),
+                text: mmo("controller.type.name"),
                 setting: "controllerType",
-                help: mmo("controller.infoType"),
+                help: mmo("controller.type.help"),
                 optionTextMap: Object.fromEntries(["Xbox", "Switch", "PS4", "PS5"].map(name => {
                     const value = name.toLowerCase();
                     return [value, `${name.padEnd(7, " ")}(${[..."WNES, e/t"].map(c => /[a-z]/i.test(c) ? ` [font_${value}]${c}[/font_${value}] ` : c).join("")})`]
@@ -112,18 +113,18 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     audioSettings: {
         title: mmo("audio.title"),
         options: [
-            // {
-            //     type: MenuItemType.SETTING,
-            //     text: mmo("audio.musicVolume"),
-            //     setting: "musicVolume",
-            //     help: mmo("audio.infoMusicVolume"),
-            //     formatValue: toPercent,
-            // },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("audio.sfxVolume"),
+                text: mmo("audio.musicVolume.name"),
+                setting: "musicVolume",
+                help: mmo("audio.musicVolume.help"),
+                formatValue: toPercent,
+            },
+            {
+                type: MenuItemType.SETTING,
+                text: mmo("audio.sfxVolume.name"),
                 setting: "sfxVolume",
-                help: mmo("audio.infoSfxVolume"),
+                help: mmo("audio.sfxVolume.help"),
                 formatValue: toPercent,
             }
         ]
@@ -133,9 +134,16 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("debug.inspectView"),
+                text: mmo("debug.inspectView.name"),
                 setting: "debugInspect",
-                help: mmo("debug.infoInspectView"),
+                help: mmo("debug.inspectView.help"),
+                altDisplay: true
+            },
+            {
+                type: MenuItemType.SETTING,
+                text: mmo("debug.fpsGraph.name"),
+                setting: "debugFPSGraph",
+                help: mmo("debug.fpsGraph.help"),
                 altDisplay: true
             },
             {
@@ -146,21 +154,19 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
             {
                 type: MenuItemType.BUTTON,
                 help: mmo("debug.crash.help"),
-                text: mmo("debug.crash.text"),
-                async action() {
-                    throw new Error("you asked for it!");
+                text: mmo("debug.crash.name"),
+                action() {
+                    throw new Error("deliberate error");
                 }
             }
         ]
     },
     debugLongMenu: {
         title: mmo("debug.long.title"),
-        options: new Array<MenuItem>(20).fill({
-            type: MenuItemType.BUTTON,
-            help: "",
-            text: mmo("debug.long.dummy"),
-            async action() { }
-        }),
+        options: new Array(40).fill(0).map((_, i) => ({
+            type: MenuItemType.TEXT,
+            text: mmo("debug.long.dummy") + " " + (i + 1),
+        })),
     },
     // Pause menu
     paused: {
@@ -175,7 +181,7 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 type: MenuItemType.BUTTON,
                 text: mmp("quitToTitle"),
                 help: "",
-                async action() {
+                action() {
                     K.go(Scene.TITLE_SCREEN);
                 },
             }

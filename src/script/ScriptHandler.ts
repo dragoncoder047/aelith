@@ -131,7 +131,7 @@ function stepTasks() {
     return madeProgress;
 }
 
-export async function advanceAsFarAsPossible() {
+function advanceAsFarAsPossible() {
     while (stepTasks());
 }
 

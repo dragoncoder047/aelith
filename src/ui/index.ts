@@ -29,7 +29,13 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
             action,
             add(this: GameObj<AreaComp | UiObjComp>) {
                 this.onClick(() => this.action());
-                if (btn) this.onButtonPress(btn, () => this.action());
+                if (btn) this.onButtonPress(btn, () => {
+                    K.wait(0, () => { // Wait to allow other buttons to be processed if they're defined after my button
+                        // Don't do the action if nav_select was pressed and another thing is focused
+                        if (K.isButtonDown("nav_select") && !this.is("focused")) return;
+                        this.action();
+                    });
+                });
             },
             draw(this: GameObj<TextComp | UiObjComp>) {
                 const fText = K.formatText({
@@ -231,12 +237,13 @@ export function top() {
 
 export function below(obj: GameObj<PosComp>, pad: number): Comp {
     return {
+        id: "below",
         require: ["pos"],
         update(this: GameObj<PosComp | AnchorComp | RectComp>) {
             const otherBottom = (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * ((obj as any).height ?? 0) / 2;
             const myAnchor = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
             this.pos = obj.pos.add(0, otherBottom + myAnchor + pad);
-        }
+        },
     }
 }
 
@@ -287,4 +294,58 @@ export function tooltip(tip: string) {
             ])
         }
     }
+}
+
+export interface ScrollerComp extends Comp {
+    top: number,
+    bot: GameObj<PosComp>;
+    scrollSpeed(speed: number): void;
+    showObj(obj: GameObj<AreaComp>): void;
+}
+export function scroller(bottomObj: GameObj<PosComp>): ScrollerComp {
+    var firstUpdate = false;
+    var targeting: GameObj<AreaComp> | null = null;
+    return {
+        id: "scroller",
+        top: 0,
+        bot: bottomObj,
+        update(this: GameObj<PosComp | ScrollerComp>) {
+            if (!firstUpdate) {
+                this.top = this.pos.y;
+                this.unuse("below");
+                firstUpdate = true;
+            } else if (targeting) {
+                const bb = targeting.worldBbox();
+                const targetTop = bb.pos.y - PAD;
+                const targetBot = targetTop + bb.height + PAD;
+                var targetScroll = this.pos.y;
+                // calculate top and bottom offsets
+                if (targetBot > (K.height() - PAD)) {
+                    targetScroll = (K.height() - PAD) - (targetBot - this.pos.y);
+                }
+                if (targetTop < this.top) {
+                    targetScroll = this.top - (targetTop - this.pos.y);
+                }
+                const bounds = calculateScrollBounds(this);
+                targetScroll = K.clamp(targetScroll, bounds[0], bounds[1]);
+                this.moveTo(this.pos.x, K.lerp(this.pos.y, targetScroll, Math.LN2 * 20 * K.dt()));
+            }
+        },
+        showObj(this: GameObj<PosComp | ScrollerComp>, obj) {
+            targeting = obj;
+        },
+        scrollSpeed(this: GameObj<PosComp | ScrollerComp>, speed) {
+            if (speed === 0) return;
+            targeting = null;
+            const bounds = calculateScrollBounds(this);
+            this.moveTo(this.pos.x, K.clamp(this.pos.y + speed * K.dt(), bounds[0], bounds[1]));
+        },
+    }
+}
+
+function calculateScrollBounds(obj: GameObj<PosComp | ScrollerComp>): [number, number] {
+    const containerHeight = obj.bot.pos.y - obj.pos.y;
+    const maxY = obj.top;
+    const minY = K.height() - PAD - containerHeight;
+    return [Math.min(minY, maxY), maxY];
 }

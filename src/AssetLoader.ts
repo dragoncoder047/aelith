@@ -101,7 +101,7 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
                     //     MusicManager.addSong(theSong);
                     //     console.log("lazy loaded the song", theSong.id);
                     // });
-                    return;
+                    throw new Error("zzfxm is disabled atm sorry");
             }
             break;
         case "sound": kindOK = true;

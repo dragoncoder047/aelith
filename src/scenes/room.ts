@@ -4,9 +4,11 @@ import * as EntityManager from "../entity/EntityManager";
 import * as RoomManager from "../room/RoomManager";
 import * as SceneManager from "../scenes/SceneManager";
 import * as ScriptHandler from "../script/ScriptHandler";
+import * as FPSMonitor from "../static/fpsMonitor";
 
 export function roomScene(whichRoom: string | undefined) {
     BlueScreen.install();
+    FPSMonitor.install();
     const p = EntityManager.getPlayer()!;
     if (whichRoom === undefined) {
         whichRoom = p.currentRoom!;

@@ -225,11 +225,11 @@ export const FUNCTIONS: Form[] = [
     func("nth", function* ([index, list]) {
         return list[index];
     }),
-    func("apget", function* ([path], task, actor) {
+    func("boneGet", function* ([path], task, actor) {
         const p = splitV(actor.bones, path);
         return p[0][p[1]];
     }),
-    func("apset", function* ([path, value], task, actor) {
+    func("boneSet", function* ([path, value], task, actor) {
         const p = splitV(actor.bones, path);
         return p[0][p[1]] = value;
     }),
@@ -249,7 +249,6 @@ export const FUNCTIONS: Form[] = [
         return K.lerp(a, b, t);
     }),
     func("randi", function* ([low, high]) {
-        console.log(low, high);
         return K.randi(low, high);
     }),
     func("toNumber", function* ([string]) {

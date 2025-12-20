@@ -4,6 +4,7 @@ model:
       pos: { x: 0, y: 100 }
       children:
         - name: logo
+          pos: { x: 0, y: -70 }
           render:
             as: sprite
             sprite: gameLogo
@@ -42,7 +43,6 @@ model:
       autoplay: true
       channels:
         - target: [logo, pos]
-          alpha: 100
           keyframes:
             - [3.1, { x: 0, y: -70 }, easeInOutSine]
             - [3.1, { x: 0, y: -60 }, easeInOutSine]
@@ -60,7 +60,7 @@ hooks:
   loadAsDisplay:
     - do
     - [
-        apset,
+        boneSet,
         [list, splash, t],
         [+, "&splashes.", [randi, 0, [toNumber, [expand, "&splashes.length"]]]],
       ]
@@ -69,12 +69,12 @@ hooks:
       - [wait, 0] # prevent a lockup loop
       - [worldPos, particles, [vec2, [nth, 0, [xys, [worldPos, particles]]], 0]]
       - [
-          apset,
+          boneSet,
           [list, particles, pos],
-          [vec2, -150, [apget, [list, particles, pos, "y"]]],
+          [vec2, -150, [boneGet, [list, particles, pos, "y"]]],
         ]
       - [
-          apset,
+          boneSet,
           [list, particles, particles, rate],
           [lerp, 20, 1500, [getanalog, throw]], # TODO: update this if right trigger is reassigned.
         ]
