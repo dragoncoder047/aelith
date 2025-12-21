@@ -254,7 +254,7 @@ const KEYS: Partial<Record<Key, IFontEntry>> = {
     "tab": { w: 2, ch: "t" },
     "enter": { w: 2, ch: "n" },
     "shift": { w: 2, ch: "^" },
-    "esc": { w: 2, ch: "e" },
+    "escape": { w: 2, ch: "e" },
     "backspace": { w: 2, ch: "b" },
     "space": { w: 3, ch: "s" },
 };

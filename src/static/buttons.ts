@@ -14,6 +14,8 @@ type Controls = {
     [button: string]: ExtendedButtonBinding;
 }
 
+
+
 export const BUTTONS: Controls = {
     // action controls
     move: {
@@ -128,7 +130,7 @@ export const BUTTONS: Controls = {
         gamepad: "south",
     },
     nav_back: {
-        keyboard: "backspace",
+        keyboard: "escape",
         gamepad: "east",
     },
     nav_scroll: {

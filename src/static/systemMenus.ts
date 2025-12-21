@@ -163,9 +163,14 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     },
     debugLongMenu: {
         title: mmo("debug.long.title"),
-        options: new Array(40).fill(0).map((_, i) => ({
+        options: new Array(41).fill(0).map((_, i) => i % 5 > 0 ? ({
             type: MenuItemType.TEXT,
-            text: mmo("debug.long.dummy") + " " + (i + 1),
+            text: mmo("debug.long.dummy") + " " + i,
+        }) : ({
+            type: MenuItemType.BUTTON,
+            text: mmo("debug.long.dummy") + " " + i,
+            help: "",
+            action() { }
         })),
     },
     // Pause menu
