@@ -4,8 +4,9 @@ import { DisplayEntity } from "../entity/DisplayEntity";
 import * as GameManager from "../GameManager";
 import * as ScriptHandler from "../script/ScriptHandler";
 import * as FPSMonitor from "../static/fpsMonitor";
+import { SYSTEM_MENUS } from "../static/systemMenus";
 import { below, layoutAnchor, uiButton } from "../ui";
-import { autofocus, installTabNavigation } from "../ui/tabNav";
+import { maybeAutoFocus, installTabNavigation } from "../ui/tabNav";
 import * as SceneManager from "./SceneManager";
 
 var first = true;
@@ -27,10 +28,16 @@ export function titleScreenScene() {
     }));
     const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "main_menu_options", () => {
         K.play("nav_open");
-        K.pushScene(SceneManager.Scene.MENU);
+        K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.settings);
     }));
+    const aboutBtn = K.add(uiButton(w, 2, "&msg.menu.main.aboutMenuBtn", null, () => {
+        K.play("nav_open");
+        K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.about);
+    }));
+    // TODO: add Newgrounds button
     enterBtn.use(layoutAnchor(K.center));
     optionsBtn.use(below(enterBtn, 10));
-    if (!first) autofocus();
+    aboutBtn.use(below(optionsBtn, 10));
+    if (!first) maybeAutoFocus();
     first = false;
 }

@@ -74,7 +74,7 @@ export function installTabNavigation() {
     });
 }
 
-export function autofocus() {
+export function maybeAutoFocus() {
     if (K.getLastInputDeviceType() === "mouse") return;
     K.pressButton("nav_down");
     K.releaseButton("nav_down");

@@ -3,6 +3,7 @@ import { Scene } from "../SceneManager";
 export interface Menu {
     title: string;
     options: MenuItem[];
+    refresh?(): void;
 }
 
 export type MenuItem =
@@ -10,7 +11,8 @@ export type MenuItem =
     | BackMenuItem
     | ButtonMenuItem
     | TextMenuItem
-    | SettingMenuItem;
+    | SettingMenuItem
+    | NoBackSentinel;
 
 interface MenuItemCommon {
     text: string;
@@ -51,4 +53,8 @@ export interface SettingMenuItem extends MenuItemCommon {
     altDisplay?: boolean;
     optionTextMap?: Record<string, string>;
     formatValue?(x: number): string;
+}
+
+export interface NoBackSentinel {
+    nb: true;
 }

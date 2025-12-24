@@ -4,7 +4,7 @@ import * as InputManager from "../controls/InputManager";
 import { Settings } from "../settings";
 import * as FPSMonitor from "../static/fpsMonitor";
 import { SYSTEM_MENUS, SYSTEM_SETTINGS } from "../static/systemMenus";
-import { autofocus, installTabNavigation } from "../ui/tabNav";
+import { maybeAutoFocus, installTabNavigation } from "../ui/tabNav";
 import { buildMenu } from "./menus/buildMenu";
 import { Menu } from "./menus/types";
 import { Scene } from "./SceneManager";
@@ -26,5 +26,5 @@ export function menuScene(menu: Menu | undefined, set: Record<string, Menu> = SY
         const ss = InputManager.getMotionInput("nav_scroll", null).y;
         scroller.scrollSpeed(ss * 500);
     });
-    autofocus();
+    maybeAutoFocus();
 }

@@ -9,6 +9,7 @@ import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
 
 
 export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings): GameObj<ScrollerComp> {
+    menu.refresh?.();
     const topAnchor = K.add([K.pos(), layoutAnchor(top)]);
     const bw = K.width() / 5;
     const w = 4 * bw;

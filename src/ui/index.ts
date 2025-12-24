@@ -101,7 +101,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                 K.drawFormattedText(fText);
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiObjComp | OpacityComp>) {
-                this.opacity = +(this.is("focused") || this.isHovering());
+                this.opacity = 0.5 * +(this.is("focused") || this.isHovering());
                 this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child!.frame = getValue() ? 1 : 0;
             },
@@ -205,7 +205,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                 K.drawFormattedText(fText2);
             },
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiSliderComp | OpacityComp>) {
-                this.opacity = +(this.is("focused") || this.isHovering());
+                this.opacity = 0.5 * +(this.is("focused") || this.isHovering());
                 this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child2!.pos.x = this.valueToPos(getValue());
             },
@@ -242,7 +242,7 @@ export function below(obj: GameObj<PosComp>, pad: number): Comp {
         update(this: GameObj<PosComp | AnchorComp | RectComp>) {
             const otherBottom = (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * ((obj as any).height ?? 0) / 2;
             const myAnchor = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
-            this.pos = obj.pos.add(0, otherBottom + myAnchor + pad);
+            this.worldPos(obj.pos.add(0, otherBottom + myAnchor + pad));
         },
     }
 }
@@ -255,32 +255,38 @@ export function tooltip(tip: string) {
         add(this: GameObj<PosComp | AnchorComp | RectComp | AreaComp>) {
             const self = this;
             self.add([
+                K.pos(),
                 K.layer(K._k.game.layers!.at(-1)!),
+                below(self, PAD),
                 {
                     draw() {
                         if (!self.isHovering() && !self.is("focused")) return;
                         const text = K.sub(this.rawText());
-                        const myAnchor = (K.anchorToVec2(self.anchor ?? K.Vec2.ZERO).y + 1) * (self.height ?? 0) / 2;
-                        const anchorPt = K.vec2(0, myAnchor);
+                        const color = K.rgb(GameManager.getUIKey("colors", "normal"));
                         const fText = K.formatText({
                             text,
-                            anchor: "top",
                             align: "left",
-                            width: self.width - 2 * PAD,
+                            anchor: "top",
+                            width: self.width - PAD,
                             styles: STYLES,
-                            color: K.BLACK,
+                            color,
                             size: DEF_TEXT_SIZE,
                             transform: DEF_STYLES,
-                            pos: anchorPt.add(PAD / 2, PAD / 2),
+                            opacity: 0.5,
                             font: GameManager.getDefaultValue("font"),
                         });
                         K.drawRect({
-                            pos: anchorPt,
-                            anchor: "top",
-                            width: fText.width + PAD,
+                            pos: K.vec2(0, -PAD / 2),
+                            width: self.width,
                             radius: 2,
+                            anchor: "top",
                             height: fText.height + PAD,
-                            color: K.rgb(GameManager.getUIKey("colors", "normal")),
+                            color: K.BLACK,
+                            outline: {
+                                color,
+                                opacity: 0.5,
+                                width: 2
+                            }
                         });
                         K.drawFormattedText(fText);
                     },

@@ -24,6 +24,7 @@ menu:
   main:
     startGameBtn: Play!
     optionsMenuBtn: Options
+    aboutMenuBtn: About
   pause:
     title: Game Paused
     quitToTitle: Quit to Title
@@ -74,6 +75,22 @@ menu:
       crash:
         name: Test Error
         help: Deliberately throws an error and breaks the game
+  about:
+    title: About
+    toCredits: Credits
+    toLicense: License
+    toSourceCode: Source Code 
+    licenseURL: https://github.com/dragoncoder047/aelith/blob/main/LICENSE_art_and_music
+    codeURL: https://github.com/dragoncoder047/aelith/
+    credits:
+      title: Credits
+      items:
+        - "Thanks to:"
+        - "* Christina, for giving me the idea for this game"
+        - "* The KAPLAY.js team, for putting up with all of my shenanigans"
+        - "* Erick, for playtesting an initial alpha version of the game"
+        - "* My parents, for rigorously reviewing the game's puzzles"
+        - "* that_dos_server and Matto58, for composing half of the soundtrack"
 
 # lore:
 #   memory:
