@@ -77,7 +77,7 @@ function drawLoadingScreen() {
         pos: K.center().sub(0, barsize + baroutline + baroutline),
     });
 }
-export function loadBytes(path: string) {
+export function loadBytes(path: URL) {
     return K.load((async () => {
         const response = await fetch(path);
         const len = +(response.headers.get("Content-Length") ?? 0);
@@ -104,7 +104,7 @@ export function loadBytes(path: string) {
         return bytes;
     })());
 }
-export async function loadJSON(path: string) {
+export async function loadJSON(path: URL) {
     return JSON.parse(new TextDecoder("utf-8").decode(await loadBytes(path)));
 }
 

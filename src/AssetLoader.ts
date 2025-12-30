@@ -12,11 +12,11 @@ declare global {
     }
 }
 
-async function binSrc(asset: { src: any }): Promise<ArrayBuffer> {
+async function binSrc(base64OrURL: string, rootURL: URL): Promise<ArrayBuffer> {
     try {
-        return Uint8Array.fromBase64(asset.src as string).buffer as ArrayBuffer;
+        return Uint8Array.fromBase64(base64OrURL).buffer as ArrayBuffer;
     } catch (e) {
-        return (await DownloadManager.loadBytes(asset.src)).buffer;
+        return (await DownloadManager.loadBytes(resolveURL(base64OrURL, rootURL))).buffer;
     }
 }
 
@@ -62,22 +62,26 @@ export function getLoadedAssets() {
     return loadedAssets;
 }
 
-export async function loadAsset(asset: AssetData): Promise<unknown> {
+function resolveURL(assetURL: string, rootJSONURL: URL): URL {
+    return new URL(assetURL, rootJSONURL);
+}
+
+export async function loadAsset(asset: AssetData, root: URL): Promise<unknown> {
     var kindOK = false;
     switch (asset.kind) {
         case "font": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return logLoad(K.loadFont(asset.id, asset.src as string));
+                    return logLoad(K.loadFont(asset.id, resolveURL(asset.src as string, root).href));
                 case "bin":
-                    return logLoad(K.loadFont(asset.id, await binSrc(asset)));
+                    return logLoad(K.loadFont(asset.id, await binSrc(asset.src as string, root)));
             }
             break;
         case "shader": kindOK = true;
             switch (asset.loader) {
                 case "url":
                     // @ts-expect-error
-                    return logLoad(K.loadShaderURL(asset.id, asset.src.vert, asset.src.frag));
+                    return logLoad(K.loadShaderURL(asset.id, asset.src.vert && resolveURL(asset.src.vert, root).href, asset.src.frag && resolveURL(asset.src.frag, root).href));
                 case undefined:
                 case null:
                     // @ts-expect-error
@@ -90,10 +94,10 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
             switch (asset.loader) {
                 case "url":
                     MusicManager.addSong(theSong)
-                    return K.loadMusic(asset.id, asset.src as string);
+                    return K.loadMusic(asset.id, resolveURL(asset.src as string, root).href);
                 case "bin":
                     MusicManager.addSong(theSong)
-                    return logLoad(K.loadSound(asset.id, await binSrc(asset)));
+                    return logLoad(K.loadSound(asset.id, await binSrc(asset.src as string, root)));
                 case "zzfxm":
                     // XXX: commented out for now because the web workers hog so much CPU
                     // K.onLoad(async () => {
@@ -107,9 +111,9 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "sound": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return logLoad(K.loadSound(asset.id, asset.src as string));
+                    return logLoad(K.loadSound(asset.id, resolveURL(asset.src as string, root).href));
                 case "bin":
-                    return logLoad(K.loadSound(asset.id, await binSrc(asset)));
+                    return logLoad(K.loadSound(asset.id, await binSrc(asset.src as string, root)));
                 case "zzfx":
                     return logLoad(K.loadZzFX(asset.id, zzParse(asset.src as string)));
             }
@@ -117,13 +121,13 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "sprite": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return logLoad(K.loadSprite(asset.id, asset.src as string | string[], asset.metadata as any));
+                    return logLoad(K.loadSprite(asset.id, Array.isArray(asset.src) ? asset.src.map((s: any) => resolveURL(s, root).href) : resolveURL(asset.src as string, root).href, asset.metadata as any));
             }
             break;
         case "spritemap": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return logLoad(K.loadSpriteAtlas(asset.src as string, asset.metadata as any));
+                    return logLoad(K.loadSpriteAtlas(resolveURL(asset.src as string, root).href, typeof asset.metadata === "string" ? resolveURL(asset.metadata, root).href : asset.metadata as any));
             }
             break;
         case "spritefont": kindOK = true;
@@ -136,13 +140,13 @@ export async function loadAsset(asset: AssetData): Promise<unknown> {
         case "favicon": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return changeFavicon(asset.src as string);
+                    return changeFavicon(resolveURL(asset.src as string, root).href);
             }
             break;
         case "translation": kindOK = true;
             switch (asset.loader) {
                 case "url":
-                    return (asset.metadata as JSONObject | undefined)?.immediate ? K.loadJSON(asset.id, asset.src as string).then(d => K.strings[asset.id] = d) : K.addLanguageURL(asset.id, asset.src as string);
+                    return (asset.metadata as JSONObject | undefined)?.immediate ? K.loadJSON(asset.id, resolveURL(asset.src as string, root).href).then(d => K.strings[asset.id] = d) : K.addLanguageURL(asset.id, resolveURL(asset.src as string, root).href);
                 case null:
                 case undefined:
                     return K.strings[asset.id] = asset.src as NestedStrings;

@@ -63,25 +63,25 @@ def include(loader: Loader, node: typing.Any) -> typing.Any:
 def file(loader: Loader, node: typing.Any) -> typing.Any:
     file = (loader._root / loader.construct_scalar(node)).resolve()
     contents = file.read_bytes()
+    if file.suffix in (".glsl", ".frag", ".vert"):
+        contents = process_includes(contents.decode(), file)
+        if minify:
+            contents = minify_shader(contents)
+        contents = contents.encode()
     hash = hashlib.md5(contents, usedforsecurity=False).hexdigest()
     if file.suffix != ".yaml":
         outfile = outdir / "res" / f"{file.stem}_{hash[:8]}{file.suffix}"
     else:
         outfile = outdir / "res" / f"{file.stem}_{hash[:8]}.json"
+        obj = yaml.load(contents.decode(), Loader)
         if minify:
-            contents = json.dumps(
-                yaml.load(contents.decode(), Loader),
-                separators=(",", ":"),
-                allow_nan=False)
+            contents = json.dumps(obj, separators=(",", ":"), allow_nan=False)
         else:
-            contents = json.dumps(
-                yaml.load(contents.decode(), Loader),
-                indent=4,
-                allow_nan=False)
+            contents = json.dumps(obj, indent=2, allow_nan=False)
         contents = contents.encode()
     os.makedirs(outfile.parent, exist_ok=True)
     outfile.write_bytes(contents)
-    return str(outfile.relative_to(serveroot))
+    return str(outfile.relative_to(output.parent))
 
 
 yaml.add_constructor("!include", include, Loader)

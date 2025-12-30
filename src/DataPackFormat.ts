@@ -241,7 +241,7 @@ export interface EntityModelBoneData extends JSONObject {
     /** inverse kinematics definition */
     ik: {
         /** maximum bending angles */
-        angleRange: [min: number, max: number, center?: number];
+        angleRange: [min: number, max: number];
         /** the "looking direction" meaning of 0 degrees; this will be flipped to stay right size up */
         naturalDirection: XY;
         /** should only be set on the end */

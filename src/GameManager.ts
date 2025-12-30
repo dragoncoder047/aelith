@@ -47,13 +47,14 @@ export function getUIKey<T extends keyof DataPackData["title"]["ui"], U extends 
 }
 
 export async function datapack() {
-    pack = await DownloadManager.loadJSON("build/aelith.json") as any;
+    const root = new URL("./build/aelith.json", location.href);
+    pack = await DownloadManager.loadJSON(root) as any;
     console.log(pack);
     DownloadManager.doneWithInitialJSON();
     EntityManager.setEntityLibrary(pack.entityTypes);
     RoomManager.registerTilesets(pack.tilesets);
     if (pack.renderLayers) K.setLayers(pack.renderLayers[0], pack.renderLayers[1]);
-    await Promise.all(pack.assets.map(AssetLoader.loadAsset));
+    await Promise.all(pack.assets.map(asset => AssetLoader.loadAsset(asset, root)));
     StateManager.setupInitialState(pack.initial);
 }
 

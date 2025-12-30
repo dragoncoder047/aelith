@@ -121,7 +121,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 if (!obj.has("layer")) obj.use(K.layer(GameManager.getDefaultValue("entityLayer")));
             }
             if (bone.ik?.angleRange) {
-                const [min, max, mid] = bone.ik.angleRange;
+                const [min, max] = bone.ik.angleRange;
                 obj.use(K.constraint.bone(min, max));
             }
             if (bone.ik?.naturalDirection) {
@@ -130,6 +130,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             if (bone.ik?.target) {
                 ikEntries.push({ s: bone.name, t: bone.ik.target[0], d: bone.ik.target[1] });
             }
+            // todo: Physics components on bones
             if (bone.children) {
                 buildBone(obj, bone.children);
             }

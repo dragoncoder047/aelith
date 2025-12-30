@@ -1,20 +1,30 @@
 - kind: shader
   id: fuzzy
+  loader: url
   src:
-    frag: !include fuzzy.glsl
+    frag: !file fuzzy.glsl
 - kind: shader
   id: colorReplace
+  loader: url
   src:
-    frag: !include colorReplace.glsl
+    frag: !file colorReplace.glsl
 - kind: shader
   id: wiresPulse
+  loader: url
   src:
-    frag: !include  wiresPulse.glsl
+    frag: !file  wiresPulse.glsl
 - kind: shader
   id: flash
+  loader: url
   src:
-    frag: !include flash.glsl
+    frag: !file flash.glsl
 - kind: shader
   id: starry
+  loader: url
   src:
-    frag: !include starry.glsl
+    frag: !file starry.glsl
+- kind: shader
+  id: barberpole
+  loader: url
+  src:
+    frag: !file barberpole.glsl
