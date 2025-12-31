@@ -151,3 +151,8 @@
   id: elevator_ding_long
   loader: zzfx
   src: "[,0,1e3,.002,.4,.4,,,,,,,,,500]"
+- kind: sound
+  id: 3d_printer_done
+  loader: url
+  src: !file sfx/done.wav
+  # https://slarmoo.github.io/slarmoosbox/website/#s5N0di%20am%20donen101s0k42l01e00t3sa3g01j00r0O_c000U0000i0o3T9v0qu09f0000q0g410O0d040w20h0Mokfca8543200100000000000023458acfkotyADFIJKLMMMMMMMMMMMLKJIFDAytE0cTav0pu0af0000q000d040E0cbAp1LIIviB9h7BiFa1GHi5Bi7B0wVFpBi5AOO_sVa4_-w1e0axQ0
