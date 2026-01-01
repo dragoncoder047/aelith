@@ -1,8 +1,8 @@
 uniform float u_nColors;
-#define MAX_REPL 16
+#define MAX_REPL 8
 uniform vec3 u_colors_from[MAX_REPL];
 uniform vec3 u_colors_to[MAX_REPL];
-vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
+vec4 lit_frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     vec4 p = def_frag();
     for(int i = 0; i < MAX_REPL; i++) {
         if(i >= int(u_nColors))

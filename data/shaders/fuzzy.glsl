@@ -1,6 +1,6 @@
 #include "rand.glsl"
 uniform float u_amount;
 const vec4 BLACK = vec4(0., 0., 0., 1.);
-vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
+vec4 lit_frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     return mix(def_frag(), BLACK, step(rand(pos) + .01, u_amount * 1.01));
 }

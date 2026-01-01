@@ -79,13 +79,10 @@ export async function loadAsset(asset: AssetData, root: URL): Promise<unknown> {
             break;
         case "shader": kindOK = true;
             switch (asset.loader) {
-                case "url":
-                    // @ts-expect-error
-                    return logLoad(K.loadShaderURL(asset.id, asset.src.vert && resolveURL(asset.src.vert, root).href, asset.src.frag && resolveURL(asset.src.frag, root).href));
                 case undefined:
                 case null:
                     // @ts-expect-error
-                    return logLoad(K.loadShader(asset.id, asset.src.vert && ("\n" + asset.src.vert), asset.src.frag && ("\n" + asset.src.frag)));
+                    return logLoad(K.loadLitShader(asset.id, asset.src.vert, asset.src.frag));
             }
             break;
         case "song": kindOK = true;

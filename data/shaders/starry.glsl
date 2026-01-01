@@ -14,7 +14,7 @@ vec2 N22(vec2 p) {
     return vec2(n, N21(p + n));
 }
 
-vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
+vec4 lit_frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
     uv.y *= u_resolution.y / u_resolution.x;
     uv *= u_resolution.x / CELL_SIZE;
