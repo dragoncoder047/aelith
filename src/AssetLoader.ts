@@ -148,6 +148,16 @@ export async function loadAsset(asset: AssetData, root: URL): Promise<unknown> {
                 case undefined:
                     return K.strings[asset.id] = asset.src as NestedStrings;
             }
+            break;
+        case "normalmap": kindOK = true;
+            switch (asset.loader) {
+                case null:
+                case undefined:
+                    aa;
+            }
+            break;
+        default:
+            asset.kind satisfies never;
     }
     throw new Error(`asset ${asset.id}: ${kindOK ? `unknown loader ${JSON.stringify(asset.loader)} for kind ${asset.kind}` : `unknown asset kind ${JSON.stringify(asset.kind)}`}`);
 }

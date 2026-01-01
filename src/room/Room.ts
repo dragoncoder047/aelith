@@ -6,10 +6,11 @@ import { K } from "../context";
 import { addRenderComps } from "../draw/primitive";
 import * as EntityManager from "../entity/EntityManager";
 import { hashPoint, javaHash } from "../hash";
+import { addPhysicsComponents } from "../physics/addComponents";
+import * as ScriptHandler from "../script/ScriptHandler";
 import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
-import { addPhysicsComponents } from "../physics/addComponents";
 
 
 export type TileEntry = {
@@ -98,6 +99,7 @@ export class Room implements Serializable {
         }
         K.setBackground(K.rgb(this.bg ?? GameManager.getDefaultValue("background") ?? "black"));
         K.setGravity(this.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
+        if (self.data.init) ScriptHandler.spawnTask(0, self.data.init, null, {});
     }
     unloaded() {
         this.depthTiles = [];

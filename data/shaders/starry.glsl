@@ -1,4 +1,3 @@
-uniform vec2 u_resolution;
 uniform float u_time;
 
 #define CELL_SIZE 10.
@@ -15,9 +14,9 @@ vec2 N22(vec2 p) {
 }
 
 vec4 lit_frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
-
-    uv.y *= u_resolution.y / u_resolution.x;
-    uv *= u_resolution.x / CELL_SIZE;
+    vec2 sz = vec2(u_width, u_height);
+    uv.y *= sz.y / sz.x;
+    uv *= sz.x / CELL_SIZE;
 
     // normalize uv to be cell grid
     vec2 intpos = floor(uv);

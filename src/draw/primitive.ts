@@ -1,10 +1,11 @@
-import { Anchor, GameObj, LineCap, LineJoin, TextAlign, Uniform } from "kaplay";
+import { Anchor, GameObj, LineCap, LineJoin, Tag, TextAlign, Uniform } from "kaplay";
+import { LitShaderOpt } from "kaplay-lighting";
 import { K } from "../context";
 import { XY } from "../DataPackFormat";
+import * as GameManager from "../GameManager";
 import { DEF_STYLES, STYLES } from "../TextStyles";
 import { simpleParticles } from "./particle";
 import { polyline } from "./polyline";
-import * as GameManager from "../GameManager";
 
 type JSONUniform = Record<string, number | number[] | XY | XY[] | string | string[]>
 
@@ -120,6 +121,20 @@ export type ParticlePrimitive = BaseRenderProps & {
     spread?: number,
 };
 
+export type LightPrimitive = BaseRenderProps & {
+    as: "light",
+    directional?: boolean;
+    strength?: number;
+    color?: string;
+    near?: number;
+    far?: number;
+    spread?: number;
+    widthMin?: number;
+    widthMax?: number;
+    includeTags?: Tag[];
+    excludeTags?: Tag[];
+}
+
 export type Primitive =
     | SpritePrimitive
     | RectPrimitive
@@ -128,10 +143,10 @@ export type Primitive =
     | PolygonPrimitive
     | PolylinePrimitive
     | TextPrimitive
-    | ParticlePrimitive;
+    | ParticlePrimitive
+    | LightPrimitive;
 
 export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) {
-    addBaseProps(obj, uid, primitive);
     switch (primitive.as) {
         case "sprite":
             obj.use(K.sprite(primitive.sprite, {
@@ -181,6 +196,11 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
         default:
             primitive satisfies never;
     }
+    // hack to make everything use a shader
+    if (!primitive.shader) {
+        primitive.shader = "litSprite";
+    }
+    addBaseProps(obj, uid, primitive);
 }
 
 function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
@@ -191,12 +211,16 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
     if (p.opacity) obj.use(K.opacity(p.opacity));
     if (p.shader) {
         const uv = {} as Uniform;
+        const qs: string[] = [], qp: string[] = [], fs: string[] = [];
         for (var u in p.uniform) {
             const v = p.uniform[u]!;
             switch (typeof v) {
                 case "string": switch (v) {
-                    case "time": uv[u] = K.time(); obj.onUpdate(() => uv[u] = K.time()); break;
+                    case "time": throw new Error("time is already provided as u_time");
                     case "staticrand": uv[u] = uid; break;
+                    case "quadsize": uv[u] = K.vec2(1); qs.push(u); break;
+                    case "quadpos": uv[u] = K.vec2(0); qp.push(u); break;
+                    case "framesize": uv[u] = K.vec2(0); fs.push(u); break;
                     default: uv[u] = K.rgb(v);
                 } break;
                 case "number": uv[u] = v; break;
@@ -210,7 +234,22 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                 }
             }
         }
-        obj.use(K.shader(p.shader, uv));
+        var opt: LitShaderOpt = { uniforms: uv as any };
+        if (p.as === "sprite") {
+            K.getSprite(p.sprite)!.then(s => {
+                obj.onUpdate(() => {
+                    const q = s.frames[obj.frame]!;
+                    const qsv = K.vec2(q.w, q.h);
+                    const qpv = K.vec2(q.x, q.y);
+                    const fsv = K.vec2(obj.width, obj.height);
+                    qs.forEach(u => obj.uniforms[u] = qsv);
+                    qp.forEach(u => obj.uniforms[u] = qpv);
+                    fs.forEach(u => obj.uniforms[u] = fsv);
+                });
+            });
+
+        }
+        obj.use(K.litShader(p.shader, opt));
     }
     if (p.blend) obj.use(K.blend({ "*": K.BlendMode.Multiply, "+": K.BlendMode.Add, "screen": K.BlendMode.Screen, "overlay": K.BlendMode.Overlay }[p.blend]));
     if (p.anchor) obj.use(K.anchor(typeof p.anchor === "string" ? p.anchor : K.Vec2.deserialize(p.anchor)));

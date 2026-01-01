@@ -14,7 +14,7 @@ export class Task {
     gen: TaskGen = null as any;
     result: any;
     failed: boolean = false;
-    constructor(public priority: number, public entity: Entity) { }
+    constructor(public priority: number, public entity: Entity | null) { }
     onFinish(cb: (value: any) => void) {
         return this.complete.add(cb);
     }
@@ -47,7 +47,7 @@ export function tracebackError(error: Error | string, traceback: TracebackArray)
     return e;
 }
 
-export function* evaluateForm(form: JSONValue, task: Task, actor: Entity, env: Env, context: Env, traceback: TracebackArray): TaskGen {
+export function* evaluateForm(form: JSONValue, task: Task, actor: Entity | null, env: Env, context: Env, traceback: TracebackArray): TaskGen {
     for (; ;) {
         task.tc = false;
         if (!Array.isArray(form)) return form;
@@ -85,7 +85,7 @@ function sortTasks() {
 }
 
 // TODO: use actor-local priority instead of global priority
-export function spawnTask(priority: number, form: JSONValue, actor: Entity, context: Env): Task {
+export function spawnTask(priority: number, form: JSONValue, actor: Entity | null, context: Env): Task {
     const t = new Task(priority, actor);
     t.gen = evaluateForm(form, t, actor, {}, context, []);
     tasks.push(t);
@@ -102,7 +102,7 @@ export function killAllTasksControlledBy(actor: Entity) {
     }
 }
 
-const _maxPriorityByEntity = new Map<Entity, number>();
+const _maxPriorityByEntity = new Map<Entity | null, number>();
 function stepTasks() {
     var madeProgress = false;
     _maxPriorityByEntity.clear();

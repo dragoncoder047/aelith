@@ -101,6 +101,10 @@ export const BUTTONS: Controls = {
         gamepad: "rshoulder"
     },
     // pause menu controls
+    start_game: {
+        keyboard: "space",
+        gamepad: "south",
+    },
     main_menu_options: {
         keyboard: ",",
         gamepad: "start"

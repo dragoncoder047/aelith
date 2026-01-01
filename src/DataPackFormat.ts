@@ -8,7 +8,7 @@ export type RenderData = Primitive;
 
 export interface AssetData extends JSONObject {
     id: string;
-    kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation" | "favicon";
+    kind: "font" | "shader" | "sprite" | "spritemap" | "normalmap" | "spritefont" | "sound" | "song" | "translation" | "favicon";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
     loader?: "url" | "bin" | "zzfx" | "zzfxm";
     /** url, base64, or inline JSON */
@@ -53,6 +53,7 @@ export interface RoomData extends JSONObject {
     /** Entities directly in here */
     entities?: Record<string, EntityData>
     gravity?: number;
+    init?: CrustyJSONCode;
 }
 
 // There must be a better way to do this.

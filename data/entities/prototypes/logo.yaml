@@ -4,11 +4,11 @@ model:
       pos: { x: 0, y: 100 }
       children:
         - name: logo
-          pos: { x: 0, y: -70 }
+          pos: { x: 0, y: -75 }
           render:
             as: sprite
-            sprite: gameLogo
-            anchor: center
+            sprite: logoletters
+            anchor: top
             angle: 0
             scale: { x: 0.8, y: 0.8 }
           children:
@@ -27,7 +27,7 @@ model:
                   trans: [0.7]
                   scale: [2.5]
             - name: splash
-              pos: { x: 200, y: 100 }
+              pos: { x: 200, y: 110 }
               render:
                 as: text
                 anchor: topright
@@ -36,6 +36,19 @@ model:
                 color: yellow
                 width: 300
                 align: right
+            - name: laser
+              pos: { x: -150, y: 73 }
+              render:
+                as: sprite
+                sprite: logolaser
+                anchor: bot
+                shader: barberpole
+                uniform:
+                  u_barwidth: 15
+                  u_colors: [cyan]
+                  u_nColors: 1
+                  u_quadsize: quadsize
+                  u_framesize: framesize
 
   anims:
     1:
@@ -43,9 +56,10 @@ model:
       autoplay: true
       channels:
         - target: [logo, pos]
+          relative: true
           keyframes:
-            - [3.1, { x: 0, y: -70 }, easeInOutSine]
-            - [3.1, { x: 0, y: -60 }, easeInOutSine]
+            - [3.1, { x: 0, y: -5 }, easeInOutSine]
+            - [3.1, { x: 0, y: 5 }, easeInOutSine]
         - target: [logo, angle]
           delay: -2
           keyframes:

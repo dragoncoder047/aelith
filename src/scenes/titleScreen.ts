@@ -14,6 +14,7 @@ var first = true;
 export function titleScreenScene() {
     BlueScreen.install();
     FPSMonitor.install();
+    K.setGlobalLight({ intensity: 1, color: K.WHITE });
     K.setBackground(K.BLACK);
     const e = new DisplayEntity(GameManager.getTitleData().entity, K.vec2(K.width() / 2, 0), {});
     ScriptHandler.startMainLoop();
@@ -22,7 +23,7 @@ export function titleScreenScene() {
         e.setPosition(K.vec2(K.width() / 2, 0));
     });
     const w = K.width() / 3;
-    const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "jump", () => {
+    const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "start_game", () => {
         K.play("nav_confirm");
         K.go(SceneManager.Scene.ROOM);
     }));

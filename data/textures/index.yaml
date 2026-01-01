@@ -7,9 +7,13 @@
   loader: url
   src: !file agent.png
 - kind: sprite
-  id: gameLogo
+  id: logoletters
   loader: url
-  src: !file logo.png
+  src: !file logoletters.png
+- kind: sprite
+  id: logolaser
+  loader: url
+  src: !file logolaser.png
 - kind: favicon
   loader: url
   src: !file favicon.png

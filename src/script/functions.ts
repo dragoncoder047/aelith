@@ -30,10 +30,10 @@ export const FUNCTIONS: Form[] = [
         yield;
     }),
     func("be", function* ([slot, value, silent], task, actor) {
-        const oldValue = actor.state[slot];
-        actor.state[slot] = value;
+        const oldValue = actor!.state[slot];
+        actor!.state[slot] = value;
         if (!silent) {
-            const subTask = actor.startHook("stateChanged", { slot, oldValue, value });
+            const subTask = actor!.startHook("stateChanged", { slot, oldValue, value });
             if (subTask) {
                 task.paused = true;
                 subTask.onFinish(() => task.paused = false);
@@ -99,32 +99,32 @@ export const FUNCTIONS: Form[] = [
         return ["each", name, ["iota", ...range], ...body];
     }),
     func("ami", function* ([slot, target], _, actor) {
-        const value = actor.state[slot];
+        const value = actor!.state[slot];
         if (target !== undefined) {
             return value === target;
         }
         return !!value;
     }),
     func("my", function* ([slot], _, actor) {
-        return actor.state[slot];
+        return actor!.state[slot];
     }),
     func("render", function* ([slot, newValue], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
     }),
     func("anim", function* ([animName, restart], task, actor) {
-        actor.playAnim(animName, restart);
+        actor!.playAnim(animName, restart);
     }),
     func("skinAnim", function* ([animName, value], task, actor) {
         K.debug.log("started anim", animName);
-        actor.animator.skinAnim(animName, value);
+        actor!.animator.skinAnim(animName, value);
     }),
     func("anim/w", function* ([animName], task, actor, env, context, traceback) {
         task.paused = true;
-        actor.playAnim(animName).then(() => task.paused = false);
+        actor!.playAnim(animName).then(() => task.paused = false);
         yield;
     }),
     func("unanim", function* ([animName], task, actor) {
-        actor.stopAnim(animName);
+        actor!.stopAnim(animName);
     }),
     func("playsound", function* ([soundName, global], task, actor, env, context, traceback) {
         throw tracebackError("todo", traceback);
@@ -133,11 +133,11 @@ export const FUNCTIONS: Form[] = [
         throw tracebackError("todo", traceback);
     }),
     func("say", function* ([text], task, actor) {
-        actor.say(text);
+        actor!.say(text);
     }),
     func("say/w", function* ([text], task, actor) {
         task.paused = true;
-        actor.say(text).then(() => task.paused = false);
+        actor!.say(text).then(() => task.paused = false);
         yield;
     }),
     func("the", function* ([name], task, actor, env, context) {
@@ -151,20 +151,20 @@ export const FUNCTIONS: Form[] = [
         return env[name] = value;
     }),
     func("here", function* (args, task, actor) {
-        return actor.pos;
+        return actor!.pos;
     }),
     func("spawn", function* ([kind, pos, room, data]) {
         return EntityManager.spawnEntityInRoom(pos, room ?? RoomManager.getCurrentRoom(), { ...data, kind, pos: null }).id;
     }),
     func("die", function* (args, task, actor) {
-        EntityManager.destroyEntity(actor);
+        EntityManager.destroyEntity(actor!);
     }),
     func("tp", function* ([eid, room, pos]) {
         EntityManager.teleportEntityTo(EntityManager.getEntityByName(eid)!, room, pos);
     }),
     func("mState", function* ([state], task, actor) {
-        if (state !== null) actor.setMotionState(state);
-        else actor.endMotionState();
+        if (state !== null) actor!.setMotionState(state);
+        else actor!.endMotionState();
     }),
     func("refuse", function* () {
         throw new RefuseTake;
@@ -172,7 +172,7 @@ export const FUNCTIONS: Form[] = [
     func("take", function* ([itemid], task, actor) {
         var result = "";
         task.paused = true;
-        actor.inventory.tryAdd(EntityManager.getEntityByName(itemid)!).then(res => {
+        actor!.inventory.tryAdd(EntityManager.getEntityByName(itemid)!).then(res => {
             result = res;
             task.paused = false;
         });
@@ -180,10 +180,10 @@ export const FUNCTIONS: Form[] = [
         return result;
     }),
     func("hold", function* ([itemid], task, actor) {
-        return actor.inventory.displayObj(itemid !== null ? EntityManager.getEntityByName(itemid)! : null);
+        return actor!.inventory.displayObj(itemid !== null ? EntityManager.getEntityByName(itemid)! : null);
     }),
     func("drop", function* ([itemid], task, actor) {
-        return actor.inventory.drop(EntityManager.getEntityByName(itemid)!);
+        return actor!.inventory.drop(EntityManager.getEntityByName(itemid)!);
     }),
     func("bePlayer", function* (args, task, actor) {
         EntityManager.setPlayer(actor);
@@ -226,15 +226,15 @@ export const FUNCTIONS: Form[] = [
         return list[index];
     }),
     func("boneGet", function* ([path], task, actor) {
-        const p = splitV(actor.bones, path);
+        const p = splitV(actor!.bones, path);
         return p[0][p[1]];
     }),
     func("boneSet", function* ([path, value], task, actor) {
-        const p = splitV(actor.bones, path);
+        const p = splitV(actor!.bones, path);
         return p[0][p[1]] = value;
     }),
     func("worldPos", function* ([bone, pos], task, actor) {
-        return (actor.bones[bone] ?? actor.obj!).worldPos(pos);
+        return (actor!.bones[bone] ?? actor!.obj!).worldPos(pos);
     }),
     func("screenwidth", function* () {
         return K.width();
