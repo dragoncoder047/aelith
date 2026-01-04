@@ -76,11 +76,16 @@ export const STYLES: TextComp["textStyles"] = {
             pos: K.vec2(0, K.wave(-2, 2, K.time() * Math.PI * 2 - i)),
         };
     },
-    blink(_, __) {
+    blink() {
         return {
             opacity: K.wave(0, 1, K.time() * 3 * Math.PI) > 0.3 ? 1 : 0,
         };
     },
+    color(_i, _ch, arg) {
+        return {
+            color: K.rgb(arg),
+        }
+    }
 };
 
 for (var f of ["xbox", "switch", "ps4", "ps5"]) {
@@ -90,11 +95,4 @@ for (var f of ["xbox", "switch", "ps4", "ps5"]) {
         scale: 4,
         stretchInPlace: true,
     };
-}
-
-// generate xterm256 color palette
-for (var x = 0; x < 256; x++) {
-    STYLES["xt" + x] = {
-        color: K.rgb("xt" + x),
-    }
 }

@@ -100,24 +100,26 @@ export interface EntityPrototypeData extends JSONObject {
     /** name of the sprite model to use for this */
     model?: EntityModelData;
     physics?: PhysicsComponentData[];
-    behavior?: {
-        canBePlayer?: boolean;
-        moveSpeed: number;
-        sprintSpeed?: number;
-        /** if the camera should zoom in when me is the player */
-        camScale?: number;
-        /** jump force */
-        jumpForce?: number;
-        /** the number of internal inventory slots this entity has, if null or 0 it cannot pick up anything */
-        inventorySlots?: number;
-        /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
-        inventorySize?: number;
-        /** name of the bone that the held object will be pulled to */
-        inventoryHolder?: string;
-        /** distance in tiles */
-        interactDistance?: number;
-    }
+    behavior?: EntityBehaviorData;
     hooks: Record<string, HookData | CrustyJSONCode>;
+}
+
+export interface EntityBehaviorData extends JSONObject {
+    canBePlayer?: boolean;
+    moveSpeed: number;
+    sprintSpeed?: number;
+    /** if the camera should zoom in when me is the player */
+    camScale?: number;
+    /** jump force */
+    jumpForce?: number;
+    /** the number of internal inventory slots this entity has, if null or 0 it cannot pick up anything */
+    inventorySlots?: number;
+    /** the number of slots that this entity takes up when held in an inventory. if null, it cannot be picked up */
+    inventorySize?: number;
+    /** name of the bone that the held object will be pulled to */
+    inventoryHolder?: string;
+    /** distance in tiles */
+    interactDistance?: number;
 }
 
 export interface EntityModelData extends JSONObject {
