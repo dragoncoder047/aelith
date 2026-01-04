@@ -3,8 +3,8 @@ import { K } from "./context";
 import { NestedStrings } from "./context/plugins/kaplay-dynamic-text";
 import { AssetData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
-import * as MusicManager from "./music/MusicManager";
 import { JSONObject } from "./JSON";
+import * as MusicManager from "./music/MusicManager";
 
 declare global {
     interface Uint8ArrayConstructor {
@@ -151,9 +151,11 @@ export async function loadAsset(asset: AssetData, root: URL): Promise<unknown> {
             break;
         case "normalmap": kindOK = true;
             switch (asset.loader) {
+                case "conv":
+                    return logLoad(K.generateNormalMapFor(asset.src as string, "sobel3x3", asset.id));
                 case null:
                 case undefined:
-                    aa;
+                    return K.setNormalMap(asset.src as string, asset.id);
             }
             break;
         default:

@@ -2,6 +2,7 @@ import * as esbuild from "esbuild";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import packageJSON from "../package.json" with { type: "json" };
+import glsl from "esbuild-plugin-glsl";
 
 /**
  * @param {string} path
@@ -14,11 +15,13 @@ function exists(path) {
 // ---------------------------------------------------------------------------
 // MARK: config and CLI
 
+const minify = process.argv.includes("--minify");
+
 /** @type {esbuild.BuildOptions} */
 const config = {
     bundle: true,
     sourcemap: true,
-    minify: process.argv.includes("--minify"),
+    minify,
     keepNames: false, // this uses a lot of memory, wtf?
     metafile: true,
     platform: "browser",
@@ -34,6 +37,9 @@ const config = {
     treeShaking: true,
     outfile: "build/aelith.js",
     plugins: [
+        glsl({
+            minify,
+        }),
         {
             name: "nonexistent_go_bye_bye",
             setup(build) {

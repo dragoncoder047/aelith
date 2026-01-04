@@ -33,8 +33,6 @@ tiles:
       as: sprite
       sprite: wires
       shader: wiresPulse
-      uniform:
-        u_time: time
       z: 1
     autotile:
       bits: 4

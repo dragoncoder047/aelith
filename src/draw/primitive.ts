@@ -193,6 +193,9 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
         case "particles":
             obj.use(simpleParticles(primitive));
             break;
+        case "light":
+            obj.use(K.lightSource({ ...primitive, color: (primitive.color ?? null) !== null ? K.rgb(primitive.color!) : undefined }));
+            break;
         default:
             primitive satisfies never;
     }
@@ -247,6 +250,8 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                     fs.forEach(u => obj.uniforms[u] = fsv);
                 });
             });
+            const nm = K.getNormalMapSprite(p.sprite);
+            if (nm) opt = K.getNormalMapInput(p.sprite, nm, opt as any);
 
         }
         obj.use(K.litShader(p.shader, opt));

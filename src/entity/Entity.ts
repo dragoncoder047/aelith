@@ -104,6 +104,7 @@ export class Entity implements Serializable {
                 width: (obj as GameObj<AreaComp>).worldBbox().width,
             }));
         }
+        this._ongoingSounds.forEach(([n, s]) => s.paused = false);
     }
     getPrototype() {
         return this._prototype;
@@ -130,6 +131,7 @@ export class Entity implements Serializable {
         this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
         this._spitItOut = false;
         this._updateEv.trigger();
+        this._ongoingSounds.forEach(([n, s]) => s.paused = true);
     }
     toJSON(): EntityData {
         return {
@@ -140,7 +142,7 @@ export class Entity implements Serializable {
             pos: this.pos as XY,
         }
     }
-    private _ongoingSounds: [AudioPlay, number][] = [];
+    private _ongoingSounds: [string, AudioPlay, number][] = [];
     private _getPanVol(masterVolume: number) {
         const player = EntityManager.getPlayer()!;
         const playerPos = player.pos;
@@ -155,7 +157,7 @@ export class Entity implements Serializable {
     }
     private _updateSounds() {
         for (var i = 0; i < this._ongoingSounds.length; i++) {
-            const [sound, volume] = this._ongoingSounds[i]!;
+            const [name, sound, volume] = this._ongoingSounds[i]!;
             if (sound.time() >= sound.duration()) {
                 sound.stop();
                 // No need to splice, order doesn't matter
@@ -167,8 +169,7 @@ export class Entity implements Serializable {
     }
     emitSound(sound: string, volume: number) {
         volume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
-        const a = K.play(sound, this._getPanVol(volume));
-        this._ongoingSounds.push([a, volume]);
+        this._ongoingSounds.push([sound, K.play(sound, this._getPanVol(volume)), volume]);
     }
     playAnim(a: string, forceRestart: boolean = true) {
         return new Promise<void>((x, y) => {

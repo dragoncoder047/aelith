@@ -22,13 +22,14 @@
     "license": "GPL-3.0-only",
     "devDependencies": {
         "esbuild": "^0.25.0",
+        "esbuild-plugin-glsl": "^1.4.1",
         "nodemon": "^3.1.10",
         "stacktrace-js": "^2.0.2",
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#11a6208d9efb913db5825387c28728272b0ca1f8",
-        "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#75ef78eee80d1eaab23cacf8013b175e42b88b87",
+        "kaplay": "github:dragoncoder047/kaplay#6b2bdc9a418af6d36df45b77aaddb8eaef2572d0",
+        "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#c4fde74b52a949dd9c33a8823eae063e0a7ab0bb",
         "zzfx": "^1.3.0"
     },
     "type": "module",
