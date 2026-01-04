@@ -10,20 +10,14 @@ const ORDER: PhysicsComponentData[0][] = ["rect", "circle", "poly", "trace", "no
 export function addPhysicsComponents(obj: GameObj, comps: PhysicsComponentData[], addedShape: boolean, jumpForce?: number) {
     comps.sort(([a], [b]) => ORDER.indexOf(a) - ORDER.indexOf(b));
     if (!obj.has("area")) {
-        obj.use(K.area({
-            restitution: GameManager.getDefaultValue("restitution"),
-            friction: GameManager.getDefaultValue("friction")
-        }));
+        obj.use(K.area());
     }
-    else {
-        obj.restitution = GameManager.getDefaultValue("restitution");
-        obj.friction = GameManager.getDefaultValue("friction");
-    }
+    obj.restitution = GameManager.getDefaultValue("restitution");
+    obj.friction = GameManager.getDefaultValue("friction");
     if (!obj.has("body")) {
-        obj.use(K.body({ jumpForce }));
-    } else {
-        obj.jumpForce = jumpForce;
+        obj.use(K.body());
     }
+    obj.jumpForce = jumpForce;
     for (var comp of comps) {
         switch (comp[0]) {
             case "surf":

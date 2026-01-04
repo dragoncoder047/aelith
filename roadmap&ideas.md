@@ -5,7 +5,6 @@
     * make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
         * add code for hooks when the player is pressing *AND* releasing the action buttons (for like elevator control buttons)
     * this is how the inventory menu screen should work as well
-        * true entities have a hook that gets run when they're being rendered in a display entity
 * add random ticks functionality
 * change motion to be using force & velocity (would make sticky platforms better)
 * finish legs
@@ -42,10 +41,7 @@
     * L1/R1 buttons to switch tabs
 * serialization
 * lighting stuff
-    * add rendering primitive for a light like particles
-    * add tagged lights to fork (& send to Nanopoison)
     * make objects & background have a default shader
-    * make auto-normal map shader kernel size configurable
 * get deltarune prophecy shader for hologram things <https://godotshaders.com/shader/deltarune-the-prophecy-panel-shader/>
 * JUICE!! (Consult Amy on this.)
 * possibly add more parkour stuff like ledge grab, wall jump, and double jump
