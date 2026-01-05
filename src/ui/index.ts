@@ -32,7 +32,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 if (btn) this.onButtonPress(btn, () => {
                     K.wait(0, () => { // Wait to allow other buttons to be processed if they're defined after my button
                         // Don't do the action if nav_select was pressed and another thing is focused
-                        if (K.isButtonDown("nav_select") && !this.is("focused")) return;
+                        if (K.isButtonDown("nav_select") && !this.is("focused") && K.get("focused").length > 0) return;
                         this.action();
                     });
                 });
