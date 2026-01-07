@@ -68,7 +68,7 @@ export class MotionManager {
         return d.map(({ bone, flip, stepMode, phaseOffset, len }) => {
             const b = new MovingBone(bone, flip, climbMode);
             if (stepMode) {
-                b.offsetFromPlayerPos = this.entity.obj!.fromWorld(this.entity.bones[bone]!.worldPos()!);
+                b.offsetFromPlayerPos = this.entity.obj!.fromWorld(this.entity.bones[bone]!.worldPos);
                 b.curOffset = K.vec2();
                 b.mode = stepMode;
                 b.len = len ?? masterLen;
@@ -202,7 +202,7 @@ class MovingBone {
         const offsetToWorld = (offset: Vec2) => offset.add(zeroOffsetPos);
         const worldToOffset = (world: Vec2) => world.sub(zeroOffsetPos);
         const moveFootToOffset = (offset: Vec2) => {
-            o.worldPos(offsetToWorld(offset));
+            o.worldPos = offsetToWorld(offset);
         };
         if (this.mode === "free") {
             moveFootToOffset(K.vec2(this.height! * Math.cos(2 * Math.PI * phase), 0));

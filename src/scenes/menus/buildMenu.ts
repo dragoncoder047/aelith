@@ -97,6 +97,8 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
         case MenuItemType.SETTING:
             obj = makeSetting(w, prev, item, set, settings, first);
             break;
+        case undefined:
+            throw new Error("unreachable");
     }
     return obj;
 }

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       kaplay:
-        specifier: github:dragoncoder047/kaplay#6b2bdc9a418af6d36df45b77aaddb8eaef2572d0
-        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/6b2bdc9a418af6d36df45b77aaddb8eaef2572d0
+        specifier: github:dragoncoder047/kaplay#d4dcaeabd95b67ee587047a237b5892cad8fcf74
+        version: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/d4dcaeabd95b67ee587047a237b5892cad8fcf74
       kaplay-lighting:
         specifier: github:dragoncoder047/kaplay-lighting#c4fde74b52a949dd9c33a8823eae063e0a7ab0bb
         version: https://codeload.github.com/dragoncoder047/kaplay-lighting/tar.gz/c4fde74b52a949dd9c33a8823eae063e0a7ab0bb
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-3+lK8zj4Hx6D4V9xUP3L9KfGNXCjuVAaos8tGW/BfoeSeyjHFSVVb33jOjN0GZx+6soqYoHP6qi4JrbQM3EcRw==}
     engines: {node: '>=20.0.0'}
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/6b2bdc9a418af6d36df45b77aaddb8eaef2572d0:
-    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/6b2bdc9a418af6d36df45b77aaddb8eaef2572d0}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/d4dcaeabd95b67ee587047a237b5892cad8fcf74:
+    resolution: {tarball: https://codeload.github.com/dragoncoder047/kaplay/tar.gz/d4dcaeabd95b67ee587047a237b5892cad8fcf74}
     version: 4000.0.0-alpha.25
     engines: {node: '>=24.0.0'}
 
@@ -541,7 +541,7 @@ snapshots:
 
   kaplay@4000.0.0-alpha.24: {}
 
-  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/6b2bdc9a418af6d36df45b77aaddb8eaef2572d0: {}
+  kaplay@https://codeload.github.com/dragoncoder047/kaplay/tar.gz/d4dcaeabd95b67ee587047a237b5892cad8fcf74: {}
 
   minimatch@3.1.2:
     dependencies:

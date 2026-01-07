@@ -242,7 +242,7 @@ export function below(obj: GameObj<PosComp>, pad: number): Comp {
         update(this: GameObj<PosComp | AnchorComp | RectComp>) {
             const otherBottom = (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * ((obj as any).height ?? 0) / 2;
             const myAnchor = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
-            this.worldPos(obj.pos.add(0, otherBottom + myAnchor + pad));
+            this.worldPos = obj.pos.add(0, otherBottom + myAnchor + pad);
         },
     }
 }

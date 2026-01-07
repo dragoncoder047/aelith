@@ -45,6 +45,6 @@ export class MouseMoveInput extends DirectionalInput {
         if (K.isButtonPressed()) this._sticky = false;
         if (K.getLastInputDeviceType() === "gamepad" || !this._sticky) return K.Vec2.ZERO;
         if (!entity) return K.mouseDeltaPos();
-        return K.toWorld(K.mousePos()).sub(entity.getHead().worldPos()!);
+        return K.toWorld(K.mousePos()).sub(entity.getHead().worldPos);
     }
 }

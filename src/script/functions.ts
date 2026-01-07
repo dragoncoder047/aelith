@@ -234,7 +234,7 @@ export const FUNCTIONS: Form[] = [
         return p[0][p[1]] = value;
     }),
     func("worldPos", function* ([bone, pos], task, actor) {
-        return (actor!.bones[bone] ?? actor!.obj!).worldPos(pos);
+        return (actor!.bones[bone] ?? actor!.obj!).worldPos = pos;
     }),
     func("screenwidth", function* () {
         return K.width();

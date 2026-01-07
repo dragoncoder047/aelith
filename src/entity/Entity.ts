@@ -80,8 +80,7 @@ export class Entity implements Serializable {
             entitywrapper(self),
             {
                 id: "entityroot",
-                // run in draw() so after the constraints code and anims can override the constraint
-                draw() { self.update(K.dt()); }
+                update() { self.update(K.dt()); }
             },
             self.id,
             self.kind,
@@ -245,7 +244,7 @@ export class Entity implements Serializable {
     }
     target(other: Entity | null) {
         if (other?.obj) {
-            this._lookAtPoint(other.obj.worldPos()!);
+            this._lookAtPoint(other.obj.worldPos);
         }
         this.targeted = other;
         // TODO: remove this debugging rectangle
@@ -266,17 +265,17 @@ export class Entity implements Serializable {
     private _lookAtPoint(pt: Vec2) {
         const d = this.getPrototype().model?.kinematics?.look;
         if (this.obj && d) {
-            this.bones[d.target]!.worldPos(pt);
+            this.bones[d.target]!.worldPos = pt;
         }
     }
     private _moveLooking: Vec2 = K.RIGHT;
     lookInDirection(direction: Vec2) {
         const lookRelToHead = (pt: Vec2) => {
-            this._lookAtPoint(this.getHead()!.worldPos()!.add(pt));
+            this._lookAtPoint(this.getHead()!.worldPos.add(pt));
         }
         if (this.obj && !direction.isZero()) {
             const d = this.getPrototype().model?.kinematics?.look;
-            const origin = (d ? this.bones[d.origin] : this.obj)!.worldPos()!;
+            const origin = (d ? this.bones[d.origin] : this.obj)!.worldPos;
             const res = K.raycast(origin, direction.scale((this.getPrototype().behavior?.interactDistance ?? 4) * 32), [this.id]);
             if (res) {
                 if (!(res.object?.entity) && res.point) this._lookAtPoint(res.point);

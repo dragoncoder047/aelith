@@ -168,6 +168,6 @@ function doCorrections(A: GameObj<DC>, M: GameObj<DC>, len: number, doMinimum: b
 
 function correct(obj: GameObj<DC>, dx: number, dy: number, K: KAPLAYCtx) {
     if (canBeMoved(obj)) {
-        obj.worldPos(obj.worldPos()!.add(dx * K.dt(), dy * K.dt()));
+        obj.worldPos = obj.worldPos.add(dx * K.dt(), dy * K.dt());
     }
 }

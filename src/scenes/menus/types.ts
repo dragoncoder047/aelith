@@ -56,5 +56,6 @@ export interface SettingMenuItem extends MenuItemCommon {
 }
 
 export interface NoBackSentinel {
+    type?: undefined;
     nb: true;
 }
