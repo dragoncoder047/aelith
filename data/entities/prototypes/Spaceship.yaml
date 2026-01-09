@@ -42,6 +42,14 @@ model:
             anchor: center
             frame: 1
             z: 0
+    - name: light
+      render:
+        as: light
+        type: point
+        color: "#ddddff"
+        intensity: 2
+        near: 100
+        far: 200
   tentacles:
     - &st
       name: ta

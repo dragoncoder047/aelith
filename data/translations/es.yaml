@@ -5,7 +5,7 @@ bsod:
   searchOnlineHint: "Puedes buscar el error online:"
 
 dialog:
-  firefoxDontWorkWithGamepads: >-
+  firefoxBug: >-
     Parece que estas usando Firefox. Desafortunadamente, la implementacion e
     Firefox de la API para mandos en web apesta tanto que es inutilizable,
     puedes continuar usando tu mouse y teclado.
@@ -14,11 +14,11 @@ dialog:
     Si realmente quieres usar un mando, por favor usa un navegador distinto,
     como Chrome$switch(&os~mac:, Opera, o Safari~windows:, Opera, o Microsoft
     Edge~linux: o Opera).
-  singleJoyConDontHaveEnoughButtons: >-
+  joycon: >-
     Parece que has conectado un solo mando Joy-Con, el cual no tiene suficientes
     botones para jugar este juego. Puedes intentar conectando el otro Joy-Con o
     simplemente usar tu mouse y teclado.
-  touchNotSupportedYet: >-
+  touch: >-
     Este juego no tiene soporte para controles con pantalla tactil, por favor
     conecta un mando o mouse y teclado.
 # lore:

@@ -15,6 +15,7 @@ export function menuScene(menu: Menu | undefined, set: Record<string, Menu> = SY
     FPSMonitor.install();
     installTabNavigation();
     K.setBackground(K.BLACK);
+    K.setGlobalLight({ intensity: 1, color: K.WHITE });
     if (K._k.game.sceneStack.length === 0) {
         throw new Error("cannot menu with nowhere to return to");
     }

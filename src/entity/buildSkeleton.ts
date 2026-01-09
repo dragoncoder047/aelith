@@ -64,7 +64,7 @@ function buildTentacle(e: Entity, map: BonesMap, tentacle: EntityModelTentacleDa
             });
         }
         if (tentacle.render) {
-            addRenderComps(prev, prev.id, tentacle.render as any);
+            addRenderComps(prev, prev.id, e.id, tentacle.render as any);
             Object.assign((prev as any as GameObj<DistanceCompPlus>).drawOpts, {
                 join: tentacle.render?.join,
                 opacity: tentacle.render?.opacity,
@@ -101,8 +101,9 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 "bone",
                 entitywrapper(e),
                 K.pos(),
-                K.rotate(),
-                K.scale(),
+                K.rotate(0),
+                K.scale(1, 1),
+                K.skew(0, 0),
                 K.offscreen({ hide: true }),
             ]);
             if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);
@@ -117,7 +118,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
                 constraintEntries.push({ c: bone.constraint, t: bone.name });
             }
             if (bone.render) {
-                addRenderComps(obj, obj.id, bone.render);
+                addRenderComps(obj, obj.id, e.id, bone.render);
                 if (!obj.has("layer")) obj.use(K.layer(GameManager.getDefaultValue("entityLayer")));
             }
             if (bone.ik?.angleRange) {

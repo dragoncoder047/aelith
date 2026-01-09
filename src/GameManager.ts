@@ -13,6 +13,7 @@ import * as StateManager from "./state/StateManager";
 import inputsDEF from "./static/system_assets/inputButtons";
 import inputsPNG from "./static/system_assets/inputs.png";
 import kaplayPNG from "./static/system_assets/kaplay-logo.png";
+import { addRenderComps } from "./draw/primitive";
 
 
 export function setup() {
@@ -26,6 +27,9 @@ export function setup() {
     InputManager.loadAssets();
     InputManager.setupControls();
     SceneManager.setupScenes();
+    K.setBackgroundRenderingAddons((obj, data) => {
+        addRenderComps(obj, obj.id, null, data ?? {});
+    });
     // where do I put THIS?
     K.strings.os = PlatformGuesser.guessOS();
     K.strings.switch = (switchData) => {

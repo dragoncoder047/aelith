@@ -81,7 +81,7 @@ hooks:
     - - while
       - 1
       - [wait, 0] # prevent a lockup loop
-      - [worldPos, particles, [vec2, [nth, 0, [xys, [worldPos, particles]]], 0]]
+      - [boneSet, [list, particles, worldPos], [vec2, [nth, 0, [xys, [boneGet, [list, particles, worldPos]]]], 0]]
       - [
           boneSet,
           [list, particles, pos],

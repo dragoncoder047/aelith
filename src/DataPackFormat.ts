@@ -1,6 +1,7 @@
 import { EaseFuncs, TextAlign } from "kaplay";
 import { JSONObject, JSONValue } from "./JSON";
 import { PolylinePrimitive, Primitive } from "./draw/primitive";
+import { BackgroundLayer } from "./context/plugins/kaplay-background-more";
 
 export type XY = { x: number, y: number };
 
@@ -36,6 +37,7 @@ export type StaticPhysicsComponentData =
 export type IndexMapping = number | string;
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
+    songTags: string[];
     /** Text map rows */
     map: string[];
     /**
@@ -86,10 +88,10 @@ export interface StaticTileDefinition extends JSONObject {
 }
 
 export interface TilesetData extends JSONObject {
-    songTags: string[];
     tiles: StaticTileDefinition[];
     gridSize: number;
-    background?: string;
+    background?: string | BackgroundLayer[];
+    initFunc?: CrustyJSONCode;
 }
 
 export interface EntityPrototypeData extends JSONObject {
@@ -466,6 +468,7 @@ export interface DataPackData extends JSONObject {
     };
     defaults: {
         font?: string;
+        depth?: number;
         background?: string;
         depthLayer: string;
         gravity?: number;

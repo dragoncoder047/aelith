@@ -81,14 +81,13 @@ model:
                 - name: headlight
                   render:
                     as: light
-                    directional: yes
+                    type: spot
                     strength: 2
                     near: 50
                     far: 100
                     color: white
                     spread: 15
                     widthMax: 5
-                    excludeTags: [explorer]
             - name: gazeSource
               pos: { x: 0, y: -10 }
               ik:

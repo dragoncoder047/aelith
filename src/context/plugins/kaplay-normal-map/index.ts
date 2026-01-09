@@ -45,6 +45,8 @@ export function kaplayNormalMapGen(K: KAPLAYCtx & KAPLAYNormalMapGenPlugin): KAP
 #define KERNEL_MIDDLE 4
 ${normalShaderSrc}
 `;
+
+    // TODO: this is like, seriously bugged??
     const sobel3x3shaderName = "__sobel3x3";
     K.loadShader(sobel3x3shaderName, null, sobelShaderSrc);
 

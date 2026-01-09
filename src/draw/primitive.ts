@@ -146,7 +146,7 @@ export type Primitive =
     | ParticlePrimitive
     | LightPrimitive;
 
-export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) {
+export function addRenderComps(obj: GameObj, uid: number, id: string | null, primitive: Primitive) {
     switch (primitive.as) {
         case "sprite":
             obj.use(K.sprite(primitive.sprite, {
@@ -194,7 +194,11 @@ export function addRenderComps(obj: GameObj, uid: number, primitive: Primitive) 
             obj.use(simpleParticles(primitive));
             break;
         case "light":
-            obj.use(K.lightSource({ ...primitive, color: (primitive.color ?? null) !== null ? K.rgb(primitive.color!) : undefined }));
+            obj.use(K.lightSource({
+                ...primitive,
+                color: (primitive.color ?? null) !== null ? K.rgb(primitive.color!) : undefined,
+                excludeTags: primitive.excludeTags && id ? [...primitive.excludeTags, id] : id ? [id] : []
+            }));
             break;
         default:
             primitive satisfies never;
@@ -262,4 +266,6 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
     if (p.layer) obj.use(K.layer(p.layer));
     if (p.z) obj.use(K.z(p.z));
     if (p.mask) obj.use(K.mask({ "&": "intersect" as const, "-": "subtract" as const }[p.mask]));
+    // @ts-ignore
+    if (p.custom) Object.assign(obj, p.custom);
 }

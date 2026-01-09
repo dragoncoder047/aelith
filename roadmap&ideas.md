@@ -5,6 +5,7 @@
     * make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
         * add code for hooks when the player is pressing *AND* releasing the action buttons (for like elevator control buttons)
     * this is how the inventory menu screen should work as well
+        * need to determine how the currently held item is rendered (does it rotate with the aim direction, does it match flip, etc)
 * add random ticks functionality
 * change motion to be using force & velocity (would make sticky platforms better)
 * finish legs
@@ -22,9 +23,6 @@
         3. try item intersecting with (like door)
     * need for a way to be fallback and invoke the hook and stop if the hook exists else continue
         * something like Lisp's `(multiple-value-bind)` or similar on the startHook command
-* add kiwi's depth component for entities that are set back in depth, but modified to allow it to turn off with the setting
-    * use this for background
-    * add a config value for the amount of depth
 * implement nav mesh generation from world tiles
     * allow entities to navigate and move silently in the background when unloaded and then come to current room and be loaded
 * NEED TO GET HOOK/RENDER/ANIM INHERITANCE WORKING
@@ -41,8 +39,7 @@
     * L1/R1 buttons to switch tabs
 * serialization
 * lighting stuff
-    * make objects & background have a default shader
-* get deltarune prophecy shader for hologram things <https://godotshaders.com/shader/deltarune-the-prophecy-panel-shader/>
+    * get normal map generation working
 * JUICE!! (Consult Amy on this.)
 * possibly add more parkour stuff like ledge grab, wall jump, and double jump
     * why

@@ -1,6 +1,14 @@
 songTags: # TODO
 gridSize: 32
-background: "black"
+background:
+  - type: color
+    value: white
+    customData:
+      shader: starry
+      custom:
+        tileX: 10
+        tileY: 10
+        depth: 0.5
 tiles:
   # 0: base wall
   - &baseWall
@@ -32,3 +40,4 @@ tiles:
     physics:
       hitbox: [4, 4, 24, 24]
       merge: [true, true]
+initFunc: [setGlobalLight, null, 0.8]

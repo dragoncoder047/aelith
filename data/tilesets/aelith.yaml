@@ -1,6 +1,10 @@
 songTags: # TODO
 gridSize: 32
-background: "#000011"
+background:
+  - type: sprite
+    value: [walltile, 22]
+    customData:
+      color: "#444444"
 tiles:
   # 0: base wall
   - &baseWall

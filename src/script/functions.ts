@@ -233,9 +233,6 @@ export const FUNCTIONS: Form[] = [
         const p = splitV(actor!.bones, path);
         return p[0][p[1]] = value;
     }),
-    func("worldPos", function* ([bone, pos], task, actor) {
-        return (actor!.bones[bone] ?? actor!.obj!).worldPos = pos;
-    }),
     func("screenwidth", function* () {
         return K.width();
     }),
@@ -244,6 +241,10 @@ export const FUNCTIONS: Form[] = [
     }),
     func("getanalog", function* ([bName]) {
         return InputManager.getAnalog(bName);
+    }),
+    func("setGlobalLight", function* ([color, intensity]) {
+        if ((color ?? null) !== null) K.setGlobalLight({ color: K.rgb(color) });
+        if (intensity !== undefined) K.setGlobalLight({ intensity });
     }),
     func("lerp", function* ([a, b, t]) {
         return K.lerp(a, b, t);

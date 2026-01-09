@@ -3,7 +3,7 @@ bsod:
   searchOnlineHint: "You can search for the error online:"
 
 dialog:
-  firefoxDontWorkWithGamepads: >-
+  firefoxBug: >-
     You appear to be using Firefox. Unfortunately for you, Firefox's
     implementation of the web game controller API is so horribly messed up as to
     be unusable. You can continue with your mouse and keyboard.
@@ -12,11 +12,11 @@ dialog:
     If you really want to use a game controller, please use another browser like
     Chrome$switch(&os~mac:, Opera, or Safari~windows:, Opera, or Microsoft
     Edge~linux: or Opera).
-  singleJoyConDontHaveEnoughButtons: >-
+  joycon: >-
     You appear to have connected a single Joy-Con controller, which does not
     have enough buttons to play this game. You can try connecting the other
     Joy-Con, or just use your mouse and keyboard.
-  touchNotSupportedYet: >-
+  touch: >-
     This game does not support touchscreen controls. Try connecting a game
     controller or a mouse and keyboard.
 menu:

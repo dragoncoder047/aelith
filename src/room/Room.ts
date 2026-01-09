@@ -11,6 +11,7 @@ import * as ScriptHandler from "../script/ScriptHandler";
 import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
+import { BackgroundLayer } from "../context/plugins/kaplay-background-more";
 
 
 export type TileEntry = {
@@ -27,11 +28,10 @@ export type ColliderEntry = {
     tags: Tag[];
 }
 
-const DEPTH = 0.1;
 const COLOR_FACTOR = 4;
 
 export class Room implements Serializable {
-    bg: string | undefined;
+    bg: string | BackgroundLayer[] | undefined;
     frozen: {
         colliders: ColliderEntry[],
         tiles: TileEntry[],
@@ -93,13 +93,15 @@ export class Room implements Serializable {
                 K.offscreen({ hide: true }),
                 K.color(K.WHITE),
             ]);
-            addRenderComps(t, javaHash(this.id + hashPoint(tile.pos)), tile.r);
+            addRenderComps(t, javaHash(self.id + hashPoint(tile.pos)), null, tile.r);
             if (!t.has("layer")) t.use(K.layer(GameManager.getDefaultValue("tileLayer")));
             if (tile.ds) this.depthTiles.push([t, tile.ds as number]);
         }
-        K.setBackground(K.rgb(this.bg ?? GameManager.getDefaultValue("background") ?? "black"));
-        K.setGravity(this.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
-        if (self.data.init) ScriptHandler.spawnTask(0, self.data.init, null, {});
+        K.setBackground(self.bg ?? GameManager.getDefaultValue("background") ?? "black");
+        K.setGravity(self.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
+        const setup1 = RoomManager.getTileset(self.data.tileset).initFunc;
+        const setup2 = self.data.init;
+        ScriptHandler.spawnTask(0, ["do", setup1, setup2], null, {});
     }
     unloaded() {
         this.depthTiles = [];
@@ -108,6 +110,7 @@ export class Room implements Serializable {
     drawDepth() {
         if (!Room._depthEnabled) return;
         var t: number, i = 0;
+        const DEPTH = GameManager.getDefaultValue("depth") ?? 0.1;
         // set up counters
         for (i = 0; i < this.depthTiles.length; i++) {
             const d = this.depthTiles[i]!, obj = d[0], depthSteps = d[1];
@@ -130,6 +133,7 @@ export class Room implements Serializable {
             for (i = 0; i < this.depthTiles.length; i++) {
                 const d = this.depthTiles[i]!, obj = d[0], ds = d[1];
                 if (obj.hidden) continue;
+                // TODO: more filtering based on quadrant and tile's edges, don't draw it if it is obvious it will not add any pixels to draw it
                 const step = DEPTH / ds;
                 const nextT = this.depthCache.get(obj)!;
                 minStep = Math.min(minStep, step);

@@ -18,8 +18,8 @@ float cnv1(float a[KERNEL_LEN], float b[KERNEL_LEN]) {
     return sum;
 }
 
-vec4 tangentToColor(vec3 tan) {
-    return vec4((tan + 1.) / 2., 1.);
+vec4 tangentToColor(vec3 tan, float srcAlpha) {
+    return vec4((tan + 1.) / 2., srcAlpha);
 }
 
 vec4 sample(sampler2D tex, vec2 uv) {
@@ -35,9 +35,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
             pixels[row * KERNEL_SIZE + col] = sample(tex, uv + off);
         }
     }
-    if(pixels[KERNEL_MIDDLE].a == 0.)
-        discard;
     float grays[KERNEL_LEN];
     for(int i = 0; i < KERNEL_LEN; i++) grays[i] = gray(pixels[i]);
-    return tangentToColor(normalize(vec3(cnv1(u_kernel_x, grays), cnv1(u_kernel_y, grays), 1. / u_strength)));
+    return tangentToColor(normalize(vec3(cnv1(u_kernel_x, grays), cnv1(u_kernel_y, grays), 1. / u_strength)), pixels[KERNEL_MIDDLE].a);
 }

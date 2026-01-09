@@ -65,8 +65,8 @@ export function kaplayExtraDistance(K: KAPLAYCtx): KAPLAYDistanceCompPlusPlugin 
                 p2: opts.p2 ?? K.vec2(),
                 length: opts.length ?? "auto",
                 drawOpts: opts.drawOpts,
-                alpha: opts.alpha ?? 1.5,
-                beta: opts.beta ?? 1.5,
+                alpha: opts.alpha ?? .6,
+                beta: opts.beta ?? 1.1,
                 add() {
                     // @ts-expect-error
                     if (this.length === "auto") {
@@ -168,6 +168,6 @@ function doCorrections(A: GameObj<DC>, M: GameObj<DC>, len: number, doMinimum: b
 
 function correct(obj: GameObj<DC>, dx: number, dy: number, K: KAPLAYCtx) {
     if (canBeMoved(obj)) {
-        obj.worldPos = obj.worldPos.add(dx * K.dt(), dy * K.dt());
+        obj.worldPos = obj.worldPos.add(dx, dy);
     }
 }
