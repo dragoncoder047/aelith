@@ -30,6 +30,7 @@ export function setup() {
     K.setBackgroundRenderingAddons((obj, data) => {
         addRenderComps(obj, obj.id, null, data ?? {});
     });
+    K.setVanishingAnchor(K.vec2(0, -1 / 3));
     // where do I put THIS?
     K.strings.os = PlatformGuesser.guessOS();
     K.strings.switch = (switchData) => {

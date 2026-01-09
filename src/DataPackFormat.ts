@@ -476,6 +476,7 @@ export interface DataPackData extends JSONObject {
         tileLayer: string;
         friction: number;
         restitution: number;
+        speechBubbleLayer: string;
         speechBubbleWidth?: number;
         cameraPanAlpha: number;
         cameraScaleAlpha: number;

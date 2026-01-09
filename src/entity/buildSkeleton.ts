@@ -191,5 +191,6 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         e.speechBubble!.use(speechBubble());
         e.speechBubble!.width = GameManager.getDefaultValue("speechBubbleWidth");
     }
+    e.speechBubble!.use(K.layer(GameManager.getDefaultValue("speechBubbleLayer")))
     return map;
 }

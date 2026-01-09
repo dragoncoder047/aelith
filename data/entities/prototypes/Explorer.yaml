@@ -22,8 +22,6 @@ model:
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -36 }
-      render:
-        layer: speechBubble
     - name: gazeTarget
       pos: { x: 100, y: -25 }
     - name: leftFootTarget

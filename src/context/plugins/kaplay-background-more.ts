@@ -1,4 +1,4 @@
-import { Color, GameObj, KAPLAYCtx, KEventController } from "kaplay";
+import { Anchor, Color, GameObj, KAPLAYCtx, Vec2 } from "kaplay";
 import { KAPLAYLightingPlugin } from "kaplay-lighting";
 import { XY } from "../../DataPackFormat";
 import { JSONObject } from "../../JSON";
@@ -14,6 +14,8 @@ export interface BackgroundLayer extends JSONObject {
 }
 
 export interface KAPLAYAdvancedBackgroundPlugin {
+    setVanishingAnchor(anchor: Anchor | Vec2): void;
+    getVanishingPoint(): Vec2;
     setBackground(b: string | Color | BackgroundLayer[]): void;
     getDefaultDepth(): number;
     setDefaultDepth(depth: number): void;
@@ -23,7 +25,16 @@ export interface KAPLAYAdvancedBackgroundPlugin {
 export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdvancedBackgroundPlugin): KAPLAYAdvancedBackgroundPlugin {
     var defaultDepth = 0.1;
     var backgroundAddons = (x: GameObj, data: any) => { };
+    var vanishingAnchor = K.Vec2.ZERO;
+    const marginUp = (x: number) => x * Math.ceil(64 / x);
     return {
+        setVanishingAnchor(anchor) {
+            vanishingAnchor = K.anchorToVec2(anchor);
+        },
+        getVanishingPoint() {
+            const s = K.getCamScale();
+            return K.getCamPos().add(K.width() / 2 * vanishingAnchor.x / s.x, K.height() / 2 * vanishingAnchor.y / s.y);
+        },
         setDefaultDepth(depth) {
             defaultDepth = depth;
         },
@@ -44,42 +55,41 @@ export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdv
                 K.get("__background").forEach(o => o.destroy());
                 const objs = [];
                 for (var layer of b) {
-                    const d = layer.depth ?? defaultDepth;
-                    const p = layer.pos ? K.Vec2.deserialize(layer.pos) : K.Vec2.ZERO;
                     const obj = K.add([
                         K.pos(),
                         K.area(),
                         "__background",
                         {
-                            depth: d,
-                            realPos: p,
+                            depth: layer.depth ?? defaultDepth,
+                            realPos: layer.pos ? K.Vec2.deserialize(layer.pos) : K.Vec2.ZERO,
                             tileX: 0,
                             tileY: 0,
                             update(this: GameObj) {
-                                const c = K.getCamPos().sub(K.width() / 2, K.height() / 2);
+                                const camScale = K.getCamScale();
+                                const camPos = K.getCamPos().sub(K.width() / 2 / camScale.x, K.height() / 2 / camScale.y);
+                                const vanishPoint = K.getVanishingPoint();
                                 var xx = 0, yy = 0;
-                                const tx = this.tileX, ty = this.tileY;
-                                if (tx > 0 && ty > 0) {
-                                    const l = K.lerp(this.realPos, c, this.depth);
-                                    // Wrap everything so it's on screen
-                                    while (l.x < c.x) l.x += tx, xx += tx;
-                                    while (l.x > tx + c.x) l.x -= tx, xx -= tx;
-                                    l.x -= tx;
-                                    while (l.y < c.y) l.y += ty, yy += ty;
-                                    while (l.y > ty + c.y) l.y -= ty, yy -= ty;
-                                    l.y -= ty;
+                                const tileX = this.tileX, tileY = this.tileY;
+                                if (tileX > 0 && tileY > 0) {
+                                    const l = K.lerp(this.realPos, vanishPoint, this.depth);
+                                    // Wrap so it's always on screen
+                                    while (l.x < camPos.x) l.x += tileX, xx += tileX;
+                                    while (l.x > tileX + camPos.x) l.x -= tileX, xx -= tileX;
+                                    l.x -= marginUp(tileX);
+                                    while (l.y < camPos.y) l.y += tileY, yy += tileY;
+                                    while (l.y > tileY + camPos.y) l.y -= tileY, yy -= tileY;
+                                    l.y -= marginUp(tileY);
                                     this.pos = l;
                                 } else {
-                                    this.pos = c;
+                                    this.pos = vanishPoint;
+                                    xx = vanishPoint.x;
+                                    yy = vanishPoint.y;
                                 }
-                                const s = K.getCamScale();
-                                this.width = tx * s.x * Math.ceil(K.width() / tx / s.x);
-                                this.height = ty * s.y * Math.ceil(K.width() / ty / s.y);
+                                this.width = K.width() / camScale.x + 2 * marginUp(tileX);
+                                this.height = K.height() / camScale.y + 2 * marginUp(tileY);
                                 if (this.has("shader")) {
-                                    Object.assign(this.uniform, {
-                                        u_quadSz: K.vec2(this.width, this.height),
-                                        u_offset: K.vec2(xx, yy),
-                                    });
+                                    this.uniform.u_quadSz = K.vec2(this.width, this.height);
+                                    this.uniform.u_offset = K.vec2(xx, yy);
                                 }
                             }
                         }

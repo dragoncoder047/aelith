@@ -58,6 +58,14 @@
 #   src: walltile
 
 - kind: sprite
+  id: bgwall
+  loader: url
+  src: !file bgwall.png
+- kind: normalmap
+  loader: conv
+  src: bgwall
+
+- kind: sprite
   id: rocktile
   loader: url
   src: !file rocktiles.png
@@ -75,10 +83,6 @@
 #   loader: conv
 #   src: wires
 
-- kind: spritemap
-  loader: url
-  src: !file ui.png
-  metadata: !include ui.yaml
 - kind: sprite
   id: spaceship
   loader: url
@@ -87,3 +91,8 @@
 # - kind: normalmap
 #   loader: conv
 #   src: spaceship
+
+- kind: spritemap
+  loader: url
+  src: !file ui.png
+  metadata: !include ui.yaml

@@ -244,7 +244,7 @@ export class Entity implements Serializable {
     }
     target(other: Entity | null) {
         if (other?.obj) {
-            this._lookAtPoint(other.obj.worldPos);
+            this._lookAtPoint(other.getHead()?.worldPos ?? other.obj.worldPos);
         }
         this.targeted = other;
         // TODO: remove this debugging rectangle

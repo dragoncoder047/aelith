@@ -14,14 +14,14 @@ initial:
   ownedEntities: !include entities/instances/owned.yaml
 renderLayers:
   - [
-      "behindEverything",
-      "background",
-      "entities",
-      "tiles",
-      "speechBubble",
-      "ui",
+      behindEverything,
+      background,
+      entities,
+      tiles,
+      speechBubble,
+      ui,
     ]
-  - "tiles"
+  - tiles
 defaults:
   font: Unscii
   gravity: 600
@@ -30,6 +30,7 @@ defaults:
   tileLayer: tiles
   restitution: 0.5
   friction: 0.5
+  speechBubbleLayer: speechBubble
   speechBubbleWidth: 100
   cameraPanAlpha: 0.2
   cameraScaleAlpha: 0.08

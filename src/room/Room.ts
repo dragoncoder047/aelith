@@ -119,8 +119,7 @@ export class Room implements Serializable {
             this.depthCache.set(obj, t);
         }
         t = DEPTH;
-        const vanishingPoint = K.getCamPos();
-        vanishingPoint.y -= K.height() / 3;
+        const vanishingPoint = K.getVanishingPoint();
         const worldPos = K.vec2();
         const tVec = K.vec2();
         const sVec = K.vec2();
