@@ -3,6 +3,8 @@ gridSize: 32
 background:
   - type: sprite
     value: bgwall
+    customData:
+      color: "#777777"
 tiles:
   # 0: base wall
   - &baseWall

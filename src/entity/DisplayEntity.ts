@@ -23,5 +23,7 @@ export class DisplayEntity extends Entity {
             ScriptHandler.killAllTasksControlledBy(this);
         });
         this.startHook("loadAsDisplay");
+        this.obj!.unuse("layer");
+        Object.values(this.bones).forEach(b => b.unuse("layer"));
     }
 }
