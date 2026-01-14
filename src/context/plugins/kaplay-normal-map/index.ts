@@ -37,7 +37,7 @@ export function kaplayNormalMapGen(K: KAPLAYCtx & KAPLAYNormalMapGenPlugin): KAP
     // ${normalShaderSrc}`;
 
     const sobel3x3x = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
-    const sobel3x3y = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
+    const sobel3x3y = [1, 2, 1, 0, 0, 0, -1, -2, -1];
     const sobelShaderSrc = `
 #define KERNEL_SIZE 3
 #define KERNEL_LEN 9
@@ -46,7 +46,6 @@ export function kaplayNormalMapGen(K: KAPLAYCtx & KAPLAYNormalMapGenPlugin): KAP
 ${normalShaderSrc}
 `;
 
-    // TODO: this is like, seriously bugged??
     const sobel3x3shaderName = "__sobel3x3";
     K.loadShader(sobel3x3shaderName, null, sobelShaderSrc);
 
@@ -101,7 +100,7 @@ ${normalShaderSrc}
         generateNormalMapFor(sprite, algorithm = "sobel3x3", normalMapSprite = sprite + "-nm") {
             const algo = ALGORITHMS[algorithm];
             if (!algo) throw new Error("unknown normal map generation algorithm " + algorithm);
-            return K.load((async () => algo(sprite, normalMapSprite))());
+            return K.load(algo(sprite, normalMapSprite));
         },
         getNormalMapSprite(forSprite) {
             return normalMapMap.get(forSprite);

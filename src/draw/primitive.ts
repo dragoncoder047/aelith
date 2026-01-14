@@ -256,7 +256,11 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                 });
             });
             const nm = K.getNormalMapSprite(p.sprite);
-            if (nm) opt = K.getNormalMapInput(p.sprite, nm, opt as any);
+            if (nm) {
+                // why the hell is it getting the wrong normal map for the sprite
+                opt = K.getNormalMapInput(p.sprite, nm, opt as any);
+                console.log(opt);
+            }
 
         }
         obj.use(K.litShader(p.shader, opt));
