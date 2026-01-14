@@ -5,7 +5,7 @@ import { RangeSetting, SelectMultipleSetting, SelectSetting, SettingKind, Settin
 import { DEF_STYLES, STYLES } from "../../TextStyles";
 import { below, BelowComp, layoutAnchor, PAD, scroller, ScrollerComp, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
 import { Scene } from "../SceneManager";
-import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
+import { Menu, MenuItem, MenuItemType, NoBackSentinel, SettingMenuItem } from "./types";
 
 
 export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings): GameObj<ScrollerComp> {
@@ -49,7 +49,7 @@ export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Setti
     return scrollAnchor as any;
 }
 
-function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean): GameObj<PosComp | BelowComp> {
+function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean): GameObj<PosComp | BelowComp> {
     var obj: any;
     switch (item.type) {
         case MenuItemType.SUBMENU:
@@ -87,7 +87,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
                     transform: DEF_STYLES,
                     size: 12,
                     align: "left",
-                    width: w,
+                    width: w * K.width(),
                     font: GameManager.getDefaultValue("font")
                 }),
                 K.dynamicText(item.text),
@@ -98,6 +98,10 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuI
             obj = makeSetting(w, prev, item, set, settings, first);
             break;
         case undefined:
+            obj = prev;
+            break;
+        default:
+            item satisfies never;
             throw new Error("unreachable");
     }
     return obj;
@@ -117,7 +121,7 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
             K.pos(),
             K.anchor("center"),
             K.area(),
-            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw, font: GameManager.getDefaultValue("font") }),
+            K.text("", { styles: STYLES, transform: DEF_STYLES, size: 12, align: "left", width: tw * K.width(), font: GameManager.getDefaultValue("font") }),
             K.dynamicText(item.text),
         ]);
         addStuff(true);
@@ -162,6 +166,9 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
                 prev = obj;
             }
             break;
+        default:
+            s.kind satisfies never;
+            throw new Error("unreachable");
     }
     return obj!;
 }

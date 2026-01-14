@@ -96,7 +96,6 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
                     font: GameManager.getDefaultValue("font"),
-                    // XXX
                     pos: K.vec2(PAD * 2 - this.width / 2 + this.child!.width, 0)
                 });
                 this.height = Math.max(fText.height, this.child!.height) + PAD * s;
@@ -161,20 +160,20 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                     K.anchor("right"),
                     K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
                 ]);
-                var c = this.child2 = this.add([
+                const thumb = this.child2 = this.add([
                     K.pos(this.width / 2 - PAD, 0),
                     K.sprite(GameManager.getUIKey("sprites", "sliderThumb")),
                     K.anchor("center"),
                     K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
-                    K.area({ scale: 2 }),
+                    K.area({ scale: 3 }),
                 ]);
-                var draggin = false, moving = false;
-                this.onClick(() => c.isHovering() && (draggin = moving = true));
-                this.onMouseRelease(() => draggin = moving = false);
+                var dragging = false, moving = false;
+                this.onClick(() => thumb.isHovering() && (dragging = moving = true));
+                this.onMouseRelease(() => dragging = moving = false);
                 this.onHoverEnd(() => moving = false);
-                this.onHover(() => draggin && (moving = true));
+                this.onHover(() => dragging && (moving = true));
                 this.onMouseMove(pos => {
-                    if (!draggin || !moving) return;
+                    if (!dragging || !moving) return;
                     setValue(this.posToValue(this.fromScreen(pos).x));
                 })
             },
@@ -210,9 +209,9 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
             update(this: GameObj<RectComp | AreaComp | ColorComp | UiSliderComp | OpacityComp>) {
                 this.opacity = 0.5 * +(this.is("focused") || this.isHovering());
                 this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
-                this.child2!.pos.x = this.valueToPos(getValue());
+                this.child2!.moveTo(this.valueToPos(getValue()), 0);
                 this.width = tw * K.width();
-                this.height = this.width / 5;
+                this.child!.moveTo(this.width / 2 - PAD, 0);
             },
             rawText() {
                 return text;
@@ -347,7 +346,7 @@ export function scroller(bottomObj: GameObj<PosComp>): ScrollerComp {
                 const bounds = calculateScrollBounds(this as any);
                 targetScroll = K.clamp(targetScroll, bounds[0], bounds[1]);
                 // stay centered because below() removed
-                this.moveTo((belowObj ?? this).pos.x, K.lerp(this.pos.y, targetScroll, Math.LN2 * 20 * K.dt()));
+                this.moveTo((belowObj ?? this).worldPos.x, K.lerp(this.pos.y, targetScroll, Math.LN2 * 20 * K.dt()));
             }
         },
         showObj(this: GameObj<PosComp | ScrollerComp>, obj) {

@@ -1,4 +1,3 @@
-import { Scene } from "../SceneManager";
 
 export interface Menu {
     title: string;

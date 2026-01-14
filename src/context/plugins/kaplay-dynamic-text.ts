@@ -138,8 +138,7 @@ function subStrings(text: string, vars: NestedStrings): string {
                 changed = 2;
             }
         }
-        changed--;
-    } while (changed > 0);
+    } while (--changed > 0);
     return text;
 }
 
