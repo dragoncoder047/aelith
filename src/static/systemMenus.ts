@@ -4,6 +4,7 @@ import { Room } from "../room/Room";
 import { Menu, MenuItemType, NoBackSentinel } from "../scenes/menus/types";
 import { Scene } from "../scenes/SceneManager";
 import { Settings } from "../settings";
+import { toast } from "../ui/toast";
 
 export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 
@@ -19,7 +20,7 @@ SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 SYSTEM_SETTINGS.addBoolean("debugFPSGraph", true);
 
-const mmo = (s: string) => `&msg.menu.options.${s}`;
+export const mmo = (s: string) => `&msg.menu.options.${s}`;
 const mmp = (s: string) => `&msg.menu.pause.${s}`;
 const mma = (s: string) => `&msg.menu.about.${s}`;
 
@@ -156,6 +157,11 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
             },
             {
                 type: MenuItemType.SUBMENU,
+                next: "debugInfo",
+                text: mmo("debug.info.button"),
+            },
+            {
+                type: MenuItemType.SUBMENU,
                 next: "debugLongMenu",
                 text: mmo("debug.long.button")
             },
@@ -165,6 +171,14 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 text: mmo("debug.crash.name"),
                 action() {
                     throw new Error("deliberate error");
+                }
+            },
+            {
+                type: MenuItemType.BUTTON,
+                help: "",
+                text: mmo("debug.toast.button"),
+                action() {
+                    toast(K.CYAN, mmo("debug.toast.test"));
                 }
             }
         ]
@@ -180,6 +194,35 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
             help: "",
             action() { }
         })),
+    },
+    debugInfo: {
+        title: mmo("debug.info.title"),
+        options: [],
+        refresh() {
+            this.options.length = 1;
+
+            const debugInfo = PlatformGuesser.getDebugInfo();
+
+            this.options.push({
+                type: MenuItemType.BUTTON,
+                text: mmo("debug.info.copy.button"),
+                help: "",
+                action() {
+                    navigator.clipboard.writeText(JSON.stringify(debugInfo)).then(
+                        () => toast(K.GREEN, mmo("debug.info.copy.success")),
+                        () => toast(K.RED, mmo("debug.info.copy.error"))
+                    );
+                },
+            })
+
+            for (var [name, value] of debugInfo) {
+                this.options.push({
+                    type: MenuItemType.TEXT,
+                    text: `${name}: ${value}`,
+                });
+            }
+
+        },
     },
     // Pause menu
     paused: {

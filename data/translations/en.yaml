@@ -75,6 +75,16 @@ menu:
       crash:
         name: Test Error
         help: Deliberately throws an error and breaks the game
+      info:
+        title: Debug System Info
+        button: Debug Info
+        copy:
+          button: Copy Debug Info
+          success: Copied!
+          error: Error writing to your system's clipboard
+      toast:
+        button: Test Toast
+        test: Test Toast
   about:
     title: About
     toCredits: Credits

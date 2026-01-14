@@ -28,7 +28,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#639f898539b7f8b354289d28e6dcafabb6731944",
+        "kaplay": "github:dragoncoder047/kaplay#4c262be83f113f7007af6f6b38ff89cce4965e4a",
         "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#a74bc0e744cf11208db51346bcdcf7c7419c4c42",
         "zzfx": "^1.3.0"
     },
