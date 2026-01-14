@@ -23,7 +23,7 @@ export const PAD = 10;
 export function uiButton(tw: number, s: number, text: string, btn: string | null, action: () => void) {
     return [
         K.pos(),
-        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw, height: tw / 5 }),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw * K.width(), height: tw / 5 * K.width() }),
         K.color(K.rgb(GameManager.getUIKey("colors", "normal"))),
         <UiObjComp>{
             action,
@@ -38,6 +38,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 });
             },
             draw(this: GameObj<TextComp | UiObjComp>) {
+                this.width = tw * K.width();
                 const fText = K.formatText({
                     text: K.sub(this.rawText()),
                     anchor: "center",
@@ -70,7 +71,7 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
 export function uiPog(tw: number, s: number, text: string, sprite: string, getValue: () => boolean, action: () => void) {
     return [
         K.pos(),
-        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw }),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw * K.width() }),
         K.opacity(0),
         K.color(K.rgb(GameManager.getUIKey("colors", "hover"))),
         <UiObjComp>{
@@ -95,6 +96,7 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                     size: DEF_TEXT_SIZE * s,
                     transform: DEF_STYLES,
                     font: GameManager.getDefaultValue("font"),
+                    // XXX
                     pos: K.vec2(PAD * 2 - this.width / 2 + this.child!.width, 0)
                 });
                 this.height = Math.max(fText.height, this.child!.height) + PAD * s;
@@ -104,12 +106,13 @@ export function uiPog(tw: number, s: number, text: string, sprite: string, getVa
                 this.opacity = 0.5 * +(this.is("focused") || this.isHovering());
                 this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child!.frame = getValue() ? 1 : 0;
+                this.width = tw * K.width();
             },
             rawText() {
                 return text;
             },
             inspect() {
-                return `t: ${this.rawText()}`;
+                return `pog text: ${this.rawText()}`;
             },
         },
         K.anchor("center"),
@@ -126,7 +129,7 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
     }
     return [
         K.pos(),
-        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw, height: tw / 5 }),
+        K.sprite(GameManager.getUIKey("sprites", "button"), { width: tw * K.width(), height: tw / 5 * K.width() }),
         K.opacity(0),
         K.color(K.YELLOW),
         <UiSliderComp>{
@@ -208,12 +211,14 @@ export function uiSlider(tw: number, s: number, text: string, start: number, sto
                 this.opacity = 0.5 * +(this.is("focused") || this.isHovering());
                 this.color = K.rgb(GameManager.getUIKey("colors", this.is("focused") ? "focus" : "hover"));
                 this.child2!.pos.x = this.valueToPos(getValue());
+                this.width = tw * K.width();
+                this.height = this.width / 5;
             },
             rawText() {
                 return text;
             },
             inspect() {
-                return `t: ${this.rawText()}`;
+                return `slider text: ${this.rawText()}`;
             },
         },
         K.anchor("center"),
@@ -235,10 +240,15 @@ export function top() {
     return K.vec2(K.width() / 2, 0);
 }
 
-export function below(obj: GameObj<PosComp>, pad: number): Comp {
+export interface BelowComp extends Comp {
+    belowObj: GameObj<PosComp>;
+}
+
+export function below(obj: GameObj<PosComp>, pad: number): BelowComp {
     return {
         id: "below",
         require: ["pos"],
+        belowObj: obj,
         update(this: GameObj<PosComp | AnchorComp | RectComp>) {
             const otherBottom = (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * ((obj as any).height ?? 0) / 2;
             const myAnchor = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
@@ -294,7 +304,7 @@ export function tooltip(tip: string) {
                         return `[i]${tip}[/i]`;
                     },
                     inspect() {
-                        return `t: ${this.rawText()}`;
+                        return `tooltip: ${this.rawText()}`;
                     },
                 }
             ])
@@ -311,13 +321,15 @@ export interface ScrollerComp extends Comp {
 export function scroller(bottomObj: GameObj<PosComp>): ScrollerComp {
     var firstUpdate = false;
     var targeting: GameObj<AreaComp> | null = null;
+    var belowObj: GameObj<PosComp> | null = null;
     return {
         id: "scroller",
         top: 0,
         bot: bottomObj,
-        update(this: GameObj<PosComp | ScrollerComp>) {
+        update(this: GameObj<PosComp | ScrollerComp | BelowComp>) {
             if (!firstUpdate) {
                 this.top = this.pos.y;
+                belowObj = this.belowObj;
                 this.unuse("below");
                 firstUpdate = true;
             } else if (targeting) {
@@ -332,9 +344,10 @@ export function scroller(bottomObj: GameObj<PosComp>): ScrollerComp {
                 if (targetTop < this.top) {
                     targetScroll = this.top - (targetTop - this.pos.y);
                 }
-                const bounds = calculateScrollBounds(this);
+                const bounds = calculateScrollBounds(this as any);
                 targetScroll = K.clamp(targetScroll, bounds[0], bounds[1]);
-                this.moveTo(this.pos.x, K.lerp(this.pos.y, targetScroll, Math.LN2 * 20 * K.dt()));
+                // stay centered because below() removed
+                this.moveTo((belowObj ?? this).pos.x, K.lerp(this.pos.y, targetScroll, Math.LN2 * 20 * K.dt()));
             }
         },
         showObj(this: GameObj<PosComp | ScrollerComp>, obj) {

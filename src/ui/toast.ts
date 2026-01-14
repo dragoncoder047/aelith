@@ -53,7 +53,7 @@ export function toast(color: Color, text: string) {
             K.text("", {
                 styles: STYLES,
                 transform: DEF_STYLES,
-                size: DEF_TEXT_SIZE * 2,
+                size: DEF_TEXT_SIZE,
                 align: "center",
                 font: GameManager.getDefaultValue("font"),
             }),

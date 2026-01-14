@@ -3,7 +3,7 @@ import { K } from "../../context";
 import * as GameManager from "../../GameManager";
 import { RangeSetting, SelectMultipleSetting, SelectSetting, SettingKind, Settings } from "../../settings";
 import { DEF_STYLES, STYLES } from "../../TextStyles";
-import { below, layoutAnchor, PAD, scroller, ScrollerComp, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
+import { below, BelowComp, layoutAnchor, PAD, scroller, ScrollerComp, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
 import { Scene } from "../SceneManager";
 import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
 
@@ -11,7 +11,7 @@ import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
 export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings): GameObj<ScrollerComp> {
     menu.refresh?.();
     const topAnchor = K.add([K.pos(), layoutAnchor(top)]);
-    const bw = K.width() / 5;
+    const bw = 1 / 5;
     const w = 4 * bw;
     const topText = K.add([
         K.pos(),
@@ -49,8 +49,8 @@ export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Setti
     return scrollAnchor as any;
 }
 
-function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean) {
-    var obj: GameObj<PosComp>;
+function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean): GameObj<PosComp | BelowComp> {
+    var obj: any;
     switch (item.type) {
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {

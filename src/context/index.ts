@@ -20,6 +20,7 @@ export const K = kaplay({
     touchToMouse: false,
     inspectOnlyActive: true,
     tagComponentIds: false,
+    spriteAtlasPadding: 0,
     plugins: [
         kaplayXterm256,
         kaplayZzFX,

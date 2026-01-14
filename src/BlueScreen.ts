@@ -53,7 +53,7 @@ export function drawBlueScreenOfDeath(errorDetails: string) {
 
 export function install() {
     K.onError(error => {
-        drawBlueScreenOfDeath(error.stack!.replace(/(?<!\\)[\[\\]/g, "\\$1"));
+        drawBlueScreenOfDeath(error.stack!.replace(/(?<!\\)([\[\\])/g, "\\$1"));
         if (!((error as any).sourcemapsResolved)) helpSourcemaps(error);
     });
 }
@@ -65,10 +65,10 @@ const STACKTRACE_LIB_URL = "https://cdn.jsdelivr.net/npm/stacktrace-js@2.0.2/+es
 async function helpSourcemaps(error: Error) {
     const StackTrace = (await import(STACKTRACE_LIB_URL)).default as typeof import("stacktrace-js");
     const newTraceback = error.toString() + "\n" + (await StackTrace.fromError(error)).map(frame => {
-        var url = new URL(frame.fileName!).pathname.replace(/^\//, "");
-        if (url.includes("node_modules")) {
+        var url = /native/i.test(frame.fileName!) ? frame.fileName! : new URL(frame.fileName!).pathname.replace(/^\//, "");
+        if (/node_modules/.test(url)) {
             url = url.split("node_modules/").at(-1)!
-        } else {
+        } else if (!/native/i.test(url)) {
             url = "./" + url;
         }
         return `    at ${frame.functionName ?? "<unnamed>"} (${url}:${frame.lineNumber}:${frame.columnNumber})`;

@@ -22,7 +22,7 @@ export function titleScreenScene() {
     e.obj!.onUpdate(() => {
         e.setPosition(K.vec2(K.width() / 2, 0));
     });
-    const w = K.width() / 3;
+    const w = 1 / 3;
     const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "start_game", () => {
         K.play("nav_confirm");
         K.go(SceneManager.Scene.ROOM);

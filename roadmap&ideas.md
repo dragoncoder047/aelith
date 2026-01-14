@@ -1,5 +1,7 @@
 # to do
 
+* make a general border for toast
+* make explorer arms and legs using a slice9'ed sprite so it can ave a normal map
 * add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
     * allow these as rendering decorations in the rooms
     * make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
