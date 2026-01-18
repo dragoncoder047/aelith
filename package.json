@@ -28,17 +28,9 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#4c262be83f113f7007af6f6b38ff89cce4965e4a",
-        "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#b67f18577dd9e76befc854134c1c8f6aee044ec0",
+        "kaplay": "github:dragoncoder047/kaplay#8373f6aff9a6f1af5c737745e763ba9219ec37a0",
+        "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#943a1f2e5b0f7ad5915371087d5d0928223ef35c",
         "zzfx": "^1.3.0"
     },
-    "type": "module",
-    "pnpm": {
-        "ignoredBuiltDependencies": [
-            "esbuild"
-        ],
-        "onlyBuiltDependencies": [
-            "esbuild"
-        ]
-    }
+    "type": "module"
 }

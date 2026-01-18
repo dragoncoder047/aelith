@@ -8,11 +8,13 @@ type NMGenAlgo =
 
 export interface KAPLAYNormalMapGenPlugin {
     setNormalMap(forSprite: string, normalMapSprite?: string): void;
-    generateNormalMapFor(sprite: string, algorithm?: NMGenAlgo, normalMapSprite?: string): Asset<void>;
+    generateNormalMapFor(sprite: string, algorithm?: NMGenAlgo, normalMapSprite?: string, opt?: BoundaryOptions): Asset<void>;
     getNormalMapSprite(forSprite: string): string | undefined;
 };
 
 export function kaplayNormalMapGen(K: KAPLAYCtx & KAPLAYNormalMapGenPlugin): KAPLAYNormalMapGenPlugin {
+
+    // TODO add boundary options
 
     // sobel3x3
 
@@ -36,8 +38,10 @@ export function kaplayNormalMapGen(K: KAPLAYCtx & KAPLAYNormalMapGenPlugin): KAP
     // #define KERNEL_OFFSET ${KERNEL_OFFSET}
     // ${normalShaderSrc}`;
 
-    const sobel3x3x = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
-    const sobel3x3y = [1, 2, 1, 0, 0, 0, -1, -2, -1];
+    // TODO: this is so messed up
+
+    const sobel3x3y = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
+    const sobel3x3x = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
     const sobelShaderSrc = `
 #define KERNEL_SIZE 3
 #define KERNEL_LEN 9

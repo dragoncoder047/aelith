@@ -2,26 +2,26 @@
   loader: url
   src: !file explorer.png
   metadata: !include explorer.yaml
-- kind: normalmap
-  loader: conv
-  src: explorerHead
-- kind: normalmap
-  loader: conv
-  src: explorerBody
-- kind: normalmap
-  loader: conv
-  src: explorerHand
-- kind: normalmap
-  loader: conv
-  src: explorerFoot
+# - kind: normalmap
+#   loader: conv
+#   src: explorerHead
+# - kind: normalmap
+#   loader: conv
+#   src: explorerBody
+# - kind: normalmap
+#   loader: conv
+#   src: explorerHand
+# - kind: normalmap
+#   loader: conv
+#   src: explorerFoot
 
 - kind: sprite
   id: agent
   loader: url
   src: !file agent.png
-- kind: normalmap
-  loader: conv
-  src: agent
+# - kind: normalmap
+#   loader: conv
+#   src: agent
 
 - kind: sprite
   id: logoletters
@@ -53,44 +53,44 @@
   loader: url
   src: !file walltiles.png
   metadata: !include walltiles.yaml
-- kind: normalmap
-  loader: conv
-  src: walltile
+# - kind: normalmap
+#   loader: conv
+#   src: walltile
 
 - kind: sprite
   id: bgwall
   loader: url
   src: !file bgwall.png
-- kind: normalmap
-  loader: conv
-  src: bgwall
+# - kind: normalmap
+#   loader: conv
+#   src: bgwall
 
 - kind: sprite
   id: rocktile
   loader: url
   src: !file rocktiles.png
   metadata: !include rocktiles.yaml
-- kind: normalmap
-  loader: conv
-  src: rocktile
+# - kind: normalmap
+#   loader: conv
+#   src: rocktile
 
 - kind: sprite
   id: wires
   loader: url
   src: !file wires.png
   metadata: !include wires.yaml
-- kind: normalmap
-  loader: conv
-  src: wires
+# - kind: normalmap
+#   loader: conv
+#   src: wires
 
 - kind: sprite
   id: spaceship
   loader: url
   src: !file spaceship.png
   metadata: !include spaceship.yaml
-- kind: normalmap
-  loader: conv
-  src: spaceship
+# - kind: normalmap
+#   loader: conv
+#   src: spaceship
 
 - kind: spritemap
   loader: url
