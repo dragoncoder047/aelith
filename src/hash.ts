@@ -20,13 +20,13 @@ export function javaHash(s: string) {
 // cSpell: ignore szudzik
 function szudzikPair(x: number, y: number) {
     // from http://szudzik.com/ElegantPairing.pdf
-    return (x >= y ? (x * x) + x + y : (y * y) + x);
+    return x >= y ? (x * x) + x + y : (y * y) + x;
 }
 
 function szudzikPairSigned(x: number, y: number) {
     // from https://www.vertexfragment.com/ramblings/cantor-szudzik-pairing-functions/
-    const a = (x >= 0 ? 2 * x : (-2 * x) - 1);
-    const b = (y >= 0 ? 2 * y : (-2 * y) - 1);
+    const a = x >= 0 ? 2 * x : (-2 * x) - 1;
+    const b = y >= 0 ? 2 * y : (-2 * y) - 1;
     return szudzikPair(a, b) / 2;
 }
 
