@@ -20,9 +20,10 @@ SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 SYSTEM_SETTINGS.addBoolean("debugFPSGraph", true);
 
-export const mmo = (s: string) => `&msg.menu.options.${s}`;
-const mmp = (s: string) => `&msg.menu.pause.${s}`;
-const mma = (s: string) => `&msg.menu.about.${s}`;
+const mm = (s: string) => `&msg.menu.${s}`;
+export const mmo = (s: string) => mm(`options.${s}`);
+const mmp = (s: string) => mm(`pause.${s}`);
+const mma = (s: string) => mmo(`about.${s}`);
 
 export const SYSTEM_MENUS: Record<string, Menu> = {
     settings: {
@@ -59,6 +60,11 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 next: "debugSettings",
                 text: mmo("debug.title")
             },
+            {
+                type: MenuItemType.SUBMENU,
+                next: "about",
+                text: mmo("about.title")
+            }
         ]
     },
     graphicsSettings: {
