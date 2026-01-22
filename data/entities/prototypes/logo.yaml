@@ -37,7 +37,7 @@ model:
                 width: 300
                 align: right
             - name: laser
-              pos: { x: -150, y: 73 }
+              pos: { x: -151.5, y: 71 }
               render:
                 as: sprite
                 sprite: logolaser
@@ -85,7 +85,7 @@ hooks:
       - [
           boneSet,
           [list, particles, pos],
-          [vec2, -150, [boneGet, [list, particles, pos, "y"]]],
+          [vec2, -151.5, [boneGet, [list, particles, pos, "y"]]],
         ]
       - [
           boneSet,

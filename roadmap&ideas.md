@@ -1,6 +1,5 @@
 # to do
 
-* [ ] update "A" in Aelith logo to be more boxy
 * [ ] make a general border for toast
 * [ ] make explorer arms and legs using a slice9'ed sprite so it can have a normal map
 * [ ] Add arm/hands to NIC
