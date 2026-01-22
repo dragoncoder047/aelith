@@ -17,6 +17,7 @@ export function javaHash(s: string) {
     return hash;
 }
 
+// cSpell: ignore szudzik
 function szudzikPair(x: number, y: number) {
     // from http://szudzik.com/ElegantPairing.pdf
     return (x >= y ? (x * x) + x + y : (y * y) + x);
