@@ -1,6 +1,6 @@
 tags: [spaceship]
 physics:
-  - [rect, -88, -44, 176, 88]
+  - [rect, -65, -37, 131, 74]
   - [noColl, explorer]
 navHeight: { x: 1, y: 1 }
 behavior:
@@ -26,21 +26,21 @@ model:
             as: sprite
             sprite: spaceship
             anchor: center
-            frame: 1
+            frame: 0
             z: -1
         - name: interior
           render:
             as: sprite
             sprite: spaceship
             anchor: center
-            frame: 0
+            frame: 1
             z: -1
         - name: frontdoor
           render:
             as: sprite
             sprite: spaceship
             anchor: center
-            frame: 1
+            frame: 0
             z: 0
     - name: light
       render:

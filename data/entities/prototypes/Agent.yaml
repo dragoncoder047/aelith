@@ -25,7 +25,7 @@ model:
           render:
             as: sprite
             sprite: agent
-            anchor: center
+            anchor: { x: 0.5, y: 0.34 }
             angle: 90
             z: 1
           ik:

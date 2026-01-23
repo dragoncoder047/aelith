@@ -18,7 +18,7 @@ SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v =
 SYSTEM_SETTINGS.addRange("musicVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
-SYSTEM_SETTINGS.addBoolean("debugFPSGraph", true);
+SYSTEM_SETTINGS.addBoolean("debugFPSGraph", false);
 
 const mm = (s: string) => `&msg.menu.${s}`;
 export const mmo = (s: string) => mm(`options.${s}`);
