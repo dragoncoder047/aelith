@@ -84,7 +84,6 @@ function sortTasks() {
     K.insertionSort(tasks, (t1, t2) => t1.priority > t2.priority);
 }
 
-// TODO: use actor-local priority instead of global priority
 export function spawnTask(priority: number, form: JSONValue, actor: Entity | null, context: Env): Task {
     const t = new Task(priority, actor);
     t.gen = evaluateForm(form, t, actor, {}, context, []);
