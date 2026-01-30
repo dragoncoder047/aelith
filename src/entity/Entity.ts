@@ -149,7 +149,7 @@ export class Entity implements Serializable {
         const width = K.width() / K.getCamScale().x;
         const halfwidth = width / 2;
         const distance = worldPos.sub(playerPos).len();
-        const volume = this.currentRoom === player.currentRoom ? K.mapc(distance - halfwidth * Math.sign(distance), 0, halfwidth, masterVolume, 0) : 0;
+        const volume = this.currentRoom === player.currentRoom ? K.mapc(distance - halfwidth, 0, halfwidth, masterVolume, 0) : 0;
         const xDiff = worldPos.x - playerPos.x;
         const pan = K.mapc(xDiff, -halfwidth, halfwidth, -1, 1);
         return { pan, volume };
@@ -181,7 +181,7 @@ export class Entity implements Serializable {
         this.animator.stop(a);
     }
     update(dt: number) {
-        this.pos = this.obj!.pos.clone();
+        this.pos = this.obj!.worldPos.clone();
         this.animator.update(dt);
 
         this.motionController.run(dt, this._lastMove, this._sprintSpeed, this._motionStateShouldEnd);
