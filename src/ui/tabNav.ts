@@ -9,7 +9,7 @@ export function installTabNavigation() {
         const newFocusIndex = (d + objects.length + objects.findIndex(o => o.is("focused"))) % objects.length;
         const justFocused = objects[newFocusIndex]!;
         objects.forEach(o => o === justFocused ? o.tag("focused") : o.untag("focused"));
-        if (!first) K.play(GameManager.getUIKey("sounds", "switch"));
+        if (!first) GameManager.playUISound("switch");
         focusThing.time = 0;
         K.get<ScrollerComp>("scroller")[0]?.showObj(justFocused);
     }
@@ -25,14 +25,14 @@ export function installTabNavigation() {
     K.scene.onButtonPress("nav_left", () => {
         const obj = K.get("focused")[0];
         if (obj && obj.changeBy) {
-            K.play(GameManager.getUIKey("sounds", "switch"));
+            GameManager.playUISound("switch");
             obj.changeBy((obj.lo - obj.hi) * 0.1);
         }
     });
     K.scene.onButtonPress("nav_right", () => {
         const obj = K.get("focused")[0];
         if (obj && obj.changeBy) {
-            K.play(GameManager.getUIKey("sounds", "switch"));
+            GameManager.playUISound("switch");
             obj.changeBy((obj.hi - obj.lo) * 0.1);
         }
     });

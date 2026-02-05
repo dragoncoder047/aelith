@@ -238,6 +238,15 @@ model:
                       constraint: [angle, body, 0, 0]
                   ik:
                     target: [rightHandTarget, 2]
+    - name: s_bot
+      pos: { x: 0, y: 76 }
+      sensor: true
+    - name: s_side1
+      pos: { x: -32, y: 44 }
+      sensor: true
+    - name: s_side2
+      pos: { x: -32, y: 44 }
+      sensor: true
   tentacles:
     - name: horn
       bone: head
@@ -405,3 +414,6 @@ model:
       #   # TODO
 hooks:
   action1: [as, [my, agent], bePlayer]
+  step: [playsound, footsteps_metal]
+  jump: [playsound, jump]
+  landed: [playsound, thud_metal, false, [mapc, [the, force], 0, 800, 0, 1]]

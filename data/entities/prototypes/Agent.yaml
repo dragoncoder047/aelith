@@ -5,7 +5,7 @@ navHeight: { x: 0, y: 0 }
 behavior:
   canBePlayer: yes
   camScale: 2
-  moveSpeed: 100
+  moveSpeed: &speed 100
   inventorySlots: 2
   inventorySize: null
   inventoryHolder: hands
@@ -106,3 +106,38 @@ model:
         gravityScale: 0
 hooks:
   action1: [as, [my, owner], bePlayer]
+  load:
+    - do
+    - [playsound, nic_motor, false, [be, vol, &minVol 0.1], true]
+    - [modsound, nic_motor, loop, true]
+    - [set, prev, [boneGet, [list, body, worldPos]]]
+    - - while
+      - 1
+      - [wait, 0]
+      - [set, cur, [boneGet, [list, body, worldPos]]]
+      - [modsound, nic_motor, volume, [smoothly, volume, [my, vol], 20]]
+      - [
+          modsound,
+          nic_motor,
+          speed,
+          [
+            smoothly,
+            speed,
+            [
+              mapc,
+              [/, [vDist, [get, prev], [get, cur]], [dt]],
+              0,
+              *speed,
+              1,
+              10,
+            ],
+            5,
+          ],
+        ]
+      - [set, prev, [get, cur]]
+  stopMove:
+    - do
+    - [be, vol, *minVol]
+  move:
+    - do
+    - [be, vol, [mapc, ["#", [the, dir]], 0, *speed, *minVol, 1]]

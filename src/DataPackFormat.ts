@@ -449,6 +449,7 @@ export interface DataPackData extends JSONObject {
                 open: string;
                 back: string;
                 action: string;
+                done: string;
             },
             sprites: {
                 focus: string;

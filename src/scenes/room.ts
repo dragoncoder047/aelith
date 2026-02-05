@@ -5,6 +5,7 @@ import * as RoomManager from "../room/RoomManager";
 import * as SceneManager from "../scenes/SceneManager";
 import * as ScriptHandler from "../script/ScriptHandler";
 import * as FPSMonitor from "../static/fpsMonitor";
+import * as GameManager from "../GameManager";
 
 export function roomScene(whichRoom: string | undefined) {
     BlueScreen.install();
@@ -19,7 +20,7 @@ export function roomScene(whichRoom: string | undefined) {
     K.setCamScale(p.getPrototype().behavior?.camScale ?? 1);
     ScriptHandler.startMainLoop();
     K.scene.onButtonPress("pause_unpause", () => {
-        K.play("nav_do_it");
+        GameManager.playUISound("action");
         K.pushScene(SceneManager.Scene.MENU);
     });
 }

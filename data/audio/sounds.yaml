@@ -1,15 +1,16 @@
 - kind: sound
   id: thud
   loader: zzfx
-  src: "[,.1,100,,,.05,,,,,-40,.01,.02,2,,,,,,,-2e3]"
+  src: "[2,.1,100,,,.05,,,,,-40,.01,.02,2,,,,,,,-2e3]"
 - kind: sound
   id: thud_metal
   loader: zzfx
-  src: "[.5,.1,100,,,.05,1,.5,,,-40,.01,.02,,,.2,,,,,1e3]"
+  src: "[,.1,100,,,.05,1,.5,,,-40,.01,.02,,,.2,,,,,1e3]"
 - kind: sound
   id: jump
   loader: zzfx
-  src: "[.3,,300,.01,,.3,,0,2.1]"
+  # src: "[.3,,300,.01,,.3,,0,2.1]" # Mario-like jump
+  src: "[,,100,,,.05,,.5,-2]"
 - kind: sound
   id: grab
   loader: zzfx
@@ -25,7 +26,7 @@
 - kind: sound
   id: footsteps_metal
   loader: zzfx
-  src: "[,.5,120,,,.01,1,,,,,,,,,.2]"
+  src: "[.5,.5,120,,,.01,1,,,,,,,,,.2]"
 - kind: sound
   id: climbing
   loader: zzfx
@@ -156,3 +157,8 @@
   loader: url
   src: !file sfx/done.wav
   # https://slarmoo.github.io/slarmoosbox/website/#s5N0di%20am%20donen101s0k42l01e00t3sa3g01j00r0O_c000U0000i0o3T9v0qu09f0000q0g410O0d040w20h0Mokfca8543200100000000000023458acfkotyADFIJKLMMMMMMMMMMMLKJIFDAytE0cTav0pu0af0000q000d040E0cbAp1LIIviB9h7BiFa1GHi5Bi7B0wVFpBi5AOO_sVa4_-w1e0axQ0
+- kind: sound
+  id: nic_motor
+  loader: url
+  src: !file sfx/nic_motor.wav
+  # https://slarmoo.github.io/slarmoosbox/website/#s5N08Untitledn101s0k02l00e00t2ma7g00j00r1O_c10g600U0000i300o1T1v0fu01f0000q0040O0d230A5F0B0Qa349Pefb5R0000E0cTav0pu3bf0000q08520O01d080E0cbMp18FDE-J__0

@@ -103,7 +103,7 @@ export class Entity implements Serializable {
                 width: (obj as GameObj<AreaComp>).worldBbox().width,
             }));
         }
-        this._ongoingSounds.forEach(([n, s]) => s.paused = false);
+        this._ongoingSounds.forEach(({ a }) => a.paused = false);
     }
     getPrototype() {
         return this._prototype;
@@ -130,7 +130,8 @@ export class Entity implements Serializable {
         this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
         this._spitItOut = false;
         this._updateEv.trigger();
-        this._ongoingSounds.forEach(([n, s]) => s.paused = true);
+        this._stopEnvironmentalSounds();
+        this._ongoingSounds.forEach(({ a }) => a.paused = true);
     }
     toJSON(): EntityData {
         return {
@@ -141,8 +142,11 @@ export class Entity implements Serializable {
             pos: this.pos as XY,
         }
     }
-    private _ongoingSounds: [string, AudioPlay, number][] = [];
-    private _getPanVol(masterVolume: number) {
+    private _ongoingSounds: { n: string, a: AudioPlay, v: number, g: boolean, e: boolean, f: (() => void) | undefined }[] = [];
+    private _getPanVol(masterVolume: number, global = false) {
+        masterVolume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
+        console.log("play sound volume master", masterVolume);
+        if (global) return { volume: masterVolume };
         const player = EntityManager.getPlayer()!;
         const playerPos = player.pos;
         const worldPos = this.pos;
@@ -156,19 +160,47 @@ export class Entity implements Serializable {
     }
     private _updateSounds() {
         for (var i = 0; i < this._ongoingSounds.length; i++) {
-            const [name, sound, volume] = this._ongoingSounds[i]!;
+            const { a: sound, v: volume, g: global, f: finished } = this._ongoingSounds[i]!;
             if (sound.time() >= sound.duration()) {
-                sound.stop();
                 // No need to splice, order doesn't matter
-                this._ongoingSounds[i--] = this._ongoingSounds.pop()!;
+                this._ongoingSounds.splice(i, 1);
+                i--;
+                finished?.();
             } else {
-                Object.assign(sound, this._getPanVol(volume));
+                const { pan, volume: vol } = this._getPanVol(volume, global);
+                if (!global) sound.pan = pan;
+                sound.volume = vol;
             }
         }
     }
-    emitSound(sound: string, volume: number) {
-        volume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
-        this._ongoingSounds.push([sound, K.play(sound, this._getPanVol(volume)), volume]);
+    modSound<T extends keyof AudioPlay>(name: string, param: T, value: AudioPlay[T]) {
+        this._ongoingSounds.forEach(snd => {
+            if (snd.n === name) {
+                if (param === "volume") {
+                    snd.v = value as number;
+                } else {
+                    if (param === "pan" && !snd.g) {
+                        throw new Error("can only manually change pan on global sounds");
+                    }
+                    snd.a[param] = value;
+                }
+            }
+        });
+    }
+    emitSound(sound: string, volume = 1, global = false, environmental = false, onEnd?: () => void) {
+        const audioPlay = K.play(sound, this._getPanVol(volume));
+        this._ongoingSounds.push({ n: sound, a: audioPlay, v: volume, g: global, e: environmental, f: onEnd });
+    }
+    private _stopEnvironmentalSounds() {
+        for (var i = 0; i < this._ongoingSounds.length; i++) {
+            const snd = this._ongoingSounds[i]!;
+            if (snd.e) {
+                snd.a.stop();
+                snd.f?.();
+                this._ongoingSounds.splice(i, 1);
+                i--;
+            }
+        }
     }
     playAnim(a: string, forceRestart: boolean = true) {
         return new Promise<void>((x, y) => {
@@ -340,6 +372,13 @@ export class Entity implements Serializable {
     }
     toDisplayEntity(): DisplayEntity {
         return new DisplayEntity(this.kind, this.pos, this.state);
+    }
+
+    private _smoothing: Record<string, number> = {};
+    smoothing(id: string, newValue: number, alpha: number = 20) {
+        this._smoothing[id] = K.lerp(this._smoothing[id] ?? newValue, newValue, K.clamp(K.dt() * Math.LN2 * alpha, 0, 1));
+        console.log(id, this._smoothing[id], newValue, alpha, K.dt());
+        return this._smoothing[id];
     }
 }
 

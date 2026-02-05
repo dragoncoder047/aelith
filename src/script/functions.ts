@@ -54,6 +54,16 @@ export const FUNCTIONS: Form[] = [
         task.tc = true;
         return forms.at(-1);
     }),
+    func("set", function* (args, task, actor, env) {
+        var value;
+        for (var i = 0; i < args.length; i += 2) {
+            value = env[args[i]] = args[i + 1];
+        }
+        return value;
+    }),
+    func("get", function* ([name], task, actor, env) {
+        return env[name];
+    }),
     macro("when", function* ([cond, ...body], task) {
         task.tc = true;
         return ["if", cond, ["do", ...body]];
@@ -108,9 +118,6 @@ export const FUNCTIONS: Form[] = [
     func("my", function* ([slot], _, actor) {
         return actor!.state[slot];
     }),
-    func("render", function* ([slot, newValue], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
-    }),
     func("anim", function* ([animName, restart], task, actor) {
         actor!.playAnim(animName, restart);
     }),
@@ -118,7 +125,7 @@ export const FUNCTIONS: Form[] = [
         K.debug.log("started anim", animName);
         actor!.animator.skinAnim(animName, value);
     }),
-    func("anim/w", function* ([animName], task, actor, env, context, traceback) {
+    func("anim/w", function* ([animName], task, actor) {
         task.paused = true;
         actor!.playAnim(animName).then(() => task.paused = false);
         yield;
@@ -126,11 +133,14 @@ export const FUNCTIONS: Form[] = [
     func("unanim", function* ([animName], task, actor) {
         actor!.stopAnim(animName);
     }),
-    func("playsound", function* ([soundName, global], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
+    func("playsound", function* ([soundName, global, volume, environmental], task, actor) {
+        actor!.emitSound(soundName, volume, global, environmental);
     }),
-    func("playsound/w", function* ([soundName, global], task, actor, env, context, traceback) {
-        throw tracebackError("todo", traceback);
+    func("modsound", function* ([soundName, param, value], task, actor) {
+        actor!.modSound(soundName, param, value);
+    }),
+    func("smoothly", function* ([id, value, alpha], task, actor) {
+        return actor!.smoothing(id, value, alpha);
     }),
     func("say", function* ([text], task, actor) {
         actor!.say(text);
@@ -188,8 +198,8 @@ export const FUNCTIONS: Form[] = [
     func("bePlayer", function* (args, task, actor) {
         EntityManager.setPlayer(actor);
     }),
-    func("#", function* ([{ x, y }]) {
-        return Math.hypot(x, y);
+    func("#", function* ([v]) {
+        return Math.hypot(v.x, v.y);
     }),
     func("*", function* (values) {
         return values.reduce((a, b) => a * b);
@@ -198,7 +208,7 @@ export const FUNCTIONS: Form[] = [
         return values.length > 1 ? values.reduce((a, b) => a + b) : Math.abs(values[0]);
     }),
     func("/", function* (values) {
-        return values.length > 1 ? values[0] / values.slice(1).reduce((a, b) => a * b) : 1 / values[0];
+        return values.length > 1 ? values[0] / values.slice(1).reduce((a, b) => a * b, 1) : 1 / values[0];
     }),
     func("not", function* ([value]) {
         return !value;
@@ -212,6 +222,9 @@ export const FUNCTIONS: Form[] = [
             K.Vec2.add(res, v, res);
         }
         return res;
+    }),
+    func("vDist", function* ([a, b]) {
+        return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
     }),
     func("vec2", function* ([x, y]) {
         return K.vec2(x, y);
@@ -233,6 +246,10 @@ export const FUNCTIONS: Form[] = [
         const p = splitV(actor!.bones, path);
         return p[0][p[1]] = value;
     }),
+    func("test", function* ([bone, tag], task, actor) {
+        const bObj = bone ? actor!.bones[bone] : actor!.obj;
+        return bObj?.getCollisions()?.some(c => tag ? c.target.is(tag) : true);
+    }),
     func("screenwidth", function* () {
         return K.width();
     }),
@@ -249,6 +266,12 @@ export const FUNCTIONS: Form[] = [
     func("lerp", function* ([a, b, t]) {
         return K.lerp(a, b, t);
     }),
+    func("map", function* ([x, a, b, p, q]) {
+        return K.map(x, a, b, p, q);
+    }),
+    func("mapc", function* ([x, a, b, p, q]) {
+        return K.mapc(x, a, b, p, q);
+    }),
     func("randi", function* ([low, high]) {
         return K.randi(low, high);
     }),
@@ -257,6 +280,9 @@ export const FUNCTIONS: Form[] = [
     }),
     func("expand", function* ([code, data]) {
         return K.sub(code, data);
+    }),
+    func("dt", function* () {
+        return K.dt();
     }),
 ];
 

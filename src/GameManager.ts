@@ -5,6 +5,7 @@ import { K } from "./context";
 import * as InputManager from "./controls/InputManager";
 import { DataPackData } from "./DataPackFormat";
 import * as DownloadManager from "./DownloadManager";
+import { addRenderComps } from "./draw/primitive";
 import * as EntityManager from "./entity/EntityManager";
 import * as PlatformGuesser from "./PlatformGuesser";
 import * as RoomManager from "./room/RoomManager";
@@ -13,7 +14,7 @@ import * as StateManager from "./state/StateManager";
 import inputsDEF from "./static/system_assets/inputButtons";
 import inputsPNG from "./static/system_assets/inputs.png";
 import kaplayPNG from "./static/system_assets/kaplay-logo.png";
-import { addRenderComps } from "./draw/primitive";
+import { SYSTEM_SETTINGS } from "./static/systemMenus";
 
 
 export function setup() {
@@ -49,6 +50,10 @@ export function getTitleData() {
 }
 export function getUIKey<T extends keyof DataPackData["title"]["ui"], U extends keyof DataPackData["title"]["ui"][T]>(k1: T, k2: U): DataPackData["title"]["ui"][T][U] {
     return getTitleData().ui[k1][k2];
+}
+
+export function playUISound<T extends keyof DataPackData["title"]["ui"]["sounds"]>(sound: T) {
+    K.play(getUIKey("sounds", sound), { volume: SYSTEM_SETTINGS.getValue("sfxVolume") });
 }
 
 export async function datapack() {

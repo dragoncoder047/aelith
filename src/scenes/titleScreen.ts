@@ -24,15 +24,15 @@ export function titleScreenScene() {
     });
     const w = 1 / 3;
     const enterBtn = K.add(uiButton(w, 2, "&msg.menu.main.startGameBtn", "start_game", () => {
-        K.play("nav_confirm");
+        GameManager.playUISound("done");
         K.go(SceneManager.Scene.ROOM);
     }));
     const optionsBtn = K.add(uiButton(w, 2, "&msg.menu.main.optionsMenuBtn", "main_menu_options", () => {
-        K.play("nav_open");
+        GameManager.playUISound("open");
         K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.settings);
     }));
     // const aboutBtn = K.add(uiButton(w, 2, "&msg.menu.main.aboutMenuBtn", null, () => {
-    //     K.play("nav_open");
+    //     GameManager.playUISound("open");
     //     K.pushScene(SceneManager.Scene.MENU, SYSTEM_MENUS.about);
     // }));
     // TODO: add Newgrounds button

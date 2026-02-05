@@ -22,6 +22,7 @@ export abstract class Setting<T> {
     set value(newT: T) {
         this._value = newT;
         this._change.trigger(newT);
+        console.log("changed value to", newT);
     }
     onChange(cb: (x: T) => void): KEventController {
         return this._change.add(cb);

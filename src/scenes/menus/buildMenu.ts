@@ -54,7 +54,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
     switch (item.type) {
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
-                K.play(GameManager.getUIKey("sounds", "open"));
+                GameManager.playUISound("open");
                 const menu = set[item.next];
                 if (menu === undefined) {
                     throw new Error(`Menu ${item.next} doesn't exist`);
@@ -65,14 +65,14 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
             break;
         case MenuItemType.BACK:
             obj = K.add(uiButton(bw, 1.5, item.text, "nav_back", () => {
-                K.play(GameManager.getUIKey("sounds", "back"));
+                GameManager.playUISound("back");
                 K.popScene();
             }));
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BUTTON:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
-                K.play(GameManager.getUIKey("sounds", "action"));
+                GameManager.playUISound("action");
                 item.action();
             }));
             obj.use(below(prev, PAD));

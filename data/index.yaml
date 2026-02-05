@@ -47,6 +47,7 @@ title:
       select: nav_select
       open: nav_open
       back: nav_back
+      done: nav_confirm
     sprites:
       focus: cropticks
       button: button
