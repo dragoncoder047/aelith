@@ -37,7 +37,7 @@ model:
                 width: 300
                 align: right
             - name: laser
-              pos: { x: -151.5, y: 71 }
+              pos: { x: &laserX -151.5, y: 71 }
               render:
                 as: sprite
                 sprite: logolaser
@@ -71,24 +71,26 @@ model:
             - [2.6, { x: 0.79, y: 0.79 }, easeInOutSine]
             - [2.6, { x: 0.82, y: 0.82 }, easeInOutSine]
 hooks:
-  loadAsDisplay:
+  setup:
+    [
+      boneSet,
+      [list, splash, t],
+      [+, "&splashes.", [randi, 0, [toNumber, [expand, "&splashes.length"]]]],
+    ]
+  render:
     - do
     - [
         boneSet,
-        [list, splash, t],
-        [+, "&splashes.", [randi, 0, [toNumber, [expand, "&splashes.length"]]]],
+        [list, particles, worldPos],
+        [vec2, [nth, 0, [xys, [boneGet, [list, particles, worldPos]]]], 0],
       ]
-    - - while
-      - 1
-      - [wait, 0] # prevent a lockup loop
-      - [boneSet, [list, particles, worldPos], [vec2, [nth, 0, [xys, [boneGet, [list, particles, worldPos]]]], 0]]
-      - [
-          boneSet,
-          [list, particles, pos],
-          [vec2, -151.5, [boneGet, [list, particles, pos, "y"]]],
-        ]
-      - [
-          boneSet,
-          [list, particles, particles, rate],
-          [lerp, 20, 1500, [getanalog, throw]], # TODO: update this if right trigger is reassigned.
-        ]
+    - [
+        boneSet,
+        [list, particles, pos],
+        [vec2, *laserX, [boneGet, [list, particles, pos, "y"]]],
+      ]
+    - [
+        boneSet,
+        [list, particles, particles, rate],
+        [lerp, 20, 1500, [getanalog, throw]], # TODO: update this if right trigger is reassigned.
+      ]

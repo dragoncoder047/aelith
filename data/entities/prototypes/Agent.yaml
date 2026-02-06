@@ -107,37 +107,27 @@ model:
 hooks:
   action1: [as, [my, owner], bePlayer]
   action2: [as, [my, owner], die]
+  setup:
+    - do
+    - [be, vol, &minVol 0.1]
   load:
     - do
-    - [playsound, nic_move, false, [be, vol, &minVol 0.1], true]
+    - [playsound, nic_move, false, [be, vol, *minVol], true]
     - [modsound, nic_move, loop, true]
-    - [set, prev, [boneGet, [list, body, worldPos]]]
-    - - while
-      - 1
-      - [wait, 0]
-      - - when
-        - [loaded]
-        - [set, cur, [boneGet, [list, body, worldPos]]]
-        - [modsound, nic_move, volume, [smoothly, volume, [my, vol], 20]]
-        - [
-            modsound,
-            nic_move,
-            speed,
-            [
-              smoothly,
-              speed,
-              [
-                mapc,
-                [/, [vDist, [get, prev], [get, cur]], [dt]],
-                0,
-                *speed,
-                1,
-                10,
-              ],
-              5,
-            ],
-          ]
-        - [set, prev, [get, cur]]
+  render:
+    - do
+    - [modsound, nic_move, volume, [smoothly, volume, [my, vol], 20]]
+    - [
+        modsound,
+        nic_move,
+        speed,
+        [
+          smoothly,
+          speed,
+          [mapc, [/, ["#", [deltaPos]], [dt]], 0, *speed, 1, 10],
+          5,
+        ],
+      ]
   stopMove:
     - do
     - [be, vol, *minVol]

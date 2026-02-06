@@ -104,7 +104,7 @@ function makeloop(continue_: boolean) {
             if (prevFrameNo !== nextFrame) repeatCount = 0;
             prevFrameNo = nextFrame;
         }
-        throw new Error("infinite loop detected. tip: if you want an update loop, add a ['wait', 0] to prevent a lockup.");
+        throw new Error("infinite loop detected.\ntip: if you want an update loop, add a ['wait', 0] to prevent a lockup,\nor use the 'update' or 'render' hooks.");
     }
 }
 
@@ -158,6 +158,9 @@ func("modsound", function* (runner, [soundName, param, value], task, actor) {
 func("smoothly", function* (runner, [id, value, alpha], task, actor) {
     return actor!.smoothing(id, value, alpha);
 });
+func("deltaPos", function*(runner, [], task, actor) {
+    return actor!.deltaPos;
+})
 func("say", function* (runner, [text], task, actor) {
     actor!.say(text);
 });
@@ -180,16 +183,16 @@ func("set", function* (runner, args, task, actor, env) {
 func("get", function* (runner, [name], task, actor, env) {
     return env[name];
 });
-func("here", function* (runner, args, task, actor) {
+func("here", function* (runner, [], task, actor) {
     return actor!.pos;
 });
 func("spawn", function* (runner, [kind, pos, room, data]) {
     return EntityManager.spawnEntityInRoom(pos, room ?? RoomManager.getCurrentRoom(), { ...data, kind, pos: null }).id;
 });
-func("die", function* (runner, args, task, actor) {
+func("die", function* (runner, [], task, actor) {
     EntityManager.destroyEntity(actor!);
 });
-func("loaded", function* (runner, args, task, actor) {
+func("loaded", function* (runner, [], task, actor) {
     return !!actor!.obj;
 });
 func("tp", function* (runner, [eid, room, pos]) {
@@ -218,7 +221,7 @@ func("hold", function* (runner, [itemid], task, actor) {
 func("drop", function* (runner, [itemid], task, actor) {
     return actor!.inventory.drop(EntityManager.getEntityByName(itemid)!);
 });
-func("bePlayer", function* (runner, args, task, actor) {
+func("bePlayer", function* (runner, [], task, actor) {
     EntityManager.setPlayer(actor);
 });
 func("#", function* (runner, [v]) {

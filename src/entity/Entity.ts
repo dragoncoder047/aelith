@@ -229,8 +229,11 @@ export class Entity implements Serializable {
         this.inventory.update();
         this.startHook("update");
     }
+    readonly deltaPos: Vec2 = K.vec2();
     drawHook(dt: number) {
-        this.pos = this.obj!.worldPos.clone();
+        const newPos = this.obj!.worldPos.clone();
+        K.Vec2.sub(newPos, this.pos, this.deltaPos);
+        this.pos = newPos;
         this.animator.update(dt);
 
         this.motionController.run(dt, this._lastMove, this._sprintSpeed, this._motionStateShouldEnd);

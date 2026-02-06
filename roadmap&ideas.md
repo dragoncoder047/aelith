@@ -1,5 +1,7 @@
 # to do
 
+* [ ] implement task pooling to reduce GC overhead of render and update hooks
+* [ ] finish names for buttons in help screen
 * [ ] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
 * [ ] make a general border for toast
 * [ ] make explorer arms and legs using a slice9'ed sprite so it can have a normal map
