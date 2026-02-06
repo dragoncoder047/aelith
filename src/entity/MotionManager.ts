@@ -1,7 +1,8 @@
 import { AreaComp, BoneComp, GameObj, KEventController, Vec2 } from "kaplay";
 import { K } from "../context";
-import { EntityMotionStateMachineDef, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
+import { CrustyJSONCode, EntityMoveAnimDef, EntityMovingBoneData } from "../DataPackFormat";
 import { BonesMap, Entity } from "./Entity";
+import { ScriptRunner } from "../script/ScriptHandler";
 
 export class MotionManager {
     state: string = null as any;
@@ -31,22 +32,38 @@ export class MotionManager {
     curData() {
         return this.data[this.state];
     }
-    private _getData(): [string | undefined, string | [string, string] | undefined, boolean, EntityMovingBoneData[], stepLen: number, stepTime: number, stepHeight: number] {
+    private _getData(): {
+        a?: string,
+        s?: string | [string, string],
+        c: boolean,
+        d: EntityMovingBoneData[],
+        l: number,
+        h: number,
+        t: number,
+    } {
         const x = this.curData();
-        return x ? [x.anim, x.sprint, x.gravityScale === 0, x.bones ?? [], x.steps?.len ?? 1, x.steps?.height ?? 0, x.steps?.time ?? 0] : [, , false, [], 1, 0, 0];
+        return x ? {
+            a: x.anim,
+            s: x.sprint,
+            c: x.gravityScale === 0,
+            d: x.bones ?? [],
+            l: x.steps?.len ?? 1,
+            h: x.steps?.height ?? 0,
+            t: x.steps?.time ?? 0
+        } : { c: false, d: [], l: 1, h: 0, t: 0 };
     }
     private _ended() {
         for (var b of this._moving) {
             this.entity.bones[b.bone]!.pos = this.bases[b.bone]!.clone();
         }
-        const [a, s] = this._getData();
+        const { a, s } = this._getData();
         const stop = (anim: string) => this.entity.stopAnim(anim);
         if (a) stop(a);
         if (s) (Array.isArray(s) ? (stop(s[0]), stop(s[1])) : stop(s));
     }
     setState(state: string | null) {
         if (this._didChangeStateTo(state!)) {
-            const [a, s, c, d, l, h, t] = this._getData();
+            const { a, s, c, d, l, h, t } = this._getData();
             const start = (anim: string) => this.entity.playAnim(anim);
             const startskin = (anim: string) => {
                 start(anim);
@@ -79,43 +96,20 @@ export class MotionManager {
             return b;
         });
     }
-    private _evaluateCondition(cond: EntityMotionStateMachineDef, moving: boolean, manualStop: boolean): boolean {
-        if (cond === undefined) return false;
-        if (typeof cond[0] === "number") {
-            var truthTab = cond[0];
-            for (var i = cond.length - 2; i >= 0; i--) {
-                // i: 4, 3, 2, 1, 0
-                const shift = 1 << i; // 16, 8, 4, 2, 1 : number of bits in the half of the table
-                const mask = (1 << shift) - 1; // 65535, 255, 15, 3, 1 : bit mask for these bits
-                if (this._evaluateCondition((cond as EntityMotionStateMachineDef[])[i + 1]!, moving, manualStop))
-                    truthTab >>>= shift;
-                truthTab &= mask;
-                if (!truthTab) return false;
-                if (truthTab === mask) return true;
-            }
-            // fallback (reachable only when no conditions / constant rule)
-            return !!truthTab;
-        }
-        switch (cond[0]) {
-            case "grounded":
-                return this.entity.obj!.isGrounded();
-            case "moving":
-                return moving;
-            case "colliding":
-                return this.entity.obj!.getCollisions().some(({ target }) => target.is(cond.slice(1), "and"));
-            case "manual":
-                return manualStop;
-            default:
-                cond[0] satisfies never;
-                throw new Error("unknown state machine condition " + cond[0]);
-        }
+    private _cR = new ScriptRunner;
+    private _evaluateCondition(name: string, cond: CrustyJSONCode, moving: boolean, manualStop: boolean): boolean {
+        return this._cR.call(name, cond, {
+            grounded: this.entity.obj!.isGrounded(),
+            moving,
+            manual: manualStop,
+        });
     }
     jump() {
-        const [rule, newState] = (this.curData()?.jumpRule ?? []);
-        if (this._evaluateCondition(rule!, false, false)) {
+        const jumpData = (this.curData()?.jumpRule ?? []);
+        if (this._evaluateCondition("jump function", jumpData[0]!, false, false)) {
             this.entity.obj!.jump();
             this.entity.startHook("jump");
-            this.setState(newState!);
+            if (jumpData[1]) this.setState(jumpData[1]);
         }
     }
     private _phase = 0;
@@ -136,7 +130,7 @@ export class MotionManager {
         const trs = this.curData()?.transitions ?? [];
         for (i = 0; i < trs.length; i++) {
             const d = trs[i]!, newState = d[0], condition = d[1];
-            if (this._evaluateCondition(condition, !velocity.isZero(), manualStop)) {
+            if (this._evaluateCondition(`transition from ${this.state} to ${newState}`, condition, !velocity.isZero(), manualStop)) {
                 this.setState(newState);
                 break;
             }

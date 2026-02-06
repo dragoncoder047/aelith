@@ -109,7 +109,7 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
             if (bone.pos) obj.moveTo(bone.pos.x, bone.pos.y);
             if (!bone.name) bone.name = "_b" + obj.id;
             if (bone.sensor) {
-                obj.use(K.area({ shape: new K.Rect(K.vec2(-0.5), 1, 1) }));
+                obj.use(K.area({ shape: new K.Rect(K.vec2(-0.5), 1, 1), isSensor: true }));
                 e.sensors.add(bone.name);
             }
             obj.use(K.named(bone.name));

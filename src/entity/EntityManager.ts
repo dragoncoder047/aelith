@@ -80,7 +80,7 @@ export function destroyEntity(e: Entity) {
     if (i >= 0) {
         allEntities[i] = allEntities.pop()!;
         e.unload();
-        ScriptHandler.killAllTasksControlledBy(e);
+        ScriptHandler.endTasksBy(e);
     }
 }
 

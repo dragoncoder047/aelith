@@ -10,13 +10,20 @@ export type TaskGen = Generator<void, any, void>;
 export class Task {
     paused = false;
     tc = false;
-    complete = new K.KEvent;
+    complete = false;
     gen: TaskGen = null as any;
     result: any;
-    failed: boolean = false;
+    failed = false;
+    done(value: any) {
+        this.complete = true;
+        this.result ??= value;
+        this._finish.trigger(this.result);
+    }
+    get awaited() { return this._finish.numListeners() > 0; }
+    private _finish = new K.KEvent<[any]>();
     constructor(public priority: number, public entity: Entity | null) { }
     onFinish(cb: (value: any) => void) {
-        return this.complete.add(cb);
+        return this._finish.add(cb);
     }
 }
 
@@ -26,9 +33,13 @@ function bumpTailCall(name: string, traceback: TracebackArray) {
     else last.n++;
 }
 
+function stringifyTraceback(traceback: TracebackArray) {
+    return traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ");
+}
+
 export function tracebackError(error: Error | string, traceback: TracebackArray) {
     var m: string, e: Error;
-    const tb = traceback.map(tb => typeof tb === "string" ? tb : `${tb.f} (tc ${tb.n})`).join(" > ");
+    const tb = stringifyTraceback(traceback);
     switch (typeof error) {
         case "string":
             m = `${error}\ntraceback: ${tb}`;
@@ -47,93 +58,113 @@ export function tracebackError(error: Error | string, traceback: TracebackArray)
     return e;
 }
 
-export function* evaluateForm(form: JSONValue, task: Task, actor: Entity | null, env: Env, context: Env, traceback: TracebackArray): TaskGen {
-    for (; ;) {
+export class ScriptRunner {
+
+    constructor(public fn = FUNCTIONS_MAP) { }
+
+    private _w = new Map<string, number>();
+
+    lockupCheck(tb: TracebackArray) {
+        console.error(stringifyTraceback(tb));
+    }
+
+    *eval(form: JSONValue, task: Task, actor: Entity | null, env: Env, context: Env, traceback: TracebackArray): TaskGen {
+        for (; ;) {
+            task.tc = false;
+            if (!Array.isArray(form)) return form;
+            const name = form[0];
+            if (typeof name !== "string") throw tracebackError("illegal function name " + name, traceback);
+            const impl = this.fn[name];
+            if (!impl) throw tracebackError(`no such function ${JSON.stringify(name)}`, traceback);
+            const args = form.slice(1);
+            if (!impl.special) {
+                for (var i = 1; i < form.length; i++) {
+                    task.tc = false;
+                    args[i - 1] = yield* this.eval(form[i]!, task, actor, env, context, traceback);
+                }
+            }
+            task.tc = false;
+            try {
+                traceback.push(name);
+                form = yield* impl.eval(this, args, task, actor, env, context, traceback);
+            } catch (e: any) {
+                throw tracebackError(e, traceback);
+            } finally {
+                traceback.pop();
+            }
+            if (!task.tc) break;
+            bumpTailCall(name, traceback);
+        }
         task.tc = false;
-        if (!Array.isArray(form)) return form;
-        const name = form[0];
-        if (typeof name !== "string") throw tracebackError("illegal function name " + name, traceback);
-        const impl = FUNCTIONS_MAP[name];
-        if (!impl) throw tracebackError(`no such function ${JSON.stringify(name)}`, traceback);
-        const args = form.slice(1);
-        if (!impl.special) {
-            for (var i = 1; i < form.length; i++) {
-                task.tc = false;
-                args[i - 1] = yield* evaluateForm(form[i]!, task, actor, env, context, traceback);
+        return form;
+    }
+
+    private _t: Task[] = [];
+
+    addTask(priority: number, form: JSONValue, actor: Entity | null, context: Env): Task {
+        const t = new Task(priority, actor);
+        t.gen = this.eval(form, t, actor, {}, context, []);
+        this._t.push(t);
+        K.insertionSort(this._t, (t1, t2) => t1.priority > t2.priority);
+        return t;
+    }
+
+    endTasksBy(actor: Entity) {
+        for (var i = 0; i < this._t.length; i++) {
+            if (this._t[i]!.entity === actor) {
+                this._t[i]!.done(undefined);
+                this._t.splice(i--, 1);
             }
         }
-        task.tc = false;
-        try {
-            traceback.push(name);
-            form = yield* impl.eval(args, task, actor, env, context, traceback);
-        } catch (e: any) {
-            throw tracebackError(e, traceback);
-        } finally {
-            traceback.pop();
-        }
-        if (!task.tc) break;
-        bumpTailCall(name, traceback);
     }
-    task.tc = false;
-    return form;
-}
 
-const tasks: Task[] = [];
+    private _mPBE = new Map<Entity | null, number>();
+    runAll() {
+        do {
+            var madeProgress = false;
+            this._mPBE.clear();
+            for (var i = 0; i < this._t.length; i++) {
+                const t = this._t[i]!;
+                if (t.paused || (this._mPBE.has(t.entity) && this._mPBE.get(t.entity)! > t.priority)) {
+                    continue;
+                }
+                this._mPBE.set(t.entity, t.priority);
+                madeProgress = true;
+                var res: Partial<IteratorResult<any>> = {};
+                try {
+                    res = t.gen!.next();
+                } catch (e) {
+                    if (t.awaited) {
+                        t.failed = true;
+                        t.done(e);
+                    } else throw e;
+                }
+                if (res.done) {
+                    t.done(res.value);
+                }
+                if (t.complete) {
+                    this._t.splice(i--, 1);
+                }
+            }
+        } while (madeProgress);
+    }
 
-function sortTasks() {
-    K.insertionSort(tasks, (t1, t2) => t1.priority > t2.priority);
-}
-
-export function spawnTask(priority: number, form: JSONValue, actor: Entity | null, context: Env): Task {
-    const t = new Task(priority, actor);
-    t.gen = evaluateForm(form, t, actor, {}, context, []);
-    tasks.push(t);
-    sortTasks();
-    return t;
-}
-
-export function killAllTasksControlledBy(actor: Entity) {
-    for (var i = 0; i < tasks.length; i++) {
-        if (tasks[i]!.entity === actor) {
-            tasks[i]!.complete.trigger(undefined);
-            tasks.splice(i--, 1);
+    call(entryName: string, code: JSONValue, context: Env): any {
+        const task = this.addTask(0, code, null, context);
+        this.runAll();
+        if (!task.complete || task.failed) {
+            throw new Error(`code for ${entryName} must return a value without pausing`);
         }
+        console.log(task);
+        return task.result;
     }
 }
 
-const _maxPriorityByEntity = new Map<Entity | null, number>();
-function stepTasks() {
-    var madeProgress = false;
-    _maxPriorityByEntity.clear();
-    for (var i = 0; i < tasks.length; i++) {
-        const t = tasks[i]!;
-        if (t.paused || (_maxPriorityByEntity.has(t.entity) && _maxPriorityByEntity.get(t.entity)! > t.priority)) {
-            continue;
-        }
-        _maxPriorityByEntity.set(t.entity, t.priority);
-        madeProgress = true;
-        var res;
-        try {
-            res = t.gen!.next();
-        } catch (e) {
-            if (t.complete.numListeners() > 0) {
-                t.failed = true;
-                t.result = e;
-                res = { done: true };
-            } else throw e;
-        }
-        if (res.done || t.result) {
-            t.complete.trigger(t.result ?? res.value);
-            tasks.splice(i--, 1);
-        }
-    }
-    return madeProgress;
-}
+const mainHandler = new ScriptRunner;
 
-function advanceAsFarAsPossible() {
-    while (stepTasks());
-}
+export const endTasksBy = mainHandler.endTasksBy.bind(mainHandler);
+export const addTask = mainHandler.addTask.bind(mainHandler);
 
 export function startMainLoop() {
-    K.onUpdate(advanceAsFarAsPossible);
+    K.onUpdate(() => mainHandler.runAll());
 }

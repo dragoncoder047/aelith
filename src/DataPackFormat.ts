@@ -162,24 +162,13 @@ export interface EntityMoveAnimDef extends JSONObject {
         height?: number;
     };
     /** state machine parameters determining when the state changes */
-    transitions?: [string, EntityMotionStateMachineDef][];
-    jumpRule: [EntityMotionStateMachineDef, changeState: string | undefined];
+    transitions?: [string, CrustyJSONCode][];
+    jumpRule: [CrustyJSONCode, changeState: string | undefined];
     allowedComponents?: XY;
     gravityScale?: number;
     leaveHook?: string;
     startHook?: string;
 }
-
-// TODO
-export type EntityMotionStateMachineDef =
-    | EntityMotionStateMachineFunction
-    | EntityMotionStateMachineBoolExpr;
-type EntityMotionStateMachineFunction =
-    | ["grounded"] // if the entity is standing on the ground
-    | ["moving"] // if the player input is nonzero
-    | ["colliding", ...string[]] // if the entity is colliding with an object with all of these tags
-    | ["manual"];
-type EntityMotionStateMachineBoolExpr = [number, EntityMotionStateMachineDef, EntityMotionStateMachineDef, EntityMotionStateMachineDef | undefined, EntityMotionStateMachineDef | undefined, EntityMotionStateMachineDef | undefined]
 
 export interface EntityMovingBoneData extends JSONObject {
     /** which bone target gets moved */

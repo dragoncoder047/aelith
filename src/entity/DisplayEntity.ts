@@ -20,7 +20,7 @@ export class DisplayEntity extends Entity {
         this.obj!.unuse("area");
         this._unloadedBySceneChange?.cancel();
         K.onSceneLeave(() => {
-            ScriptHandler.killAllTasksControlledBy(this);
+            ScriptHandler.endTasksBy(this);
         });
         this.startHook("loadAsDisplay");
         this.obj!.unuse("layer");

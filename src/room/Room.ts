@@ -101,7 +101,7 @@ export class Room implements Serializable {
         K.setGravity(self.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
         const setup1 = RoomManager.getTileset(self.data.tileset).initFunc;
         const setup2 = self.data.init;
-        ScriptHandler.spawnTask(0, ["do", setup1, setup2], null, {});
+        ScriptHandler.addTask(0, ["do", setup1, setup2], null, {});
     }
     unloaded() {
         this.depthTiles = [];

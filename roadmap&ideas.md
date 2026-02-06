@@ -1,5 +1,6 @@
 # to do
 
+* [ ] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
 * [ ] make a general border for toast
 * [ ] make explorer arms and legs using a slice9'ed sprite so it can have a normal map
 * [ ] Add arm/hands to NIC
@@ -11,7 +12,7 @@
         * [ ] need to determine how the currently held item is rendered (does it rotate with the aim direction, does it match flip, etc)
 * [ ] add random ticks functionality
 * [ ] change motion to be using force & velocity (would make sticky platforms better)
-* [ ] finish legs
+* [X] finish legs
     * [ ] animate zug legs using this too
     * [ ] give the lil cuties antennae!
     * [ ] add "line from here to pos on other body" primitive
@@ -25,6 +26,7 @@
         1. try item currently holding
         2. try item looking at
         3. try item intersecting with (like door)
+    * [ ] do this eagerly and show a hint overlay with the bound buttons
     * [ ] need for a way to be fallback and invoke the hook and stop if the hook exists else continue
         * [ ] something like Lisp's `(multiple-value-bind)` or similar on the startHook command
 * [ ] implement nav mesh generation from world tiles
@@ -63,8 +65,8 @@
 
 ## sounds to get or make
 
-* repeating drone noise for NIC movement
+* [X] repeating drone noise for NIC movement
 * same for spaceship movement
-* 3D printer done beep
+* [X] 3D printer done beep
 * Elevator running
 * MORE

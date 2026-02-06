@@ -108,17 +108,17 @@ hooks:
   action1: [as, [my, owner], bePlayer]
   load:
     - do
-    - [playsound, nic_motor, false, [be, vol, &minVol 0.1], true]
-    - [modsound, nic_motor, loop, true]
+    - [playsound, nic_move, false, [be, vol, &minVol 0.1], true]
+    - [modsound, nic_move, loop, true]
     - [set, prev, [boneGet, [list, body, worldPos]]]
     - - while
       - 1
       - [wait, 0]
       - [set, cur, [boneGet, [list, body, worldPos]]]
-      - [modsound, nic_motor, volume, [smoothly, volume, [my, vol], 20]]
+      - [modsound, nic_move, volume, [smoothly, volume, [my, vol], 20]]
       - [
           modsound,
-          nic_motor,
+          nic_move,
           speed,
           [
             smoothly,

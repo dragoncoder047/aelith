@@ -245,7 +245,7 @@ model:
       pos: { x: -32, y: 44 }
       sensor: true
     - name: s_side2
-      pos: { x: -32, y: 44 }
+      pos: { x: 32, y: 44 }
       sensor: true
   tentacles:
     - name: horn
@@ -375,16 +375,16 @@ model:
           - bone: rightFootTarget
             stepMode: step
             phaseOffset: 0.5
-        transitions: &swt
-          - [standing, [0b0111, [grounded], [moving]]] # 7 = !grounded || !moving
-          # - [climbing, [0b1000, [moving], [colliding, climbable]]] # 8 = moving && onLadder
-          - [walking, [moving]]
-        jumpRule: &swJr [[grounded], jumping]
+        transitions: &standing_walking_transition_rule
+          - [standing, [logic, 0b0111, [the, grounded], [the, moving]]] # 7 = !grounded || !moving
+          # - [climbing, [logic, 0b1000, [the, moving], [hitting, climbable]]] # 8 = moving && onLadder
+          - [walking, [the, moving]]
+        jumpRule: &standing_walking_jump_rule [[the, grounded], jumping]
       standing:
         anim: idle
         allowedComponents: { x: 1, y: 0 }
-        transitions: *swt
-        jumpRule: *swJr
+        transitions: *standing_walking_transition_rule
+        jumpRule: *standing_walking_jump_rule
       jumping:
         anim: jump
         bones:
@@ -402,18 +402,39 @@ model:
             flip: [~, ~, ~, ~, ~, *lowerLegRange]
         allowedComponents: { x: 1, y: 0 }
         transitions:
-          - [standing, [grounded]]
-        jumpRule: [[0]]
+          - [standing, [the, grounded]]
+        jumpRule: [no]
       # climbing:
       #   gravityScale: 0
       #   bones: # TODO
       #   transitions:
-      #     - [standing, [0b01, [colliding, climbable]]] # 1 = !onLadder
-      #   jumpRule: [[1], standing] # constant 1 = true
+      #     - [standing, [not, [hitting, climbable]]]
+      #   jumpRule: [true, standing]
       # swimming:
       #   # TODO
 hooks:
   action1: [as, [my, agent], bePlayer]
-  step: [playsound, footsteps_metal]
+  step:
+    [
+      playsound,
+      [
+        if,
+        &metalCond [
+          logic,
+          0b00011111,
+          [hitting, "*", s_bot],
+          [hitting, "*", s_bot],
+          [hitting, "*", s_bot],
+        ],
+        footsteps_metal,
+        footsteps,
+      ],
+    ]
   jump: [playsound, jump]
-  landed: [playsound, thud_metal, false, [mapc, [the, force], 0, 800, 0, 1]]
+  landed:
+    [
+      playsound,
+      [if, *metalCond, thud_metal, thud],
+      false,
+      [mapc, [the, force], 0, 800, 0, 1],
+    ]

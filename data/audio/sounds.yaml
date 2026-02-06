@@ -158,7 +158,17 @@
   src: !file sfx/done.wav
   # https://slarmoo.github.io/slarmoosbox/website/#s5N0di%20am%20donen101s0k42l01e00t3sa3g01j00r0O_c000U0000i0o3T9v0qu09f0000q0g410O0d040w20h0Mokfca8543200100000000000023458acfkotyADFIJKLMMMMMMMMMMMLKJIFDAytE0cTav0pu0af0000q000d040E0cbAp1LIIviB9h7BiFa1GHi5Bi7B0wVFpBi5AOO_sVa4_-w1e0axQ0
 - kind: sound
-  id: nic_motor
+  id: nic_move
   loader: url
-  src: !file sfx/nic_motor.wav
+  src: !file sfx/nic_move.wav
   # https://slarmoo.github.io/slarmoosbox/website/#s5N08Untitledn101s0k02l00e00t2ma7g00j00r1O_c10g600U0000i300o1T1v0fu01f0000q0040O0d230A5F0B0Qa349Pefb5R0000E0cTav0pu3bf0000q08520O01d080E0cbMp18FDE-J__0
+- kind: sound
+  id: motor_running
+  loader: url
+  src: !file sfx/motor_running.wav
+  # https://slarmoo.github.io/slarmoosbox/website/#s5N08Untitledn101s0k02l00e00t2ma7g00j00r1O_c10g600U0000i300o1T1v0fu01f0000q0040O0d230A5F9B7Q4946Pefb5R0000E0cTav0pu3bf0000q08520O01d080E0cbMp18FDE-J__0
+- kind: sound
+  id: spaceship_running
+  loader: url
+  src: !file sfx/spaceship_running.wav
+  # https://slarmoo.github.io/slarmoosbox/website/#s5N08Untitledn101s0k02l00e00t2ma7g00j00r1O_c10g600U0000i300o1Tbv0fu0bf0000q0040O0d230A0C2q3R4R6R56RRRqF0qRR2R1RRRqBfQ20e821Pfff6ffR000000E0cTav0pu3bf0000q08520O01d080E0cbMp18FDE-J__0

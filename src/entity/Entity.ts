@@ -61,7 +61,7 @@ export class Entity implements Serializable {
         var hook = proto.hooks?.[name] as any;
         if (!hook) return null;
         if (Array.isArray(hook)) hook = { impl: hook, priority: 0 };
-        return ScriptHandler.spawnTask(hook.priority, hook.impl, this, context);
+        return ScriptHandler.addTask(hook.priority, hook.impl, this, context);
     }
 
     onUpdate(cb: () => void): KEventController {
@@ -87,9 +87,11 @@ export class Entity implements Serializable {
             K.pos(self.pos),
         ]) as any;
         buildHitbox(self, self.obj!);
-        if (self.obj!.has("body")) self.obj!.onGround(() => {
-            self.startHook("landed", { force: self.obj!.vel.len() });
-        });
+        if (self.obj!.has("body")) {
+            self.obj!.onGround(() => {
+                self.startHook("landed", { force: self.obj!.vel.len() });
+            });
+        }
         self.bones = buildSkeleton(self, self.obj!);
         self.animator.init();
         self.motionController.init();
@@ -145,7 +147,6 @@ export class Entity implements Serializable {
     private _ongoingSounds: { n: string, a: AudioPlay, v: number, g: boolean, e: boolean, f: (() => void) | undefined }[] = [];
     private _getPanVol(masterVolume: number, global = false) {
         masterVolume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
-        console.log("play sound volume master", masterVolume);
         if (global) return { volume: masterVolume };
         const player = EntityManager.getPlayer()!;
         const playerPos = player.pos;
@@ -279,20 +280,6 @@ export class Entity implements Serializable {
             this._lookAtPoint(other.getHead()?.worldPos ?? other.obj.worldPos);
         }
         this.targeted = other;
-        // TODO: remove this debugging rectangle
-        if (other) {
-            const bbox = other.obj!.worldBbox();
-            K.drawRect({
-                width: bbox.width,
-                height: bbox.height,
-                pos: bbox.pos,
-                fill: false,
-                outline: {
-                    width: 2,
-                    color: K.RED
-                }
-            });
-        }
     }
     private _lookAtPoint(pt: Vec2) {
         const d = this.getPrototype().model?.kinematics?.look;
@@ -377,7 +364,6 @@ export class Entity implements Serializable {
     private _smoothing: Record<string, number> = {};
     smoothing(id: string, newValue: number, alpha: number = 20) {
         this._smoothing[id] = K.lerp(this._smoothing[id] ?? newValue, newValue, K.clamp(K.dt() * Math.LN2 * alpha, 0, 1));
-        console.log(id, this._smoothing[id], newValue, alpha, K.dt());
         return this._smoothing[id];
     }
 }

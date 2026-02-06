@@ -15,8 +15,8 @@ SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps
 SYSTEM_SETTINGS.addBoolean("controllerRumble", true).onChange(v => K.rumble.enabled = v);
 // TODO: have the available languages be defined by the data pack
 SYSTEM_SETTINGS.addSelect("language", "auto", ["auto", "en", "es"]).onChange(v => K.useLanguage(v === "auto" ? null : v));
-SYSTEM_SETTINGS.addRange("musicVolume", 1, 0, 1);
-SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 1);
+SYSTEM_SETTINGS.addRange("musicVolume", 1, 0, 2);
+SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 2);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 SYSTEM_SETTINGS.addBoolean("debugFPSGraph", false);
 
