@@ -42,12 +42,12 @@ title:
       focus: lime
       hover: yellow
     sounds:
-      action: nav_do_it
-      switch: nav_switch
-      select: nav_select
-      open: nav_open
-      back: nav_back
-      done: nav_confirm
+      action: gui_do_it
+      switch: gui_switch
+      select: gui_select
+      open: gui_open
+      back: gui_back
+      done: gui_confirm
     sprites:
       focus: cropticks
       button: button

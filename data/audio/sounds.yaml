@@ -116,32 +116,32 @@
   loader: zzfx
   src: "[2.5,0,80,,,,1,4,-2,6,50,.15]"
 - kind: sound
-  id: nav_select
+  id: gui_select
   loader: url
   src:  !file sfx/Confirm_02_select_open.ogg
 - kind: sound
-  id: nav_switch
+  id: gui_switch
   loader: url
   src: !file sfx/Click_03_focus_switch.ogg
 - kind: sound
-  id: nav_change_slider
+  id: gui_change_slider
   loader: url
-  # TODO: this is the same as nav_switch
+  # TODO: this is the same as gui_switch
   src: !file sfx/Click_03_focus_switch.ogg
 - kind: sound
-  id: nav_back
+  id: gui_back
   loader: url
   src: !file sfx/Bleep_07_focus_switch.ogg
 - kind: sound
-  id: nav_open
+  id: gui_open
   loader: url
   src: !file sfx/Confirm_02_select_open.ogg
 - kind: sound
-  id: nav_confirm
+  id: gui_confirm
   loader: url
   src: !file sfx/Bleep_01_selected_confirmed.ogg
 - kind: sound
-  id: nav_do_it
+  id: gui_do_it
   loader: url
   src: !file sfx/Execute_01_select.ogg
 - kind: sound

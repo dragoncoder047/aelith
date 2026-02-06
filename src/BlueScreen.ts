@@ -55,6 +55,9 @@ export function install() {
     K.onError(error => {
         drawBlueScreenOfDeath(error.stack!.replace(/(?<!\\)([\[\\])/g, "\\$1"));
         if (!((error as any).sourcemapsResolved)) helpSourcemaps(error);
+        else {
+            K.audioCtx.resume().then(() => K.play("bsod_error"));
+        }
     });
 }
 

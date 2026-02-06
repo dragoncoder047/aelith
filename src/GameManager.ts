@@ -14,6 +14,7 @@ import * as StateManager from "./state/StateManager";
 import inputsDEF from "./static/system_assets/inputButtons";
 import inputsPNG from "./static/system_assets/inputs.png";
 import kaplayPNG from "./static/system_assets/kaplay-logo.png";
+import errorSoundSrc from "./static/system_assets/win10bluescreen.mp3";
 import { SYSTEM_SETTINGS } from "./static/systemMenus";
 
 
@@ -24,6 +25,7 @@ export function setup() {
     ZZFX.sampleRate = 48000; // 48kHz seems to be more common now than 44.1kHz so let's use that
     K.loadSpriteAtlas(inputsPNG, inputsDEF);
     K.loadSprite("kaplay", kaplayPNG);
+    K.loadSound("bsod_error", errorSoundSrc);
     K.loadHappy();
     InputManager.loadAssets();
     InputManager.setupControls();

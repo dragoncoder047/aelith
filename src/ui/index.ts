@@ -31,8 +31,8 @@ export function uiButton(tw: number, s: number, text: string, btn: string | null
                 this.onClick(() => this.action());
                 if (btn) this.onButtonPress(btn, () => {
                     K.wait(0, () => { // Wait to allow other buttons to be processed if they're defined after my button
-                        // Don't do the action if nav_select was pressed and another thing is focused
-                        if (K.isButtonDown("nav_select") && !this.is("focused") && K.get("focused").length > 0) return;
+                        // Don't do the action if gui_select was pressed and another thing is focused
+                        if (K.isButtonDown("gui_select") && !this.is("focused") && K.get("focused").length > 0) return;
                         this.action();
                     });
                 });
@@ -356,7 +356,7 @@ export function scroller(bottomObj: GameObj<PosComp>): ScrollerComp {
             if (speed === 0) return;
             targeting = null;
             const bounds = calculateScrollBounds(this);
-            this.moveTo(this.pos.x, K.clamp(this.pos.y + speed * K.dt(), bounds[0], bounds[1]));
+            this.moveTo(this.pos.x, K.clamp(this.pos.y - speed * K.dt(), bounds[0], bounds[1]));
         },
     }
 }

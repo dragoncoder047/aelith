@@ -146,20 +146,22 @@ function flatten(vars: NestedStrings) {
     const flatStrings: Record<string, string> = {};
     const functions: Record<string, ((inside: string) => string)> = {};
     const recur = (curPath: string[], obj: NestedStrings[keyof NestedStrings]) => {
+        const dotPath = curPath.join(".");
         if (Array.isArray(obj)) {
-            flatStrings[curPath.join(".") + ".length"] = "" + obj.length;
+            flatStrings[curPath + ".length"] = "" + obj.length;
             for (var i = 0; i < obj.length; i++) {
                 recur(curPath.concat("" + i), obj[i]!);
             }
         }
         else if (typeof obj === "string") {
-            flatStrings[curPath.join(".")] = obj;
+            flatStrings[dotPath] = obj;
         }
         else if (typeof obj === "function") {
-            functions[curPath.join(".")] = obj;
+            functions[dotPath] = obj;
         }
-        else if (typeof obj === "object" && obj !== null) {
-            Object.getOwnPropertyNames(obj).forEach(next => recur(curPath.concat(next), obj[next]!));
+        else if (typeof obj === "object") {
+            if (obj === null) flatStrings[dotPath] = "NULL?";
+            else Object.entries(obj).forEach(next => recur(curPath.concat(next[0]), next[1]));
         } else {
             throw new Error(`bad type to flatten(): ${obj} (${curPath})`);
         }

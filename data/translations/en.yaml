@@ -28,29 +28,33 @@ menu:
     title: Game Paused
     quitToTitle: Quit to Title
     resume: Resume
+  keybinds:
+    title: Controls
   options:
     title: Options
     graphics:
       title: Graphics
-      potato: "You may have to turn some of these off if your computer is a potato:"
       lights:
         name: Lighting
-        help: (GPU intensive) Render glow around objects that emit light
+        help: Render glow around objects that emit light. (GPU intensive)
       depth:
         name: Pseudo-3D
-        help: (CPU intensive) Render stacked tiles to create a 3D depth effect
+        help: Render stacked tiles to create a 3D depth effect. (CPU intensive)
+      hints:
+        name: Show Control Hints
+        help: When a context-sensitive action is available, show a hint message at the bottom of the screen describing it.
     language:
       title: Language
       autodetect: Autodetect from browser settings
-      info: Sets the language for all onscreen text
+      info: Sets the language for all onscreen text.
     controller:
       title: Game Controller
       type:
         name: Controller type
-        help: Overrides controller type autodetection, if my code got it wrong
+        help: Overrides controller type autodetection, if autodetection got it wrong.
       rumble:
         name: Haptic feedback
-        help: Enable vibration/rumble in response to game events (with supported browsers and controllers)
+        help: Enable vibration/rumble in response to game events (with supported browsers and controllers).
     audio:
       title: Audio
       musicVolume:
@@ -66,24 +70,48 @@ menu:
         help: Show the KAPLAY inspect view (can cause FPS drop)
       fpsGraph:
         name: Show FPS graph
-        help: Display a graph of the last 100 frames' FPS count in the top right
+        help: Display a graph of the last 100 frames' FPS count in the top right.
       long:
         button: Test Long Menu
         title: Long menu test
         dummy: Dummy text
       crash:
         name: Test Error
-        help: Deliberately throws an error and breaks the game
+        help: Deliberately throws an error and breaks the game.
       info:
         title: Debug System Info
         button: Debug Info
         copy:
           button: Copy Debug Info
           success: Copied!
-          error: Error writing to your system's clipboard
+          error: Error writing to your system's clipboard!
       toast:
         button: Test Toast
         test: Test Toast
+    keybinds:
+      title: Controls
+      configunimplemented: "Reassigning controls is currently not implemented. You can still view what the controls are:"
+      move.help: Move the player around.
+      sprint.help: Go faster.
+      jump.help: Jump.
+      look.help: Select something to interact with.
+      throw.help: Throw the item you're holding away.
+      target1.help:
+      target2.help:
+      action1.help:
+      action2.help:
+      action3.help:
+      action4.help:
+      action5.help:
+      action6.help:
+      scroll_inventory.help: Switch between items in your inventory.
+      pause_unpause.help: Pause the game.
+      gui_up.help: Go to the previous menu item.
+      gui_down.help: Go to the next menu item.
+      gui_changevalue.help: Change the value of a numeric option.
+      gui_select.help: Select the current menu item.
+      gui_back.help: Go back to the previous screen.
+      gui_scroll.help: Scroll the menu if it's too long to fit onscreen.
     about:
       title: About
       toCredits: Credits

@@ -24,7 +24,7 @@ export function menuScene(menu: Menu | undefined, set: Record<string, Menu> = SY
     }
     const scroller = buildMenu(menu, set, settings);
     scroller.onUpdate(() => {
-        const ss = InputManager.getMotionInput("nav_scroll", null).y;
+        const ss = InputManager.getMotionInput("gui_scroll", null).y;
         scroller.scrollSpeed(ss * 500);
     });
     maybeAutoFocus();

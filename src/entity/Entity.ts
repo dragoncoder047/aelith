@@ -33,6 +33,7 @@ export class Entity implements Serializable {
     targeted: Entity | null = null;
     private _updateEv = new K.KEvent;
     private _prototype: EntityPrototypeData;
+    private _updateLoop: KEventController;
     constructor(
         public id: string,
         public currentRoom: string | null,
@@ -55,6 +56,9 @@ export class Entity implements Serializable {
         });
         this.setMotionState(p.model?.kinematics?.initial ?? null);
         this.startHook("setup");
+        this._updateLoop = K.app.onUpdate(() => {
+            this.updateHook();
+        });
     }
     startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
         const proto = this.getPrototype();
@@ -80,7 +84,7 @@ export class Entity implements Serializable {
             entitywrapper(self),
             {
                 id: "entityroot",
-                update() { self.update(K.dt()); }
+                update() { self.drawHook(K.dt()); }
             },
             self.id,
             self.kind,
@@ -114,10 +118,17 @@ export class Entity implements Serializable {
         this.pos = pos;
         if (this.obj) this.obj.pos = pos;
     }
+    destroy() {
+        if (!EntityManager.destroyEntity(this)) {
+            this.unload();
+            ScriptHandler.endTasksBy(this);
+            this._updateLoop.cancel();
+        }
+    }
     unload() {
         this.obj?.destroy();
-        for (var k of Object.keys(this.bones)) {
-            this.bones[k]?.destroy();
+        for (var b of Object.values(this.bones)) {
+            if (b.exists()) b.destroy();
         }
         this._unloadedBySceneChange?.cancel();
         this.unloaded();
@@ -149,6 +160,7 @@ export class Entity implements Serializable {
         masterVolume *= SYSTEM_SETTINGS.getValue<RangeSetting>("sfxVolume")!;
         if (global) return { volume: masterVolume };
         const player = EntityManager.getPlayer()!;
+        if (!player) return { volume: masterVolume, pan: 0 };
         const playerPos = player.pos;
         const worldPos = this.pos;
         const width = K.width() / K.getCamScale().x;
@@ -213,7 +225,11 @@ export class Entity implements Serializable {
     stopAnim(a: string) {
         this.animator.stop(a);
     }
-    update(dt: number) {
+    updateHook() {
+        this.inventory.update();
+        this.startHook("update");
+    }
+    drawHook(dt: number) {
         this.pos = this.obj!.worldPos.clone();
         this.animator.update(dt);
 
@@ -221,9 +237,9 @@ export class Entity implements Serializable {
         this._lastMove = K.Vec2.ZERO;
         this._motionStateShouldEnd = false;
 
-        this.inventory.update();
         this._updateEv.trigger();
         this._updateSounds();
+        this.startHook("render");
     }
     private _spitItOut = false;
     private _goOn: (() => void) | undefined;

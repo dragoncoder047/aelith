@@ -70,19 +70,19 @@ export function loadAssets() {
     K.strings.pr_btn = (s: string) => getDisplayForInput(s, true);
 }
 
-function singleOrMany<T extends string>(num: T | T[] | undefined, fun: (x: T[], checkPressed: boolean) => string[], checkPressed: boolean) {
-    if (num === undefined) return "";
-    return fun(Array.isArray(num) ? num : [num], checkPressed).join("/");
+function singleOrMany<T extends string>(num: T | T[] | undefined, fun: (x: T[], checkPressed: boolean) => string[], checkPressed: boolean): string[] {
+    if (num === undefined) return [];
+    return fun(Array.isArray(num) ? num : [num], checkPressed);
 }
 
 function getDisplayForInput(input: string, checkPressed: boolean) {
     const btn = K.getButton(input) as ExtendedButtonBinding | undefined;
     if (btn) {
         if (K.getLastInputDeviceType() === "gamepad") {
-            if (btn.gamepad) return singleOrMany(btn.gamepad, gamepadButtons, checkPressed);
+            if (btn.gamepad) return singleOrMany(btn.gamepad, gamepadButtons, checkPressed).join("/");
         } else {
-            if (btn.mouse) return singleOrMany(btn.mouse, mouseButton, checkPressed);
-            if (btn.keyboard) return singleOrMany(btn.keyboard, keyboardButtons, checkPressed);
+            if (btn.mouse) return singleOrMany(btn.mouse, mouseButton, checkPressed).join("/");
+            if (btn.keyboard) return singleOrMany(btn.keyboard, keyboardButtons, checkPressed).join("/");
         }
         if (btn.directional) return directionalButton(btn.directional, input, checkPressed);
     }
@@ -93,9 +93,9 @@ function multiDisplayInput(input: string, checkPressed: boolean) {
     const btn = K.getButton(input) as ExtendedButtonBinding | undefined;
     if (btn) {
         if (K.getLastInputDeviceType() === "gamepad") {
-            if (btn.gamepad) return [singleOrMany(btn.gamepad, gamepadButtons, checkPressed)];
+            if (btn.gamepad) return [...singleOrMany(btn.gamepad, gamepadButtons, checkPressed)];
         } else {
-            return [singleOrMany(btn.keyboard, keyboardButtons, checkPressed), singleOrMany(btn.mouse, mouseButton, checkPressed)];
+            return [...singleOrMany(btn.keyboard, keyboardButtons, checkPressed), ...singleOrMany(btn.mouse, mouseButton, checkPressed)];
         }
     }
     return [];
@@ -104,11 +104,9 @@ function multiDisplayInput(input: string, checkPressed: boolean) {
 function directionalButton(directional: NonNullable<ExtendedButtonBinding["directional"]>, input: string, checkPressed: boolean) {
     var delta: Vec2 | undefined = undefined;
     var str = "[?d-unk?]";
-    if (K.getLastInputDeviceType() === "gamepad") {
-        if (directional.gamepad) {
-            const dd = directional.gamepad, s = dd[0], d = dd[1];
-            str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
-        }
+    if (K.getLastInputDeviceType() === "gamepad" && directional.gamepad) {
+        const dd = directional.gamepad, s = dd[0], d = dd[1];
+        str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
     } else if (directional.mouseMove) {
         if (checkPressed) delta = K.mouseDeltaPos();
         str = " [mousefont]m[/mousefont] ";
@@ -163,14 +161,14 @@ function gamepadButtons(btn: ChordedKGamepadButton[], checkPressed: boolean): st
     if (btn.length === 1) {
         const splitted = splitButtons(btn[0]!);
         if (splitted.length !== 1) {
-            return [splitted.map(b => gamepadButtons([b], checkPressed)).join("")]
+            return [splitted.map(b => gamepadButtons([b], checkPressed)).join("+")]
         }
     }
     var ch: string | undefined, i;
     for (i = 0; i < GAMEPAD_BUTTONS.length; i++) {
-        const entry = GAMEPAD_BUTTONS[i]!, candBtn = entry[0], candCh = entry[1];
-        if (candBtn.sort().join() === btn.sort().join()) {
-            ch = candCh;
+        const entry = GAMEPAD_BUTTONS[i]!, candidateButton = entry[0], candidateCharacter = entry[1];
+        if (candidateButton.sort().join() === btn.sort().join()) {
+            ch = candidateCharacter;
             break;
         }
     }
@@ -187,7 +185,7 @@ function gamepadButtons(btn: ChordedKGamepadButton[], checkPressed: boolean): st
 function mouseButton(btn: ChordedMouseButton[], checkPressed: boolean): string[] {
     const splitted = splitButtons(btn[0]!);
     if (splitted.length !== 1) {
-        return [splitted.map(b => mouseButton([b], checkPressed)).join("")]
+        return [splitted.map(b => mouseButton([b], checkPressed)).join("+")]
     }
     const ch = MOUSE_BUTTONS[btn[0]! as MouseButton];
     if (ch) {
@@ -203,7 +201,7 @@ function keyboardButtons(btn: ChordedKey[], checkPressed: boolean): string[] {
     return btn.flatMap(k => {
         const splitted = splitButtons(k);
         if (splitted.length !== 1) {
-            return [splitted.map(b => keyboardButtons([b], checkPressed)).join("")]
+            return [splitted.map(b => keyboardButtons([b], checkPressed)).join("+")]
         }
         const e = KEYS[k];
         if (!e) return [];

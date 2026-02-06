@@ -76,12 +76,16 @@ export function loadAllEntitiesInRoom(id: string) {
 }
 
 export function destroyEntity(e: Entity) {
+    if (getPlayer() === e) {
+        throw new Error("Cannot remove active player.");
+    }
     const i = allEntities.indexOf(e);
     if (i >= 0) {
         allEntities[i] = allEntities.pop()!;
-        e.unload();
-        ScriptHandler.endTasksBy(e);
+        e.destroy();
+        return true;
     }
+    return false;
 }
 
 export function teleportEntityTo(e: Entity, room: string | null, pos: Vec2) {

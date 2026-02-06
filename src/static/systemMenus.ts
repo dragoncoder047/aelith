@@ -11,6 +11,7 @@ export const SYSTEM_SETTINGS = new Settings("aelith_local_settings");
 // TODO: implement the rest of these
 SYSTEM_SETTINGS.addBoolean("renderLights", true);
 SYSTEM_SETTINGS.addBoolean("renderDepth", true).onChange(v => Room._depthEnabled = v);
+SYSTEM_SETTINGS.addBoolean("controlHints", true);
 SYSTEM_SETTINGS.addSelect("controllerType", "ps5", ["xbox", "switch", "ps4", "ps5"]).onChange(v => PlatformGuesser.changeGamepadType(v));
 SYSTEM_SETTINGS.addBoolean("controllerRumble", true).onChange(v => K.rumble.enabled = v);
 // TODO: have the available languages be defined by the data pack
@@ -24,6 +25,7 @@ const mm = (s: string) => `&msg.menu.${s}`;
 export const mmo = (s: string) => mm(`options.${s}`);
 const mmp = (s: string) => mm(`pause.${s}`);
 const mma = (s: string) => mmo(`about.${s}`);
+const mmk = (s: string) => mmo(`keybinds.${s}`);
 
 export const SYSTEM_MENUS: Record<string, Menu> = {
     settings: {
@@ -39,16 +41,10 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 next: "audioSettings",
                 text: mmo("audio.title")
             },
-            // TODO: configurable keybinds
-            // {
-            //     type: MenuItemType.SUBMENU,
-            //     next: "keybinds",
-            //     text: mmo("keybinds.title")
-            // },
             {
                 type: MenuItemType.SUBMENU,
-                next: "controllerSettings",
-                text: mmo("controller.title")
+                next: "keybinds",
+                text: mmo("keybinds.title")
             },
             {
                 type: MenuItemType.SUBMENU,
@@ -67,12 +63,62 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
             }
         ]
     },
+    keybinds: {
+        title: mmk("title"),
+        options: [],
+        refresh() {
+            const back = this.options.at(-1)!;
+            this.options = [];
+            if (navigator.getGamepads().some(x => !!x)) {
+                this.options.push({
+                    type: MenuItemType.SUBMENU,
+                    next: "controllerSettings",
+                    text: mmo("controller.title")
+                });
+            }
+            this.options.push({
+                type: MenuItemType.TEXT,
+                text: mmk("configunimplemented"),
+            });
+            for (var btn of [
+                "move",
+                "sprint",
+                "jump",
+                "look",
+                "throw",
+                "target1",
+                "target2",
+                "action1",
+                "action2",
+                "action3",
+                "action4",
+                "action5",
+                "action6",
+                "scroll_inventory",
+                "pause_unpause",
+                "gui_up",
+                "gui_down",
+                "gui_changevalue",
+                "gui_select",
+                "gui_back",
+                "gui_scroll",
+            ]) {
+                this.options.push({
+                    type: MenuItemType.TEXT,
+                    text: `$button(${btn})   ${mmk(`${btn}.help`)}`,
+                });
+            }
+            this.options.push(back);
+        }
+    },
     graphicsSettings: {
         title: mmo("graphics.title"),
         options: [
             {
-                type: MenuItemType.TEXT,
-                text: mmo("graphics.potato")
+                type: MenuItemType.SETTING,
+                text: mmo("graphics.hints.name"),
+                setting: "controlHints",
+                help: mmo("graphics.hints.help"),
             },
             {
                 type: MenuItemType.SETTING,

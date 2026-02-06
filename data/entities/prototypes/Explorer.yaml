@@ -239,7 +239,7 @@ model:
                   ik:
                     target: [rightHandTarget, 2]
     - name: s_bot
-      pos: { x: 0, y: 76 }
+      pos: { x: 0, y: 60 }
       sensor: true
     - name: s_side1
       pos: { x: -32, y: 44 }

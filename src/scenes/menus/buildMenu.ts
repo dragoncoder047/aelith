@@ -22,7 +22,7 @@ export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Setti
                     ...this,
                     color: K.BLACK,
                     pos: K.Vec2.ZERO,
-                    width: w,
+                    width: K.width(),
                     height: this.height + PAD * 2,
                 });
             }
@@ -64,7 +64,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
             obj.use(below(prev, PAD));
             break;
         case MenuItemType.BACK:
-            obj = K.add(uiButton(bw, 1.5, item.text, "nav_back", () => {
+            obj = K.add(uiButton(bw, 1.5, item.text, "gui_back", () => {
                 GameManager.playUISound("back");
                 K.popScene();
             }));

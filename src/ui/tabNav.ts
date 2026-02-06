@@ -13,27 +13,27 @@ export function installTabNavigation() {
         focusThing.time = 0;
         K.get<ScrollerComp>("scroller")[0]?.showObj(justFocused);
     }
-    K.scene.onButtonPress("nav_down", () => {
+    K.scene.onButtonPress("gui_down", () => {
         navigate(1);
     });
-    K.scene.onButtonPress("nav_up", () => {
+    K.scene.onButtonPress("gui_up", () => {
         navigate(-1);
     });
-    K.scene.onButtonPress("nav_select", () => {
+    K.scene.onButtonPress("gui_select", () => {
         K.get("focused")[0]?.action?.();
     });
-    K.scene.onButtonPress("nav_left", () => {
+    K.scene.onButtonPress("gui_left", () => {
         const obj = K.get("focused")[0];
         if (obj && obj.changeBy) {
             GameManager.playUISound("switch");
-            obj.changeBy((obj.lo - obj.hi) * 0.1);
+            obj.changeBy((obj.lo - obj.hi) * 0.05);
         }
     });
-    K.scene.onButtonPress("nav_right", () => {
+    K.scene.onButtonPress("gui_right", () => {
         const obj = K.get("focused")[0];
         if (obj && obj.changeBy) {
             GameManager.playUISound("switch");
-            obj.changeBy((obj.hi - obj.lo) * 0.1);
+            obj.changeBy((obj.hi - obj.lo) * 0.05);
         }
     });
     K.scene.onMouseMove(() => {
@@ -76,6 +76,6 @@ export function installTabNavigation() {
 
 export function maybeAutoFocus() {
     if (K.getLastInputDeviceType() === "mouse") return;
-    K.pressButton("nav_down");
-    K.releaseButton("nav_down");
+    K.pressButton("gui_down");
+    K.releaseButton("gui_down");
 }

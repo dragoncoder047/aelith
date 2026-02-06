@@ -50,8 +50,9 @@ func("be", function* (runner, [slot, value, silent], task, actor) {
     }
     return value;
 });
-macro("as", function* (runner, [who, ...what], task, actor, env, context, traceback) {
-    const realActor = EntityManager.getEntityByName(yield* runner.eval(who, task, actor, env, context, traceback));
+macro("as", function* (runner, [whoExpr, ...what], task, actor, env, context, traceback) {
+    const who = yield* runner.eval(whoExpr, task, actor, env, context, traceback);
+    const realActor = EntityManager.getEntityByName(who);
     if (!realActor) throw tracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
     return yield* runner.eval(what, task, realActor, env, context, traceback);
 });
@@ -187,6 +188,9 @@ func("spawn", function* (runner, [kind, pos, room, data]) {
 });
 func("die", function* (runner, args, task, actor) {
     EntityManager.destroyEntity(actor!);
+});
+func("loaded", function* (runner, args, task, actor) {
+    return !!actor!.obj;
 });
 func("tp", function* (runner, [eid, room, pos]) {
     EntityManager.teleportEntityTo(EntityManager.getEntityByName(eid)!, room, pos);

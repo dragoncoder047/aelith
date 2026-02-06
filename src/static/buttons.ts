@@ -113,31 +113,36 @@ export const BUTTONS: Controls = {
         keyboard: "escape",
         gamepad: "start",
     },
-    nav_left: {
+    gui_left: {
         keyboard: ["a", "left"],
         gamepad: "dpad-left"
     },
-    nav_up: {
+    gui_up: {
         keyboard: ["w", "up", "shift+tab"],
         gamepad: "dpad-up"
     },
-    nav_right: {
+    gui_right: {
         keyboard: ["d", "right"],
         gamepad: "dpad-right"
     },
-    nav_down: {
+    gui_down: {
         keyboard: ["s", "down", "tab"],
         gamepad: "dpad-down"
     },
-    nav_select: {
+    gui_changevalue: {
+        directional: {
+            buttons: [["gui_left", "gui_right"], ,],
+        }
+    },
+    gui_select: {
         keyboard: "enter",
         gamepad: "south",
     },
-    nav_back: {
+    gui_back: {
         keyboard: "escape",
         gamepad: "east",
     },
-    nav_scroll: {
+    gui_scroll: {
         directional: {
             mouseWheel: K.vec2(0, 1),
             gamepad: ["right", K.vec2(0, 1)]

@@ -30,6 +30,7 @@ const config = {
         ".png": "dataurl",
         ".woff": "dataurl",
         ".otf": "dataurl",
+        ".mp3": "dataurl",
     },
     entryPoints: [packageJSON.main],
     format: "esm",
