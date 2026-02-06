@@ -159,7 +159,6 @@ export class ScriptRunner {
         if (!task.complete || task.failed) {
             throw new Error(`code for ${entryName} must return a value without pausing`);
         }
-        console.log(task);
         return task.result;
     }
 }

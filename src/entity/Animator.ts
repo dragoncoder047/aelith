@@ -3,6 +3,7 @@ import { K } from "../context";
 import { Animation, AnimUpdateResults, createAnimation } from "./Animation";
 import { BonesMap, Entity } from "./Entity";
 import * as EntityManager from "./EntityManager";
+import { JSONObject } from "../JSON";
 
 /*
 
@@ -54,15 +55,15 @@ export class Animator {
         if (this.entity.obj) {
             for (var anim of this.animations) {
                 for (var ch of anim.channels) {
-                    this.saveBaseValue(ch.target, this.entity.bones);
+                    this.saveBaseValue(ch.target, this.entity.bones, this.entity.state);
                 }
             }
         }
     }
-    saveBaseValue(path: string[], obj: BonesMap) {
+    saveBaseValue(path: string[], obj: BonesMap, state: JSONObject) {
         const key = path.join(",");
         if (!this.baseValues.has(key)) {
-            const p = splitV(obj, path);
+            const p = objOrStateSplit(obj, state, path);
             var value = p[0][p[1]];
             if (typeof value.clone === "function") value = value.clone();
             this.baseValues.set(key, [path, value]);
@@ -135,7 +136,7 @@ export class Animator {
             this.lastAlphas.set(unjoinedPath.join(","), maxAlpha);
             if (this.entity.obj) {
                 const targetValue = averageAll(values, weights);
-                const p = splitV(this.entity.bones, unjoinedPath);
+                const p = objOrStateSplit(this.entity.bones, this.entity.state, unjoinedPath);
                 p[0][p[1]] = K.lerp(p[0][p[1]] as LerpValue, targetValue, K.clamp(dt * Math.LN2 * maxAlpha, 0, 1));
             }
         }
@@ -198,8 +199,13 @@ function averageAll<T extends LerpValue>(values: T[], weights: number[]): T {
     throw new Error("aaa no values");
 }
 
-export function splitV(obj: any, path: string[]): [any, string] {
-    for (var i = 0; i < path.length - 1; i++) {
+export function objOrStateSplit(obj: any, state: any, path: string[]): [any, string] {
+    if (path[0] === "_state") return splitV(state, path, 1);
+    return splitV(obj, path, 0);
+}
+
+function splitV(obj: any, path: string[], i: number): [any, string] {
+    for (; i < path.length - 1; i++) {
         obj = obj[path[i]!];
     }
     return [obj, path[i]!];

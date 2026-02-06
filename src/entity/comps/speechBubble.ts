@@ -22,6 +22,7 @@ const PTR_H = 5;
 
 enum SpeechBubbleAction {
     ADD_WORD, // +word, play sound, and wait
+    CLEAR_BUBBLE, // clear screen
     FINISH_SENTENCE, // wait,
     FINISH_SPEAKING, // resolve promise, and clear if nothing else to say
 }
@@ -92,7 +93,7 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                     this.text = action[1]!;
                     timeout = this.sentenceDelay;
                     break;
-                case SpeechBubbleAction.FINISH_SPEAKING:
+                case SpeechBubbleAction.CLEAR_BUBBLE:
                     this.text = "";
             }
         },
@@ -107,13 +108,14 @@ export function speechBubble(opt: SpeechBubbleOpt = {}): SpeechBubbleComp {
                 this.text = "";
                 const sen = sentence.segment.trim();
                 if (!sen) continue;
+                queue.push([SpeechBubbleAction.CLEAR_BUBBLE, , ,]);
                 const words = segment(sen, "word");
                 for (var word of words) {
                     queue.push([SpeechBubbleAction.ADD_WORD, word.segment, onToken]);
                 }
                 queue.push([SpeechBubbleAction.FINISH_SENTENCE, sen, ,]);
-                queue.push([SpeechBubbleAction.FINISH_SPEAKING, , resolve])
             }
+            queue.push([SpeechBubbleAction.CLEAR_BUBBLE, , resolve])
             return promise;
         }
     }

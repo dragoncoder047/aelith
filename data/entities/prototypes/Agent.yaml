@@ -97,6 +97,23 @@ model:
             - [0, { x: 1, y: 3 }]
         - <<: *squishEye
           target: [leftEye, scale]
+    ouch:
+      channels:
+        - target: [_state, jiggle]
+          alpha: 10000
+          keyframes:
+            - [0, 5]
+            - [0.5, 0, easeOutExpo]
+        - &blink
+          target: [rightEye, scale]
+          alpha: 100
+          keyframes:
+            - [0.1, { x: 1, y: 3 }]
+            - [0.3, { x: 3, y: 1 }]
+            - [0.1, { x: 3, y: 1 }]
+            - [0, { x: 1, y: 3 }]
+        - <<: *blink
+          target: [leftEye, scale]
   kinematics:
     look:
       origin: body
@@ -110,12 +127,29 @@ hooks:
   setup:
     - do
     - [be, vol, &minVol 0.1]
+    - [be, jiggle, 0]
   load:
     - do
     - [playsound, nic_move, false, [be, vol, *minVol], true]
     - [modsound, nic_move, loop, true]
   render:
     - do
+    # update jiggle for ouch animation
+    - [set, j, [my, jiggle]]
+    - [
+        when,
+        [get, j],
+        [
+          boneSet,
+          [list, body, pos],
+          [
+            rand,
+            [vec2, ["-", [get, j]], ["-", [get, j]]],
+            [vec2, [get, j], [get, j]],
+          ],
+        ],
+      ]
+    # update motion sound
     - [modsound, nic_move, volume, [smoothly, volume, [my, vol], 20]]
     - [
         modsound,

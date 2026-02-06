@@ -414,7 +414,21 @@ model:
       #   # TODO
 hooks:
   action1: [as, [my, agent], bePlayer]
-  action2: [as, [my, agent], say, "BEEP BOOP. My name is NIC, and I am your helpful assistant.", true]
+  action2:
+    [
+      as,
+      [my, agent],
+      do,
+      [
+        say/w,
+        "BEEP BOOP. My name is NIC, and I am your helpful assistant.",
+      ],
+      [anim/w, ouch],
+      [
+        say/w,
+        "...wait, did I just reboot? Am I going crazy?",
+      ],
+    ]
   step:
     [
       playsound,

@@ -1,6 +1,6 @@
 import { K } from "../context";
 import * as InputManager from "../controls/InputManager";
-import { splitV } from "../entity/Animator";
+import { objOrStateSplit } from "../entity/Animator";
 import { Entity } from "../entity/Entity";
 import * as EntityManager from "../entity/EntityManager";
 import { RefuseTake } from "../entity/Inventory";
@@ -202,7 +202,7 @@ func("mState", function* (runner, [state], task, actor) {
     if (state !== null) actor!.setMotionState(state);
     else actor!.endMotionState();
 });
-func("refuse", function* () {
+func("refuse", function* (runner, []) {
     throw new RefuseTake;
 });
 func("take", function* (runner, [itemid], task, actor) {
@@ -232,6 +232,9 @@ func("*", function* (runner, values) {
 });
 func("+", function* (runner, values) {
     return values.length > 1 ? values.reduce((a, b) => a + b) : Math.abs(values[0]);
+});
+func("-", function* (runner, values) {
+    return values.length > 1 ? values[0] - values.slice(1).reduce((a, b) => a + b, 0) : -values[0];
 });
 func("/", function* (runner, values) {
     return values.length > 1 ? values[0] / values.slice(1).reduce((a, b) => a * b, 1) : 1 / values[0];
@@ -288,21 +291,21 @@ func("nth", function* (runner, [index, list]) {
     return list[index];
 });
 func("boneGet", function* (runner, [path], task, actor) {
-    const p = splitV(actor!.bones, path);
+    const p = objOrStateSplit(actor!.bones, actor!.state, path);
     return p[0][p[1]];
 });
 func("boneSet", function* (runner, [path, value], task, actor) {
-    const p = splitV(actor!.bones, path);
+    const p = objOrStateSplit(actor!.bones, actor!.state, path);
     return p[0][p[1]] = value;
 });
 func("hitting", function* (runner, [tag, bone], task, actor) {
     const bObj = bone ? actor!.bones[bone] : actor!.obj;
     return bObj?.getCollisions()?.some(c => tag ? c.target.is(tag) : true);
 });
-func("screenwidth", function* () {
+func("screenwidth", function* (runner, []) {
     return K.width();
 });
-func("screenheight", function* () {
+func("screenheight", function* (runner, []) {
     return K.height();
 });
 func("getanalog", function* (runner, [bName]) {
@@ -321,6 +324,9 @@ func("map", function* (runner, [x, a, b, p, q]) {
 func("mapc", function* (runner, [x, a, b, p, q]) {
     return K.mapc(x, a, b, p, q);
 });
+func("rand", function* (runner, [low, high]) {
+    return K.rand(low, high);
+});
 func("randi", function* (runner, [low, high]) {
     return K.randi(low, high);
 });
@@ -330,6 +336,6 @@ func("toNumber", function* (runner, [string]) {
 func("expand", function* (runner, [code, data]) {
     return K.sub(code, data);
 });
-func("dt", function* () {
+func("dt", function* (runner, []) {
     return K.dt();
 });

@@ -128,7 +128,7 @@ export class Animation {
         }
     }
     allDone() {
-        return this.channels.every(c => !c.active);
+        return this.channels.every(c => c.ended);
     }
     stop() {
         this.channels.forEach(c => c.stop());
