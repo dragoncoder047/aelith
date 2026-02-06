@@ -158,15 +158,15 @@ func("modsound", function* (runner, [soundName, param, value], task, actor) {
 func("smoothly", function* (runner, [id, value, alpha], task, actor) {
     return actor!.smoothing(id, value, alpha);
 });
-func("deltaPos", function*(runner, [], task, actor) {
+func("deltaPos", function* (runner, [], task, actor) {
     return actor!.deltaPos;
 })
-func("say", function* (runner, [text], task, actor) {
-    actor!.say(text);
+func("say", function* (runner, [text, force], task, actor) {
+    actor!.say(text, force);
 });
-func("say/w", function* (runner, [text], task, actor) {
+func("say/w", function* (runner, [text, force], task, actor) {
     task.paused = true;
-    actor!.say(text).then(() => task.paused = false);
+    actor!.say(text, force).then(() => task.paused = false);
     yield;
 });
 func("the", function* (runner, [name], task, actor, env, context) {

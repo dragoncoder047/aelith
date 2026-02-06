@@ -1,6 +1,6 @@
 tags: [agent]
 physics:
-  - [rect, -10, -10, 20, 20]
+  - [circle, 0, 0, 12]
 navHeight: { x: 0, y: 0 }
 behavior:
   canBePlayer: yes
@@ -12,6 +12,7 @@ behavior:
 model:
   speechBubble:
     origin: speechBubbleOrigin
+    voiceSound: nic_voice
   skeleton:
     - name: speechBubbleOrigin
       pos: { x: 0, y: -16 }
@@ -106,7 +107,6 @@ model:
         gravityScale: 0
 hooks:
   action1: [as, [my, owner], bePlayer]
-  action2: [as, [my, owner], die]
   setup:
     - do
     - [be, vol, &minVol 0.1]

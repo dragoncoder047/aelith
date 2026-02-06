@@ -239,13 +239,13 @@ model:
                   ik:
                     target: [rightHandTarget, 2]
     - name: s_bot
-      pos: { x: 0, y: 60 }
+      pos: { x: 0, y: 65 }
       sensor: true
     - name: s_side1
-      pos: { x: -32, y: 44 }
+      pos: { x: -30, y: 40 }
       sensor: true
     - name: s_side2
-      pos: { x: 32, y: 44 }
+      pos: { x: 30, y: 40 }
       sensor: true
   tentacles:
     - name: horn
@@ -414,6 +414,7 @@ model:
       #   # TODO
 hooks:
   action1: [as, [my, agent], bePlayer]
+  action2: [as, [my, agent], say, "BEEP BOOP. My name is NIC, and I am your helpful assistant.", true]
   step:
     [
       playsound,
@@ -422,8 +423,8 @@ hooks:
         &metalCond [
           logic,
           0b00011111,
-          [hitting, "*", s_bot],
-          [hitting, "*", s_bot],
+          [hitting, "*", s_side1],
+          [hitting, "*", s_side2],
           [hitting, "*", s_bot],
         ],
         footsteps_metal,

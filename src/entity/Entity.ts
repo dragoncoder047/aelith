@@ -60,12 +60,12 @@ export class Entity implements Serializable {
             this.updateHook();
         });
     }
-    startHook(name: string, context: JSONObject = {}): ScriptHandler.Task | null {
+    startHook(name: string, context: JSONObject = {}, exclusive = false): ScriptHandler.Task | null {
         const proto = this.getPrototype();
         var hook = proto.hooks?.[name] as any;
         if (!hook) return null;
         if (Array.isArray(hook)) hook = { impl: hook, priority: 0 };
-        return ScriptHandler.addTask(hook.priority, hook.impl, this, context);
+        return ScriptHandler.addTask(name, hook.priority, hook.impl, this, context, exclusive);
     }
 
     onUpdate(cb: () => void): KEventController {
@@ -140,8 +140,6 @@ export class Entity implements Serializable {
             this.lightObjs = [];
             this.startHook("unload");
         }
-        this._goOn = this._shutUp = this._unloadedBySceneChange = undefined;
-        this._spitItOut = false;
         this._updateEv.trigger();
         this._stopEnvironmentalSounds();
         this._ongoingSounds.forEach(({ a }) => a.paused = true);
@@ -244,46 +242,20 @@ export class Entity implements Serializable {
         this._updateSounds();
         this.startHook("render");
     }
-    private _spitItOut = false;
-    private _goOn: (() => void) | undefined;
-    private _shutUp: (() => void) | undefined;
-    async say(text: string | undefined) {
+    async say(text: string | undefined, force = false) {
         if (!text) {
             if (this.speechBubble) {
-                this.speechBubble.text = "";
-                this._spitItOut = false;
+                this.speechBubble?.speakText("", undefined, true);
             }
         }
         else {
-            this._shutUp?.();
-            await this.speechBubble?.speakText(text,
-                () => new Promise((resolve, reject) => {
-                    this._goOn = resolve;
-                    this._shutUp = () => reject(this._spitItOut = true);
-                }),
-                () => { if (this.speakSound) this.emitSound(this.speakSound, 1); },
-                () => {
-                    if (this._spitItOut) {
-                        this._spitItOut = false;
-                        return true;
-                    }
-                    return false;
-                });
+            await this.speechBubble?.speakText(text, () => {
+                if (this.speakSound) this.emitSound(this.speakSound, 1);
+            }, force);
         }
     }
-    continueSpeaking() {
-        if (!this.speechBubble?.isSpeaking()) {
-            if (this.speechBubble) this.speechBubble.text = "";
-        }
-        else if (this._goOn) {
-            this._goOn();
-            this._goOn = undefined;
-        }
-        else this._spitItOut = true;
-    }
-
     doAction(action: string) {
-        this.startHook(action, { what: this.targeted?.id });
+        this.startHook(action, { what: this.targeted?.id }, true);
     }
     tryJump() {
         if (this.obj) {

@@ -24,7 +24,7 @@ tiles:
       with:
         noHitWall: 255
     physics:
-      hitbox: [4, 4, 24, 24]
+      hitbox: [4, 6, 24, 20]
       merge: [true, true]
     depth: !include ../textures/rockdepth.yaml
   # 1: wall, but no hitbox
@@ -38,6 +38,6 @@ tiles:
   # 2: barrier
   - tags: [barrier]
     physics:
-      hitbox: [4, 4, 24, 24]
+      hitbox: [0, 0, 32, 32]
       merge: [true, true]
 initFunc: [setGlobalLight, null, 0.8]

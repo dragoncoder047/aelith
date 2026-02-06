@@ -80,6 +80,10 @@
   loader: zzfx
   src: "[,,1e3,,,.01,2,,,,,,,1,,,,,,,1e3]"
 - kind: sound
+  id: nic_voice
+  loader: zzfx
+  src: "[.5,.3,,.1,,,,10,-5,50]"
+- kind: sound
   id: bug_footsteps
   loader: zzfx
   src: "[,0.5,120,,,.01,,,,,,,,,,.05]"

@@ -181,9 +181,9 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
         assertGet(i.s).use(K.constraint.ik(assertGet(i.t), { algorithm: "CCD", depth: i.d }));
     }
     if (model.speechBubble) {
-        const { origin, tokenDelay, width, voiceSound } = model.speechBubble;
+        const { origin, tokenDelay, sentenceDelay, width, voiceSound } = model.speechBubble;
         e.speechBubble = assertGet(origin) as any;
-        e.speechBubble!.use(speechBubble({ tokenDelay }));
+        e.speechBubble!.use(speechBubble({ tokenDelay, sentenceDelay }));
         e.speechBubble!.width = width ?? GameManager.getDefaultValue("speechBubbleWidth");
         e.speakSound = voiceSound;
     } else {

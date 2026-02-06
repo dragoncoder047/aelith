@@ -21,7 +21,7 @@ export class Task {
     }
     get awaited() { return this._finish.numListeners() > 0; }
     private _finish = new K.KEvent<[any]>();
-    constructor(public priority: number, public entity: Entity | null) { }
+    constructor(public id: string, public priority: number, public entity: Entity | null) { }
     onFinish(cb: (value: any) => void) {
         return this._finish.add(cb);
     }
@@ -101,8 +101,12 @@ export class ScriptRunner {
 
     private _t: Task[] = [];
 
-    addTask(priority: number, form: JSONValue, actor: Entity | null, context: Env): Task {
-        const t = new Task(priority, actor);
+    addTask(id: string, priority: number, form: JSONValue, actor: Entity | null, context: Env, exclusive = false): Task {
+        if (exclusive) {
+            const t2 = this._t.find(t => t.id === id);
+            if (t2) return t2;
+        }
+        const t = new Task(id, priority, actor);
         t.gen = this.eval(form, t, actor, {}, context, []);
         this._t.push(t);
         K.insertionSort(this._t, (t1, t2) => t1.priority > t2.priority);
@@ -150,7 +154,7 @@ export class ScriptRunner {
     }
 
     call(entryName: string, code: JSONValue, context: Env): any {
-        const task = this.addTask(0, code, null, context);
+        const task = this.addTask("__call", 0, code, null, context);
         this.runAll();
         if (!task.complete || task.failed) {
             throw new Error(`code for ${entryName} must return a value without pausing`);

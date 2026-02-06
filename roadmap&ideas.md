@@ -1,5 +1,7 @@
 # to do
 
+* [ ] make speech bubble using sprite for customization
+* [ ] implement cutscene mode on player so camera follows but input is blocked
 * [ ] implement task pooling to reduce GC overhead of render and update hooks
 * [ ] finish names for buttons in help screen
 * [ ] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
@@ -57,6 +59,8 @@
 ## to draw
 
 * separate downlight in aelith tileset into its own sprite and remove the baked glow effect (replace with an actual shader light)
+    * [X] part 1 - remove it.
+    * [ ] part 2 - add a new light entity type.
 
 * player spaceship - crashed and fixed variants
 * doors to enter / exit the Aelith

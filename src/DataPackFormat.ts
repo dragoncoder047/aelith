@@ -140,7 +140,8 @@ export interface EntityModelData extends JSONObject {
     speechBubble?: {
         origin: string;
         width?: number;
-        tokenDelay: number;
+        tokenDelay?: number;
+        sentenceDelay?: number;
         voiceSound: string;
     }
 }
