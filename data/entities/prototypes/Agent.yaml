@@ -104,14 +104,14 @@ model:
         - target: [_state, jiggle]
           alpha: 10000
           keyframes:
-            - [0, 5]
-            - [0.5, 0, easeOutExpo]
+            - [0.4, 5]
+            - [0, 0]
         - &blink
           target: [rightEye, scale]
           alpha: 100
           keyframes:
             - [0.1, { x: 1, y: 3 }]
-            - [0.3, { x: 3, y: 1 }]
+            - [0.2, { x: 3, y: 1 }]
             - [0.1, { x: 3, y: 1 }]
             - [0, { x: 1, y: 3 }]
         - <<: *blink
