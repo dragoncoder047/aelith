@@ -6,6 +6,11 @@ import { BUTTONS, ExtendedButtonBinding } from "../static/buttons";
 import { STICK_DEADZONE } from "../static/constants";
 import { ButtonsDpadInput, DirectionalInput, GamepadInput, MouseMoveInput, MouseWheelInput } from "./DirectionalAbstraction";
 
+function padding(width: number) {
+    return `[padfont]${" ".repeat(width)}[/padfont]`;
+}
+const PADDING1 = padding(1);
+
 const motionControls: Record<string, DirectionalInput[]> = {};
 export function getMotionInput(name: string, origin: Entity | null) {
     if (!(name in motionControls)) return K.Vec2.ZERO;
@@ -109,9 +114,9 @@ function directionalButton(directional: NonNullable<ExtendedButtonBinding["direc
         str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
     } else if (directional.mouseMove) {
         if (checkPressed) delta = K.mouseDeltaPos();
-        str = "[padfont] [mousefont]m[/mousefont] [/padfont]";
+        str = PADDING1 + "[mousefont]m[/mousefont]" + PADDING1;
     } else if (directional.mouseWheel) {
-        str = "[padfont] [mousefont]s[/mousefont] [/padfont]";
+        str = PADDING1 + "[mousefont]s[/mousefont]" + PADDING1;
     } else if (directional.buttons) {
         str = "";
         const b = directional.buttons;
@@ -142,7 +147,7 @@ interface IFontEntry {
 }
 
 function gamepadFontStr(ch: string): string {
-    return `[padfont] [font_${PlatformGuesser.currentGamepadType()}]${ch}[/font_${PlatformGuesser.currentGamepadType()}] [/padfont]`;
+    return `${PADDING1}[font_${PlatformGuesser.currentGamepadType()}]${ch}[/font_${PlatformGuesser.currentGamepadType()}]${PADDING1}`;
 }
 
 function splitButtons<T extends string>(b: T): T[] {
@@ -189,7 +194,7 @@ function mouseButton(btn: ChordedMouseButton[], checkPressed: boolean): string[]
     }
     const ch = MOUSE_BUTTONS[btn[0]! as MouseButton];
     if (ch) {
-        const s = `[padfont] [mousefont]${ch}[/mousefont] [/padfont]`;
+        const s = `${PADDING1}[mousefont]${ch}[/mousefont]${PADDING1}`;
         if (checkPressed && K.isMouseDown(btn as MouseButton[]))
             return [`[pressed]${s}[/pressed]`];
         return [s];
@@ -213,8 +218,8 @@ function keyboardButtons(btn: ChordedKey[], checkPressed: boolean): string[] {
 }
 
 function keyEntry(e: IFontEntry): string {
-    const pad = " ".repeat(Math.min(2, e.w));
-    return `[padfont]${pad}[keyfont_${e.w}]${e.ch}[/keyfont_${e.w}]${pad}[/padfont]`;
+    const pad = padding(e.w);
+    return `${pad}[keyfont_${e.w}]${e.ch}[/keyfont_${e.w}]${pad}`;
 }
 
 const GAMEPAD_BUTTONS: [KGamepadButton[], string][] = [
