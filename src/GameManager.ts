@@ -48,11 +48,11 @@ var pack: DataPackData;
 export function getTitleData() {
     return pack.title;
 }
-export function getUIKey<T extends keyof DataPackData["title"]["ui"], U extends keyof DataPackData["title"]["ui"][T]>(k1: T, k2: U): DataPackData["title"]["ui"][T][U] {
-    return getTitleData().ui[k1][k2];
+export function getUIKey<T extends keyof DataPackData["ui"], U extends keyof DataPackData["ui"][T]>(k1: T, k2: U): DataPackData["ui"][T][U] {
+    return pack.ui[k1][k2];
 }
 
-export function playUISound<T extends keyof DataPackData["title"]["ui"]["sounds"]>(sound: T) {
+export function playUISound<T extends keyof DataPackData["ui"]["sounds"]>(sound: T) {
     K.play(getUIKey("sounds", sound), { volume: SYSTEM_SETTINGS.getValue("sfxVolume") });
 }
 

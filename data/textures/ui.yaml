@@ -1,3 +1,13 @@
+border_box:
+  x: 0
+  y: 48
+  width: 16
+  height: 12
+  slice9:
+    left: 4
+    right: 4
+    top: 6
+    bottom: 6
 button:
   x: 0
   y: 0

@@ -51,6 +51,7 @@ export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Setti
 
 function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>, item: MenuItem, set: Record<string, Menu>, settings: Settings, first: boolean): GameObj<PosComp | BelowComp> {
     var obj: any;
+    const curPad = prev.has("tooltip") ? PAD / 2 : PAD;
     switch (item.type) {
         case MenuItemType.SUBMENU:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
@@ -61,26 +62,26 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
                 }
                 K.pushScene(Scene.MENU, menu, set, settings);
             }));
-            obj.use(below(prev, PAD));
+            obj.use(below(prev, curPad));
             break;
         case MenuItemType.BACK:
             obj = K.add(uiButton(bw, 1.5, item.text, "gui_back", () => {
                 GameManager.playUISound("back");
                 K.popScene();
             }));
-            obj.use(below(prev, PAD));
+            obj.use(below(prev, curPad));
             break;
         case MenuItemType.BUTTON:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {
                 GameManager.playUISound("action");
                 item.action();
             }));
-            obj.use(below(prev, PAD));
+            obj.use(below(prev, curPad));
             if (item.help) {
                 prev = obj;
                 obj = K.add([
                     K.pos(),
-                    below(prev, PAD),
+                    below(prev, PAD / 2),
                     K.anchor("center"),
                     tooltip(item.help, prev as any)
                 ]);
@@ -100,7 +101,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
                 }),
                 K.dynamicText(item.text),
             ]);
-            obj.use(below(prev, PAD));
+            obj.use(below(prev, curPad));
             break;
         case MenuItemType.SETTING:
             obj = makeSetting(w, prev, item, set, settings, first);

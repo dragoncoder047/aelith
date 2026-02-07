@@ -38,15 +38,12 @@ export function toast(color: Color, text: string) {
                     }
                 },
                 draw(this: GameObj) {
-                    K.drawRect({
+                    K.drawSprite({
+                        sprite: GameManager.getUIKey("sprites", "border"),
                         pos: K.vec2(-PAD, -PAD),
                         width: this.width + PAD * 2,
                         height: this.height + PAD * 2,
-                        color: K.BLACK,
-                        outline: {
-                            color: this.toastColor,
-                            width: BORDER_WIDTH,
-                        }
+                        color: this.toastColor,
                     });
                 }
             },

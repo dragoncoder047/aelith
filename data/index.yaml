@@ -36,23 +36,24 @@ defaults:
   cameraScaleAlpha: 0.08
 title:
   entity: logosprite
-  ui:
-    colors:
-      normal: cyan
-      focus: lime
-      hover: yellow
-    sounds:
-      action: gui_do_it
-      switch: gui_switch
-      select: gui_select
-      open: gui_open
-      back: gui_back
-      done: gui_confirm
-    sprites:
-      focus: cropticks
-      button: button
-      radio: radio
-      checkbox: check
-      switch: switch
-      sliderTrack: slider_track
-      sliderThumb: slider_thumb
+ui:
+  colors:
+    normal: cyan
+    focus: lime
+    hover: yellow
+  sounds:
+    action: gui_do_it
+    switch: gui_switch
+    select: gui_select
+    open: gui_open
+    back: gui_back
+    done: gui_confirm
+  sprites:
+    border: border_box
+    focus: cropticks
+    button: button
+    radio: radio
+    checkbox: check
+    switch: switch
+    sliderTrack: slider_track
+    sliderThumb: slider_thumb

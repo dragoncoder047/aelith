@@ -28,8 +28,6 @@ menu:
     title: Game Paused
     quitToTitle: Quit to Title
     resume: Resume
-  keybinds:
-    title: Controls
   options:
     title: Options
     graphics:

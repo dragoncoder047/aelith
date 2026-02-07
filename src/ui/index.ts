@@ -290,17 +290,13 @@ export function tooltip(tip: string, parent: GameObj<PosComp | AreaComp | RectCo
                 font: GameManager.getDefaultValue("font"),
             });
             K.pushScale(K.vec2(poo));
-            K.drawRect({
+            K.drawSprite({
+                sprite: GameManager.getUIKey("sprites", "border"),
                 width: parent.width,
-                radius: 2,
                 anchor: "top",
                 height: fText.height + PAD,
-                color: K.BLACK,
-                outline: {
-                    color,
-                    opacity: 0.5,
-                    width: 2
-                }
+                color,
+                opacity: 0.5,
             });
             K.drawFormattedText(fText);
             K.pushScale(K.vec2(1 / poo));

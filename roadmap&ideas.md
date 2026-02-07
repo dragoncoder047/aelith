@@ -5,7 +5,6 @@
 * [ ] implement task pooling to reduce GC overhead of render and update hooks
 * [ ] finish names for buttons in help screen
 * [X] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
-* [ ] make a general border for toast
 * [ ] Add arm/hands to NIC
 * [X] add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
     * [ ] allow these as rendering decorations in the rooms
