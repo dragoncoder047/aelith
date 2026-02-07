@@ -255,7 +255,6 @@ function addBaseProps(obj: GameObj, uid: number, p: Primitive) {
                     fs.forEach(u => obj.uniforms[u] = fsv);
                 });
             });
-            opt.nmSprite = K.getNormalMapSprite(p.sprite);
         }
         obj.use(K.litShader(p.shader, opt));
     }
