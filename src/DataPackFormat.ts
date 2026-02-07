@@ -337,10 +337,10 @@ export interface EntityData extends JSONObject {
  * * ami <state_slot> <value?> - test state slot
  * * my <state_slot> - retrieve state slot
  * * render <name/path> <new_value> - getattr, setattr on rendering props
- * * anim/w <name> <speed> <forceRestart?> - entity model play animation
+ * * anim <name> <speed> <forceRestart?> - entity model play animation
  * * unanim <name> - remove anim from running list if it is an infinite anim
  * * playsound/w <name> <global?> - if global=false, the current player hears it
- * * say <scene?> <string> - says it in speech bubble, waits for player to continue, if scene is true then it uses the named dialogue scene vs the string verbatim
+ * * say <string> - says it in speech bubble
  * * the <name> - get context variable
  * * set <global?> <name> <value> - local variable
  * * get <global?> <name> - local variable
@@ -357,8 +357,6 @@ export interface EntityData extends JSONObject {
  * * throw <item>
  * * refuse - if this hook is a result of another entity's action, don't do that
  * * stop - early return from hook
- * * ask <entity> <questionName>
- * * answer <value> - respond to question from another entity
  * * bePlayer <entity> - switch controls and camera following to it
  * * win - causes the bluescreen and hasWon to be set to true
  * * lookAt <entity> - rotates to look at it

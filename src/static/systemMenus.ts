@@ -21,11 +21,11 @@ SYSTEM_SETTINGS.addRange("sfxVolume", 1, 0, 2);
 SYSTEM_SETTINGS.addBoolean("debugInspect", false).onChange(v => K.debug.inspect = v);
 SYSTEM_SETTINGS.addBoolean("debugFPSGraph", false);
 
-const mm = (s: string) => `&msg.menu.${s}`;
-export const mmo = (s: string) => mm(`options.${s}`);
-const mmp = (s: string) => mm(`pause.${s}`);
-const mma = (s: string) => mmo(`about.${s}`);
-const mmk = (s: string) => mmo(`keybinds.${s}`);
+const mm = <const T extends string>(s: T) => `&msg.menu.${s}` as const;
+export const mmo = <const T extends string>(s: T) => mm(`options.${s}` as const);
+const mmp = <const T extends string>(s: T) => mm(`pause.${s}` as const);
+const mma = <const T extends string>(s: T) => mmo(`about.${s}` as const);
+const mmk = <const T extends string>(s: T) => mmo(`keybinds.${s}` as const);
 
 export const SYSTEM_MENUS: Record<string, Menu> = {
     settings: {

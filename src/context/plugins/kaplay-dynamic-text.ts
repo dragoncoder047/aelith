@@ -148,7 +148,7 @@ function flatten(vars: NestedStrings) {
     const recur = (curPath: string[], obj: NestedStrings[keyof NestedStrings]) => {
         const dotPath = curPath.join(".");
         if (Array.isArray(obj)) {
-            flatStrings[curPath + ".length"] = "" + obj.length;
+            flatStrings[dotPath + ".length"] = "" + obj.length;
             for (var i = 0; i < obj.length; i++) {
                 recur(curPath.concat("" + i), obj[i]!);
             }

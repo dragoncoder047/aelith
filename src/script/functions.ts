@@ -128,14 +128,14 @@ func("ami", function* (runner, [slot, target], _, actor) {
 func("my", function* (runner, [slot], _, actor) {
     return actor!.state[slot];
 });
-func("anim", function* (runner, [animName, restart], task, actor) {
+func("animC", function* (runner, [animName, restart], task, actor) {
     actor!.playAnim(animName, restart);
 });
 func("skinAnim", function* (runner, [animName, value], task, actor) {
     K.debug.log("started anim", animName);
     actor!.animator.skinAnim(animName, value);
 });
-func("anim/w", function* (runner, [animName], task, actor) {
+func("anim", function* (runner, [animName], task, actor) {
     task.paused = true;
     actor!.playAnim(animName).then(() => task.paused = false);
     yield;
@@ -160,10 +160,10 @@ func("smoothly", function* (runner, [id, value, alpha], task, actor) {
 func("deltaPos", function* (runner, [], task, actor) {
     return actor!.deltaPos;
 })
-func("say", function* (runner, [text, force], task, actor) {
+func("sayC", function* (runner, [text, force], task, actor) {
     actor!.say(text, force);
 });
-func("say/w", function* (runner, [text, force], task, actor) {
+func("say", function* (runner, [text, force], task, actor) {
     task.paused = true;
     actor!.say(text, force).then(() => task.paused = false);
     yield;
