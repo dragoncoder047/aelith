@@ -57,6 +57,9 @@ export const STYLES: TextComp["textStyles"] = {
         scale: 4,
         stretchInPlace: true,
     },
+    padfont: {
+        font: "monospace",
+    },
     mousefont: {
         font: "mousefont",
         scale: 4,

@@ -10,7 +10,7 @@
         "build:clean": "rm -rf build/ && mkdir build",
         "build": "./scripts/build_oneshot.sh",
         "dev:build:js": "node scripts/build.mjs -w",
-        "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,txt,glsl,wav,ogg,mp3 -i build --exec \"pnpm build:data\"",
+        "dev:build:data": "pnpm nodemon -e yaml,json,png,woff,otf,ttf,txt,glsl,wav,ogg,mp3 -i build --exec \"pnpm build:data\"",
         "dev:serve": "python3 -m http.server",
         "build:minified": "pnpm build:clean && node scripts/build.mjs --minify && python3 scripts/build_datapack.py --minify",
         "dev": "pnpm run \"/^dev:.*/\"",
@@ -28,7 +28,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "kaplay": "github:dragoncoder047/kaplay#3f9db97916ccd6df723b324e4a7f0ffac4911a57",
+        "kaplay": "github:dragoncoder047/kaplay#25a76d0647adffc0d87273fd78f64c747efec0ea",
         "kaplay-lighting": "github:dragoncoder047/kaplay-lighting#943a1f2e5b0f7ad5915371087d5d0928223ef35c",
         "zzfx": "^1.3.0"
     },

@@ -1,8 +1,8 @@
 border_box:
-  x: 0
-  y: 48
-  width: 16
-  height: 12
+  x: 51
+  y: 0
+  width: 10
+  height: 14
   slice9:
     left: 4
     right: 4

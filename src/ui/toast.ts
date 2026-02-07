@@ -18,6 +18,7 @@ export function toast(color: Color, text: string) {
         curToast = K.add([
             K.pos(OFFSET, OFFSET),
             K.layer(K._k.game.layers!.at(-1)!),
+            K.stay(),
             {
                 toastColor: color,
                 timer: 0,

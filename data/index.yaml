@@ -23,7 +23,7 @@ renderLayers:
     ]
   - tiles
 defaults:
-  font: Unscii
+  font: Big Space
   gravity: 600
   depthLayer: background
   entityLayer: entities

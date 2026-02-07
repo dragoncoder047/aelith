@@ -109,9 +109,9 @@ function directionalButton(directional: NonNullable<ExtendedButtonBinding["direc
         str = gamepadFontStr((d.eq(K.Vec2.ONE) ? "JK" : d.x > .5 ? "Xx" : "Yy")[+(s === "right")]!);
     } else if (directional.mouseMove) {
         if (checkPressed) delta = K.mouseDeltaPos();
-        str = " [mousefont]m[/mousefont] ";
+        str = "[padfont] [mousefont]m[/mousefont] [/padfont]";
     } else if (directional.mouseWheel) {
-        str = " [mousefont]s[/mousefont] ";
+        str = "[padfont] [mousefont]s[/mousefont] [/padfont]";
     } else if (directional.buttons) {
         str = "";
         const b = directional.buttons;
@@ -142,7 +142,7 @@ interface IFontEntry {
 }
 
 function gamepadFontStr(ch: string): string {
-    return ` [font_${PlatformGuesser.currentGamepadType()}]${ch}[/font_${PlatformGuesser.currentGamepadType()}] `;
+    return `[padfont] [font_${PlatformGuesser.currentGamepadType()}]${ch}[/font_${PlatformGuesser.currentGamepadType()}] [/padfont]`;
 }
 
 function splitButtons<T extends string>(b: T): T[] {
@@ -189,7 +189,7 @@ function mouseButton(btn: ChordedMouseButton[], checkPressed: boolean): string[]
     }
     const ch = MOUSE_BUTTONS[btn[0]! as MouseButton];
     if (ch) {
-        const s = ` [mousefont]${ch}[/mousefont] `;
+        const s = `[padfont] [mousefont]${ch}[/mousefont] [/padfont]`;
         if (checkPressed && K.isMouseDown(btn as MouseButton[]))
             return [`[pressed]${s}[/pressed]`];
         return [s];
@@ -214,7 +214,7 @@ function keyboardButtons(btn: ChordedKey[], checkPressed: boolean): string[] {
 
 function keyEntry(e: IFontEntry): string {
     const pad = " ".repeat(Math.min(2, e.w));
-    return `${pad}[keyfont_${e.w}]${e.ch}[/keyfont_${e.w}]${pad}`;
+    return `[padfont]${pad}[keyfont_${e.w}]${e.ch}[/keyfont_${e.w}]${pad}[/padfont]`;
 }
 
 const GAMEPAD_BUTTONS: [KGamepadButton[], string][] = [

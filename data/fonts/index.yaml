@@ -10,3 +10,7 @@
   id: Unscii MCR
   loader: url
   src: !file unscii-8-mcr.woff
+- kind: font
+  id: Big Space
+  loader: url
+  src: !file BigSpace.ttf
