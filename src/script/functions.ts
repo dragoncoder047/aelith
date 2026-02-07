@@ -56,7 +56,6 @@ macro("as", function* (runner, [whoExpr, ...what], task, actor, env, context, tr
     if (!realActor) throw tracebackError(`no such actor named ${JSON.stringify(who)}`, traceback);
     return yield* runner.eval(what, task, realActor, env, context, traceback);
 });
-// According to Firefox, this function allocates TONS of memory. Why ?!??!?
 function* do_body_tailcall(runner: ScriptRunner, forms: any[], task: Task, actor: Entity | null, env: Env, context: Env, traceback: TracebackArray) {
     for (var i = 0; i < forms.length - 1; i++) {
         env.it = env.them = yield* runner.eval(forms[i]!, task, actor, env, context, traceback);
@@ -287,8 +286,8 @@ func("xys", function* (runner, [vec]) {
 func("list", function* (runner, args) {
     return args;
 });
-func("nth", function* (runner, [index, list]) {
-    return list[index];
+func(".", function* (runner, [key, obj]) {
+    return obj[key];
 });
 func("boneGet", function* (runner, [path], task, actor) {
     const p = objOrStateSplit(actor!.bones, actor!.state, path);

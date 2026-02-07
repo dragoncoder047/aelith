@@ -9,9 +9,9 @@ export type RenderData = Primitive;
 
 export interface AssetData extends JSONObject {
     id: string;
-    kind: "font" | "shader" | "sprite" | "spritemap" | "normalmap" | "spritefont" | "sound" | "song" | "translation" | "favicon";
+    kind: "font" | "shader" | "sprite" | "spritemap" | "spritefont" | "sound" | "song" | "translation" | "favicon";
     /** for "url" it's fetched and decoded; for "bin" it's passed through atob (base64 decode) */
-    loader?: "conv" | "url" | "bin" | "zzfx" | "zzfxm";
+    loader?: "url" | "bin" | "zzfx" | "zzfxm";
     /** url, base64, or inline JSON */
     src: JSONValue;
     /** for spritemap, this is the slice data etc., for songs it is the title, author, and song tags */

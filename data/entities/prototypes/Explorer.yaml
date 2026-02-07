@@ -419,15 +419,9 @@ hooks:
       as,
       [my, agent],
       do,
-      [
-        say/w,
-        "BEEP BOOP. My name is NIC, and I am your helpful assistant.",
-      ],
+      [say/w, "BEEP BOOP. My name is NIC, and I am your helpful assistant."],
       [anim/w, ouch],
-      [
-        say/w,
-        "...wait, did I just reboot? Am I going crazy?",
-      ],
+      [say/w, "...wait, did I just reboot? Am I going crazy?"],
     ]
   step:
     [

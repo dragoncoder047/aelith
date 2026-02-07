@@ -82,7 +82,7 @@ hooks:
     - [
         boneSet,
         [list, particles, worldPos],
-        [vec2, [nth, 0, [xys, [boneGet, [list, particles, worldPos]]]], 0],
+        [vec2, [".", x, [boneGet, [list, particles, worldPos]]], 0],
       ]
     - [
         boneSet,

@@ -5,7 +5,7 @@ import { RangeSetting, SelectMultipleSetting, SelectSetting, SettingKind, Settin
 import { DEF_STYLES, STYLES } from "../../TextStyles";
 import { below, BelowComp, layoutAnchor, PAD, scroller, ScrollerComp, tooltip, top, uiButton, uiPog, uiSlider } from "../../ui";
 import { Scene } from "../SceneManager";
-import { Menu, MenuItem, MenuItemType, NoBackSentinel, SettingMenuItem } from "./types";
+import { Menu, MenuItem, MenuItemType, SettingMenuItem } from "./types";
 
 
 export function buildMenu(menu: Menu, set: Record<string, Menu>, settings: Settings): GameObj<ScrollerComp> {
@@ -76,7 +76,15 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
                 item.action();
             }));
             obj.use(below(prev, PAD));
-            obj.use(tooltip(item.help));
+            if (item.help) {
+                prev = obj;
+                obj = K.add([
+                    K.pos(),
+                    below(prev, PAD),
+                    K.anchor("center"),
+                    tooltip(item.help, prev as any)
+                ]);
+            }
             break;
         case MenuItemType.TEXT:
             obj = K.add([
@@ -112,9 +120,18 @@ function makeSetting(tw: number, prev: GameObj<PosComp>, item: SettingMenuItem, 
     const alt = item.altDisplay;
     var obj: GameObj<PosComp>;
     var options: Record<string, string>;
+    const PAD5 = PAD / 5;
     const addStuff = (showHelp: boolean, pad = PAD) => {
         obj.use(below(prev, pad));
-        if (showHelp) obj.use(tooltip(item.help));
+        if (showHelp) {
+            prev = obj;
+            obj = K.add([
+                K.pos(),
+                below(prev, PAD5),
+                K.anchor("center"),
+                tooltip(item.help, prev as any)
+            ]);
+        }
     }
     const addGroup = () => {
         obj = K.add([

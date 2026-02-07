@@ -4,9 +4,8 @@
 * [ ] implement cutscene mode on player so camera follows but input is blocked
 * [ ] implement task pooling to reduce GC overhead of render and update hooks
 * [ ] finish names for buttons in help screen
-* [ ] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
+* [X] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
 * [ ] make a general border for toast
-* [ ] make explorer arms and legs using a slice9'ed sprite so it can have a normal map
 * [ ] Add arm/hands to NIC
 * [X] add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
     * [ ] allow these as rendering decorations in the rooms
@@ -49,8 +48,6 @@
     * [ ] use unused spinner sfx for tab switch
     * [ ] L1/R1 buttons to switch tabs
 * [ ] serialization of world state to JSON
-* lighting stuff - On hold until new renderer
-    * [X] get normal map generation working (I think this is OK)?
 * [ ] JUICE!! (Consult Amy on this.)
 * [ ] possibly add more parkour stuff like ledge grab, wall jump, and double jump
     * why

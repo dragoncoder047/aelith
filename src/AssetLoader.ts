@@ -149,15 +149,6 @@ export async function loadAsset(asset: AssetData, root: URL): Promise<unknown> {
                     return K.strings[asset.id] = asset.src as NestedStrings;
             }
             break;
-        case "normalmap": kindOK = true;
-            switch (asset.loader) {
-                case "conv":
-                    return logLoad(K.generateNormalMapFor(asset.src as string, "sobel3x3", asset.id));
-                case null:
-                case undefined:
-                    return K.setNormalMap(asset.src as string, asset.id);
-            }
-            break;
         default:
             asset.kind satisfies never;
     }

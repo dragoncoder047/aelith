@@ -249,65 +249,69 @@ export function below(obj: GameObj<PosComp>, pad: number): BelowComp {
         require: ["pos"],
         belowObj: obj,
         update(this: GameObj<PosComp | AnchorComp | RectComp>) {
-            const otherBottom = (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * ((obj as any).height ?? 0) / 2;
-            const myAnchor = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
-            this.worldPos = obj.pos.add(0, otherBottom + myAnchor + pad);
+            const h = ((obj as any).height ?? 0)
+            const otherBottomOffset = h - (K.anchorToVec2((obj as any).anchor ?? K.Vec2.ZERO).y + 1) * h / 2;
+            const myAnchorOffset = (K.anchorToVec2(this.anchor ?? K.Vec2.ZERO).y + 1) * (this.height ?? 0) / 2;
+            this.worldPos = obj.pos.add(0, otherBottomOffset + myAnchorOffset + pad);
         },
     }
 }
 
-export function tooltip(tip: string) {
-    if (!tip) return {};
+interface TipComp extends Comp {
+    rawText(): string;
+}
+
+export function tooltip(tip: string, parent: GameObj<PosComp | AreaComp | RectComp>): TipComp {
+    var poo = 0;
     return {
         id: "tooltip",
-        require: ["pos", "area"],
-        add(this: GameObj<PosComp | AnchorComp | RectComp | AreaComp>) {
-            const self = this;
-            self.add([
-                K.pos(),
-                K.layer(K._k.game.layers!.at(-1)!),
-                below(self, PAD),
-                {
-                    draw() {
-                        if (!self.isHovering() && !self.is("focused")) return;
-                        const text = K.sub(this.rawText());
-                        const color = K.rgb(GameManager.getUIKey("colors", "normal"));
-                        const fText = K.formatText({
-                            text,
-                            align: "left",
-                            anchor: "top",
-                            width: self.width - PAD,
-                            styles: STYLES,
-                            color,
-                            size: DEF_TEXT_SIZE,
-                            transform: DEF_STYLES,
-                            opacity: 0.5,
-                            font: GameManager.getDefaultValue("font"),
-                        });
-                        K.drawRect({
-                            pos: K.vec2(0, -PAD / 2),
-                            width: self.width,
-                            radius: 2,
-                            anchor: "top",
-                            height: fText.height + PAD,
-                            color: K.BLACK,
-                            outline: {
-                                color,
-                                opacity: 0.5,
-                                width: 2
-                            }
-                        });
-                        K.drawFormattedText(fText);
-                    },
-                    rawText() {
-                        return `[i]${tip}[/i]`;
-                    },
-                    inspect() {
-                        return `tooltip: ${this.rawText()}`;
-                    },
+        require: ["pos", "below"],
+        add(this: GameObj) {
+            this.use(K.rect(parent.width, 0, { fill: false }));
+            this.use(K.area());
+            this.anchor = "top";
+        },
+        draw(this: GameObj<RectComp | TipComp>) {
+            const target = (!parent.isHovering() && !parent.is("focused")) ? 0 : 1;
+            poo = K.lerp(poo, target, K.clamp(20 * K.dt(), 0, 1));
+            const text = K.sub(this.rawText());
+            const color = K.rgb(GameManager.getUIKey("colors", "normal"));
+            const fText = K.formatText({
+                pos: K.vec2(0, PAD / 2),
+                text,
+                align: "left",
+                anchor: "top",
+                width: parent.width - PAD,
+                styles: STYLES,
+                color,
+                size: DEF_TEXT_SIZE,
+                transform: DEF_STYLES,
+                opacity: 0.5,
+                font: GameManager.getDefaultValue("font"),
+            });
+            K.pushScale(K.vec2(poo));
+            K.drawRect({
+                width: parent.width,
+                radius: 2,
+                anchor: "top",
+                height: fText.height + PAD,
+                color: K.BLACK,
+                outline: {
+                    color,
+                    opacity: 0.5,
+                    width: 2
                 }
-            ])
-        }
+            });
+            K.drawFormattedText(fText);
+            K.pushScale(K.vec2(1 / poo));
+            this.height = poo * (fText.height + PAD);
+        },
+        rawText() {
+            return `[i]${tip}[/i]`;
+        },
+        inspect() {
+            return `tooltip: ${this.rawText()}`;
+        },
     }
 }
 
