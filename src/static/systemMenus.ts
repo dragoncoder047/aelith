@@ -29,42 +29,42 @@ const mmk = (s: string) => mmo(`keybinds.${s}`);
 
 export const SYSTEM_MENUS: Record<string, Menu> = {
     settings: {
-        title: mmo("title"),
+        title: mmo("title"), // &msg.menu.options.title
         options: [
             {
                 type: MenuItemType.SUBMENU,
                 next: "graphicsSettings",
-                text: mmo("graphics.title")
+                text: mmo("graphics.title") // &msg.menu.options.graphics.title
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "audioSettings",
-                text: mmo("audio.title")
+                text: mmo("audio.title") // &msg.menu.options.audio.title
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "keybinds",
-                text: mmo("keybinds.title")
+                text: mmo("keybinds.title") // &msg.menu.options.keybinds.title
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "languageSettings",
-                text: mmo("language.title")
+                text: mmo("language.title") // &msg.menu.options.language.title
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "debugSettings",
-                text: mmo("debug.title")
+                text: mmo("debug.title") // &msg.menu.options.debug.title
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "about",
-                text: mmo("about.title")
+                text: mmo("about.title") // &msg.menu.options.about.title
             }
         ]
     },
     keybinds: {
-        title: mmk("title"),
+        title: mmk("title"), // &msg.menu.options.keybinds.title
         options: [],
         refresh() {
             const back = this.options.at(-1)!;
@@ -73,35 +73,35 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
                 this.options.push({
                     type: MenuItemType.SUBMENU,
                     next: "controllerSettings",
-                    text: mmo("controller.title")
+                    text: mmo("controller.title") // &msg.menu.options.controller.title
                 });
             }
             this.options.push({
                 type: MenuItemType.TEXT,
-                text: mmk("configunimplemented"),
+                text: mmk("configunimplemented"), // &msg.menu.options.keybinds.configunimplemented
             });
             for (var btn of [
-                "move",
-                "sprint",
-                "jump",
-                "look",
-                "throw",
-                "target1",
-                "target2",
-                "action1",
-                "action2",
-                "action3",
-                "action4",
-                "action5",
-                "action6",
-                "scroll_inventory",
-                "pause_unpause",
-                "gui_up",
-                "gui_down",
-                "gui_changevalue",
-                "gui_select",
-                "gui_back",
-                "gui_scroll",
+                "move", // &msg.menu.options.keybinds.move.help
+                "sprint", // &msg.menu.options.keybinds.sprint.help
+                "jump", // &msg.menu.options.keybinds.jump.help
+                "look", // &msg.menu.options.keybinds.look.help
+                "throw", // &msg.menu.options.keybinds.throw.help
+                "target1", // &msg.menu.options.keybinds.target1.help
+                "target2", // &msg.menu.options.keybinds.target2.help
+                "action1", // &msg.menu.options.keybinds.action1.help
+                "action2", // &msg.menu.options.keybinds.action2.help
+                "action3", // &msg.menu.options.keybinds.action3.help
+                "action4", // &msg.menu.options.keybinds.action4.help
+                "action5", // &msg.menu.options.keybinds.action5.help
+                "action6", // &msg.menu.options.keybinds.action6.help
+                "scroll_inventory", // &msg.menu.options.keybinds.scroll_inventory.help
+                "pause_unpause", // &msg.menu.options.keybinds.pause_unpause.help
+                "gui_up", // &msg.menu.options.keybinds.gui_up.help
+                "gui_down", // &msg.menu.options.keybinds.gui_down.help
+                "gui_changevalue", // &msg.menu.options.keybinds.gui_changevalue.help
+                "gui_select", // &msg.menu.options.keybinds.gui_select.help
+                "gui_back", // &msg.menu.options.keybinds.gui_back.help
+                "gui_scroll", // &msg.menu.options.keybinds.gui_scroll.help
             ]) {
                 this.options.push({
                     type: MenuItemType.TEXT,
@@ -112,58 +112,58 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
         }
     },
     graphicsSettings: {
-        title: mmo("graphics.title"),
+        title: mmo("graphics.title"), // &msg.menu.options.graphics.title
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("graphics.hints.name"),
+                text: mmo("graphics.hints.name"), // &msg.menu.options.graphics.hints.name
                 setting: "controlHints",
-                help: mmo("graphics.hints.help"),
+                help: mmo("graphics.hints.help"), // &msg.menu.options.graphics.hints.help
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("graphics.lights.name"),
+                text: mmo("graphics.lights.name"), // &msg.menu.options.graphics.lights.name
                 setting: "renderLights",
-                help: mmo("graphics.lights.help"),
+                help: mmo("graphics.lights.help"), // &msg.menu.options.graphics.lights.help
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("graphics.depth.name"),
+                text: mmo("graphics.depth.name"), // &msg.menu.options.graphics.depth.name
                 setting: "renderDepth",
-                help: mmo("graphics.depth.help"),
+                help: mmo("graphics.depth.help"), // &msg.menu.options.graphics.depth.help
             }
         ]
     },
     languageSettings: {
-        title: mmo("language.title"),
+        title: mmo("language.title"), // &msg.menu.options.language.title
         options: [
             {
                 type: MenuItemType.SETTING,
                 text: "",
                 setting: "language",
-                help: mmo("language.info"),
+                help: mmo("language.info"), // &msg.menu.options.language.info
                 optionTextMap: {
                     en: "English",
                     es: "Español", // cSpell: ignore Español
-                    auto: mmo("language.autodetect")
+                    auto: mmo("language.autodetect") // &msg.menu.options.language.autodetect
                 }
             }
         ]
     },
     controllerSettings: {
-        title: mmo("controller.title"),
+        title: mmo("controller.title"), // &msg.menu.options.controller.title
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("controller.rumble.name"),
+                text: mmo("controller.rumble.name"), // &msg.menu.options.controller.rumble.name
                 setting: "controllerRumble",
-                help: mmo("controller.rumble.help")
+                help: mmo("controller.rumble.help") // &msg.menu.options.controller.rumble.help
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("controller.type.name"),
+                text: mmo("controller.type.name"), // &msg.menu.options.controller.type.name
                 setting: "controllerType",
-                help: mmo("controller.type.help"),
+                help: mmo("controller.type.help"), // &msg.menu.options.controller.type.help
                 optionTextMap: Object.fromEntries(["Xbox", "Switch", "PS4", "PS5"].map(name => {
                     const value = name.toLowerCase();
                     return [value, `${name.padEnd(7, " ")}(${[..."WNES, e/t"].map(c => /[a-z]/i.test(c) ? ` [font_${value}]${c}[/font_${value}] ` : c).join("")})`]
@@ -172,55 +172,55 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
         ]
     },
     audioSettings: {
-        title: mmo("audio.title"),
+        title: mmo("audio.title"), // &msg.menu.options.audio.title
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("audio.musicVolume.name"),
+                text: mmo("audio.musicVolume.name"), // &msg.menu.options.audio.musicVolume.name
                 setting: "musicVolume",
-                help: mmo("audio.musicVolume.help"),
+                help: mmo("audio.musicVolume.help"), // &msg.menu.options.audio.musicVolume.help
                 formatValue: toPercent,
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("audio.sfxVolume.name"),
+                text: mmo("audio.sfxVolume.name"), // &msg.menu.options.audio.sfxVolume.name
                 setting: "sfxVolume",
-                help: mmo("audio.sfxVolume.help"),
+                help: mmo("audio.sfxVolume.help"), // &msg.menu.options.audio.sfxVolume.help
                 formatValue: toPercent,
             }
         ]
     },
     debugSettings: {
-        title: mmo("debug.title"),
+        title: mmo("debug.title"), // &msg.menu.options.debug.title
         options: [
             {
                 type: MenuItemType.SETTING,
-                text: mmo("debug.inspectView.name"),
+                text: mmo("debug.inspectView.name"), // &msg.menu.options.debug.inspectView.name
                 setting: "debugInspect",
-                help: mmo("debug.inspectView.help"),
+                help: mmo("debug.inspectView.help"), // &msg.menu.options.debug.inspectView.help
                 altDisplay: true
             },
             {
                 type: MenuItemType.SETTING,
-                text: mmo("debug.fpsGraph.name"),
+                text: mmo("debug.fpsGraph.name"), // &msg.menu.options.debug.fpsGraph.name
                 setting: "debugFPSGraph",
-                help: mmo("debug.fpsGraph.help"),
+                help: mmo("debug.fpsGraph.help"), // &msg.menu.options.debug.fpsGraph.help
                 altDisplay: true
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "debugInfo",
-                text: mmo("debug.info.button"),
+                text: mmo("debug.info.button"), // &msg.menu.options.debug.info.button
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "debugLongMenu",
-                text: mmo("debug.long.button")
+                text: mmo("debug.long.button") // &msg.menu.options.debug.long.button
             },
             {
                 type: MenuItemType.BUTTON,
-                help: mmo("debug.crash.help"),
-                text: mmo("debug.crash.name"),
+                help: mmo("debug.crash.help"), // &msg.menu.options.debug.crash.help
+                text: mmo("debug.crash.name"), // &msg.menu.options.debug.crash.name
                 action() {
                     throw new Error("deliberate error");
                 }
@@ -228,27 +228,27 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
             {
                 type: MenuItemType.BUTTON,
                 help: "",
-                text: mmo("debug.toast.button"),
+                text: mmo("debug.toast.button"), // &msg.menu.options.debug.toast.button
                 action() {
-                    toast(K.CYAN, mmo("debug.toast.test"));
+                    toast(K.CYAN, mmo("debug.toast.test")); // &msg.menu.options.debug.toast.test
                 }
             }
         ]
     },
     debugLongMenu: {
-        title: mmo("debug.long.title"),
+        title: mmo("debug.long.title"), // &msg.menu.options.debug.long.title
         options: new Array(41).fill(0).map((_, i) => i % 5 > 0 ? ({
             type: MenuItemType.TEXT,
-            text: mmo("debug.long.dummy") + " " + i,
+            text: mmo("debug.long.dummy") + " " + i, // &msg.menu.options.debug.long.dummy
         }) : ({
             type: MenuItemType.BUTTON,
-            text: mmo("debug.long.dummy") + " " + i,
+            text: mmo("debug.long.dummy") + " " + i, // &msg.menu.options.debug.long.dummy
             help: "",
             action() { }
         })),
     },
     debugInfo: {
-        title: mmo("debug.info.title"),
+        title: mmo("debug.info.title"), // &msg.menu.options.debug.info.title
         options: [],
         refresh() {
             this.options.length = 1;
@@ -257,12 +257,12 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
 
             this.options.push({
                 type: MenuItemType.BUTTON,
-                text: mmo("debug.info.copy.button"),
+                text: mmo("debug.info.copy.button"), // &msg.menu.options.debug.info.copy.button
                 help: "",
                 action() {
                     navigator.clipboard.writeText(JSON.stringify(debugInfo)).then(
-                        () => toast(K.GREEN, mmo("debug.info.copy.success")),
-                        () => toast(K.RED, mmo("debug.info.copy.error"))
+                        () => toast(K.GREEN, mmo("debug.info.copy.success")), // &msg.menu.options.debug.info.copy.success
+                        () => toast(K.RED, mmo("debug.info.copy.error")) // &msg.menu.options.debug.info.copy.error
                     );
                 },
             })
@@ -278,23 +278,23 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     },
     // Pause menu
     paused: {
-        title: mmp("title"),
+        title: mmp("title"), // &msg.menu.pause.title
         options: [
             {
                 type: MenuItemType.SUBMENU,
-                text: mmo("title"),
+                text: mmo("title"), // &msg.menu.options.title
                 next: "settings"
             },
             {
                 type: MenuItemType.BUTTON,
-                text: mmp("quitToTitle"),
+                text: mmp("quitToTitle"), // &msg.menu.pause.quitToTitle
                 help: "",
                 action() {
                     K.go(Scene.TITLE_SCREEN);
                 },
             },
             {
-                text: mmp("resume"),
+                text: mmp("resume"), // &msg.menu.pause.resume
                 type: MenuItemType.BACK,
             },
             {
@@ -304,42 +304,42 @@ export const SYSTEM_MENUS: Record<string, Menu> = {
     },
     // about menu
     about: {
-        title: mma("title"),
+        title: mma("title"), // &msg.menu.options.about.title
         options: [
             {
                 type: MenuItemType.TEXT,
-                text: mma("overview"),
+                text: mma("overview"), // &msg.menu.options.about.overview
             },
             {
                 type: MenuItemType.SUBMENU,
                 next: "credits",
-                text: mma("toCredits"),
+                text: mma("toCredits"), // &msg.menu.options.about.toCredits
             },
             {
                 type: MenuItemType.BUTTON,
-                text: mma("toLicense"),
+                text: mma("toLicense"), // &msg.menu.options.about.toLicense
                 help: "",
                 action() {
-                    window.open(K.sub(mma("licenseURL")), "_blank");
+                    window.open(K.sub(mma("licenseURL")), "_blank"); // &msg.menu.options.about.licenseURL
                 },
             },
             {
                 type: MenuItemType.BUTTON,
-                text: mma("toSourceCode"),
+                text: mma("toSourceCode"), // &msg.menu.options.about.toSourceCode
                 help: "",
                 action() {
-                    window.open(K.sub(mma("codeURL")), "_blank");
+                    window.open(K.sub(mma("codeURL")), "_blank"); // &msg.menu.options.about.codeURL
                 },
             }
         ],
     },
     credits: {
-        title: mma("credits.title"),
+        title: mma("credits.title"), // &msg.menu.options.about.credits.title
         options: [],
         refresh() {
             // clear menu without removing the back button
             this.options.length = 1;
-            const nCredits = +K.sub(mma("credits.items.length"));
+            const nCredits = +K.sub(mma("credits.items.length")); // &msg.menu.options.about.credits.items.length
             for (var i = 0; i < nCredits; i++) {
                 this.options.push({
                     type: MenuItemType.TEXT,
