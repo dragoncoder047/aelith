@@ -23,6 +23,10 @@ export class Inventory {
             this._handsBone = b.inventoryHolder;
         }
     }
+    silentAdd(obj: Entity) {
+        this._occupied += obj.inventory.size ?? 0;
+        this.slots.push(obj);
+    }
     async tryAdd(obj: Entity) {
         const otherSize = obj.inventory.size;
         if (otherSize === undefined || this.maxSlots === undefined) return "cannotTake";
@@ -35,18 +39,21 @@ export class Inventory {
             if (t.failed && v instanceof RefuseTake) return "refused";
         }
         this.me.startHook("take", { taken: obj.id });
-        this._occupied += otherSize;
-        this.slots.push(obj);
+        this.silentAdd(obj);
         EntityManager.teleportEntityTo(obj, null, K.Vec2.ZERO);
         this.displayObj(obj);
         return "taken";
     }
-    drop(obj: Entity) {
+    silentRemove(obj: Entity) {
         const i = this.slots.indexOf(obj);
-        if (i < 0) return false;
+        if (i < 0) return;
         this.slots.splice(i, 1);
-        this._occupied -= obj.inventory.size!;
-        const pos = (this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj!).pos;
+        this._occupied -= obj.inventory.size ?? 0;
+    }
+    drop(obj: Entity) {
+        if (!this.slots.includes(obj)) return;
+        this.silentRemove(obj);
+        const pos = (this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj!).worldPos;
         EntityManager.teleportEntityTo(obj, this.me.currentRoom, pos);
         return true;
     }

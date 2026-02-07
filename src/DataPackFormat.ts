@@ -317,9 +317,7 @@ export interface EntityData extends JSONObject {
     leashed?: [owner: string, distance: number];
     /** name of the link group to receive messages on */
     linkGroup?: string;
-    /** if this is in some other entity's inventory */
-    parent?: string;
-    inventory?: string[];
+    inventory?: (string | EntityData)[];
 }
 
 /**
@@ -388,8 +386,6 @@ export interface Savefile extends JSONObject {
     hasWon: boolean;
     /** mapping of room name -> room data */
     rooms: Record<string, RoomData>;
-    /** list of entities that are not directly in a room */
-    ownedEntities: EntityData[];
     /** id of the entity that is the current player */
     currentPlayer: string;
 }

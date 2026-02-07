@@ -37,7 +37,20 @@ export function blankEntityId(forKind: string) {
 }
 
 function _createEntity(data: EntityData, inRoom: string | null, realPos: Vec2) {
-    return new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state ?? {}, realPos, data.leashed, data.linkGroup);
+    const entity = new Entity(data.id ?? blankEntityId(data.kind), inRoom, data.kind, data.state ?? {}, realPos, data.leashed, data.linkGroup);
+    if (data.inventory) {
+        for (var i = 0; i < data.inventory.length; i++) {
+            const obj = data.inventory[i]!;
+            if (typeof obj === "string") {
+                entity.inventory.silentAdd(getEntityByName(obj)!);
+            } else {
+                const e2 = _createEntity(obj, null, K.Vec2.ZERO);
+                data.inventory[i] = e2.id;
+                entity.inventory.silentAdd(e2);
+            }
+        }
+    }
+    return entity;
 }
 
 export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: EntityData): Entity {
@@ -47,28 +60,7 @@ export function spawnEntityInRoom(slotPos: Vec2, inRoom: string | null, data: En
     if (RoomManager.getCurrentRoom() === inRoom) {
         e.load();
     }
-    maybeRunSpawnCallbacks(e.id);
     return e;
-}
-
-const spawnCallbacks: Record<string, (() => void)[]> = {};
-export function spawnOwnedEntity(ownerID: string, data: EntityData): void {
-    const owner = getEntityByName(ownerID);
-    if (!owner) {
-        (spawnCallbacks[ownerID] ??= []).push(() => spawnOwnedEntity(ownerID, data));
-        return;
-    }
-    const e = _createEntity(data, null, K.vec2());
-    allEntities.push(e);
-    maybeRunSpawnCallbacks(e.id);
-}
-
-function maybeRunSpawnCallbacks(newlySpawned: string) {
-    const cbs = spawnCallbacks[newlySpawned];
-    if (cbs) {
-        delete spawnCallbacks[newlySpawned];
-        for (var cb of cbs) cb();
-    }
 }
 
 export function loadAllEntitiesInRoom(id: string) {
