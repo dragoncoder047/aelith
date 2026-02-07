@@ -103,7 +103,10 @@ function makeloop(continue_: boolean) {
             if (prevFrameNo !== nextFrame) repeatCount = 0;
             prevFrameNo = nextFrame;
         }
-        throw new Error("infinite loop detected.\ntip: if you want an update loop, add a ['wait', 0] to prevent a lockup,\nor use the 'update' or 'render' hooks.");
+        throw new Error("infinite loop detected.\n" +
+            "tip: if you want an update loop, add a " +
+            "['wait', 0] to prevent a lockup, or use " +
+            "the 'update' or 'render' hooks.");
     }
 }
 

@@ -197,7 +197,7 @@ export function addRenderComps(obj: GameObj, uid: number, id: string | null, pri
             obj.use(K.lightSource({
                 ...primitive,
                 color: (primitive.color ?? null) !== null ? K.rgb(primitive.color!) : undefined,
-                excludeTags: primitive.excludeTags && id ? [...primitive.excludeTags, id] : id ? [id] : []
+                excludeTags: [...(primitive.excludeTags ?? []), ...(id ? [id] : [])]
             }));
             console.log(obj.light);
             break;

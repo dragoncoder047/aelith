@@ -3,11 +3,14 @@ import { ScrollerComp } from ".";
 import { K } from "../context";
 import * as GameManager from "../GameManager";
 
-export function installTabNavigation() {
+export function installTabNavigation(allowAutoFocus: boolean) {
     const objects = K.get<PosComp | SpriteComp | AreaComp>("focusable", { liveUpdate: true });
-    const navigate = (d: number, first = false) => {
+    const getNextFocused = (d: number) => {
         const newFocusIndex = (d + objects.length + objects.findIndex(o => o.is("focused"))) % objects.length;
-        const justFocused = objects[newFocusIndex]!;
+        return objects[newFocusIndex]!;
+    }
+    const navigate = (d: number, first = false) => {
+        const justFocused = getNextFocused(d);
         objects.forEach(o => o === justFocused ? o.tag("focused") : o.untag("focused"));
         if (!first) GameManager.playUISound("switch");
         focusThing.time = 0;
@@ -72,10 +75,10 @@ export function installTabNavigation() {
         }
         prevObj = focusedThing;
     });
-}
 
-export function maybeAutoFocus() {
-    if (K.getLastInputDeviceType() === "mouse") return;
-    K.pressButton("gui_down");
-    K.releaseButton("gui_down");
+    if (allowAutoFocus) {
+        if (K.getLastInputDeviceType() === "mouse") return;
+        if (getNextFocused(1)?.is("back")) return;
+        navigate(1, true);
+    }
 }

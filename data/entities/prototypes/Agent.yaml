@@ -78,6 +78,7 @@ model:
       pos: { x: 5, y: 2 }
   anims:
     emoHappy:
+      sticky: false
       channels:
         - target: [body, pos]
           alpha: 200
@@ -98,6 +99,7 @@ model:
         - <<: *squishEye
           target: [leftEye, scale]
     ouch:
+      sticky: false
       channels:
         - target: [_state, jiggle]
           alpha: 10000

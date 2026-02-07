@@ -70,6 +70,7 @@ function makeMenuItem(w: number, bw: number, prev: GameObj<PosComp | BelowComp>,
                 K.popScene();
             }));
             obj.use(below(prev, curPad));
+            obj.tag("back");
             break;
         case MenuItemType.BUTTON:
             obj = K.add(uiButton(bw, 1.5, item.text, null, () => {

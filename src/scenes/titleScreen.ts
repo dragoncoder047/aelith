@@ -6,7 +6,7 @@ import * as ScriptHandler from "../script/ScriptHandler";
 import * as FPSMonitor from "../static/fpsMonitor";
 import { SYSTEM_MENUS } from "../static/systemMenus";
 import { below, layoutAnchor, uiButton } from "../ui";
-import { maybeAutoFocus, installTabNavigation } from "../ui/tabNav";
+import { installTabNavigation } from "../ui/tabNav";
 import * as SceneManager from "./SceneManager";
 
 var first = true;
@@ -18,7 +18,6 @@ export function titleScreenScene() {
     K.setBackground(K.BLACK);
     const e = new DisplayEntity(GameManager.getTitleData().entity, K.vec2(K.width() / 2, 0), {});
     ScriptHandler.startMainLoop();
-    installTabNavigation();
     e.obj!.onUpdate(() => {
         e.setPosition(K.vec2(K.width() / 2, 0));
     });
@@ -39,6 +38,6 @@ export function titleScreenScene() {
     enterBtn.use(layoutAnchor(K.center));
     optionsBtn.use(below(enterBtn, 10));
     // aboutBtn.use(below(optionsBtn, 10));
-    if (!first) maybeAutoFocus();
+    installTabNavigation(!first);
     first = false;
 }

@@ -10,15 +10,24 @@ import { SYSTEM_SETTINGS } from "../static/systemMenus";
 import { Animator, buildAnimations } from "./Animator";
 import { buildHitbox, buildSkeleton } from "./buildSkeleton";
 import { EntityComp, entitywrapper } from "./comps/entitywrapper";
-import { SpeechBubbleComp } from "./comps/speechBubble";
+import { segment, SpeechBubbleComp } from "./comps/speechBubble";
+import { DisplayEntity } from "./DisplayEntity";
 import * as EntityManager from "./EntityManager";
 import { Inventory } from "./Inventory";
 import { MotionManager } from "./MotionManager";
-import { DisplayEntity } from "./DisplayEntity";
 
 export type EntityComponents = EntityComp | PosComp;
 export type BoneComponents = EntityComponents | RotateComp | ScaleComp | AreaComp;
 export type BonesMap = Record<string, GameObj<BoneComponents>>;
+
+enum SpeechBubbleAction {
+    ADD_WORD, // +word, play sound, and wait
+    CLEAR_BUBBLE, // clear screen
+    FINISH_SENTENCE, // wait,
+    FINISH_SPEAKING, // resolve promise, and clear if nothing else to say
+}
+
+type SpeechBubbleQueueEntry = [SpeechBubbleAction, string | undefined, (() => void) | undefined];
 
 export class Entity implements Serializable {
     obj: GameObj<EntityComponents | BodyComp | AreaComp> | null = null;
@@ -223,7 +232,39 @@ export class Entity implements Serializable {
     stopAnim(a: string) {
         this.animator.stop(a);
     }
+    private _sbQ: SpeechBubbleQueueEntry[] = [];
+    private _sbT = 0;
+    private _sbTxt = "";
+    speechTokenDelay = 0.1;
+    speechSentenceDelay = 2;
+    private _updateSpeechBubble() {
+        if (this._sbT > 0) {
+            this._sbT -= K.dt();
+            return;
+        }
+        const action = this._sbQ.shift();
+        if (!action) return;
+        action[2]?.();
+        switch (action[0]) {
+            case SpeechBubbleAction.ADD_WORD:
+                this._sbTxt += action[1]!;
+                this._sbT = this.speechTokenDelay;
+                if (this.speakSound) this.emitSound(this.speakSound, 1);
+                break;
+            case SpeechBubbleAction.FINISH_SENTENCE:
+                this._sbTxt = action[1]!;
+                this._sbT = this.speechSentenceDelay;
+                break;
+            case SpeechBubbleAction.CLEAR_BUBBLE:
+                this._sbTxt = "";
+        }
+        if (this.speechBubble) this.speechBubble.text = this._sbTxt;
+    }
     updateHook() {
+        const other = this.targeted;
+        if (other && other?.obj) {
+            this._lookAtPoint(other.getHead()?.worldPos ?? other.obj.worldPos);
+        }
         this.inventory.update();
         this.startHook("update");
     }
@@ -240,19 +281,33 @@ export class Entity implements Serializable {
 
         this._updateEv.trigger();
         this._updateSounds();
+        this._updateSpeechBubble();
         this.startHook("render");
     }
-    async say(text: string | undefined, force = false) {
+    say(text: string | undefined, force = false) {
         if (!text) {
-            if (this.speechBubble) {
-                this.speechBubble?.speakText("", undefined, true);
+            this._sbQ.length = this._sbT = 0;
+            this._sbTxt = "";
+            return Promise.resolve();
+        }
+        if (force) this._sbQ.length = this._sbT = 0;
+        const s = K.sub(text).trim();
+        const sentences = segment(s, "sentence");
+        const { promise, resolve } = Promise.withResolvers<void>();
+        for (var i = 0; i < sentences.length; i++) {
+            const sentence = sentences[i]!;
+            this._sbTxt = "";
+            const sen = sentence.segment.trim();
+            if (!sen) continue;
+            this._sbQ.push([SpeechBubbleAction.CLEAR_BUBBLE, , ,]);
+            const words = segment(sen, "word");
+            for (var word of words) {
+                this._sbQ.push([SpeechBubbleAction.ADD_WORD, word.segment, ,]);
             }
+            this._sbQ.push([SpeechBubbleAction.FINISH_SENTENCE, sen, ,]);
         }
-        else {
-            await this.speechBubble?.speakText(text, () => {
-                if (this.speakSound) this.emitSound(this.speakSound, 1);
-            }, force);
-        }
+        this._sbQ.push([SpeechBubbleAction.CLEAR_BUBBLE, , resolve])
+        return promise;
     }
     doAction(action: string) {
         this.startHook(action, { what: this.targeted?.id }, true);
@@ -267,9 +322,6 @@ export class Entity implements Serializable {
         return b ? this.bones[b]! : this.obj!;
     }
     target(other: Entity | null) {
-        if (other?.obj) {
-            this._lookAtPoint(other.getHead()?.worldPos ?? other.obj.worldPos);
-        }
         this.targeted = other;
     }
     private _lookAtPoint(pt: Vec2) {

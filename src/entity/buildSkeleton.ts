@@ -183,7 +183,9 @@ export function buildSkeleton(e: Entity, rootObj: GameObj<EntityComponents>): Bo
     if (model.speechBubble) {
         const { origin, tokenDelay, sentenceDelay, width, voiceSound } = model.speechBubble;
         e.speechBubble = assertGet(origin) as any;
-        e.speechBubble!.use(speechBubble({ tokenDelay, sentenceDelay }));
+        e.speechBubble!.use(speechBubble());
+        if (tokenDelay) e.speechTokenDelay = tokenDelay;
+        if (sentenceDelay) e.speechSentenceDelay = sentenceDelay;
         e.speechBubble!.width = width ?? GameManager.getDefaultValue("speechBubbleWidth");
         e.speakSound = voiceSound;
     } else {

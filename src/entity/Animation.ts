@@ -130,11 +130,14 @@ export class Animation {
     allDone() {
         return this.channels.every(c => c.ended);
     }
-    stop() {
-        this.channels.forEach(c => c.stop());
+    finished() {
         this.onEnd.trigger();
         this.onEnd.clear();
         this.running = false;
+    }
+    stop() {
+        this.finished();
+        this.channels.forEach(c => c.stop());
     }
 }
 

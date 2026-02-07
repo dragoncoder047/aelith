@@ -124,7 +124,7 @@ export class Animator {
                 }
             }
             if (anim.allDone()) {
-                anim.stop();
+                anim.finished();
             }
         }
         this.baseValues.forEach(([path, value], k) => addValue(path, value, usedPaths.has(k) ? undefined : (this.lastAlphas.get(k) ?? 10), 1e-6, false));

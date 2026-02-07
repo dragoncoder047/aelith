@@ -1,7 +1,7 @@
 # to do
 
 * [ ] make speech bubble using sprite for customization
-* [ ] make speech bubble advance logic be handled by entity rather than object to prevent a total lockup if the scene changes mid-sentence
+* [X] make speech bubble advance logic be handled by entity rather than object to prevent a total lockup if the scene changes mid-sentence
 * [ ] implement cutscene mode on player so camera follows but input is blocked
 * [ ] implement task pooling to reduce GC overhead of render and update hooks
 * [X] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
@@ -9,7 +9,6 @@
 * [X] add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
     * [ ] allow these as rendering decorations in the rooms
     * [X] make the title screen image out of this - sprite primitive + particles child, then a 3 channel animation on the sprite to match the existing waves
-        * [ ] add code for hooks when the player is pressing *AND* releasing the action buttons (for like elevator control buttons)
     * [ ] this is how the inventory menu screen should work as well
         * [ ] need to determine how the currently held item is rendered (does it rotate with the aim direction, does it match flip, etc)
 * [ ] add random ticks functionality
@@ -23,6 +22,7 @@
 * [ ] need to put the "continue" code in a hook api function
 * [ ] implement all of the settings stuff even if music manager is not fully implemented
     * [ ] hook lighting stuff into settings (how to turn off lighting??)
+* [ ] fix bug with explorer headlight lighting explorer parts
 * [X] remove "doors" section from room definition as I can just use entities for that
     * [ ] define check order when player presses action button
         1. try item currently holding

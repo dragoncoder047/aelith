@@ -21,6 +21,9 @@ model:
         frame: 2
         z: 0
       children:
+        - name: tentacleRot
+          render:
+            angle: 0
         - name: backdoor
           render:
             as: sprite
@@ -46,7 +49,7 @@ model:
       render:
         as: light
         type: point
-        color: "#ddddff"
+        color: white
         intensity: 2
         near: 100
         far: 200
@@ -64,7 +67,7 @@ model:
       sizes: [12, 1]
       masses: [1, 1]
       gravityIsLocal: yes
-      eachConstraint: [angle, body, 1, -90]
+      eachConstraint: [angle, tentacleRot, 1, -90]
     - <<: *st
       name: tb
       pos: { x: 40, y: -30 }
@@ -107,5 +110,10 @@ hooks:
   stateChanged:
     - switch
     - [the, slot]
-    - doorOpen: [unless, [isVoid, [the, oldValue]], [anim, [if, [the, value], doorOpen, doorClose]]]
+    - doorOpen:
+        [
+          unless,
+          [isVoid, [the, oldValue]],
+          [anim, [if, [the, value], doorOpen, doorClose]],
+        ]
   action1: [be, doorOpen, [not, [my, doorOpen]]]
