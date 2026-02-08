@@ -1,5 +1,6 @@
 # to do
 
+* [ ] Make the menu screens and stuff have 2 default fonts, one for headings and callouts, and one for general text
 * [ ] make the about screen not have hard-coded sections, and be data-driven
     * [ ] could this work for the config menus too?
 * [ ] make speech bubble using sprite for customization
