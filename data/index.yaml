@@ -10,7 +10,7 @@ entityTypes: !include entities/prototypes/index.yaml
 initial:
   rooms: !include rooms/index.yaml
   hasWon: no
-  currentPlayer: player
+  currentPlayer: spaceship
 renderLayers:
   - [
       behindEverything,

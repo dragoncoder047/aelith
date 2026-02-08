@@ -1,8 +1,10 @@
 import { Color, ColorComp, GameObj, PosComp, Tag, Vec2 } from "kaplay";
-import { RenderData, RoomData, StaticTileDefinition } from "../DataPackFormat";
+import { EntityData, RenderData, RoomData, StaticTileDefinition } from "../DataPackFormat";
 import * as GameManager from "../GameManager";
+import { JSONObject } from "../JSON";
 import { Serializable } from "../Serializable";
 import { K } from "../context";
+import { BackgroundLayer } from "../context/plugins/kaplay-background-more";
 import { addRenderComps } from "../draw/primitive";
 import * as EntityManager from "../entity/EntityManager";
 import { hashPoint, javaHash } from "../hash";
@@ -11,7 +13,7 @@ import * as ScriptHandler from "../script/ScriptHandler";
 import * as RoomManager from "./RoomManager";
 import { autotile } from "./autotile";
 import { mergeColliders } from "./merge";
-import { BackgroundLayer } from "../context/plugins/kaplay-background-more";
+import { DisplayEntity } from "../entity/DisplayEntity";
 
 
 export type TileEntry = {
@@ -35,6 +37,7 @@ export class Room implements Serializable {
     frozen: {
         colliders: ColliderEntry[],
         tiles: TileEntry[],
+        decorations: EntityData[],
         slots: Record<string, Vec2>;
     };
     depthTiles: [GameObj<ColorComp | PosComp>, number][] = [];
@@ -96,6 +99,9 @@ export class Room implements Serializable {
             addRenderComps(t, javaHash(self.id + hashPoint(tile.pos)), null, tile.r);
             if (!t.has("layer")) t.use(K.layer(GameManager.getDefaultValue("tileLayer")));
             if (tile.ds) this.depthTiles.push([t, tile.ds as number]);
+        }
+        for (var entity of this.frozen.decorations) {
+            new DisplayEntity(entity.kind, K.vec2(entity.pos!.x, entity.pos!.y), entity.state ?? {});
         }
         K.setBackground(self.bg ?? GameManager.getDefaultValue("background") ?? "black");
         K.setGravity(self.data.gravity ?? GameManager.getDefaultValue("gravity") ?? 0);
@@ -180,9 +186,10 @@ export class Room implements Serializable {
 function buildFrozen(data: RoomData): Room["frozen"] {
     const colliders: ColliderEntry[][][] = [];
     const tiles: TileEntry[][][] = [];
+    const displayEntities: EntityData[] = [];
     const entityOrDoorSlots: Record<string, Vec2> = {};
     const indexMap = data.indexMapping;
-    const { gridSize: sz, tiles: tileDefs } = RoomManager.getTileset(data.tileset);
+    const { gridSize: sz, tiles: tileDefs, decorations: entityDefs } = RoomManager.getTileset(data.tileset);
     const grid = data.map;
     for (var r = 0; r < grid.length; r++) {
         const row = grid[r]!;
@@ -204,23 +211,32 @@ function buildFrozen(data: RoomData): Room["frozen"] {
                         entityOrDoorSlots[index] = pos;
                         break;
                     case "number":
-                        const desc = tileDefs[index];
-                        if (desc?.render !== undefined) {
-                            tEntry.push({
-                                pos,
-                                r: desc.render,
-                                ds: desc.depth,
-                                auto: desc.autotile,
-                                tags: desc.tags ?? []
-                            });
-                        }
-                        if (desc?.physics !== undefined) {
-                            cEntry.push({
-                                i: index,
-                                pos,
-                                def: desc.physics,
-                                tags: desc.tags ?? []
-                            });
+                        if (index >= 0) {
+                            const desc = tileDefs[index];
+                            if (desc?.render !== undefined) {
+                                tEntry.push({
+                                    pos,
+                                    r: desc.render,
+                                    ds: desc.depth,
+                                    auto: desc.autotile,
+                                    tags: desc.tags ?? []
+                                });
+                            }
+                            if (desc?.physics !== undefined) {
+                                cEntry.push({
+                                    i: index,
+                                    pos,
+                                    def: desc.physics,
+                                    tags: desc.tags ?? []
+                                });
+                            }
+                        } else {
+                            const data = entityDefs[-index - 1];
+                            if (data)
+                                displayEntities.push({
+                                    ...data,
+                                    pos: pos.add(data.pos?.x ?? 0, data.pos?.y ?? 0) as any,
+                                });
                         }
                         break;
                     default:
@@ -230,5 +246,10 @@ function buildFrozen(data: RoomData): Room["frozen"] {
             }
         }
     }
-    return { colliders: mergeColliders(colliders, sz), tiles: autotile(tiles), slots: entityOrDoorSlots };
+    return {
+        colliders: mergeColliders(colliders, sz),
+        tiles: autotile(tiles),
+        slots: entityOrDoorSlots,
+        decorations: displayEntities,
+    };
 }

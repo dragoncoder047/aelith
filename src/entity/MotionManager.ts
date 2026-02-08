@@ -215,6 +215,7 @@ class MovingBone {
                     const maxLenSq = this.len! ** 2;
                     if (this.ladderMode) {
                         // Snap to nearest climbable
+                        // TODO: use the broadphase retrieve()
                         const objs = K.get<AreaComp>("climbable", { only: "comps" });
                         // First: check all objects; if we're inside one use that point,
                         // if not raycast in the current direction; if we get a hit rotate it until the length is less than the step length

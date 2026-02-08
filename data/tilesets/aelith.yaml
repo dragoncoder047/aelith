@@ -8,7 +8,7 @@ background:
 tiles:
   # 0: base wall
   - &baseWall
-    tags: [wall]
+    tags: [wall, metal]
     render:
       as: sprite
       sprite: walltile

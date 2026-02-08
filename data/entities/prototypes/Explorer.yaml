@@ -92,9 +92,9 @@ model:
                 target: [gazeTarget, 1]
         - name: leftUpperLeg
           pos: { x: -5, y: 13 }
-          render:
+          render: &leg
             as: polyline
-            pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
+            pts: [{ x: 0, y: 0 }, { x: 0, y: &legLength 9 }]
             angle: 12
             color: white
             join: round
@@ -105,20 +105,12 @@ model:
             angleRange: &upperLegRange [-90, 30]
           children:
             - name: leftLowerLeg
-              render:
-                as: polyline
-                pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
-                angle: 12
-                color: white
-                join: round
-                cap: round
-                width: 4
-                z: 1
-              pos: { x: 0, y: 9 }
+              render: *leg
+              pos: { x: 0, y: *legLength }
               ik:
                 angleRange: &lowerLegRange [1, 135]
               children:
-                - pos: { x: 0, y: 9 }
+                - pos: { x: 0, y: *legLength }
                   children:
                     - name: leftFoot
                       render: &foot
@@ -131,33 +123,17 @@ model:
                     target: [leftFootTarget, 2]
         - name: rightUpperLeg
           pos: { x: 5, y: 13 }
-          render:
-            as: polyline
-            pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
-            angle: 12
-            color: white
-            join: round
-            cap: round
-            width: 4
-            z: 1
+          render: *leg
           ik:
             angleRange: *upperLegRange
           children:
             - name: rightLowerLeg
-              render:
-                as: polyline
-                pts: [{ x: 0, y: 0 }, { x: 0, y: 9 }]
-                angle: 12
-                color: white
-                join: round
-                cap: round
-                width: 4
-                z: 1
-              pos: { x: 0, y: 9 }
+              render: *leg
+              pos: { x: 0, y: *legLength }
               ik:
                 angleRange: *lowerLegRange
               children:
-                - pos: { x: 0, y: 9 }
+                - pos: { x: 0, y: *legLength }
                   children:
                     - name: rightFoot
                       render: *foot
@@ -168,7 +144,7 @@ model:
           pos: { x: -6, y: -12 }
           render:
             as: polyline
-            pts: [{ x: -12, y: 0 }, { x: 0, y: 0 }]
+            pts: [{ x: &luArmLen -12, y: 0 }, { x: 0, y: 0 }]
             angle: -12
             color: white
             join: round
@@ -179,10 +155,10 @@ model:
             angleRange: &upperArmRange [-90, 90]
           children:
             - name: leftLowerArm
-              pos: { x: -12, y: 0 }
+              pos: { x: *luArmLen, y: 0 }
               render:
                 as: polyline
-                pts: [{ x: -10, y: 0 }, { x: 0, y: 0 }]
+                pts: [{ x: &llArmLen -10, y: 0 }, { x: 0, y: 0 }]
                 angle: -12
                 color: white
                 join: round
@@ -192,7 +168,7 @@ model:
               ik:
                 angleRange: [-90, 0]
               children:
-                - pos: { x: -10, y: 0 }
+                - pos: { x: *llArmLen, y: 0 }
                   children:
                     - name: leftHand
                       render: &hand
@@ -207,7 +183,7 @@ model:
           pos: { x: 6, y: -12 }
           render:
             as: polyline
-            pts: [{ x: 0, y: 0 }, { x: 12, y: 0 }]
+            pts: [{ x: 0, y: 0 }, { x: &ruArmLen 12, y: 0 }]
             angle: 12
             color: white
             join: round
@@ -218,10 +194,10 @@ model:
             angleRange: *upperArmRange
           children:
             - name: rightLowerArm
-              pos: { x: 12, y: 0 }
+              pos: { x: *ruArmLen, y: 0 }
               render:
                 as: polyline
-                pts: [{ x: 0, y: 0 }, { x: 10, y: 0 }]
+                pts: [{ x: 0, y: 0 }, { x: &rlArmLen 10, y: 0 }]
                 angle: 12
                 color: white
                 join: round
@@ -231,7 +207,7 @@ model:
               ik:
                 angleRange: [0, 90]
               children:
-                - pos: { x: 10, y: 0 }
+                - pos: { x: *rlArmLen, y: 0 }
                   children:
                     - name: rightHand
                       render: *hand
@@ -430,10 +406,10 @@ hooks:
         if,
         &metalCond [
           logic,
-          0b00011111,
-          [hitting, "*", s_side1],
-          [hitting, "*", s_side2],
-          [hitting, "*", s_bot],
+          0b00011110,
+          [hitting, metal, s_side1],
+          [hitting, metal, s_side2],
+          [hitting, metal, s_bot],
         ],
         footsteps_metal,
         footsteps,

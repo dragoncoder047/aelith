@@ -23,7 +23,7 @@ map:
     "         %                                                           %         ",
     "         %                                                           %         ",
     "         %                                                           %         ",
-    "         %        e                                                  %         ",
+    "         %                                                           %         ",
     "         %                                                           %         ",
     "#########@###########################################################@#########",
     "###############################################################################",
@@ -44,6 +44,3 @@ indexMapping:
   e: [explorer]
 entities:
   spaceship: !include ../entities/instances/spaceship.yaml
-  explorer:
-    id: explorer2
-    kind: explorer

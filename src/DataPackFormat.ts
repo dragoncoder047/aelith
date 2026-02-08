@@ -34,6 +34,13 @@ export type StaticPhysicsComponentData =
     | ["climb"]
     | ["static"];
 
+/**
+ * Number -> non-negative number = tileset index
+ *
+ * negative number = display entity index in tileset - 1 (ie -1 is display entity 0, -2 is display entity 1, etc)
+ *
+ * String -> normal entity by name
+ */
 export type IndexMapping = number | string;
 /** The static (unchangeable) data for a single room */
 export interface RoomData extends JSONObject {
@@ -53,7 +60,7 @@ export interface RoomData extends JSONObject {
     /** ID of the tileset to use, such as office */
     tileset: string;
     /** Entities directly in here */
-    entities?: Record<string, EntityData>
+    entities?: Record<string, EntityData>;
     gravity?: number;
     init?: CrustyJSONCode;
 }
@@ -74,7 +81,6 @@ export interface StaticTileDefinition extends JSONObject {
         pats: number[];
         weights?: number[];
     };
-    // TODO: refactor this into a list of "components"
     // TODO: also add "physics components" to entity bones and main
     physics: {
         /** if not null, stuff will not fall through it; it's always an axis aligned rectangle */
@@ -89,6 +95,7 @@ export interface StaticTileDefinition extends JSONObject {
 
 export interface TilesetData extends JSONObject {
     tiles: StaticTileDefinition[];
+    decorations: EntityData[];
     gridSize: number;
     background?: string | BackgroundLayer[];
     initFunc?: CrustyJSONCode;
