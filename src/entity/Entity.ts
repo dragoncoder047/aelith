@@ -266,7 +266,7 @@ export class Entity implements Serializable {
             this._lookAtPoint(other.getHead()?.worldPos ?? other.obj.worldPos);
         }
         this.inventory.update();
-        this.startHook("update");
+        this.startHook("update", {}, true);
     }
     readonly deltaPos: Vec2 = K.vec2();
     drawHook(dt: number) {
