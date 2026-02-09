@@ -32,6 +32,17 @@ model:
           ik:
             naturalDirection: { x: 0, y: -1 }
           children:
+            - name: screentext
+              pos: { x: 1.5, y: -4 }
+              render:
+                as: text
+                text: ""
+                anchor: left
+                font: Unscii
+                color: blue
+                scale: { x: -1, y: 1 }
+                size: 6
+                z: 2
             - name: rightEyeSocket
               pos: { x: 0, y: -4 }
               children:

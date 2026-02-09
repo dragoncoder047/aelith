@@ -45,6 +45,7 @@ export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdv
             backgroundAddons = add;
         },
         setBackground(b) {
+            // TODO: do this with onDraw() now that it always draws in the background. This should not be an object that can be get()'ed and raycast()'ed
             if (typeof b === "string") {
                 K.setBackground([{ type: "color", value: b }]);
             }
@@ -53,7 +54,7 @@ export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdv
             }
             else if (Array.isArray(b)) {
                 K.get("__background").forEach(o => o.destroy());
-                const objs = [];
+                const objs: GameObj[] = [];
                 for (var layer of b) {
                     const obj = K.add([
                         K.pos(),
@@ -95,9 +96,7 @@ export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdv
                         }
                     ]);
                     backgroundAddons(obj, layer.customData);
-                    // Unshift so objects in back will be listed first
-                    // since layer correction reverses the order
-                    objs.unshift(obj);
+                    objs.push(obj);
                     switch (layer.type) {
                         case "color":
                             obj.use(K.uvquad(0, 0));
@@ -123,8 +122,6 @@ export function kaplayBackground(K: KAPLAYCtx & KAPLAYLightingPlugin & KAPLAYAdv
                 const l0 = K._k.game.layers![0]!;
                 objs.forEach(obj => {
                     obj.use(K.layer(l0));
-                    c.splice(c.indexOf(obj), 1);
-                    c.unshift(obj);
                 });
             }
             else throw new Error("idk what to do with " + b + " for background");
