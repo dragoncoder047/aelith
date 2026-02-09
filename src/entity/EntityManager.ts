@@ -6,7 +6,7 @@ import * as GameManager from "../GameManager";
 import { JSONValue } from "../JSON";
 import * as RoomManager from "../room/RoomManager";
 import * as SceneManager from "../scenes/SceneManager";
-import * as ScriptHandler from "../script/ScriptHandler";
+import { DisplayEntity } from "./DisplayEntity";
 import { Entity } from "./Entity";
 
 
@@ -23,9 +23,14 @@ export function getEntityPrototypeStrict(name: string): EntityPrototypeData {
 }
 
 const allEntities: Entity[] = [];
+const allDisplayEntities: DisplayEntity[] = [];
+
+export function registerDisplayEntity(e: DisplayEntity) {
+    allDisplayEntities.push(e);
+}
 
 export function getEntityByName(entityName: string): Entity | undefined {
-    return allEntities.find(e => e.id === entityName);
+    return allEntities.find(e => e.id === entityName) ?? allDisplayEntities.find(e => e.id === entityName);
 }
 
 var idc = 0;
@@ -44,7 +49,7 @@ function _createEntity(data: EntityData, inRoom: string | null, realPos: Vec2) {
             if (typeof obj === "string") {
                 entity.inventory.silentAdd(getEntityByName(obj)!);
             } else {
-                const e2 = _createEntity(obj, null, K.Vec2.ZERO);
+                const e2 = spawnEntityInRoom(K.Vec2.ZERO, null, obj);
                 data.inventory[i] = e2.id;
                 entity.inventory.silentAdd(e2);
             }
@@ -109,6 +114,10 @@ export function setPlayer(e: Entity | null) {
 export function getPlayer(): Entity | null {
     return activePlayer;
 }
+
+K.onSceneLeave(() => {
+    allDisplayEntities.length = 0;
+});
 
 export function installControlsHandler() {
     K.onUpdate(() => {

@@ -9,7 +9,7 @@ behavior:
   moveSpeed: 1000
   inventorySlots: 20
   inventorySize: null
-  # inventoryHolder: interior
+  inventoryHolder: inventory
 model:
   skeleton:
     - name: gazeTarget
@@ -19,23 +19,26 @@ model:
         sprite: spaceship
         anchor: center
         frame: 2
+        flip: [true, false]
         z: 0
       children:
         - name: tentacleRot
           render:
-            angle: 0
+            angle: 180
         - name: backdoor
           render:
             as: sprite
             sprite: spaceship
             anchor: center
             frame: 0
+            flip: [true, false]
             z: -1
         - name: interior
           render:
             as: sprite
             sprite: spaceship
             anchor: center
+            flip: [true, false]
             frame: 1
             z: -1
         - name: frontdoor
@@ -43,16 +46,20 @@ model:
             as: sprite
             sprite: spaceship
             anchor: center
+            flip: [true, false]
             frame: 0
             z: 0
-    - name: light
+    - name: invMask
       render:
-        as: light
-        type: point
-        color: white
-        intensity: 2
-        near: 100
-        far: 200
+        as: sprite
+        sprite: spaceship
+        anchor: center
+        frame: 0
+        z: -1
+        mask: "&"
+      children:
+        - name: inventory
+          pos: { x: &invPosX 10, y: &invPosY 20 }
   tentacles:
     - &st
       name: ta
@@ -60,8 +67,8 @@ model:
       render:
         color: xt250
         cap: round
-        z: -1
-      pos: { x: 40, y: 20 }
+        z: -2
+      pos: { x: -40, y: 20 }
       n: 8
       lps: 6
       sizes: [12, 1]
@@ -70,7 +77,7 @@ model:
       eachConstraint: [angle, tentacleRot, 1, -90]
     - <<: *st
       name: tb
-      pos: { x: 40, y: -30 }
+      pos: { x: -40, y: -30 }
   kinematics:
     look:
       origin: body
@@ -81,7 +88,7 @@ model:
         gravityScale: 0
         bones:
           - bone: body
-            flip: [false, true]
+            flip: [true, false]
   anims:
     doorOpen:
       cancel: [doorClose]
@@ -93,7 +100,7 @@ model:
         - target: [frontdoor, angle]
           keyframes:
             - [*doorTime, 0]
-            - [0, &doorTilt -30]
+            - [0, &doorTilt 30]
     doorClose:
       cancel: [doorOpen]
       channels:
@@ -106,7 +113,25 @@ model:
             - [*doorTime, *doorTilt]
             - [0, 0]
 hooks:
-  setup: [do, [be, doorOpen, false]]
+  setup:
+    - do
+    - [be, doorOpen, false]
+  load:
+    - do
+    - [hold, test]
+  render:
+    # Why is all of this necessary.
+    - do
+    - [
+        boneSet,
+        [list, invMask, flipX],
+        [==, [boneGet, [list, body, scale, x]], 1],
+      ]
+    - [
+        boneSet,
+        [list, inventory, pos],
+        [vec2, ["*", [boneGet, [list, body, scale, x]], *invPosX], *invPosY],
+      ]
   stateChanged:
     - switch
     - [the, slot]

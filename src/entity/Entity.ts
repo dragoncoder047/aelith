@@ -362,7 +362,7 @@ export class Entity implements Serializable {
     endMotionState() {
         this._motionStateShouldEnd = true;
     }
-    private _updateGravityScale(state?: EntityMoveAnimDef) {
+    protected _updateGravityScale(state?: EntityMoveAnimDef) {
         if (this.obj) {
             const os = this.obj.gravityScale;
             const ns = (this.obj.gravityScale = state?.gravityScale ?? 1);

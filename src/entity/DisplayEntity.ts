@@ -11,13 +11,12 @@ export class DisplayEntity extends Entity {
         pos: Vec2,
         state: JSONObject,
     ) {
-        super(EntityManager.blankEntityId(kind), null, kind, state, pos, undefined, undefined);
+        super(EntityManager.blankEntityId(`${kind}$display`), null, kind, state, pos, undefined, undefined);
+        EntityManager.registerDisplayEntity(this);
         this.load();
     }
     load() {
         super.load();
-        this.obj!.unuse("body");
-        this.obj!.unuse("area");
         this._unloadedBySceneChange?.cancel();
         K.onSceneLeave(() => {
             ScriptHandler.endTasksBy(this);
@@ -25,5 +24,17 @@ export class DisplayEntity extends Entity {
         this.startHook("loadAsDisplay");
         this.obj!.unuse("layer");
         Object.values(this.bones).forEach(b => b.unuse("layer"));
+    }
+    override _updateGravityScale() {
+        if (this.obj) {
+            this.obj!.gravityScale = 0;
+            for (var bone of Object.keys(this.bones)) {
+                const b = this.bones[bone] as any;
+                if (b.has("body") && !b.is("tentacle")) {
+                    b.gravityScale = 0;
+                    K.Vec2.copy(K.Vec2.ZERO, b.vel);
+                }
+            }
+        }
     }
 }

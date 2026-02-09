@@ -218,6 +218,7 @@ func("take", function* (runner, [itemid], task, actor) {
     return result;
 });
 func("hold", function* (runner, [itemid], task, actor) {
+    K.debug.log("called hold with", itemid);
     return actor!.inventory.displayObj(itemid !== null ? EntityManager.getEntityByName(itemid)! : null);
 });
 func("drop", function* (runner, [itemid], task, actor) {
@@ -240,6 +241,9 @@ func("-", function* (runner, values) {
 });
 func("/", function* (runner, values) {
     return values.length > 1 ? values[0] / values.slice(1).reduce((a, b) => a * b, 1) : 1 / values[0];
+});
+func("==", function* (runner, [a, b]) {
+    return a == b;
 });
 func("not", function* (runner, [value]) {
     return !value;
@@ -299,6 +303,15 @@ func("boneGet", function* (runner, [path], task, actor) {
 func("boneSet", function* (runner, [path, value], task, actor) {
     const p = objOrStateSplit(actor!.bones, actor!.state, path);
     return p[0][p[1]] = value;
+});
+func("holdingobj", function* (runner, [], task, actor) {
+    return actor!.inventory.displayed?.id;
+});
+func("look", function* (runner, [direction], task, actor) {
+    actor!.lookInDirection(typeof direction === "number" ? K.Vec2.fromAngle(direction) : direction);
+});
+func("lookAt", function* (runner, [name], task, actor) {
+    actor!.target(name !== null ? EntityManager.getEntityByName(name)! : name);
 });
 func("hitting", function* (runner, [tag, bone], task, actor) {
     const bObj = bone ? actor!.bones[bone] : actor!.obj;

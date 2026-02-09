@@ -3,6 +3,7 @@
 * [ ] Make the menu screens and stuff have 2 default fonts, one for headings and callouts, and one for general text
 * [ ] make the about screen not have hard-coded sections, and be data-driven
     * [ ] could this work for the config menus too?
+* [ ] make looking automatically be smoothed by angle, versus instant
 * [ ] make speech bubble using sprite for customization
 * [X] make speech bubble advance logic be handled by entity rather than object to prevent a total lockup if the scene changes mid-sentence
 * [ ] implement cutscene mode on player so camera follows but input is blocked

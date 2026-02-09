@@ -80,7 +80,7 @@ model:
                   render:
                     as: light
                     type: spot
-                    strength: 2
+                    strength: 1.5
                     near: 50
                     far: 100
                     color: white
@@ -389,6 +389,9 @@ model:
       # swimming:
       #   # TODO
 hooks:
+  loadAsDisplay:
+    - do
+    - [boneSet, [list, headlight, light, excludeTags], [list, "*"]]
   action1: [as, [my, agent], bePlayer]
   action2:
     [

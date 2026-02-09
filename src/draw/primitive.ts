@@ -194,9 +194,11 @@ export function addRenderComps(obj: GameObj, uid: number, id: string | null, pri
             obj.use(simpleParticles(primitive));
             break;
         case "light":
+            console.log("crating light on obj with entity id", obj.entity?.id, id)
             obj.use(K.lightSource({
                 ...primitive,
                 color: (primitive.color ?? null) !== null ? K.rgb(primitive.color!) : undefined,
+                includeTags: primitive.includeTags,
                 excludeTags: [...(primitive.excludeTags ?? []), ...(id ? [id] : [])]
             }));
             console.log(obj.light);

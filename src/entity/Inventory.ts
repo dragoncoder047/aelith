@@ -9,12 +9,12 @@ export class RefuseTake extends Error {
 }
 
 export class Inventory {
-    size: number | undefined;
+    readonly size: number | undefined;
     slots: Entity[] = [];
-    maxSlots: number | undefined;
+    readonly maxSlots: number | undefined;
     private _occupied = 0;
     displayed: DisplayEntity | null = null;
-    private _handsBone: string | undefined
+    private readonly _handsBone: string | undefined
     constructor(public me: Entity) {
         const b = me.getPrototype().behavior;
         if (b) {
@@ -64,9 +64,12 @@ export class Inventory {
             this.displayed = null;
         }
         if (obj) {
-            this.displayed = obj.toDisplayEntity();
-            obj.obj!.parent = this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
-            obj.setPosition(K.vec2());
+            const d = this.displayed = obj.toDisplayEntity();
+            d.obj!.parent = this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
+            d.setPosition(K.vec2());
+            for (var bone of Object.values(d.bones)) {
+                if (!d.obj!.isAncestorOf(bone)) bone.parent = d.obj!.parent;
+            }
         }
         return true;
     }
