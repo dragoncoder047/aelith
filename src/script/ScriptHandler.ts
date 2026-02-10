@@ -59,10 +59,7 @@ export function tracebackError(error: Error | string, traceback: TracebackArray)
 }
 
 export class ScriptRunner {
-
     constructor(public fn = FUNCTIONS_MAP) { }
-
-    private _w = new Map<string, number>();
 
     lockupCheck(tb: TracebackArray) {
         console.error(stringifyTraceback(tb));
