@@ -1,7 +1,6 @@
 # to do
 
-* [ ] Change the lisp interpreter to use one single generator handling the task queue to reduce GC overhead
-    * [ ] also implement task object pooling to reduce GC overhead of render and update hooks
+* [ ] Change the lisp interpreter to compile to a VM bytecode state so that it can be suspended and saved in the savefile
 * [ ] Make the menu screens and stuff have 2 default fonts, one for headings and callouts, and one for general text
 * [ ] make the about screen not have hard-coded sections, and be data-driven
     * [ ] could this work for the config menus too?
