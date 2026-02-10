@@ -14,6 +14,7 @@ export class Inventory {
     readonly maxSlots: number | undefined;
     private _occupied = 0;
     displayed: DisplayEntity | null = null;
+    holdingIndex = 0;
     private readonly _handsBone: string | undefined
     constructor(public me: Entity) {
         const b = me.getPrototype().behavior;
@@ -40,9 +41,27 @@ export class Inventory {
         }
         this.me.startHook("take", { taken: obj.id });
         this.silentAdd(obj);
+        this.switchHoldingTo(obj);
         EntityManager.teleportEntityTo(obj, null, K.Vec2.ZERO);
-        this.displayObj(obj);
+        this.displayObj();
         return "taken";
+    }
+    currentObject() {
+        return this.slots[this.holdingIndex];
+    }
+    has(e: Entity) {
+        return this.slots.includes(e);
+    }
+    switchHoldingTo(obj: Entity | null) {
+        if (obj === null) {
+            this.holdingIndex = -1;
+        }
+        else {
+            if (!this.has(obj)) return false;
+            this.holdingIndex = this.slots.indexOf(obj);
+        }
+        this.displayObj();
+        return true;
     }
     silentRemove(obj: Entity) {
         const i = this.slots.indexOf(obj);
@@ -53,27 +72,31 @@ export class Inventory {
     drop(obj: Entity) {
         if (!this.slots.includes(obj)) return;
         this.silentRemove(obj);
-        const pos = (this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj!).worldPos;
+        const pos = this.hand?.worldPos ?? this.me.pos;
         EntityManager.teleportEntityTo(obj, this.me.currentRoom, pos);
         return true;
     }
-    displayObj(obj: Entity | null) {
-        if (obj && !this.slots.includes(obj)) return false;
+    get hand() {
+        return this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
+    }
+    displayObj() {
         if (this.me.obj && this.displayed) {
             this.displayed.unload();
             this.displayed = null;
         }
+        const obj = this.currentObject();
         if (obj) {
             const d = this.displayed = obj.toDisplayEntity();
-            d.obj!.parent = this._handsBone ? this.me.bones[this._handsBone]! : this.me.obj;
             d.setPosition(K.vec2());
-            for (var bone of Object.values(d.bones)) {
-                if (!d.obj!.isAncestorOf(bone)) bone.parent = d.obj!.parent;
+            if (this.me.obj) {
+                d.obj!.parent = this.hand;
+                for (var bone of Object.values(d.bones)) {
+                    if (!d.obj!.isAncestorOf(bone)) bone.parent = d.obj!.parent;
+                }
             }
         }
-        return true;
     }
     update() {
-        // nothing?
+        this.displayed?.setPosition(K.vec2());
     }
 }

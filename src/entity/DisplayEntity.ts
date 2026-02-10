@@ -23,6 +23,7 @@ export class DisplayEntity extends Entity {
         });
         this.startHook("loadAsDisplay");
         this.obj!.unuse("layer");
+        this.obj!.collisionIgnore?.push("*");
         Object.values(this.bones).forEach(b => b.unuse("layer"));
     }
     override _updateGravityScale() {

@@ -391,7 +391,8 @@ model:
 hooks:
   loadAsDisplay:
     - do
-    - [boneSet, [list, headlight, light, excludeTags], [list, "*"]]
+    - [log, hello]
+    - [rmBone, headlight]
   action1: [as, [my, agent], bePlayer]
   action2:
     [

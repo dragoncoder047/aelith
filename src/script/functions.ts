@@ -218,8 +218,7 @@ func("take", function* (runner, [itemid], task, actor) {
     return result;
 });
 func("hold", function* (runner, [itemid], task, actor) {
-    K.debug.log("called hold with", itemid);
-    return actor!.inventory.displayObj(itemid !== null ? EntityManager.getEntityByName(itemid)! : null);
+    return actor!.inventory.switchHoldingTo(itemid !== null ? EntityManager.getEntityByName(itemid)! : null);
 });
 func("drop", function* (runner, [itemid], task, actor) {
     return actor!.inventory.drop(EntityManager.getEntityByName(itemid)!);

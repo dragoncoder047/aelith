@@ -60,6 +60,14 @@ model:
       children:
         - name: inventory
           pos: { x: &invPosX 10, y: &invPosY 20 }
+    - name: light
+      render:
+        as: light
+        type: point
+        color: "#ddddff"
+        intensity: 2
+        near: 100
+        far: 200
   tentacles:
     - &st
       name: ta
