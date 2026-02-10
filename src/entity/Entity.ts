@@ -135,7 +135,7 @@ export class Entity implements Serializable {
         }
     }
     unload() {
-        this.obj?.destroy();
+        if (this.obj?.exists()) this.obj!.destroy();
         for (var b of Object.values(this.bones)) {
             if (b.exists()) b.destroy();
         }
