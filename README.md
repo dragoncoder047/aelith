@@ -26,8 +26,8 @@ So you crash-landed on a dusty barren world. It would seem as though you're stuc
 ## Top-level roadmap
 
 * [X] Finalize the game's plot and story
-* [ ] Implement all of the mechanics needed for the puzzles (while creating first drafts of assets as needed)
 * [ ] Implement game saves to persist gameplay progress between page reloads
+* [ ] Implement all of the mechanics needed for the puzzles (while creating first drafts of assets as needed)
 * [ ] Implement mod loading
 * [ ] Polish the art and sound design
 * [ ] Beta test
