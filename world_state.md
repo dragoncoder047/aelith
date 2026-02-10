@@ -52,6 +52,7 @@ Map {
     behavior-defined state (as a map)
     position
     animation data
+    inventory data
     state of hook threads
 }
 ```
