@@ -1,5 +1,7 @@
 # to do
 
+* [ ] Change the lisp interpreter to use one single generator handling the task queue to reduce GC overhead
+    * [ ] also implement task object pooling to reduce GC overhead of render and update hooks
 * [ ] Make the menu screens and stuff have 2 default fonts, one for headings and callouts, and one for general text
 * [ ] make the about screen not have hard-coded sections, and be data-driven
     * [ ] could this work for the config menus too?
@@ -7,7 +9,6 @@
 * [ ] make speech bubble using sprite for customization
 * [X] make speech bubble advance logic be handled by entity rather than object to prevent a total lockup if the scene changes mid-sentence
 * [ ] implement cutscene mode on player so camera follows but input is blocked
-* [ ] implement task pooling to reduce GC overhead of render and update hooks
 * [X] make tooltips in GUI be under the item permanently instead of popups that cover the item below it
 * [ ] Add arm/hands to NIC
 * [X] add "display entities" which are not tracked in the entity system but still run hooks for e.g. rendering and stuff
