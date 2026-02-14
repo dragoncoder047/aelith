@@ -1,7 +1,6 @@
 import { Anchor, Color, GameObj, KAPLAYCtx, Vec2 } from "kaplay";
 import { KAPLAYLightingPlugin } from "kaplay-lighting";
-import { XY } from "../../DataPackFormat";
-import { JSONObject } from "../../JSON";
+import { XY, JSONObject } from "../../utils/JSON";
 
 // json object means nothing here it's just for my data pack
 export interface BackgroundLayer extends JSONObject {

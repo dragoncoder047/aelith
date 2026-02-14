@@ -1,6 +1,6 @@
 import kaplay from "kaplay";
 import kaplayLighting from "kaplay-lighting";
-import { SCALE } from "../static/constants";
+import { SCALE } from "../config/constants";
 import { kaplayBackground } from "./plugins/kaplay-background-more";
 import { kaplayDynamicStrings } from "./plugins/kaplay-dynamic-text";
 import { kaplayExtraDistance } from "./plugins/kaplay-extradistance";

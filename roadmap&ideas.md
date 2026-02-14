@@ -1,4 +1,4 @@
-# to do
+# to do -1
 
 * [ ] Change the lisp interpreter to compile to a VM bytecode state so that it can be suspended and saved in the savefile
 * [ ] Make the menu screens and stuff have 2 default fonts, one for headings and callouts, and one for general text
