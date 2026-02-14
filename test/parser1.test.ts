@@ -67,5 +67,29 @@ describe("strings", () => {
             makespec(ThingType.block, BlockType.toplevel, null,
                 makespec(ThingType.string, null, "hello\u0001")));
         expectParseError("\"\\u{1234567890}\"", "escape out of range");
+        expectParseError("\"\\u{\"", "\"{\" was never closed");
+    });
+});
+describe("symbols", () => {
+    test("operators and words", () => {
+        expectParse("a+b",
+            makespec(ThingType.block, BlockType.toplevel, null,
+                makespec(ThingType.symbol, SymbolType.nameLike, "a"),
+                makespec(ThingType.symbol, SymbolType.operatorLike, "+"),
+                makespec(ThingType.symbol, SymbolType.nameLike, "b")));
+    });
+    test("operators don't get merged", () => {
+        expectParse("a+=&b",
+            makespec(ThingType.block, BlockType.toplevel, null,
+                makespec(ThingType.symbol, SymbolType.nameLike, "a"),
+                makespec(ThingType.symbol, SymbolType.operatorLike, "+"),
+                makespec(ThingType.symbol, SymbolType.operatorLike, "="),
+                makespec(ThingType.symbol, SymbolType.operatorLike, "&"),
+                makespec(ThingType.symbol, SymbolType.nameLike, "b")));
+    });
+    test("whitespace counts as a symbol", () => {
+        expectParse("  ",
+            makespec(ThingType.block, BlockType.toplevel, null,
+                makespec(ThingType.symbol, SymbolType.whitespaceLike, "  ")));
     });
 });
