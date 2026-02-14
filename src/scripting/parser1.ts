@@ -110,7 +110,7 @@ export function parseTokens(tokens: Token[]): Thing {
                     throw new DSL_Error(`expected ${str(ending)}`, item.s, [new ErrorNote(`note: to match this ${str(beginning!.c)}`, beginning!.s)]);
                 }
             } else {
-                throw new DSL_Error(`stray close paren ${str(ending)}`, item.s);
+                throw new DSL_Error(`stray close paren ${str(item.c)}`, item.s);
             }
         }
         return thing;
