@@ -12,5 +12,6 @@ export enum Keys {
     GLOBAL_PREFERENCES_KEY = "preferences",
     PER_WORLD_PREFERENCES_KEY = "localPreferences",
     GLOBAL_WORLDS_KEY = "worlds",
-    WORLD_PREFIX = "world/"
+    WORLD_PREFIX = "world/",
+    FILE_REF_KEY = "@",
 }

@@ -1,6 +1,6 @@
 
 export type JSONPrimitive = number | string | boolean | null;
-export type JSONArray = (JSONValue | undefined)[];
+export type JSONArray = JSONValue[];
 export interface JSONObject {
     [key: string]: JSONValue | undefined;
 }

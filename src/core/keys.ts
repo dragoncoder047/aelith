@@ -1,1 +1,0 @@
-export type ResourceIdentifier = `${string}:${string}`;

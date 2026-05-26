@@ -81,7 +81,7 @@
 * the thermal fluid is needed to be flooded down into the zug burrow below and through
   into the voranium flower cave
 * trying to activate a vurble spore inside of the solar tank causes it to explode and
-  not work because of the heat
+  not work because of the lack of surrounding slime mold energy to feed off of
 * however the vurbilizer still works and spores can still be captured in here
 
 ### sinkhole w/stream
