@@ -2,36 +2,29 @@
 
 If savegames are going to be implemented then there needs to be some way to store state in a serialized format. This document is the planning for the schema for that format.
 
-I'm going to be basing this all off of a Y.js document concept, since if I implement it using a `Y.Doc`, then multiplayer is trivial, since Y.js is designed for realtime collaborative editing.
-
-Y.js only has three basic data types: lists, maps, and text strings. There's also XML but there isn't anything in XML that can't also be done with plain lists, maps, and strings. The container types can also store arbitrary JSON but updates to them must be all at once (since Y.js can't install mutation observers on bare JS objects, even with an ES6 `Proxy`).
+I'm going to be basing this all off of basic JSON, since if I base this off of mutative.js, i can just send JSON packets back and forth too.
 
 A lot of this is based on the stuff I've already made in [src/DataPackFormat.ts](./src/DataPackFormat.ts) but kind of twisted to make it simpler to serialize I guess.
 
 ## Entire World State
 
-```js
-Map {
-    main datapack URL
-    list of mods
-    players --> Map { Y.js peer ID --> Entity ID }
-    list of rooms
-    list of entities
-}
+```text
+game ID: url to datapack for game
+mods: [list of mod URLs]
+players: map of { peer ID to Entity ID }
+chunks: list of chunks (containing tile and entity state) - synced
 ```
 
 * What the main datapack is. (This is to prevent someone playing vanilla Aelith from trying to connect to a friend who has an alternative game datapack installed.)
 * What mods are installed. (The mods will each declare in their manifests whether they're required to be installed on both sides or not.)
 * What the player entity/ies IDs are for each client. (there will of course only be one in singleplayer mode and it will only be able to load one to begin with)
 
-### A room
+### A chunk
 
 ```js
-Map {
-    room theme // statically defined by the datapack and also mods
-    tilemap data // this is to allow potential world-editing tools
-    current gravity // is this even necessary
-}
+- entity list and locations
+- tile table
+- biome table
 ```
 
 ### Tilemap data
@@ -56,7 +49,7 @@ Map {
 }
 ```
 
-The entity objects also manage loading and unloading their KAPLAY game objects, and pulling in position and collision events from KAPLAY's physics. The entity has a loaded flag stored in the Y.Map that is always false in the serialized state and whenever it gets loaded it sets the flag to true, to tell other clients that the entity is loaded and they should pull changes rather than push to them.
+The entity objects also manage loading and unloading their Nova game objects, and pulling in position and collision events from Nova's physics. The entity has a loaded flag stored in the map that is always false in the serialized state and whenever it gets loaded it sets the flag to true, to tell other clients that the entity is loaded and they should pull changes rather than push to them.
 
 #### Entity animation data
 
@@ -64,9 +57,9 @@ Even less sure about this. Since entities can be made of many objects and can co
 
 ### Hook threads
 
-In general the first client to load an entity gets to run that entity's hook code, the only downside is if in the weird chance that 2 clients load the same entity at the same time and the load status packets get crossed then there'll be a race condition. I don't know how to detect this, but there will then be some way for the conflict to be resolved and all but one to determine they should "back off" simulating that entity and only watch the Y.Map for updates and push them to KAPLAY.
+In general the first client to load an entity gets to run that entity's hook code, the only downside is if in the weird chance that 2 clients load the same entity at the same time and the load status packets get crossed then there'll be a race condition. I don't know how to detect this, but there will then be some way for the conflict to be resolved and all but one to determine they should "back off" simulating that entity and only watch the data for updates and push them to KAPLAY.
 
-The hook VM state does not get serialized because (a) it's largely ephemeral, and (b) it's rather large being 90% bootstrapped. However in a pinch, it can be.
+Need to investigate how Minecraft handles simulating entities on both the client and the server and mimic that.
 
 ## Loading process
 
@@ -76,15 +69,17 @@ Naturally the Y.Doc won't have pointers to the data-pack-defined things. This is
 
 #### Game boot
 
-1. gather game candidates
-2. download mods
+1. download mods or load from localstorage/disk
+2. determine current mod set from localstorage
 3. register globals stuff like configs
-4. determine last used mod set and set up UI theme and title screen banner object
+4. set up UI theme and title screen banner object
 
-#### World entry
+#### open select world screen
 
-1. load savefiles available from yjs's persistence provider
-2. if none are available, immediately prompt for a save name and a modset to use
-3. resolve dependencies and paths that each mod touches, if any missing deps then complain, then load mods and report any errors
-4. for a new world, create it from the datapack's template generation and optional world seed
-5. for an existing world, just load it
+1. load savefiles available from disk, indexeddb, localstorage, etc.
+2. if none are available, immediately prompt for a save name
+
+### mod loading
+
+1. resolve dependencies and paths that each mod touches, if any missing deps then complain, then load mods and report any errors
+    1. if missing mod is known for its download location, auto-download it after confirmation
