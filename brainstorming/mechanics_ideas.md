@@ -1,5 +1,12 @@
 # stuff
 
+## world layout
+
+* Player is 64x128px
+* NIC is 32x32
+* World tiles are 8x8
+* organized into 32x32 tile chunks
+
 ## idk what
 
 * the vurbilizer has these options when using it:

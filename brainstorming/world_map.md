@@ -215,7 +215,8 @@
 
 * Contains the 3D printers needed to create the vurbilizer components
   * The printer requires voranium to work and has 3 charges to start
-    * player can get more voranium by harvesting voranium flowers
+    * player can get more voranium by harvesting voranium flowers from cave or
+      bio lab
   * easter egg: if you start a print job and then go to the printer before it
     finishes you can change the print speed to "lightspeed", "ridiculous", or
     "ludicrous", and if you put it in "ludicrous" mode it has a 50% chance
@@ -281,6 +282,8 @@
 * no lightswitch on wall, lights are permanently on
 * contains a fume hood and chemical storage cabinets
 * plus a zug floating in a jar of liquid inside the fume hood
+* terrarium with some voranium flowers growing in it (can be opened to take them; they do
+  NOT respawn here, only in the voranium flower cave below)
 * the zug ate the tape for component #4, but the player must first freeze and then
   crack open the zug in the physics lab to get it
 * the player can only get into the fume hood via the ductwork from the boiler room to
@@ -423,8 +426,9 @@
 ### voranium flower cave
 
 * contains a growth of glowing voranium flowers that feed off the same mineral energy
-  as the zugs
-* the player can harvest them and they regrow
+  as the zugs, they hang like snot droplets from the ceiling and retract into the ceiling
+  when touched
+* the player can harvest them and they regrow, doing that gets raw voranium mass
 * the player must harvest some of these for each component to be made
 * sequence to obtain purified voranium (requires component #7):
     1. player captures spore inside solar tank with #7 active.
@@ -432,15 +436,18 @@
        solar tank
     3. if the player needs more nodules they can clone more with component #6
     4. when the tank overflows the fluid rushes down into the burrow and then to
-       the voranium flower cave which washes the voranium off into the trash heap
-       where it crystallizes
+       the voranium flower cave which boils the voranium flowers and once they're boiled
+       touching the base of them causes them to shatter and release purified voranium
+       (must be done here instead of chemistry lab since it requires the living biology of
+       the voranium flowers)
     5. the player must collect it and take it back to the machine shop
     6. the crushed zug body from the physics lab also has to be collected in
        glassware
     7. these two components go into printer along with blueprint to make the warp
        compressor
-* TODO this puzzle needs a rework. What about it makes it so that it can't just be done
-  in the chemistry lab                                        
+* there is also a lookalike animal here that is carnivorous and eats vurble spores
+    * the player must be stealthy while holding one in here (by sneaking) or this animal
+      will grab the spore out of the player's hand and destroy it without invoking it
 
 ### zug burrow
 
