@@ -110,7 +110,7 @@
 
 ### radio tower/mirrors
 
-* large red radio mast that carries transceivers, but they are broken
+* large radio mast that carries transceivers, but they are broken
 * player must crank backup generator to make a little power and then send messages
   to a satelite to tilt mirrors to the solar tank, once tank receives power it will
   power up the door lock and allow the player to open the door to the Aelith

@@ -18,6 +18,8 @@
     * for elevator, select floor
     * for keypads/lift robots - up/down or stuff
 
+* NIC somehow picks up an infinitely powerful vurbilizer that gets invoked automatically for checkpoints and stuff????
+
 * simple things have a single action which is automatically selected when triggered (levers, elevator call buttons, placing/picking up items, opening/closing doors, activating remote vurbilizer trigger)
 
 * when the player tries to pull a lever or something that the player can't reach but NIC can, NIC will try to go and activate it themselves, but some switches are security locked and can only be switched by the player directly
